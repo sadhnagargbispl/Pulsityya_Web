@@ -1,0 +1,74 @@
+﻿@model Shopinv.Models.GroupDirectReport
+@{
+    ViewBag.Title = "Level Income";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var hasRows = Model.m_LevelIncomes != null && Model.m_LevelIncomes.Count() > 0;
+}
+
+<section class="contents">
+    <div class="breadcrmb plain">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a class="active">Level Income</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-row">
+        <div class="my-account">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="acc-body">
+                            <h4>Level Income</h4>
+
+                            <div class="acc-panel">
+                                <div class="table-responsive" id="Grdwallet">
+                                    <table class="table mytable" style="white-space:nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-num">S.No</th>
+                                                <th>Date</th>
+                                                <th>Level</th>
+                                                <th>ID No</th>
+                                                <th>Member Name</th>
+                                                <th>Business</th>
+                                                <th>Slab</th>
+                                                <th>Level Bonus</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (hasRows)
+                                            {
+                                                foreach (var item in Model.m_LevelIncomes)
+                                                {
+                                                    <tr>
+                                                        <td class="col-num">@item.SNo</td>
+                                                        <td>@item.Date</td>
+                                                        <td>@item.Level</td>
+                                                        <td>@item.Idno</td>
+                                                        <td>@item.MemberName</td>
+                                                        <td>@item.Business</td>
+                                                        <td>@item.Slab</td>
+                                                        <td>@item.LevelBonus</td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr><td colspan="8" class="no-record">No record found.</td></tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

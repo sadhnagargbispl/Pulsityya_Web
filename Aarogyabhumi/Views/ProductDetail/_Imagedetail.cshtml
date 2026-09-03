@@ -1,0 +1,18 @@
+@model Shopinv.Models.M_Category
+@*
+    Returned by ProductDetail/GetImageBycolor. Emits the same slides the theme's
+    .itm-dtls-carousel uses on the product detail page.
+*@
+@if (Model.ProductDetail != null && Model.ProductDetail.Count() > 0)
+{
+    foreach (var item in Model.ProductDetail)
+    {
+        foreach (var path in new[] { item.ImagePath, item.ImagePath1, item.ImagePath2, item.ImagePath3, item.ImagePath4, item.ImagePath5 })
+        {
+            if (!string.IsNullOrEmpty(path))
+            {
+                <a class="spotlight" href="@path"><img src="@path" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/sample-product.jpg")';" alt="@item.ProductName" /></a>
+            }
+        }
+    }
+}

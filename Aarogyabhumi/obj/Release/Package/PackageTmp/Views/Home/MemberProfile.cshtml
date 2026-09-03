@@ -1,0 +1,84 @@
+﻿@model Shopinv.Models.M_Profile
+@{
+    ViewBag.Title = "My Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var p = Model.profileres;
+}
+
+<section class="contents">
+    <div class="breadcrmb plain">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a class="active">My Profile</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-row">
+        <div class="my-account">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="acc-body">
+                            <h4>@p.name</h4>
+
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4"><div class="stat-box"><span>Member ID</span><strong>@p.idno</strong></div></div>
+                                <div class="col-xs-6 col-sm-4"><div class="stat-box"><span>Position</span><strong>@p.position</strong></div></div>
+                                <div class="col-xs-12 col-sm-4"><div class="stat-box"><span>Joined On</span><strong>@p.dateofjoining</strong></div></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6">
+                                    <div class="acc-panel">
+                                        <h5>Personal Information</h5>
+                                        <ul class="info-grid">
+                                            <li><span class="info-label">Relation</span><span class="info-value">@p.relation</span></li>
+                                            <li><span class="info-label">Date of Birth</span><span class="info-value">@p.dob</span></li>
+                                            <li><span class="info-label">Position</span><span class="info-value">@p.position</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-6">
+                                    <div class="acc-panel">
+                                        <h5>Contact Details</h5>
+                                        <ul class="info-grid">
+                                            <li><span class="info-label">Mobile</span><span class="info-value">@p.mobile</span></li>
+                                            <li><span class="info-label">Phone</span><span class="info-value">@p.phoneno</span></li>
+                                            <li><span class="info-label">Email</span><span class="info-value">@p.email</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-6">
+                                    <div class="acc-panel">
+                                        <h5>Nominee Details</h5>
+                                        <ul class="info-grid">
+                                            <li><span class="info-label">Nominee Name</span><span class="info-value">@p.nominee</span></li>
+                                            <li><span class="info-label">Nominee Relation</span><span class="info-value">@p.nomineerelation</span></li>
+                                            <li><span class="info-label">Prefix</span><span class="info-value">@p.nomprefix</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-6">
+                                    <div class="acc-panel">
+                                        <h5>Subscription</h5>
+                                        <ul class="info-grid">
+                                            <li><span class="info-label">Date of Joining</span><span class="info-value">@p.dateofjoining</span></li>
+                                            <li><span class="info-label">Activation Date</span><span class="info-value">@p.dateofactivation</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

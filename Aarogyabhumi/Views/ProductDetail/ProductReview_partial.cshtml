@@ -1,0 +1,24 @@
+@model Shopinv.Models.M_Category
+
+@if (Model.ProductReview != null && Model.ProductReview.Count() > 0)
+{
+    foreach (var item in Model.ProductReview)
+    {
+        <div class="review-item">
+            <p class="rev-head">
+                <strong>@item.username</strong>
+                <span class="rev-stars">
+                    @for (var i = 1; i <= 5; i++)
+                    {
+                        <i class="fa @(i <= item.Rating ? "fa-star" : "fa-star-o")"></i>
+                    }
+                </span>
+            </p>
+            <p>@item.Review</p>
+        </div>
+    }
+}
+else
+{
+    <p class="no-record">No reviews yet.</p>
+}

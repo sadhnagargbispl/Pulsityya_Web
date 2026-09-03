@@ -1,0 +1,51 @@
+﻿@{
+    ViewBag.Title = "Bank Detail";
+    var cmpName = Convert.ToString(Session["CompName"]);
+    var cmpLogo = Convert.ToString(Session["CompLogo"]);
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="contents">
+    <div class="breadcrmb">
+        <img src="~/theme/img/page-banner.jpg" alt="Bank Detail">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <h1>Bank Detail</h1>
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a class="active">Bank Detail</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-row">
+        <div class="container">
+            <div class="txt-page">
+                <h2 class="first-head">Our Bankers <span class="brdr"></span></h2>
+                <div class="table-responsive">
+                    <table class="table mytable">
+                        <thead>
+                            <tr>
+                                <th>Bank</th>
+                                <th>A/c Holder Name</th>
+                                <th>A/c No</th>
+                                <th>IFS Code</th>
+                                <th>Branch</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><img src="@(string.IsNullOrWhiteSpace(cmpLogo) ? Url.Content("~/theme/img/logo.png") : cmpLogo)" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/logo.png")';" alt="@(cmpName)" style="width:160px;" /></td>
+                                <td>@(cmpName)</td>
+                                <td>192605001473</td>
+                                <td>ICIC0001926</td>
+                                <td>Asansol - APCAR</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

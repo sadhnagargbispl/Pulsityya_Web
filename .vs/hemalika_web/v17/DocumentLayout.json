@@ -1,0 +1,159 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|e:\\sadhna garg\\githhubfranchise\\hemalika_web\\aarogyabhumi\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|solutionrelative:aarogyabhumi\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|e:\\sadhna garg\\githhubfranchise\\hemalika_web\\aarogyabhumi\\views\\checkout\\checkout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|solutionrelative:aarogyabhumi\\views\\checkout\\checkout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|e:\\sadhna garg\\githhubfranchise\\hemalika_web\\aarogyabhumi\\controllers\\checkoutcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|solutionrelative:aarogyabhumi\\controllers\\checkoutcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|e:\\sadhna garg\\githhubfranchise\\hemalika_web\\aarogyabhumi\\repository\\r_product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|solutionrelative:aarogyabhumi\\repository\\r_product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|e:\\sadhna garg\\githhubfranchise\\hemalika_web\\aarogyabhumi\\controllers\\viewcartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|solutionrelative:aarogyabhumi\\controllers\\viewcartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|e:\\sadhna garg\\githhubfranchise\\hemalika_web\\aarogyabhumi\\views\\categorylist\\categorylist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|solutionrelative:aarogyabhumi\\views\\categorylist\\categorylist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\aarogyabhumi\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|solutionrelative:aarogyabhumi\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 8,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:135:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:133:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:134:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "R_Product.cs",
+              "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\Aarogyabhumi\\Repository\\R_Product.cs",
+              "RelativeDocumentMoniker": "Aarogyabhumi\\Repository\\R_Product.cs",
+              "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\Aarogyabhumi\\Repository\\R_Product.cs",
+              "RelativeToolTip": "Aarogyabhumi\\Repository\\R_Product.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-02T11:55:24.613Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CheckOutController.cs",
+              "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\Aarogyabhumi\\Controllers\\CheckOutController.cs",
+              "RelativeDocumentMoniker": "Aarogyabhumi\\Controllers\\CheckOutController.cs",
+              "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\Aarogyabhumi\\Controllers\\CheckOutController.cs",
+              "RelativeToolTip": "Aarogyabhumi\\Controllers\\CheckOutController.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-02T11:02:33.116Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ViewCartController.cs",
+              "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\Aarogyabhumi\\Controllers\\ViewCartController.cs",
+              "RelativeDocumentMoniker": "Aarogyabhumi\\Controllers\\ViewCartController.cs",
+              "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\Aarogyabhumi\\Controllers\\ViewCartController.cs",
+              "RelativeToolTip": "Aarogyabhumi\\Controllers\\ViewCartController.cs",
+              "ViewState": "AgIAAIIBAAAAAAAAAADwv6ABAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-02T11:34:29.471Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\Aarogyabhumi\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "Aarogyabhumi\\Controllers\\AccountController.cs",
+              "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\Aarogyabhumi\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "Aarogyabhumi\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAmwDcAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-02T11:02:33.228Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CheckOut.cshtml",
+              "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\Aarogyabhumi\\Views\\CheckOut\\CheckOut.cshtml",
+              "RelativeDocumentMoniker": "Aarogyabhumi\\Views\\CheckOut\\CheckOut.cshtml",
+              "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\Aarogyabhumi\\Views\\CheckOut\\CheckOut.cshtml",
+              "RelativeToolTip": "Aarogyabhumi\\Views\\CheckOut\\CheckOut.cshtml",
+              "ViewState": "AgIAAN8AAAAAAAAAAAAAAAABAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-02T11:20:34.181Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CategoryList.cshtml",
+              "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\Aarogyabhumi\\Views\\CategoryList\\CategoryList.cshtml",
+              "RelativeDocumentMoniker": "Aarogyabhumi\\Views\\CategoryList\\CategoryList.cshtml",
+              "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\Aarogyabhumi\\Views\\CategoryList\\CategoryList.cshtml",
+              "RelativeToolTip": "Aarogyabhumi\\Views\\CategoryList\\CategoryList.cshtml",
+              "ViewState": "AgIAAEQBAAAAAAAAAAAAAGkBAABRAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-02T10:52:33.825Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\Aarogyabhumi\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "Aarogyabhumi\\Views\\Home\\Index.cshtml",
+              "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\hemalika_web\\Aarogyabhumi\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "Aarogyabhumi\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAADwBAAAAAAAAAAAAAFcBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-23T10:59:05.909Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

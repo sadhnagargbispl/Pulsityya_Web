@@ -1,0 +1,807 @@
+﻿@{
+    // company identity comes from companymaster via CompanyDetail.GetCompanydetail()
+    var cmpName = Convert.ToString(Session["CompName"]);
+    var cmpMail = Convert.ToString(Session["CompMail"]);
+    var cmpPhone = Convert.ToString(Session["ContactNo"]);
+    var cmpAdd = Convert.ToString(Session["CompAdd"]);
+    var cmpSite = Convert.ToString(Session["WebSite"]);
+}
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Update Your Kyc</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title> Welcome to @(cmpName) | Every Deal for Smart Savings & Top-Quality Shopping </title>
+    <link rel="icon" type="image/png" href="~/assets/images/favicon.png">
+
+    <!-- Primary Meta Tags -->
+    <meta name="description"
+          content="@(cmpName) is your smart shopping partner offering digital gift vouchers, affordable online shopping, and exclusive deals. Enjoy quality products, great value, and seamless savings in every purchase.">
+    <meta name="keywords"
+          content="@(cmpName) , Gift Vouchers, Online Shopping, Smart Savings, Best Deals, Affordable Products, E-commerce, Digital Gifting, Shopping Offers">
+    <meta name="author" content="@(cmpName)">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="@(cmpName) | Smart Shopping & Digital Gift Vouchers">
+    <meta property="og:description"
+          content="Shop smarter with @(cmpName) . Explore exclusive gift vouchers and a wide range of quality products at the best prices. Savings and convenience in every deal!">
+    <meta property="og:image" content="assets/images/og-image.jpg">
+    <meta property="og:url" content="@(cmpSite)">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@(cmpName) | Smart Shopping & Gift Voucher Deals">
+    <meta name="twitter:description"
+          content="Discover digital gift vouchers and budget-friendly online shopping with @(cmpName) . Better quality, better value — always.">
+    <meta name="twitter:image" content="assets/images/og-image.jpg">
+
+
+    <link rel="stylesheet" href="~/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/assets/css/meanmenu.css">
+    <link rel="stylesheet" href="~/assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/assets/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/assets/css/magnific-popup.min.css">
+    <link rel="stylesheet" href="~/assets/css/scrollCue.css">
+    <link rel="stylesheet" href="~/assets/css/flaticon.css">
+    <link rel="stylesheet" href="~/assets/css/fontawesome.min.css">
+    <link rel="stylesheet" href="~/assets/css/banner.css">
+    <link rel="stylesheet" href="~/assets/css/shop.css">
+    <link rel="stylesheet" href="~/assets/css/blog.css">
+    <link rel="stylesheet" href="~/assets/css/footer.css">
+    <link rel="stylesheet" href="~/assets/css/style.css">
+    <link rel="stylesheet" href="~/assets/css/responsive.css">
+    <link rel="stylesheet" href="~/assets/css/custom.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        @@media only screen and (max-width : 767px) {
+            .top-header-left-content ul li {
+                font-size: 12px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-header-area bg-fa2837">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-lg-9 col-sm-6 col-5">
+                    <div class="top-header-left-content mb-0">
+                        <ul class="d-flex">
+                            <li class="pm-0 d-flex text-small">
+                                <i class="fa fa-phone-square" aria-hidden="true"></i>
+                                <span class="xs-block"><b class="d-lg-block d-sm-block d-none">Customer Care No.: </b></span>
+                                @Convert.ToString(Session["ContactNo"])
+                            </li>
+                            <li class="pm-0 d-lg-block d-sm-block d-none">
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                                <span class="xs-block"><b>Email : </b></span>
+                                @Convert.ToString(Session["CompMail"])
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 col-7">
+                    <div class="top-header-left-content mb-0">
+                        <ul class="flex">
+                            <li class="pm-0">
+                                <a class="dropdown-item" href="~/Account/LogOff" style="color:white"><i class="fa-solid fa-right-to-bracket"></i> LogOut</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        
+
+
+        <form class="p-4 bg-white rounded shadow-sm">
+
+            <div class="row g-4">
+                @if (Model.Userkycres.idverf == "" || Model.Userkycres.idverf == "Rejected")
+                {
+                    <!-- Left Side -->
+                    <div class="col-md-6">
+
+
+
+                        <!-- ADDRESS PROOF -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light text-dark">
+                                <strong>Address Details</strong>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="mb-3">
+                                    <label class="form-label">Address</label>
+                                    <input type="text" id="address" value="@Model.Userkycres.addressdetail.address" class="form-control" />
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Pincode</label>
+                                        <input type="text" id="Pincode" value="@Model.Userkycres.addressdetail.pincode" class="form-control" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">State</label>
+                                        <select class="form-select" name="statecode" id="statecode">
+                                            @foreach (var item in Model.states)
+                                            {
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.addressdetail.statecode)) && Convert.ToString(Model.Userkycres.addressdetail.statecode) == item.statecode)
+                                                {
+                                                    <option value="@item.statecode" selected>@item.statename</option>
+                                                }
+                                                <option value="@item.statecode">@item.statename</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">District</label>
+                                        <input type="text" id="District" value="@Model.Userkycres.addressdetail.district" class="form-control" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">City / Town</label>
+                                        <input type="text" id="City" value="@Model.Userkycres.addressdetail.city" class="form-control" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Address Proof Type</label>
+                                        <select class="form-select" id="IdType">
+                                            @foreach (var item in Model.kycTypeMasters)
+                                            {
+                                                @*if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.addressdetail.idtype)) && Convert.ToString(Model.Userkycres.addressdetail.idtype) == item.IdType)
+                                                    {
+                                                        <option value="@item.Id" selected>@item.IdType</option>
+                                                    }*@
+                                                <option value="@item.Id">@item.IdType</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">ID Proof No.</label>
+                                        <input type="text" id="Aadharno" value="@Model.Userkycres.addressdetail.idproof" class="form-control" />
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+
+                        <!-- BANK DETAILS -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light text-dark">
+                                <strong>Bank Information</strong>
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Account Type</label>
+                                        <select class="form-select" id="Actype">
+                                            @*@if (!string.IsNullOrEmpty(Model.Userkycres.bankdetail.accounttype))
+                                                {
+                                                    if (Model.Userkycres.bankdetail.accounttype == "SAVING ACCOUNT")
+                                                    {
+                                                        <option value="SAVING ACCOUNT" selected>SAVING ACCOUNT</option>
+                                                    }
+                                                    if (Model.Userkycres.bankdetail.accounttype == "CURRENT ACCOUNT")
+                                                    {
+                                                        <option value="CURRENT ACCOUNT" selected>CURRENT ACCOUNT</option>
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                    <option value="0">CHOOSE ACCOUNT TYPE</option>
+                                                    <option value="SAVING ACCOUNT">SAVING ACCOUNT</option>
+                                                    <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>
+                                                }*@
+                                            <option value="0">CHOOSE ACCOUNT TYPE</option>
+                                            <option value="SAVING ACCOUNT">SAVING ACCOUNT</option>
+                                            <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Account No.</label>
+                                        <input type="text" id="Acno" value="@Model.Userkycres.bankdetail.acno" class="form-control" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Bank</label>
+                                        <select class="form-select" id="Bank">
+                                            @foreach (var item in Model.BankLists)
+                                            {
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.bankdetail.bankid)) && Convert.ToString(Model.Userkycres.bankdetail.bankid) == Convert.ToString(item.BankCode))
+                                                {
+                                                    <option value="@item.BankCode" selected>@item.BankName</option>
+                                                }
+                                                <option value="@item.BankCode">@item.BankName</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Branch Name</label>
+                                        <input type="text" id="BranchName" value="@Model.Userkycres.bankdetail.branchname" class="form-control" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">IFSC Code</label>
+                                        <input type="text" id="IFSCCode" value="@Model.Userkycres.bankdetail.ifscode" class="form-control" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- PAN DETAILS -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light text-dark">
+                                <strong>PAN Card Details</strong>
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">PAN Card No.</label>
+                                    <input type="text" id="PanNo" value="@Model.Userkycres.pandetail.panno" class="form-control" />
+                                </div>
+
+
+
+                            </div>
+                        </div>
+
+
+                        <div class="mt-4"> <button type="button" id="kycbtn" class="btn btn-primary w-100">Submit</button> </div>
+
+
+                    </div>
+
+                    <!-- Right Side -->
+                    <div class="col-md-6">
+
+                        <div class="card mb-4 p-3">
+                            <div class="card-header bg-light text-dark mb-2">
+                                <strong>Address Details</strong>
+                            </div>
+
+                            <div class="border border-secondary rounded p-3 bg-light">
+                                <div class="mb-3">
+                                    <label class="form-label mb-1 ">Front Address Proof (allow only jpg,jpeg,png)</label>
+                                    <input type="file" id="Aadharfront" class="form-control" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label mb-1 ">Back Address Proof (allow only jpg,jpeg,png)</label>
+                                    <input type="file" id="Aadharback" class="form-control" />
+                                </div>
+
+                            </div>
+
+
+                            <div class="border border-secondary rounded p-3 bg-light mt-3">
+                                <label class="form-label">Bank KYC (allow only jpg,jpeg,png)</label>
+                                <input type="file" id="Bankdoc" class="form-control" />
+                            </div>
+
+
+
+
+                            <div class="border border-secondary rounded p-3 bg-light mt-3">
+                                <label class="form-label">PAN Card Upload (allow only jpg,jpeg,png)</label>
+                                <input type="file" id="Pandoc" class="form-control" />
+                            </div>
+
+
+
+                            <div class="border border-secondary rounded p-3 bg-light mt-3">
+                                <h6 class="fw-bold mb-3">Direct Seller PDF</h6>
+                                <div class="mb-3">
+                                    <div>
+                                        <a href="~/Account/Downloadpdf" class="btn btn-sm btn-outline-primary me-2" download="">Download PDF</a>
+                                    </div>
+                                    <div class="form-text"> कृपया ऊपर दी गई PDF फ़ाइल डाउनलोड करें, आवश्यक विवरण भरें और फिर यहाँ दोबारा Upload करें। </div>
+
+                                </div>
+
+                                <!-- File Upload -->
+                                (allow only pdf)
+                                <input class="form-control" type="file" id="kycdoc">
+
+                            </div>
+                            <br />
+                            @if (Model.Userkycres.idverf != "")
+                            {
+                                <span style="color:Black;font-weight:bold;">Verification Status :  @Model.Userkycres.idverf</span>
+                            }
+
+                            @if (Model.Userkycres.idverf == "Rejected")
+                            {
+                                <span style="color:Black;font-weight:bold;">Reject Date :  @Model.Userkycres.vaerifydate</span>
+                                <span style="color:Black;font-weight:bold;">Reject Remark :  @Model.Userkycres.rejectremark</span>
+                                <span style="color:Black;font-weight:bold;">Reject Reason :  @Model.Userkycres.rejectreason</span>
+                            }
+                        </div>
+
+                    </div>
+                }
+                else
+                {
+                    <!-- Left Side -->
+                    <div class="col-md-6">
+
+                        <!-- ADDRESS PROOF -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light text-dark">
+                                <strong>Address Details</strong>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="mb-3">
+                                    <label class="form-label">Address</label>
+                                    <input type="text" id="address" value="@Model.Userkycres.addressdetail.address" class="form-control" readonly />
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Pincode</label>
+                                        <input type="text" id="Pincode" value="@Model.Userkycres.addressdetail.pincode" class="form-control" readonly />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">State</label>
+                                        <select class="form-select" name="statecode" id="statecode" disabled>
+                                            @foreach (var item in Model.states)
+                                            {
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.addressdetail.statecode)) && Convert.ToString(Model.Userkycres.addressdetail.statecode) == item.statecode)
+                                                {
+                                                    <option value="@item.statecode" selected>@item.statename</option>
+                                                }
+                                                <option value="@item.statecode">@item.statename</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">District</label>
+                                        <input type="text" id="District" value="@Model.Userkycres.addressdetail.district" class="form-control" readonly />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">City / Town</label>
+                                        <input type="text" id="City" value="@Model.Userkycres.addressdetail.city" class="form-control" readonly />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Address Proof Type</label>
+                                        <select class="form-select" id="IdType" disabled>
+                                            @foreach (var item in Model.kycTypeMasters)
+                                            {
+                                                @*if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.addressdetail.idtype)) && Convert.ToString(Model.Userkycres.addressdetail.idtype) == item.IdType)
+                                                    {
+                                                        <option value="@item.Id" selected>@item.IdType</option>
+                                                    }*@
+                                                <option value="@item.Id">@item.IdType</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">ID Proof No.</label>
+                                        <input type="text" id="Aadharno" value="@Model.Userkycres.addressdetail.idproof" class="form-control" readonly />
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+
+                        <!-- BANK DETAILS -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light text-dark">
+                                <strong>Bank Information</strong>
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Account Type</label>
+                                        <select class="form-select" id="Actype" disabled>
+                                            @*@if (!string.IsNullOrEmpty(Model.Userkycres.bankdetail.accounttype))
+                                                {
+                                                    if (Model.Userkycres.bankdetail.accounttype == "SAVING ACCOUNT")
+                                                    {
+                                                        <option value="SAVING ACCOUNT" selected>SAVING ACCOUNT</option>
+                                                    }
+                                                    if (Model.Userkycres.bankdetail.accounttype == "CURRENT ACCOUNT")
+                                                    {
+                                                        <option value="CURRENT ACCOUNT" selected>CURRENT ACCOUNT</option>
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                    <option value="0">CHOOSE ACCOUNT TYPE</option>
+                                                    <option value="SAVING ACCOUNT">SAVING ACCOUNT</option>
+                                                    <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>
+                                                }*@
+                                            <option value="0">CHOOSE ACCOUNT TYPE</option>
+                                            <option value="SAVING ACCOUNT">SAVING ACCOUNT</option>
+                                            <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Account No.</label>
+                                        <input type="text" id="Acno" value="@Model.Userkycres.bankdetail.acno" class="form-control" readonly />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Bank</label>
+                                        <select class="form-select" id="Bank" disabled>
+                                            @foreach (var item in Model.BankLists)
+                                            {
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.bankdetail.bankid)) && Convert.ToString(Model.Userkycres.bankdetail.bankid) == Convert.ToString(item.BankCode))
+                                                {
+                                                    <option value="@item.BankCode" selected>@item.BankName</option>
+                                                }
+                                                <option value="@item.BankCode">@item.BankName</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Branch Name</label>
+                                        <input type="text" id="BranchName" value="@Model.Userkycres.bankdetail.branchname" class="form-control" readonly />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">IFSC Code</label>
+                                        <input type="text" id="IFSCCode" value="@Model.Userkycres.bankdetail.ifscode" class="form-control" readonly />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- PAN DETAILS -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light text-dark">
+                                <strong>PAN Card Details</strong>
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">PAN Card No.</label>
+                                    <input type="text" id="PanNo" value="@Model.Userkycres.pandetail.panno" class="form-control" readonly />
+                                </div>
+
+
+
+                            </div>
+                        </div>
+
+
+                        @*<div class="mt-4"> <button type="submit" class="btn btn-primary w-100">Submit</button> </div>*@
+
+
+                    </div>
+
+                    <!-- Right Side -->
+                    <div class="col-md-6">
+
+                        <div class="card mb-4 p-3">
+                            <div class="card-header bg-light text-dark mb-2">
+                                <strong>Address Details</strong>
+                            </div>
+
+                            <div class="border border-secondary rounded p-3 bg-light">
+                                <div class="mb-3">
+                                    <label class="form-label mb-1 ">Front Address Proof (allow only jpg,jpeg,png)</label>
+                                    <input type="file" id="Aadharfront" class="form-control" disabled />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label mb-1 ">Back Address Proof (allow only jpg,jpeg,png)</label>
+                                    <input type="file" id="Aadharback" class="form-control" disabled />
+                                </div>
+
+                            </div>
+
+
+                            <div class="border border-secondary rounded p-3 bg-light mt-3">
+                                <label class="form-label">Bank KYC (allow only jpg,jpeg,png)</label>
+                                <input type="file" id="Bankdoc" class="form-control" disabled />
+                            </div>
+
+
+
+
+                            <div class="border border-secondary rounded p-3 bg-light mt-3">
+                                <label class="form-label">PAN Card Upload (allow only jpg,jpeg,png)</label>
+                                <input type="file" id="Pandoc" class="form-control" disabled />
+                            </div>
+
+
+
+                            <div class="border border-secondary rounded p-3 bg-light mt-3">
+                                <h6 class="fw-bold mb-3">Direct Seller PDF</h6>
+                                <div class="mb-3">
+                                    <div>
+                                        <a href="~/Account/Downloadpdf" class="btn btn-sm btn-outline-primary me-2" download="">Download PDF</a>
+                                    </div>
+                                    <div class="form-text"> कृपया ऊपर दी गई PDF फ़ाइल डाउनलोड करें, आवश्यक विवरण भरें और फिर यहाँ दोबारा Upload करें। </div>
+
+                                </div>
+                                (allow only pdf)
+                                <!-- File Upload -->
+                                <input class="form-control" type="file" id="kycdoc" disabled>
+
+                            </div>
+                            <br />
+                            @if (Model.Userkycres.idverf != "")
+                            {
+                                <span style="color:Black;font-weight:bold;">Verification Status :  @Model.Userkycres.idverf</span>
+                            }
+
+                            @if (Model.Userkycres.idverf == "Rejected")
+                            {
+                                <span style="color:Black;font-weight:bold;">Reject Date :  @Model.Userkycres.vaerifydate</span>
+                                <span style="color:Black;font-weight:bold;">Reject Remark :  @Model.Userkycres.rejectremark</span>
+                                <span style="color:Black;font-weight:bold;">Reject Reason :  @Model.Userkycres.rejectreason</span>
+                            }
+                        </div>
+
+                    </div>
+                }
+
+
+            </div>
+
+        </form>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+
+            $("#kycbtn").click(function () {
+                debugger;
+                if (!validateForm()) return;
+
+                var IdType = $("#IdType").val();
+                if (IdType == "0") {
+                    alert("Please select id proof type");
+                    return false;
+                }
+                var Actype = $("#Actype").val();
+                if (Actype == "0") {
+                    alert("Please select account type");
+                    return false;
+                }
+                var Bank = $("#Bank").val();
+                if (Bank == "0") {
+                    alert("Please select bank");
+                    return false;
+                }
+                var formData = new FormData();
+                formData.append("Address", $("#address").val());
+                formData.append("Pincode", $("#Pincode").val());
+                formData.append("StateCode", $("#statecode").val());
+                formData.append("District", $("#District").val());
+                formData.append("City", $("#City").val());
+                formData.append("IdType", $("#IdType").val());
+                formData.append("Aadharno", $("#Aadharno").val());
+                formData.append("Aadharfront", $("#Aadharfront")[0].files[0]);
+                formData.append("Aadharback", $("#Aadharback")[0].files[0]);
+                formData.append("Actype", $("#Actype").val());
+                formData.append("Acno", $("#Acno").val());
+                formData.append("Bank", $("#Bank").val());
+                formData.append("Bankname", $("#Bank :selected").text());
+                formData.append("BranchName", $("#BranchName").val());
+                formData.append("IFSCCode", $("#IFSCCode").val());
+                formData.append("Bankdoc", $("#Bankdoc")[0].files[0]);
+                formData.append("PanNo", $("#PanNo").val());
+                formData.append("Pandoc", $("#Pandoc")[0].files[0]);
+                formData.append("kycdoc", $("#kycdoc")[0].files[0]);
+
+                $.ajax({
+                    url: '/Account/SaveKyc',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function () {
+                        $("#kycbtn").prop("disabled", true).text("Saving...");
+                    },
+                    success: function (response) {
+                        if (response.success) {
+
+                            location.reload();
+                        }
+                        alert("" + response.message);
+                    },
+                    error: function (xhr, status, error) {
+                        debugger;
+                        let errorMessage = "Something went wrong";
+
+                        // Try to get meaningful message from server
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        } else if (xhr.responseText) {
+                            // Sometimes server sends plain text or HTML
+                            errorMessage = xhr.responseText.substring(0, 300); // prevent too long alert
+                        } else if (xhr.status === 0) {
+                            errorMessage = "Connection failed (server offline / blocked by CORS / timeout)";
+                        } else if (xhr.status === 413) {
+                            errorMessage = "File too large (413 Payload Too Large)";
+                        } else if (xhr.status >= 400 && xhr.status < 500) {
+                            errorMessage = `Client error (${xhr.status}): ${xhr.statusText}`;
+                        } else if (xhr.status >= 500) {
+                            errorMessage = `Server error (${xhr.status})`;
+                        }
+
+                        alert("Error: " + errorMessage);
+                        /*alert("Error:" + error);*/
+                    },
+                    complete: function () {
+                        $("#kycbtn").prop("disabled", false).text("Save KYC");
+                    }
+                });
+            });
+
+            function validateForm() {
+                let required = [
+                    "#address", "#Pincode", "#statecode", "#District", "#City",
+                    "#Aadharno", "#Aadharfront", "#Aadharback", "#Actype", "#Acno",
+                    "#Bank", "#BranchName", "#IFSCCode", "#Bankdoc", "#PanNo", "#Pandoc", "#IdType"
+                ];
+
+                for (let f of required) {
+                    if ($(f).val() === "" || $(f).val() == null) {
+                        alert("Please fill all mandatory fields!");
+                        $(f).focus();
+                        return false;
+                    }
+                }
+
+                if (!/^\d{6}$/.test($("#Pincode").val())) {
+                    alert("Invalid Pincode (6 digits only)");
+                    $("#Pincode").focus(); return false;
+                }
+
+                if ($("#Aadharno").val().length > 16) {
+                    alert("Max 16 digits character");
+                    $("#Aadharno").focus(); return false;
+                }
+
+                //if (!/^\d{16}$/.test($("#Aadharno").val())) {
+                //    alert("Max 16 digits character");
+                //    $("#Aadharno").focus(); return false;
+                //}
+
+                //if (!/^[A-Z]{4}0[A-Z0-9]{6}$/i.test($("#IFSCCode").val())) {
+                //    alert("Invalid IFSC Code format");
+                //    $("#IFSCCode").focus(); return false;
+                //}
+
+                if (!/^\d{8,20}$/.test($("#Acno").val())) {
+                    alert("Invalid Account Number");
+                    $("#Acno").focus(); return false;
+                }
+
+                if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i.test($("#PanNo").val())) {
+                    alert("Invalid PAN Number format");
+                    $("#PanNo").focus(); return false;
+                }
+
+                let allowed = [".jpg", ".jpeg", ".png", ".pdf"];
+                let files = ["#Aadharfront", "#Aadharback", "#Bankdoc", "#Pandoc"];
+
+                for (let file of files) {
+                    let name = $(file).val();
+                    if (name) {
+                        let ext = name.substring(name.lastIndexOf('.')).toLowerCase();
+                        if (!allowed.includes(ext)) {
+                            alert("Invalid file type: " + name);
+                            $(file).focus(); return false;
+                        }
+                    }
+                }
+
+                let kycallowed = [".pdf"];
+                let kycfiles = ["#kycdoc"];
+                for (let file of kycfiles) {
+                    let name = $(file).val();
+                    if (name) {
+                        let ext = name.substring(name.lastIndexOf('.')).toLowerCase();
+                        if (!kycallowed.includes(ext)) {
+                            alert("Invalid file type: " + name);
+                            $(file).focus(); return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+        });
+    </script>
+
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/js/jquery.meanmenu.js"></script>
+    <script src="~/assets/js/owl.carousel.min.js"></script>
+    <script src="~/assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="~/assets/js/mixitup.min.js"></script>
+    <script src="~/assets/js/scrollCue.min.js"></script>
+    <script src="~/assets/js/form-validator.min.js"></script>
+    <script src="~/assets/js/contact-form-script.js"></script>
+    <script src="~/assets/js/ajaxchimp.min.js"></script>
+    <script src="~/assets/js/custom.js"></script>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>AOS.init();</script>
+
+    <script>
+        function setStep(step) {
+
+            // hide all steps
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById("step" + i).classList.remove("active");
+                document.getElementById("s" + i).classList.remove("step-active");
+                document.getElementById("s" + i).classList.add("step-pending");
+            }
+
+            // show current step
+            document.getElementById("step" + step).classList.add("active");
+
+            // highlight current indicator
+            document.getElementById("s" + step).classList.add("step-active");
+            document.getElementById("s" + step).classList.remove("step-pending");
+        }
+
+
+        function nextStep(step) {
+            setStep(step + 1);
+        }
+
+        function prevStep(step) {
+            setStep(step - 1);
+        }
+
+        // default open step 1
+        setStep(1);
+    </script>
+</body>
+</html>

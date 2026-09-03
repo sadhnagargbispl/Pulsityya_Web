@@ -1,0 +1,375 @@
+﻿@{
+    var themeVer = "1.0";
+    var userName = Convert.ToString(Session["UserName"]);
+    var isLoggedIn = Session["UserDetail"] != null && !string.IsNullOrEmpty(userName);
+    var cartCount = Convert.ToString(Session["CartCount"]);
+    if (string.IsNullOrEmpty(cartCount))
+    {
+        cartCount = Convert.ToString(Session["cartcount"]);
+    }
+    if (string.IsNullOrEmpty(cartCount))
+    {
+        cartCount = "0";
+    }
+    // ---- company identity: everything below comes from m_companymaster
+    //      (CompanyDetail.GetCompanydetail). A blank column keeps the default. ----
+    Func<string, string, string> comp = (key, fallback) =>
+    {
+        var v = Convert.ToString(Session[key]);
+        return string.IsNullOrWhiteSpace(v) ? fallback : v.Trim();
+    };
+
+    var compName = comp("CompName", "Pulastya Globals India (P) Limited");
+    var compMail = comp("CompMail", "");
+    var compPhone = comp("ContactNo", "");
+    var compAdd = comp("CompAdd", "");
+    var compLogo = comp("CompLogo", Url.Content("~/theme/img/logo.png"));
+    var compTagline = comp("CompTagline", "A Better Tomorrow Together");
+    var compAbout = comp("CompAboutUs",
+        "At " + compName + ", we believe that a healthier lifestyle begins with informed choices and access to reliable products. "
+        + "Our focus is on offering carefully developed health and wellness solutions while continuously working towards improving "
+        + "product quality, customer experience and distributor support.");
+    var compHours = comp("CompWorkingHours", "Mon-Sat : 09:00AM to 08:00PM, Sunday : Close");
+    var freeShip = comp("FreeShipAmount", "2500");
+
+    var social = new[] {
+        new { Url = comp("FacebookUrl",  "https://www.facebook.com/profile.php?id=61554688337187"), Icon = "fa-facebook fa-lg" },
+        new { Url = comp("InstagramUrl", "https://www.instagram.com/pulastyaglobals_india"),        Icon = "fa-instagram fa-lg" },
+        new { Url = comp("TwitterUrl",   "https://x.com/pulastya4614321"),                          Icon = "fa-x-twitter" },
+        new { Url = comp("YoutubeUrl",   "https://www.youtube.com/" + "@" + "PulastyaGlobalsIndiaPrivateLtd"), Icon = "fa-youtube-play fa-lg" },
+        new { Url = comp("LinkedInUrl",  "https://www.linkedin.com"),                               Icon = "fa-linkedin fa-lg" }
+    }.Where(s => !string.IsNullOrWhiteSpace(s.Url)).ToList();
+}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>@(ViewBag.Title == null ? "Home" : ViewBag.Title) | @compName | @compTagline</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="~/theme/img/favicon.ico" />
+    <meta name="description" content="@compName - quality driven health and wellness products through a transparent, ethical direct selling ecosystem." />
+    <meta name="keywords" content="Pulastya Globals, direct selling, health, wellness, herbal, ayurveda, personal care" />
+    <meta name="theme-color" content="#176a3a" />
+    <meta name="language" content="EN" />
+    <meta name="audience" content="all">
+    <meta name="content-Language" content="English">
+    <meta name="distribution" content="global">
+    <meta property="og:title" content="@compName | @compTagline" />
+    <meta property="og:description" content="Quality driven health and wellness products." />
+
+    <!--css styles -->
+    <link rel="stylesheet" href="~/theme/css/bootstrap.min.css">
+    <!-- BS5 utility classes still used by the inner pages, re-implemented on BS3 -->
+    <link rel="stylesheet" href="~/theme/css/bs5-compat.css?ver=@themeVer">
+    <link rel="stylesheet" href="~/theme/css/layout.css?ver=@themeVer">
+    <link rel="stylesheet" href="~/theme/css/layout-responsive.css?ver=@themeVer">
+    <link rel="stylesheet" href="~/theme/css/popup-view.css?ver=@themeVer">
+    <link rel="stylesheet" href="~/theme/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/theme/css/message.css">
+    <!--nav styles-->
+    <link rel="stylesheet" href="~/theme/css/menu.css?ver=@themeVer">
+    <!--Plugins-->
+    <link rel="stylesheet" href="~/theme/plugins/nivo-slider/nivo.css">
+    <link rel="stylesheet" href="~/theme/plugins/nivo-slider/nivo-custom.css">
+    <link rel="stylesheet" href="~/theme/plugins/animation/css/animate.css">
+    <link rel="stylesheet" href="~/theme/plugins/owl-carousel/owl.custom.css?ver=@themeVer">
+    <link rel="stylesheet" href="~/theme/plugins/owl-carousel/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/theme/plugins/owl-carousel/owl.theme.default.min.css">
+    <!--MVC overrides-->
+    <link rel="stylesheet" href="~/theme/css/custom-mvc.css?ver=@themeVer">
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght&#64;0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+
+    <!-- jQuery is loaded up front so inline page scripts inside @@RenderBody keep working -->
+    <script src="~/theme/js/jquery.min.js"></script>
+
+    @RenderSection("styles", required: false)
+</head>
+<body>
+    <!-- drawer menu -->
+    <div class="mb-menu-col">
+        <div class="clse-btn"><span>&times;</span></div>
+        <div class="mb-menu-lst">
+            <a href="~/Home/Index" class="logo"><img src="@compLogo" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/logo.png")';" alt="@compName"></a>
+        </div>
+        <div class="mb-menu-lst main"></div>
+        <div class="mb-menu-lst buyer">
+            <ul>
+                @if (isLoggedIn)
+                {
+                    <li><a href="~/Home/Myorders">My Orders</a></li>
+                    <li><a href="~/Home/MemberProfile">My Profile</a></li>
+                    <li><a href="~/ViewCart/Wishlist">Wishlist</a></li>
+                    <li><a href="~/Home/WalletDetail">Wallet</a></li>
+                    <li><a href="~/Account/LogOff">Logout</a></li>
+                }
+                else
+                {
+                    <li><a href="~/Account/Login">Login</a></li>
+                    <li><a href="~/Account/SignUp">Register</a></li>
+                    <li><a href="~/ViewCart/ViewCart">Cart</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+    <!-- -->
+    <header>
+        <div class="tp-row">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p><b>Free shipping</b> on order above &#8377; @freeShip</p>
+                    </div>
+                    <div class="col-sm-offset-2 col-sm-4">
+                        <div class="srch-row">
+                            <input type="text" placeholder="What are you looking for?" id="search-key" />
+                            <a class="srch-btn" id="search-go"></a>
+                            <div id="srch-result"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- -->
+        <div class="logo-row">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-6 col-sm-3 col-md-2 col-lg-2">
+                        <a href="~/Home/Index" class="logo dsk"><img src="@compLogo" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/logo.png")';" alt="@compName"></a>
+                    </div>
+                    <div class="hidden-xs hidden-sm col-md-7 col-lg-7">
+                        <div class="tp-menu-row">
+                            <a class="pull-left"></a>
+                            <div class="tp-menu-container">
+                                <nav class="tp-menu">
+                                    <ul class="stge-1">
+                                        <li><a href="~/Home/Index">Home</a></li>
+                                        <li><a href="~/Home/About">About us</a></li>
+                                        <li class="has"><a href="~/CategoryList/CategoryList">Products</a>
+                                            <div class="stge_div stge_div_common">
+                                                @* filled by ajax below - no id, the drawer clones this markup *@
+                                                <ul class="stge-2"></ul>
+                                            </div>
+                                        </li>
+                                        <li><a href="~/Home/Contact">Contact us</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <a class="pull-right"></a>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                        <div class="mb-menu"><span></span><span></span><span></span></div>
+                        <a href="~/Home/Index" class="logo mb"><img src="@compLogo" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/logo.png")';" alt="@compName"></a>
+                        <div class="buyer-crt">
+                            <a href="~/ViewCart/ViewCart"><span class="crt-icon"><span class="crt-qty spncartcount">@cartCount</span></span></a>
+                        </div>
+                        <div class="buyer-fav">
+                            <a href="@(isLoggedIn ? Url.Content("~/ViewCart/Wishlist") : Url.Content("~/Account/Login"))"><span class="fav-icon"><span class="fav-qty">@Convert.ToString(Session["WishCount"] ?? "0")</span></span></a>
+                        </div>
+                        <nav class="byer-nav">
+                            <ul class="stge1">
+                                @if (isLoggedIn)
+                                {
+                                    <li>
+                                        <a class="welcme"><img src="~/theme/img/icon-buyer.png" /><span class="nav-lbl">@userName</span><i class="fa fa-angle-down" aria-hidden="true"></i></a>
+                                        @* order matches demo/inc/header.asp; Logout added because the demo never signs in *@
+                                        <ul class="stge2">
+                                            <li><a href="~/Home/MemberProfile">Profile</a></li>
+                                            <li><a href="~/Account/RedirectToCPanel">My Account</a></li>
+                                            <li><a href="~/ViewCart/ViewCart">Cart</a></li>
+                                            <li><a href="~/Home/Myorders">Orders</a></li>
+                                            <li><a href="~/Account/RaiseComplaint">Complaint</a></li>
+                                            <li><a href="~/Account/TicketList">Complaint List</a></li>
+                                            <li><a href="~/Home/WalletDetail">Wallet</a></li>
+                                            <li><a href="~/Account/LogOff">Logout</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a href="~/Account/Login"><img src="~/theme/img/icon-buyer.png" /><span class="nav-lbl">Login / Register</span><i class="fa fa-angle-down" aria-hidden="true"></i></a>
+                                        <ul class="stge2">
+                                            <li><a href="~/Account/Login">Login</a></li>
+                                            <li><a href="~/Account/SignUp">Register</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    @RenderBody()
+
+    <footer>
+        <div class="ftr-row-top"></div>
+        <div class="ftr-row-middle">
+            <div class="container">
+                <a href="~/Home/Index" class="logo"><img src="@compLogo" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/logo.png")';" alt="@compName"></a>
+                <p>@compAbout</p>
+
+                @if (social.Any()) { <h4 class="text-center">Follow us on</h4> }
+                <nav class="social-media">
+                    <ul>
+                        @foreach (var s in social)
+                        {
+                            <li><a href="@s.Url" target="_blank"><i class="fa @s.Icon">&nbsp;</i></a></li>
+                        }
+                    </ul>
+                </nav>
+                <div class="row">
+                    <div class="col-xs-6 col-sm-4 col-md-3">
+                        <h4>Quick Links</h4>
+                        <nav class="ftr-nav">
+                            <ul>
+                                <li><a href="~/Home/About">About Us</a></li>
+                                <li><a href="~/Home/VisionMission">Vision &amp; Mission</a></li>
+                                <li><a href="~/Home/Certificate">Compliance Documents</a></li>
+                                <li><a href="~/Home/BankDetail">Our Bankers</a></li>
+                                <li><a href="~/Home/DirectSellerContrazt">Downloads</a></li>
+                                <li><a href="~/Home/Contact">Contact Us</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="col-xs-6 col-sm-4 col-md-3">
+                        <h4>Other Links</h4>
+                        <nav class="ftr-nav">
+                            <ul>
+                                <li><a href="~/Home/Certificate">Compliance documents</a></li>
+                                <li><a href="~/Home/Selfdeclaration">Self Declaration</a></li>
+                                <li><a href="~/Home/Grievanceredressal">Grievance Redressal</a></li>
+                                <li><a href="~/Home/FranchiseList">Register of Direct Seller</a></li>
+                                <li><a href="~/Home/Disclaimer">Disclaimer</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-3">
+                        <h4>Policies</h4>
+                        <nav class="ftr-nav">
+                            <ul>
+                                <li><a href="~/Home/PrivacyPolicy">Privacy Policy</a></li>
+                                <li><a href="~/Home/ShippingPolicy">Shipping Policy</a></li>
+                                <li><a href="~/Home/Cancellationpolicy">Cancellation Policy</a></li>
+                                <li><a href="~/Home/ReturnPolicy">Return &amp; Exchange Policy</a></li>
+                                <li><a href="~/Home/Termsofuse">Terms &amp; Conditions</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-3">
+                        <h4>Reach us</h4>
+                        <nav class="ftr-cnt-nav">
+                            <ul>
+                                @if (!string.IsNullOrWhiteSpace(compAdd))
+                                {
+                                    <li>
+                                        <i class="fa fa-map-pin">&nbsp;</i>
+                                        <span class="cont-text">@compAdd</span>
+                                    </li>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(compPhone))
+                                {
+                                    <li>
+                                        <a class="call" href="tel:@compPhone"><i class="fa fa-phone">&nbsp;</i> <span class="cont-text">@compPhone</span></a>
+                                    </li>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(compMail))
+                                {
+                                    <li>
+                                        <a class="email" href="mailto:@compMail"><i class="fa fa-envelope">&nbsp;</i> <span class="cont-text">@compMail</span></a>
+                                    </li>
+                                }
+                                <li>
+                                    <i class="fa fa-clock-o">&nbsp;</i>
+                                    <span class="cont-text">@compHours</span>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ftr-row-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p class="copy-rght"><span class="client-nm">&copy; @compName</span> @DateTime.Now.Year-@(DateTime.Now.Year + 1). All Rights Reserved</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <nav class="payment-opt">
+                            <ul>
+                                <li>Pay securely by</li>
+                                <li><img src="~/theme/img/icon-visa-card.jpg" alt="Visa"></li>
+                                <li><img src="~/theme/img/icon-master-card.jpg" alt="Master Card"></li>
+                                <li><img src="~/theme/img/icon-american-express.jpg" alt="American Express"></li>
+                                <li><img src="~/theme/img/icon-rupay-card.jpg" alt="RuPay"></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- scripts -->
+    <script src="~/theme/js/bootstrap.min.js"></script>
+    <!--Plugins-->
+    <!-- nivo is required: layout.js calls $('#home-slider').nivoSlider() unconditionally,
+         and without it the whole ready-handler throws before the carousels initialise -->
+    <script src="~/theme/plugins/nivo-slider/nivo.js"></script>
+    <script src="~/theme/plugins/animation/js/wow.min.js"></script>
+    <script src="~/theme/plugins/owl-carousel/owl.carousel.js"></script>
+    <!-- custom js -->
+    <script src="~/theme/js/layout.js?ver=@themeVer"></script>
+    <script src="~/theme/js/shop.js?ver=@themeVer"></script>
+
+    <script type="text/javascript">
+        // ---- header : product categories -------------------------------------
+        // Scope the selector to the header: layout.js clones .stge-1 into the mobile
+        // drawer, and the drawer sits before <header> in the DOM, so an unscoped
+        // lookup would fill the hidden clone and leave the real dropdown empty.
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/Home/CategoryList")',
+            success: function (data) {
+                $('header .tp-menu .stge-2').html(data.tblOrder);
+
+                // rebuild the mobile drawer now that the categories are in place
+                var $main = $('.mb-menu-lst.main');
+                $main.html('<ul>' + $('header .tp-menu .stge-1').html() + '</ul>');
+                var menuStge_2 = $main.find('.stge-2');
+                menuStge_2.unwrap();
+                menuStge_2.removeAttr('class').removeAttr('id');
+            }
+        });
+
+        // ---- header : search -------------------------------------------------
+        function PulastyaSearch() {
+            var key = $.trim($("#search-key").val());
+            if (key === "") { return false; }
+            window.location.href = '@Url.Content("~/CategoryList/CategoryList")?CatName=' + encodeURIComponent(key);
+            return false;
+        }
+        $(document).on('click', '#search-go', function () { PulastyaSearch(); });
+        $(document).on('keypress', '#search-key', function (e) {
+            if (e.which === 13) { e.preventDefault(); PulastyaSearch(); }
+        });
+
+        // ---- shared : numeric only input -------------------------------------
+        function isNumber(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) { return false; }
+            return true;
+        }
+    </script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

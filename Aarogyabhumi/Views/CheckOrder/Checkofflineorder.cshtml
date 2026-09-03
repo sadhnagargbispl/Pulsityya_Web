@@ -1,0 +1,74 @@
+﻿@using Shopinv.Entity
+@model Shopinv.Models.M_Category
+@{
+    ViewBag.Title = "Order Confirmed";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var hasRows = Model.OrderNoDetail != null && Model.OrderNoDetail.Count() > 0;
+}
+
+<section class="contents">
+    <div class="content-row">
+        <div class="container">
+            <div class="order-done">
+                <div class="done-icon"><i class="fa fa-check"></i></div>
+                <h2>Your order is received !</h2>
+                <p>We are preparing it for delivery and will ship soon.</p>
+            </div>
+
+            <div class="cart-row">
+                <h5>Order Summary</h5>
+                <div class="acc-panel">
+                    <div class="table-responsive">
+                        <table class="table mytable" style="white-space:nowrap">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Product Name</th>
+                                    <th>MRP</th>
+                                    <th>Price</th>
+                                    <th>BV</th>
+                                    <th>UTR No</th>
+                                    <th>Status</th>
+                                    <th>Order Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (hasRows)
+                                {
+                                    foreach (var item in Model.OrderNoDetail)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <img src="@item.ImagePath" onerror="this.src='@Url.Content("~/theme/img/sample-product.jpg")';" alt="@item.ProductName" width="60">
+                                            </td>
+                                            <td>@item.ProductName</td>
+                                            <td><del>&#8377; @item.MRP</del></td>
+                                            <td><strong>&#8377; @item.Price</strong></td>
+                                            <td>@item.BV.ToString("0.##")</td>
+                                            <td>#@item.Transid</td>
+                                            <td>Pending</td>
+                                            <td>@item.orderdate</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="8" class="no-record">No order details to show.</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-6 col-sm-3">
+                        <a href="~/Home/Myorders" class="btn btn-sub" style="display:block">View Orders</a>
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <a href="~/Home/Index" class="btn btn-brdr" style="display:block">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

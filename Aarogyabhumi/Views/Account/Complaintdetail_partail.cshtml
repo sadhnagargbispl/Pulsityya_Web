@@ -1,0 +1,28 @@
+@model Shopinv.Models.ComplaintReplyDetailsRes
+
+<div class="table-responsive">
+    @if (Model != null && Model.response == "OK" && Model.complaintreplydetail != null && Model.complaintreplydetail.Count > 0)
+    {
+        <table class="table mytable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Reply</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.complaintreplydetail)
+                {
+                    <tr>
+                        <td>@item.replydate</td>
+                        <td>@item.reply</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="no-record">No reply yet.</p>
+    }
+</div>

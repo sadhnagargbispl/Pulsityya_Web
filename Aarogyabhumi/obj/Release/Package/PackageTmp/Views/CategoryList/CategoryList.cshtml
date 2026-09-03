@@ -1,0 +1,93 @@
+@model Shopinv.Models.M_Category
+@{
+    ViewBag.Title = "Products";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var catName = Convert.ToString(ViewBag.CatName);
+    var heading = string.IsNullOrEmpty(catName) ? "Products" : catName;
+
+    decimal lowestPrice = 0;
+    decimal highestPrice = 0;
+    if (Model.ProductList != null && Model.ProductList.Any())
+    {
+        lowestPrice = Math.Floor(Model.ProductList.Min(p => p.Price));
+        highestPrice = Math.Ceiling(Model.ProductList.Max(p => p.Price));
+    }
+    if (highestPrice <= lowestPrice)
+    {
+        highestPrice = lowestPrice + 100;
+    }
+}
+
+@section styles {
+    <link href="~/theme/plugins/price-slider/range-slider.css" rel="stylesheet" type="text/css">
+    <link href="~/theme/plugins/price-slider/jquery-ui.min.css" rel="stylesheet" type="text/css">
+}
+
+<section class="contents">
+    <div class="breadcrmb">
+        <img src="~/theme/img/page-banner.jpg" alt="@heading">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <h1>@heading</h1>
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a class="active">@heading</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--  -->
+    <div class="content-row">
+        <div class="itm-lst-row">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-3">
+                        <div class="mb-fltr-col">
+                            <div class="clse-btn"><span>&times;</span></div>
+                            @{ Html.RenderAction("GetCategorySideBar", "CategoryList");}
+                            <p class="fltr-head">Filter By Price</p>
+                            <div class="fltr-lst price">
+                                <div id="price-range" class="range-slider"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-8 col-md-9" id="divFilterProduct">
+                        @Html.Partial("_FilterProductRangeWise", Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <!--range slider-->
+    <script src="~/theme/plugins/price-slider/jquery-ui.min.js"></script>
+    <script type="text/javascript">
+        var lowest_price = @lowestPrice.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var highest_price = @highestPrice.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        // server side sorting - replaces the whole listing column
+        $(document).on('change', '#sorting', function () {
+            var selected = $(this).val();
+            if (selected === "") { return; }
+            var url = (selected === "LH")
+                ? '@Url.Content("~/CategoryList/LowToHighSrchProduct")'
+                : '@Url.Content("~/CategoryList/HighToLowSrchProduct")';
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                dataType: "html",
+                data: {}
+            }).done(function (data) {
+                $("#divFilterProduct").html(data);
+                $("#sorting").val(selected);
+            }).fail(function (error) {
+                alert(error.statusText);
+            });
+        });
+    </script>
+    <script src="~/theme/js/item_filter.js?ver=1.0"></script>
+}

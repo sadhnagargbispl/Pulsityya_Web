@@ -1,0 +1,61 @@
+@model Shopinv.Models.LoginLPlus
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="contents">
+    <div class="content-row">
+        <div class="container">
+            <div class="login-bar">
+                <div class="login-col">
+                    <h3>Are you Registered ?</h3>
+                    <p>Have an account with us? Log in to get started.</p>
+
+                    @if (ViewBag.Message != null)
+                    {
+                        <div class="alert-line err">@ViewBag.Message</div>
+                    }
+
+                    @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group">
+                            <label>Email ID / Username</label>
+                            @Html.TextBoxFor(m => m.UserName, new
+                       {
+                           @class = "form-control",
+                           @placeholder = "Enter your email or username",
+                           @required = "required",
+                           autofocus = "autofocus"
+                       })
+                            @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group fo-pass-block">
+                            <label>Password</label>
+                            @Html.PasswordFor(m => m.Password, new
+                       {
+                           @class = "form-control fo-pass",
+                           @placeholder = "Enter your password",
+                           @required = "required"
+                       })
+                            <span toggle=".fo-pass" class="toggle-password open-eye"></span>
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label-check"><input type="checkbox" id="rememberMe" name="rememberMe">Remember me</label>
+                        </div>
+
+                        <a href="~/Account/Forgotpass" class="link-forgot">Forgot password ?</a>
+                        <input type="submit" name="submit" value="Login" class="btn btn-sub">
+                    }
+
+                    <p class="link-register">Don&#39;t have an account yet ? <a href="~/Account/SignUp">Sign up</a> now.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

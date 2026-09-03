@@ -1,0 +1,45 @@
+@model Shopinv.Models.M_WalletDetail
+
+<div class="row">
+    @foreach (var item in Model.walletUseDetail)
+    {
+        <div class="col-xs-4"><div class="wallet-bal">Credit : <b>@item.Credit</b></div></div>
+        <div class="col-xs-4"><div class="wallet-bal">Debit : <b>@item.Debit</b></div></div>
+        <div class="col-xs-4"><div class="wallet-bal">Balance : <b>@item.Balance</b></div></div>
+    }
+</div>
+
+<div class="table-responsive">
+    <table class="table mytable">
+        <thead>
+            <tr>
+                <th>Sr. No.</th>
+                <th>Date</th>
+                <th>Voucher No.</th>
+                <th>Remark</th>
+                <th>Deposit</th>
+                <th>Used</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.allWalletDetails != null && Model.allWalletDetails.Count() > 0)
+            {
+                foreach (var item in Model.allWalletDetails)
+                {
+                    <tr>
+                        <td>@item.SNo</td>
+                        <td>@item.Date</td>
+                        <td>@item.VoucherNo</td>
+                        <td>@item.Remark</td>
+                        <td>@item.Deposit</td>
+                        <td>@item.used</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr><td colspan="6" class="no-record">No record found.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>

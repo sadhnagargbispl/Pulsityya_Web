@@ -1,0 +1,43 @@
+@model Shopinv.Models.LoginLPlus
+@{
+    ViewBag.Title = "Registration Successful";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var compName = Convert.ToString(Session["CompName"]);
+    // explicit string type: ViewBag is dynamic and extension methods cannot be dynamically dispatched
+    string idno = Convert.ToString(ViewBag.idno);
+    string passw = Convert.ToString(ViewBag.passw);
+}
+
+<section class="contents">
+    <div class="content-row">
+        <div class="container">
+            <div class="order-done">
+                <div class="done-icon"><i class="fa fa-check"></i></div>
+                <h2>Welcome to @(string.IsNullOrEmpty(compName) ? "Pulastya Globals India (P) Limited" : compName)</h2>
+                <p>Your account has been created. Please note down your credentials.</p>
+            </div>
+
+            <div class="login-bar">
+                <div class="login-col">
+                    <h3>Your login details</h3>
+                    <p>Keep these safe - you can change your password after signing in.</p>
+
+                    <ul class="info-grid">
+                        <li><span class="info-label">Username</span><span class="info-value">@idno</span></li>
+                        <li><span class="info-label">Password</span><span class="info-value">@passw</span></li>
+                    </ul>
+
+                    @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { id = "loginForm1" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("UserName", idno, new { @id = "username1" })
+                        @Html.Hidden("Password", passw, new { @id = "passw1" })
+                        <input type="submit" id="lbtn1" class="btn btn-sub" value="Sign in now" />
+                    }
+
+                    <p class="link-register">Or go to the <a href="~/Account/Login">login page</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,54 @@
+@model Shopinv.Models.M_Category
+@using Shopinv.Entity;
+@{
+    // rendered inline by CategoryList (ProductList) and by the sort actions (SrchFilterProductList)
+    var products = Model.SrchFilterProductList != null && Model.SrchFilterProductList.Any()
+        ? Model.SrchFilterProductList
+        : Model.ProductList;
+
+    if (products == null)
+    {
+        products = new List<E_Product>();
+    }
+    var sortValue = Convert.ToString(ViewBag.Sorting);
+}
+
+<div class="row">
+    <div class="col-xs-8 col-sm-12">
+        <div class="itm-fltr">
+            <div class="fltr-typ">
+                Sort By :
+                <select id="sorting">
+                    <option value="" @(sortValue == "" ? "selected" : "")>Newest</option>
+                    <option value="LH" @(sortValue == "LH" ? "selected" : "")>Price Low - High</option>
+                    <option value="HL" @(sortValue == "HL" ? "selected" : "")>Price High - Low</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="hidden-sm hidden-md hidden-lg col-xs-4"><div class="mb-fltr">Filter</div></div>
+</div>
+
+<div class="itm-lst">
+    <div class="row">
+        @if (products.Any())
+        {
+            foreach (var product in products)
+            {
+                <div class="col-xs-6 col-sm-4 col-item" data-listing-price="@product.Price" data-id="@product.ProdId">
+                    <input type="hidden" class="range_price_item" value="@Math.Round(product.Price)" />
+                    @Html.Partial("_ProductCard", product)
+                </div>
+            }
+        }
+        else
+        {
+            <div class="no-product">
+                <p>
+                    No products found
+                    <span>Please try another category or clear your filters.</span>
+                </p>
+            </div>
+        }
+    </div>
+</div>

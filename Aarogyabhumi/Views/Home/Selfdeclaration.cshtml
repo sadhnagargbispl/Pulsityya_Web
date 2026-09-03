@@ -1,0 +1,48 @@
+﻿@{
+    // company identity comes from companymaster via CompanyDetail.GetCompanydetail()
+    var cmpName = Convert.ToString(Session["CompName"]);
+    var cmpMail = Convert.ToString(Session["CompMail"]);
+    var cmpPhone = Convert.ToString(Session["ContactNo"]);
+    var cmpAdd = Convert.ToString(Session["CompAdd"]);
+    var cmpSite = Convert.ToString(Session["WebSite"]);
+}
+@{
+    ViewBag.Title = "Self Declaration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="contents">
+    <div class="breadcrmb">
+        <img src="~/theme/img/page-banner.jpg" alt="Self Declaration">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <h1>Self Declaration</h1>
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a class="active">Self Declaration</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-row">
+        <div class="container">
+            <div class="txt-page">
+                @* Statutory wording kept verbatim; the company identity comes from companymaster *@
+                <h2 class="first-head">Self Declaration <span class="brdr"></span></h2>
+                <p><strong>SELF DECLARATION UNDER CLAUSE 5 (1) (C) OF CONSUMER PROTECTION (DIRECT SELLING) RULES, 2021</strong></p>
+
+                <p>I, ............................, Nodal Officer of @(cmpName) declare that @(cmpName) is compliant with the following:</p>
+
+                <ol>
+                    <li>@(cmpName) is not involved in any pyramid scheme, as defined in clause 3(i)(i) of Consumer Protection (Direct Selling) Rules, 2021.</li>
+                    <li>@(cmpName) is not involved in any money circulation scheme, as defined in clause 3(i)(f) of Consumer Protection (Direct Selling) Rules, 2021.</li>
+                    <li>@(cmpName) is compliant with all the provisions of the Consumer Protection (Direct Selling) Rules, 2021, issued by Department of Consumer Affairs.</li>
+                </ol>
+
+                <p>For @(cmpName)</p>
+                <p class="sign">............................<br /><span style="font-weight:400">Nodal Officer</span></p>
+            </div>
+        </div>
+    </div>
+</section>

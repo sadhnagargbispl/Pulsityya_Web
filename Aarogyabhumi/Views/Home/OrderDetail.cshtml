@@ -1,0 +1,43 @@
+@model Shopinv.Models.M_Category
+
+<div class="table-responsive">
+    @if (Model.OrderNoDetail != null && Model.OrderNoDetail.Count() > 0)
+    {
+        <table class="table mytable" style="white-space:nowrap">
+            <thead>
+                <tr>
+                    <th>Order No</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Dispatch Qty</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderNoDetail)
+                {
+                    <tr>
+                        <td>
+                            @if (item.OrderId == 0)
+                            {
+                                @item.Transid
+                            }
+                            else
+                            {
+                                @item.OrderId
+                            }
+                        </td>
+                        <td>@item.ProductName</td>
+                        <td>@item.Qty</td>
+                        <td>&#8377; @item.Price</td>
+                        <td>@item.DispatchQty</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="no-record">No record found.</p>
+    }
+</div>

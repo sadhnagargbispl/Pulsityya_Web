@@ -1,0 +1,732 @@
+﻿@model Shopinv.Models.M_Category
+@{
+    ViewBag.Title = "PaymentProceed";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var CourierCharge = Convert.ToDecimal(Session["CourierCharge"]);
+    var totalamount = Convert.ToDecimal(Session["totalamount"]);
+    var totalnetpay = totalamount + CourierCharge;
+}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script type="text/javascript">
+    var activeStatus = "@HttpContext.Current.Session["ActiveStatus"]";
+    $(document).ready(function () {
+        debugger;
+        ShoppingWallet('R');
+        $("#pgamount").val("@totalnetpay");
+    });
+    function ShoppingWallet(WalletType) {
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: '/CheckOut/GetwalletBalence',
+            async: false,
+            dataType: "Json",
+            data: { WalletType: WalletType },
+            success: function (data) {
+                debugger;
+
+                $("#paymentgetway").hide();
+                $("#hdnShoppingWallet").val(data.Balance);
+                $("#spnShoppingFund").text(data.Balance);
+               /* $("#ShoppingWallet").prop("disabled", false); */
+                $("#payMethed").show();
+                $("#Amount").val("@totalnetpay");
+                if (parseFloat(data.Balance) <= 0) {
+                    $("#walletpaybtn").hide();
+                }
+                var payAmount = $("#Amount").val();
+                if (parseFloat(payAmount) > parseFloat(data.Balance)) {
+                    $("#walletpaybtn").hide();
+                }
+
+            }
+        });
+        //if ($("#EW").is(":checked")) {
+        //    $("#onlinePG").checked = false;
+        //    $("#paymentgetway").hide();
+        //    $("#paymentgetwayCahFree").hide();
+
+        //}
+        //else {
+        //    $("#payMethed").hide();
+        //}
+
+    }
+
+    function PaymentGetwayCashFree(CF) {
+        debugger;
+        if ($("#CashFree").is(":checked")) {
+            $("#EW").checked = false;
+            $("#onlinePG").checked = false;
+            $("#paymentgetway").hide();
+            $("#payMethed").hide();
+
+            $.ajax({
+                type: "POST",
+                url: '/CheckOut/GetTotalCartAmount',
+                dataType: "Json",
+                data: { PG: CF },
+                success: function (data) {
+                    debugger;
+                    $("#paymentgetwayCahFree").show();
+                    $("#OnlineCashFree").val(data.TotPrice);
+                    $("#hdnUserName1").val(data.UserName);
+                    $("#hdnEmail1").val(data.Email);
+                    $("#hdnMobileNO1").val(data.MobileNo);
+                    $("#hdnUserName").val(data.UserName);
+                    $("#hdnEmail").val(data.Email);
+                    $("#hdnMobileNO").val(data.MobileNo);
+                    $("#netamount").val(data.TotPrice);
+
+                }
+            });
+        }
+
+    }
+
+    function SaveProceed() {
+        debugger;
+        $("#walletpaybtn").prop("disabled", true);
+        var r = confirm("Do you Want to Proceed ?")
+        if (r == true) {
+            var hdnShoppingWallet = $("#hdnShoppingWallet").val();
+
+            var hdnRepurchaseWallet = $("#hdnRepurchaseWallet").val();
+            var ShoppingAmount = $("#ShoppingWallet").val();
+
+            var RepurchaseAmount = $("#RepurchaseWallet").val();
+
+            var Amount = $("#Amount").val();
+            event.preventDefault();
+            window.location.href = "/CheckOut/PaymentWalletProceed?Shopingwallet=" + ShoppingAmount + "&Amount=" + Amount + "&Repurchasewallet=" + RepurchaseAmount;
+        }
+        else {
+            window.location.href = "/CheckOut/CheckOut";
+
+        }
+
+    }
+
+    function PaymentGetwayProceedCashFree() {
+        debugger;
+        var r = confirm("Do you Want to Proceed ?")
+        {
+            if (r == true) {
+                var Amount = $("#OnlineCashFree").val();
+                var NetAmount = $("#netamount").val();
+                var UserName = $("#hdnUserName1").val();
+                var Email = $("#hdnEmail1").val();
+                if (Email == "") {
+                    alert("Please update the EmailId!");
+                    return;
+                }
+                var Mobile = $("#hdnMobileNO1").val();
+                if (Mobile == "" || Mobile == "0" || Mobile.length != 10) {
+                    alert("Please update the MobileNo!");
+                    return;
+                }
+
+                window.location.href = "/CheckOut/PaymentGetwayProceedphonepe?Amount=" + Amount + "&Email=" + Email + "&MobileNo=" + Mobile + "&NetAmount=" + NetAmount;
+            }
+            else {
+                window.location.href = "CheckOut/CheckOut";
+            }
+        }
+    }
+    function roundToTwo(num) {
+
+        return +(Math.round(num + "e+2") + "e-2");
+    }
+    function checkWAmt() {
+
+        var acttotal = parseFloat(document.getElementById("Amount").value) || 0;
+        var WAmt = parseFloat(document.getElementById("ShoppingWallet").value) || 0;
+        var RAmt =  parseFloat(document.getElementById("RepurchaseWallet").value) || 0;
+
+        var WAvlBal = parseFloat(document.getElementById("hdnShoppingWallet").value) || 0;
+        var RAvlBal = parseFloat(document.getElementById("hdnRepurchaseWallet").value) || 0;
+
+
+        var AvlBal = roundToTwo(WAvlBal) + roundToTwo(RAvlBal);
+        var Amt = roundToTwo(WAmt) + roundToTwo(RAmt);
+        var RavlBal = roundToTwo(acttotal) - roundToTwo(WAmt);
+        if (parseFloat(acttotal) < parseFloat(WAmt)) {
+
+            if (parseFloat(WAmt) > parseFloat(acttotal)) {
+                if (parseFloat(acttotal) <= parseFloat(WAvlBal)) {
+                    document.getElementById("ShoppingWallet").value = roundToTwo(acttotal);
+                    document.getElementById("RepurchaseWallet").value = '0';
+                }
+                else {
+                    document.getElementById("ShoppingWallet").value = roundToTwo(WAvlBal);
+                    document.getElementById("RepurchaseWallet").value = roundToTwo(acttotal) - roundToTwo(WAvlBal);
+                }
+            }
+            else {
+
+                document.getElementById("ShoppingWallet").value = roundToTwo(WAvlBal);
+                document.getElementById("RepurchaseWallet").value = roundToTwo(acttotal) - roundToTwo(WAvlBal);
+            }
+
+        }
+
+        else if (acttotal < Amt) {
+
+            if (parseFloat(WAvlBal) < parseFloat(WAmt)) {
+
+                document.getElementById("ShoppingWallet").value = roundToTwo(WAvlBal);
+                document.getElementById("RepurchaseWallet").value = roundToTwo(acttotal) - roundToTwo(WAvlBal);
+            }
+            else if (parseFloat(RAvlBal) < parseFloat(RAmt)) {
+
+                document.getElementById("RepurchaseWallet").value = roundToTwo(RAvlBal);
+                document.getElementById("ShoppingWallet").value = roundToTwo(acttotal) - roundToTwo(RAvlBal);
+
+            }
+
+            else {
+                document.getElementById("ShoppingWallet").value = roundToTwo(WAmt);
+                document.getElementById("RepurchaseWallet").value = roundToTwo(RavlBal);
+
+            }
+        }
+        else if (Amt > AvlBal) {
+            alert('Shopping wallet amount could not be greater than available balance.');
+            document.getElementById("ShoppingWallet").value = '0';
+            document.getElementById("RepurchaseWallet").value = '0';
+
+        }
+
+        else {
+
+            var Ramt1 = acttotal - WAmt;
+            var lessamt = acttotal - RAvlBal;
+
+            if (Ramt1 > RAvlBal) {
+                alert('Repurchase Wallet amount could not be greater than available balance.');
+                document.getElementById("ShoppingWallet").value = roundToTwo(lessamt);
+                document.getElementById("RepurchaseWallet").value = roundToTwo(RAvlBal);
+            }
+            else {
+
+                document.getElementById("RepurchaseWallet").value = roundToTwo(Ramt1);
+                document.getElementById("ShoppingWallet").value = roundToTwo(WAmt);
+            }
+        }
+
+    }
+
+    function checkRamt() {
+
+        var acttotal = document.getElementById("Amount").value || 0;
+
+        var Amt = document.getElementById("ShoppingWallet").value || 0;
+        var othrAmt = document.getElementById("RepurchaseWallet").value || 0;
+        var WAvlBal = parseFloat(document.getElementById("hdnShoppingWallet").value) || 0;
+        var RAvlBal = parseFloat(document.getElementById("hdnRepurchaseWallet").value) || 0;
+
+        if (parseFloat(acttotal) < parseFloat(othrAmt)) {
+
+            if (parseFloat(othrAmt) > parseFloat(acttotal)) {
+                if (parseFloat(acttotal) <= parseFloat(RAvlBal)) {
+                    document.getElementById("RepurchaseWallet").value = roundToTwo(acttotal);
+                    document.getElementById("ShoppingWallet").value = '0';
+                }
+                else {
+                    document.getElementById("RepurchaseWallet").value = roundToTwo(RAvlBal);
+                    document.getElementById("ShoppingWallet").value = roundToTwo(acttotal) - roundToTwo(RAvlBal);
+                }
+            }
+            else {
+
+                document.getElementById("RepurchaseWallet").value = roundToTwo(RAvlBal);
+                document.getElementById("ShoppingWallet").value = roundToTwo(acttotal) - roundToTwo(RAvlBal);
+            }
+
+        }
+
+        else if (parseFloat(othrAmt) > parseFloat(RAvlBal)) {
+            alert('Repurchase Wallet amount could not be greater than available balance.');
+            document.getElementById("ShoppingWallet").value = roundToTwo(acttotal - RAvlBal);
+
+            document.getElementById("RepurchaseWallet").value = roundToTwo(RAvlBal);
+            return true;
+
+        }
+        else if (parseFloat(othrAmt) > parseFloat(acttotal)) {
+
+            document.getElementById("ShoppingWallet").value = '0';
+
+            document.getElementById("RepurchaseWallet").value = roundToTwo(acttotal);
+            return true;
+        }
+        else {
+            var damt = acttotal - othrAmt;
+            var xamt = parseFloat(damt).toFixed(2);
+
+            if (parseFloat(damt) <= parseFloat(WAvlBal)) {
+
+                document.getElementById("RepurchaseWallet").value = othrAmt;
+                document.getElementById("ShoppingWallet").value = roundToTwo(damt);
+                return true;
+            }
+            else {
+                alert('Shopping Wallet amount could not be greater than available balance.');
+                document.getElementById("ShoppingWallet").value = roundToTwo(acttotal - RAvlBal);
+
+                document.getElementById("RepurchaseWallet").value = roundToTwo(RAvlBal);
+                return true;
+
+            }
+        }
+    }
+
+
+</script>
+
+<script type="text/javascript">
+    /*
+    ------------------ OLD WALLET / GATEWAY CODE (COMMENTED) ------------------
+    (code safely commented — unchanged)
+    ---------------------------------------------------------------------------
+    */
+
+    // --- Only Offline Payment Active ---
+    function saveofflineorder() {
+        var txnno = $("#txnno").val();
+        if (txnno == "") {
+            alert("Please enter Txn No.");
+            $("#txnno").focus();
+            return false;
+        }
+
+        var txnimage = $("#txnimage").val();
+        if (txnimage == "") {
+            alert("Please select file");
+            return false;
+        }
+
+        var fileInput = $("#txnimage")[0];
+        if (fileInput.files.length === 0) {
+            alert("Please select a file!");
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+        formData.append("Txnno", txnno);
+
+        $.ajax({
+            url: '/CheckOut/PaymentOfflineProceed',
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.status == "true") {
+                    window.location.href = "/CheckOrder/Checkofflineorder?id=" + response.id;
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function CashfreeInitiate() {
+        var Amount = $("#pgamount").val();
+        $('#pageLoader').addClass('show');
+        if (isNaN(Amount) || Amount <= 0) {
+            alert("Amount should be greater than 0");
+            $('#pageLoader').removeClass('show');
+            return false;
+        }
+        $.ajax({
+            url: "/CheckOut/CashfreeInitiate",
+            dataType: "json",
+            type: "Post",
+            beforeSend: function () {
+                setTimeout(function () {
+                    $('#pageLoader').addClass('show');
+                }, 5);
+            },
+            success: function (data) {
+                if (data.msg == "") {
+                    window.location.href = "/CheckOut/CashFreeApi?paymentid=" + data.paymentid;
+                }
+                else {
+                    alert(data.msg);
+                    $(".page").hide();
+                }
+            }
+        });
+    }
+</script>
+<script>
+
+    function SaveLog(message) {
+
+        $.ajax({
+            url: '/CheckOut/SaveLog',
+            type: 'POST',
+            data: { logmsg: message },
+            error: function () {
+                // ignore logging error
+            }
+        });
+
+    }
+    function update() {
+
+        $.ajax({
+            url: '/CheckOut/UpdateCart',
+            type: 'POST',
+            success: function () {
+                // ignore logging error
+            }
+        });
+
+    }
+
+    $(document).ready(function () {
+
+        $("#pgpayBtn").click(function () {
+
+            SaveLog("Pay button clicked");
+
+            $('#pageLoader').addClass('show');
+
+            var pgamount = parseFloat($("#pgamount").val());
+
+            SaveLog("Entered Amount: " + pgamount);
+
+            if (isNaN(pgamount) || pgamount <= 0) {
+
+                SaveLog("Invalid Amount");
+
+                alert("Please enter a valid payment amount.");
+                $('#pageLoader').removeClass('show');
+                return false;
+            }
+
+            SaveLog("Calling CreateOrder API");
+
+            $.ajax({
+                url: '/CheckOut/CreateOrder',
+                type: 'POST',
+                data: { amount: pgamount },
+
+                success: function (data) {
+
+                    SaveLog("CreateOrder Response: " + JSON.stringify(data));
+
+                    $("#pgorderid").val(data.Pgorderid);
+
+                    if (!data.orderId) {
+
+                        SaveLog("OrderId not generated");
+
+                        alert("We are unable to start your payment right now. Please try again.");
+                        $('#pageLoader').removeClass('show');
+                        update();
+                        window.location.href = "/Home/Index";
+                        return;
+                    }
+
+                    SaveLog("OrderId Generated: " + data.Pgorderid);
+                    SaveLog("Razorpay Options -> Key: " + data.key +
+                        " | Amount: " + data.amount * 100 +
+                        " | OrderId: " + data.Pgorderid);
+                    var options = {
+
+                        key: data.key,
+                        amount: data.amount * 100,
+                        currency: "INR",
+                        name: "My Company",
+                        description: "Order Payment",
+                        order_id: data.Pgorderid,
+                        /*order_id: data.orderId,*/
+
+                        handler: function (response) {
+
+                            SaveLog("Payment Success: " + JSON.stringify(response));
+
+                            $.ajax({
+
+                                url: '/CheckOut/VerifyPayment',
+                                type: 'POST',
+
+                                data: {
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_order_id: $("#pgorderid").val()
+                                },
+
+                                success: function (res) {
+
+                                    SaveLog("VerifyPayment Response: " + JSON.stringify(res));
+
+                                    if (res.success == true) {
+
+                                        SaveLog("Payment Verified Successfully");
+
+                                        alert("Payment successful! Your order has been confirmed.");
+
+                                        $("#pgorderid").val('');
+                                        window.location.href = "/CheckOrder/CheckOrder";
+
+                                    }
+                                    else {
+
+                                        SaveLog("Payment Verification Failed");
+
+                                        alert("Payment received but verification failed. Please contact support.");
+
+                                        window.location.href = "/Home/Index";
+                                    }
+
+                                },
+
+                                error: function () {
+
+                                    SaveLog("VerifyPayment Error");
+                                    update();
+                                    alert("We could not verify your payment right now. Please contact support.");
+                                    window.location.href = "/Home/Index";
+                                }
+
+                            });
+
+                        },
+
+                        modal: {
+
+                            ondismiss: function () {
+
+                                SaveLog("User closed Razorpay popup");
+
+                                $('#pageLoader').removeClass('show');
+                                update();
+                                alert("Payment was cancelled. You can try again anytime.");
+                                window.location.href = "/Home/Index";
+
+                            }
+
+                        }
+
+                    };
+
+                    SaveLog("Opening Razorpay");
+                   
+                    var rzp = new Razorpay(options);
+
+                    rzp.on('payment.failed', function (response) {
+
+                        SaveLog("Payment Failed: " + JSON.stringify(response));
+
+                        $('#pageLoader').removeClass('show');
+                        update();
+                        alert("Payment failed. Please try again or use another payment method.");
+                        window.location.href = "/Home/Index";
+
+                    });
+
+                    rzp.open();
+
+                },
+
+                error: function () {
+
+                    SaveLog("CreateOrder Error");
+
+                    $('#pageLoader').removeClass('show');
+
+                    alert("Unable to initiate payment right now. Please try again later.");
+                    window.location.href = "/Home/Index";
+                }
+
+            });
+
+        });
+
+    });
+
+</script>
+@*<script>
+        $(document).ready(function () {
+
+            $("#pgpayBtn").click(function () {
+                debugger;
+                $('#pageLoader').addClass('show');
+                var pgamount = parseFloat($("#pgamount").val());
+
+                if (isNaN(pgamount) || pgamount <= 0) {
+                    alert("Amount should be greater than 0");
+                    $('#pageLoader').removeClass('show');
+                    return false;
+                }
+
+                $.ajax({
+                    url: '/CheckOut/CreateOrder',
+                    type: 'POST',
+                    data: { amount: pgamount },
+                    success: function (data) {
+                        debugger;
+                        //console.log("OrderId:", data.orderId); //  DEBUG
+                        $("#pgorderid").val(data.Pgorderid);
+                        if (!data.orderId) {
+                            alert("OrderId not generated");
+                            $('#pageLoader').removeClass('show');
+                            return;
+                        }
+
+                        var options = {
+                            key: data.key,
+                            amount: data.amount * 100,
+                            currency: "INR",
+                            name: "My Company",
+                            description: "Order Payment",
+                            order_id: data.orderId, //  MUST EXIST
+
+                            handler: function (response) {
+                                debugger
+                                //console.log(response); //  DEBUG
+                                $.ajax({
+                                    url: '/CheckOut/VerifyPayment',
+                                    type: 'POST',
+                                    data: {
+                                        razorpay_payment_id: response.razorpay_payment_id,
+                                        razorpay_order_id: $("#pgorderid").val()
+                                    },
+                                    success: function (res) {
+                                        debugger;
+                                        if (res.success == true) {
+                                            $("#pgorderid").val('');
+                                            window.location.href = "/CheckOrder/CheckOrder"
+                                        }
+                                        else {
+                                            window.location.href = "/Home/Index"
+                                        }
+                                        alert(res.message);
+                                    }
+                                });
+                            }
+                        };
+
+                        var rzp = new Razorpay(options);
+                        rzp.open();
+                    },
+                    error: function () {
+                        alert("Unable to create order");
+                    }
+                });
+            });
+        });
+    </script>*@
+
+<section class="contents">
+    <div class="breadcrmb">
+        <img src="~/theme/img/page-banner.jpg" alt="Payment">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <h1>Payment</h1>
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a href="~/ViewCart/ViewCart">Cart</a></li>
+                    <li><a class="active">Payment</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-row">
+        <div class="container">
+            <div class="cart-row">
+                <h5>Select Payment Method</h5>
+
+                <div class="row">
+                    <!-- payment method list -->
+                    <div class="col-xs-12 col-sm-4">
+                        <div class="pay-methods" id="v-pills-tab" role="tablist">
+                            <button class="pay-method active" id="v-pills-my-address-tab" data-toggle="pill" data-target="#v-pills-my-address" type="button">
+                                <i class="fa fa-money"></i> Shopping Wallet
+                            </button>
+                            <button class="pay-method" id="v-pills-my-order-tab" data-toggle="pill" data-target="#v-pills-my-order" type="button" role="tab">
+                                <i class="fa fa-credit-card"></i> Payment Gateway
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- panes -->
+                    <div class="col-xs-12 col-sm-8">
+                        <div class="tab-content" id="v-pills-tabContent">
+
+                            <div class="tab-pane fade in active" id="v-pills-my-address" role="tabpanel">
+                                <div class="price-lst-smry">
+                                    <ul>
+                                        <li>
+                                            <span class="lft">Shopping Wallet Fund</span>
+                                            <span class="rght"><b id="spnShoppingFund">Rs. 0.00/-</b></span>
+                                        </li>
+                                        <li id="divrepurchase" style="display:none">
+                                            <span class="lft">Repurchase Wallet Fund</span>
+                                            <span class="rght"><b id="spnRepurchaseFund">Rs. 0.00/-</b></span>
+                                        </li>
+                                    </ul>
+
+                                    <div class="form-group">
+                                        <label>Total Amount</label>
+                                        <input readonly type="text" id="Amount" class="form-control" placeholder="Amount" value="@Session["totalamount"]">
+                                    </div>
+
+                                    <button type="button" onclick="SaveProceed()" class="btn btn-sub btn-order" id="walletpaybtn">Pay Now</button>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="v-pills-my-order" role="tabpanel">
+                                <div class="price-lst-smry">
+                                    <div class="form-group">
+                                        <label>Amount payable</label>
+                                        <input type="text" name="pgamount" id="pgamount" readonly class="form-control" placeholder="Amount">
+                                        <input type="hidden" id="pgorderid" />
+                                    </div>
+                                    <button type="button" id="pgpayBtn" class="btn btn-sub btn-order">Pay Now</button>
+                                </div>
+                            </div>
+
+                            <!-- offline / cashfree pane - its tab trigger is disabled, kept for reference -->
+                            <div class="tab-pane fade" id="v-pills-my-offlineorder" role="tabpanel">
+                                <div class="price-lst-smry">
+                                    <div class="form-group">
+                                        <label>Total Amount</label>
+                                        <input type="text" readonly value="@String.Format("{0:N2}", totalnetpay)" name="pgamount" class="form-control">
+                                    </div>
+                                    <button type="button" class="btn btn-sub btn-order" onclick="CashfreeInitiate()">
+                                        <i class="fa fa-paper-plane"></i>&nbsp; Submit Payment
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <ul class="smry-nte">
+                    <li>Your payment is processed over a secure connection.</li>
+                    <li>Do not refresh or close this page while the payment is in progress.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    // Bootstrap 3's tab plugin moves .active onto the parent <li>; these triggers
+    // are plain buttons, so highlight the selected method ourselves.
+    $(document).on('click', '.pay-methods .pay-method', function () {
+        $('.pay-methods .pay-method').removeClass('active');
+        $(this).addClass('active');
+    });
+</script>

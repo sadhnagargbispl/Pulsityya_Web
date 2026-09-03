@@ -1,0 +1,131 @@
+@model Shopinv.Models.M_Complaint
+@{
+    ViewBag.Title = "Raise Complaint";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="contents">
+    <div class="breadcrmb plain">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a class="active">Raise Complaint</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--  -->
+    <div class="content-row">
+        <div class="my-account">
+            <div class="container">
+                <div class="login-bar">
+                    <div class="login-col rgstr-col">
+                        <h3>Raise Complaint</h3>
+                        <p>Your Voice, Our Commitment - Every Concern Matters.</p>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" class="form-control" id="Name" value="@Convert.ToString(Session["UserName"])" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <!--  -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" class="form-control" id="email" value="@Convert.ToString(Session["Email"])" readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Mobile No.</label>
+                                    <input type="text" class="form-control" id="mobileno" maxlength="10" onkeypress="return isNumber(event)" value="@Convert.ToString(Session["MobileNo"])" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <!--  -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Complaint Type</label>
+                                    <select class="form-control" id="complaintid">
+                                        @if (Model.complainttype != null && Model.complainttype.Count > 0)
+                                        {
+                                            foreach (var item in Model.complainttype)
+                                            {
+                                                <option value="@item.complaintid">@item.complaintname</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Subject</label>
+                                    <input type="text" class="form-control" id="subject">
+                                </div>
+                            </div>
+                        </div>
+                        <!--  -->
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea class="form-control" rows="2" id="description"></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3"><input type="button" value="Submit" id="Apply" onclick="SaveCompaint()" class="btn btn-sub"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <script type="text/javascript">
+        function validateEmail(email) {
+            var emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function SaveCompaint() {
+            var subject = $("#subject").val();
+            if (subject === "") { alert("Please enter subject"); return false; }
+
+            var email = $("#email").val();
+            if (email === "") { alert("Please enter email"); return false; }
+            if (validateEmail(email) === false) { alert("Please enter a valid email"); return false; }
+
+            var Name = $("#Name").val();
+            if (Name === "") { alert("Please enter name"); return false; }
+
+            var mobileno = $("#mobileno").val();
+            if (mobileno === "") { alert("Please enter mobile no"); return false; }
+
+            var description = $("#description").val();
+            if (description === "") { alert("Please enter description"); return false; }
+
+            $("#Apply").prop('disabled', true).val('Please wait . . .');
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/Account/SaveCompaint")',
+                data: {
+                    Complaintid: $("#complaintid").val(), Subject: subject, Email: email,
+                    Name: Name, Mobileno: mobileno, Description: description
+                }
+            }).done(function (data) {
+                if (data.msg !== "") { alert(data.msg); }
+                if (data.status === "OK") { $("#subject, #description").val(''); }
+            }).fail(function (response) {
+                console.log(response.responseText);
+            }).always(function () {
+                $("#Apply").prop('disabled', false).val('Submit');
+            });
+        }
+    </script>
+}

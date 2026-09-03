@@ -1,0 +1,319 @@
+﻿@{
+    // pulled from m_companymaster; blank column keeps the built-in default
+    Func<string, string, string> comp = (key, fallback) =>
+    {
+        var v = Convert.ToString(Session[key]);
+        return string.IsNullOrWhiteSpace(v) ? fallback : v.Trim();
+    };
+    var freeShip = comp("FreeShipAmount", "2500");
+}
+@model Shopinv.Models.M_Category
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var item = Model.ProductDetail != null ? Model.ProductDetail.FirstOrDefault() : null;
+    ViewBag.Title = item != null ? item.ProductName : "Product Details";
+
+    var Refid = Session["RefId"] != null ? Convert.ToString(Session["RefId"]) : "";
+
+    var images = new List<string>();
+    if (item != null)
+    {
+        foreach (var p in new[] { item.ImagePath, item.ImagePath1, item.ImagePath2, item.ImagePath3, item.ImagePath4, item.ImagePath5 })
+        {
+            if (!string.IsNullOrEmpty(p) && !p.EndsWith("DefaultProduct.jpg", StringComparison.OrdinalIgnoreCase))
+            {
+                images.Add(p);
+            }
+        }
+    }
+    if (images.Count == 0)
+    {
+        images.Add(Url.Content("~/theme/img/sample-product.jpg"));
+    }
+
+    var discount = 0;
+    if (item != null && item.MRP > 0 && item.MRP > item.Price)
+    {
+        discount = Convert.ToInt32(Math.Round(((item.MRP - item.Price) * 100) / item.MRP));
+    }
+    var inStock = item != null && item.StockQTY > 0;
+}
+
+@section styles {
+    <link rel="stylesheet" href="~/theme/plugins/accordion/css/woco-accordion.min.css">
+    <link rel="stylesheet" href="~/theme/plugins/spotlight-master/css/spotlight.min.css">
+    <style>
+        .breadcrmb-loc li a {
+            color: #0000008c !important;
+        }
+
+        .breadcrmb-loc li a:after {
+            color: #0000008c;
+        }
+    </style>
+}
+
+<section class="contents">
+    <div class="breadcrmb">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a href="~/CategoryList/CategoryList">Product</a></li>
+                    <li><a class="active">@(item != null ? item.ProductName : "Product")</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-row">
+        <div class="itm-dtls-row">
+            <div class="item-container">
+                <div class="container">
+                    @if (item == null)
+                    {
+                        <div class="no-product">
+                            <p>
+                                Product not available
+                                <span>The product you are looking for is no longer listed.</span>
+                            </p>
+                        </div>
+                    }
+                    else
+                    {
+                        <input type="hidden" id="hdnprodname" value="@item.ProductName" />
+                        <input type="hidden" id="hdnimage" value="@item.ImagePath" />
+                        <input type="hidden" id="hdnBunchQty" value="@item.BunchQty" />
+                        <input type="hidden" id="hdnprice" value="@item.Price" />
+                        <input type="hidden" id="hdnBv" value="@item.BV" />
+                        <input type="hidden" id="hdnPv" value="@item.PV" />
+                        <input type="hidden" id="hdnprodCode" value="@item.ProdId" />
+                        <input type="hidden" id="hdnWeight" value="@item.Weight" />
+                        <input type="hidden" id="hdnGst" value="@item.Gst" />
+                        <input type="hidden" id="hdnpcode" value="@item.ProdId" />
+                        <input type="hidden" id="hdnstockqty" value="@item.StockQTY" />
+                        <input type="hidden" id="memmode" value="@Convert.ToString(Session["MemMode"])" />
+                        <input type="hidden" id="kycstatus" value="@ViewBag.kycstatus" />
+
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-5">
+                                <div class="owl-carousel itm-dtls-carousel">
+                                    @foreach (var img in images)
+                                    {
+                                        <a class="spotlight" href="@img"><img src="@img" onerror="this.src='@Url.Content("~/theme/img/sample-product.jpg")';" alt="@item.ProductName" /></a>
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-7">
+                                <h2 class="pr_name">
+                                    @item.ProductName
+                                    <span class="pr_sku">Product Code : @item.ProdId</span>
+                                </h2>
+
+                                <h3 class="pr_rate">
+                                    @if (item.MRP > item.Price)
+                                    {
+                                        <span class="pr_mrp">&#8377; @item.MRP</span>
+                                    }
+                                    <span class="pr_offerprice">&#8377; @item.Price</span>
+                                    @if (discount > 0)
+                                    {
+                                        <span class="pr_discount">@discount% Off</span>
+                                    }
+                                    <span class="pr_note">Inclusive all taxes</span>
+                                </h3>
+
+                                <p class="pr_stock">
+                                    <strong>Availability :</strong>
+                                    @if (inStock)
+                                    {
+                                        <text>In Stock</text>
+                                    }
+                                    else
+                                    {
+                                        <span class="out">Out Of Stock</span>
+                                    }
+                                </p>
+
+                                @if (inStock)
+                                {
+                                    <div class="row">
+                                        <div class="col-xs-3 col-md-3 col-lg-2 no-padding-right">
+                                            <div class="num-incr-decr">
+                                                <span class="decrMent" dt-min="1"></span>
+                                                <input step="1" value="1" type="text" name="quantity" id="Qty">
+                                                <span class="incrMent" dt-max="@item.StockQTY"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 col-md-4 col-lg-4">
+                                            <div class="cart-btn-col">
+                                                <a class="btn-sub pr_add_cart" onclick="CheckLoginPopUp('DetailBuy');">
+                                                    <span class="icon-add-cart"></span><span class="txt-add-cart">Add to cart</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-3 col-md-3 col-lg-2 no-padding-left">
+                                            <a class="pr-shre" onclick="shareItem('@Html.Raw(HttpUtility.JavaScriptStringEncode(item.ProductName))', window.location.href)"><i class="fa fa-share-alt"></i> Share</a>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="row">
+                                        <div class="col-xs-6 col-md-4 col-lg-4">
+                                            <div class="cart-btn-col">
+                                                <a class="btn btn-brdr">Currently unavailable</a>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-3 col-md-3 col-lg-2 no-padding-left">
+                                            <a class="pr-shre" onclick="shareItem('@Html.Raw(HttpUtility.JavaScriptStringEncode(item.ProductName))', window.location.href)"><i class="fa fa-share-alt"></i> Share</a>
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="pr_desc">
+                                    <h1>Product Description</h1>
+                                    <div>
+                                        <div class="desc-inf">
+                                            @if (string.IsNullOrWhiteSpace(item.ProductDesc))
+                                            {
+                                                <p>Description will be updated shortly.</p>
+                                            }
+                                            else
+                                            {
+                                                @Html.Raw(item.ProductDesc)
+                                            }
+                                        </div>
+                                    </div>
+                                    <h1>Usage Instruction</h1>
+                                    <div>
+                                        <div class="desc-inf">
+                                            @if (!string.IsNullOrWhiteSpace(item.Liner))
+                                            {
+                                                @Html.Raw(item.Liner)
+                                            }
+                                            else
+                                            {
+                                                <p>Please follow the usage directions printed on the pack.</p>
+                                            }
+                                        </div>
+                                    </div>
+                                    <h1>Key Features</h1>
+                                    <div>
+                                        <div class="desc-inf">
+                                            <ul>
+                                                <li>BV : @item.BV.ToString("0.##")</li>
+                                                <li>Free shipping on orders above &#8377; @freeShip.</li>
+                                                <li>Tax included. Shipping calculated at checkout.</li>
+                                                <li>Covered by our Return &amp; Exchange Policy.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.RelatedProduct != null && Model.RelatedProduct.Count() > 0)
+    {
+        // the owl carousel is right-to-left and only looks right once it is full;
+        // with a handful of products a plain grid reads better
+        var useCarousel = Model.RelatedProduct.Count() > 4;
+        <div class="pr-related-row">
+            <div class="container">
+                <h2 class="first-head">Related Product</h2>
+                <div class="@(useCarousel ? "product-carousel owl-carousel" : "row")">
+                    @foreach (var itm in Model.RelatedProduct)
+                    {
+                        if (useCarousel)
+                        {
+                            @Html.Partial("_ProductCard", itm)
+                        }
+                        else
+                        {
+                            <div class="col-xs-6 col-sm-3">@Html.Partial("_ProductCard", itm)</div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</section>
+
+@section scripts {
+    <script src="~/theme/plugins/accordion/js/woco.accordion.min.js"></script>
+    <script src="~/theme/plugins/spotlight-master/js/spotlight.min.js"></script>
+    <script type="text/javascript">
+        $(function () { $('.pr_desc').accordion(); });
+
+        function CheckLoginPopUp(ProductAddFrom) {
+            var ProductCode = $('#hdnprodCode').val();
+            var Qty = $("#Qty").val();
+            if (parseInt(Qty, 10) <= 0 || isNaN(parseInt(Qty, 10))) {
+                alert("Please enter quantity greater than 0!");
+                return false;
+            }
+
+            var payload = {
+                ProductCode: ProductCode,
+                Qty: Qty,
+                ProdName: $('#hdnprodname').val(),
+                Image: $('#hdnimage').val(),
+                Price: $('#hdnprice').val(),
+                Bv: $('#hdnBv').val(),
+                UniqId: Math.floor(Math.random() * 1000) + Date.now(),
+                PV: $('#hdnPv').val(),
+                Weight: $('#hdnWeight').val(),
+                Color: "",
+                SIZE: ""
+            };
+
+            $.ajax({
+                url: '@Url.Content("~/ProductDetail/CheckLogin")',
+                type: 'GET'
+            }).done(function (result) {
+                if (result === 'Yes') {
+                    AddProductInCart('@Url.Content("~/ProductDetail/AddProductInToCart")', payload);
+                }
+                else if ("@Refid" !== "") {
+                    AddProductInCart('@Url.Content("~/ProductDetail/AddProductInCartOuter")', payload);
+                }
+                else {
+                    window.location.href = '@Url.Content("~/Account/Login")';
+                }
+            }).fail(function (error) {
+                alert(error.statusText);
+            });
+
+            return false;
+        }
+
+        function AddProductInCart(url, payload) {
+            $('.pr_add_cart').addClass('pr_added_cart').find('.txt-add-cart').text('Please wait . . .');
+            $.ajax({
+                type: "POST",
+                url: url,
+                dataType: "json",
+                data: payload
+            }).done(function (data) {
+                if (data.save === 'S') {
+                    $('.spncartcount').text(data.cartCount);
+                    window.location.href = '@Url.Content("~/ViewCart/ViewCart")';
+                } else {
+                    $('.pr_add_cart').removeClass('pr_added_cart').find('.txt-add-cart').text('Add to cart');
+                    alert("Sorry, the product could not be added to your cart.");
+                }
+            }).fail(function (error) {
+                $('.pr_add_cart').removeClass('pr_added_cart').find('.txt-add-cart').text('Add to cart');
+                alert(error.statusText);
+            });
+            return false;
+        }
+
+    </script>
+}

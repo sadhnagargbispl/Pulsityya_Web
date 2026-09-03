@@ -1,0 +1,53 @@
+@using PagedList.Mvc;
+@model Shopinv.Models.GroupDirectReport
+
+<div class="table-responsive">
+    <table class="table mytable" style="white-space:nowrap">
+        <thead>
+            <tr>
+                <th class="col-num">S.No</th>
+                <th>Level</th>
+                <th>ID No</th>
+                <th>Member Name</th>
+                <th>Sponsor ID</th>
+                <th>Sponsor Name</th>
+                <th>Joining Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.m_LevelDetails != null && Model.m_LevelDetails.Count() > 0)
+            {
+                foreach (var item in Model.m_LevelDetails)
+                {
+                    <tr>
+                        <td class="col-num">@item.SNo</td>
+                        <td>@item.Mlevel</td>
+                        <td>@item.Idno</td>
+                        <td>@item.MemName</td>
+                        <td>@item.Sponsorid</td>
+                        <td>@item.MemberName</td>
+                        <td>@item.Doj</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr><td colspan="7" class="no-record">No record found.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (Model.pagerCount != null && Model.pagerCount.Count > 0)
+{
+    <div class="pager-row">
+        @Html.PagedListPager(Model.pagerCount, page => Url.Action("Levelwisereport", "Home", new { page }), new PagedListRenderOptions
+   {
+       DisplayLinkToFirstPage = PagedListDisplayMode.Never,
+       DisplayLinkToLastPage = PagedListDisplayMode.Never,
+       DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+       DisplayLinkToNextPage = PagedListDisplayMode.Always,
+       MaximumPageNumbersToDisplay = 10
+   })
+    </div>
+}

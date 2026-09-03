@@ -1,0 +1,99 @@
+.msg-overlay, .loader{
+    position: fixed; top: 0; bottom: 0; left: 0; right: 0; background: #0000004d;z-index: 98;
+} 
+.loader .msg{
+    width: 150px;
+    top: calc(50% - 75px); 
+    left: calc(50% - 75px);  
+}
+ 
+.msg {
+    position: fixed;
+    top: calc(50% - 100px); 
+    left: calc(50% - 200px); 
+    z-index: 99;
+    width: 95%;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 4px;
+    text-align: center;
+    background: #fff;
+    color: #666;
+    border: 1px solid #f2f2f2; 
+    -webkit-box-shadow: 0px 0px 80px rgb(4 4 4 / 46%);
+    -moz-box-shadow: 0px 0px 80px rgb(4 4 4 / 46%);
+    box-shadow: 0px 0px 80px rgb(4 4 4 / 46%);
+}
+.msg.success {
+     
+}
+.msg.success a{
+	background: #258f25;
+}
+.msg.error{
+	 
+}
+.msg.error a{
+	background: #c3351e;
+}
+.msg a { 
+    font-weight: 600;
+	line-height: 22px; 
+    padding: 5px 15px;
+    display: table;
+    border-radius: 3px;
+    color: #fff!important;
+    margin: 15px auto 0;
+	cursor: pointer;
+}
+.msg img{max-width: 60px; display: table; margin: 0 auto 10px;}
+
+/* on front page loading */
+
+.loader.pg {
+	background: #fff;
+}
+
+/* circle rotation */
+
+.loader .circle {
+    -webkit-animation: loader-rotate 2s linear infinite;
+    animation: loader-rotate 2s linear infinite;
+    position: absolute;
+    left: calc(50% - 24px);
+    top: calc(50% - 24px);
+    display: block;
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg); 
+}
+
+.loader .path {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    -webkit-animation: loader-dash 1.5s ease-in-out infinite;
+    animation: loader-dash 1.5s ease-in-out infinite;
+    stroke-linecap: round; 
+}
+
+@keyframes loader-rotate {
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg); 
+	} 
+}
+
+@keyframes loader-dash {
+	0%{
+		stroke-dasharray: 1, 200;
+		stroke-dashoffset: 0; 
+	}
+	50%{
+		stroke-dasharray: 89, 200;
+		stroke-dashoffset: -35px; 
+	}
+	100%{
+		stroke-dasharray: 89, 200;
+		stroke-dashoffset: -135px; 
+	} 
+}

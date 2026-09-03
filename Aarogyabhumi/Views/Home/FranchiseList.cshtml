@@ -1,0 +1,117 @@
+@model Shopinv.Models.M_ShowFranchiselist
+@{
+    ViewBag.Title = "Register of Direct Sellers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var hasRows = Model.Franchiselist != null && Model.Franchiselist.Count > 0;
+}
+
+@section styles {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap.min.css" />
+}
+
+<section class="contents">
+    <div class="breadcrmb">
+        <img src="~/theme/img/page-banner.jpg" alt="Register of Direct Sellers">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <h1>Register of Direct Sellers</h1>
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a class="active">Register of Direct Sellers</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-row">
+        <div class="container">
+            <div class="acc-panel">
+                <form method="get" action="@Url.Action("FranchiseList", "Home")">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-5 col-md-4">
+                            <div class="form-group" style="margin-bottom:0!important">
+                                <label>Franchise Type</label>
+                                <select name="franchiseType" class="form-control" onchange="this.form.submit()">
+                                    <option value="">-- All --</option>
+                                    @foreach (var type in Model.FranchiseType)
+                                    {
+                                        if (Request["franchiseType"] == type.GroupId.ToString())
+                                        {
+                                            <option value="@type.GroupId" selected="selected">@type.GroupName</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@type.GroupId">@type.GroupName</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="acc-panel">
+                <div class="table-responsive">
+                    <table id="franchiseTable" class="table mytable" style="white-space:nowrap">
+                        <thead>
+                            <tr>
+                                <th>Party Name</th>
+                                <th>Party Code</th>
+                                <th>Franchise Type</th>
+                                <th>Address</th>
+                                <th>State</th>
+                                <th>City</th>
+                                <th>Pin Code</th>
+                                <th>Mobile No</th>
+                                <th>M Commission</th>
+                                <th>Sponsor Commission</th>
+                                <th>District Commission</th>
+                                <th>Depot Commission</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (hasRows)
+                            {
+                                foreach (var item in Model.Franchiselist)
+                                {
+                                    <tr>
+                                        <td>@item.PartyName</td>
+                                        <td>@item.PartyCode</td>
+                                        <td>@item.GroupName</td>
+                                        <td>@item.Address1</td>
+                                        <td>@item.StateName</td>
+                                        <td>@item.CityName</td>
+                                        <td>@item.PinCode</td>
+                                        <td>@item.MobileNo</td>
+                                        <td>@item.MCommission</td>
+                                        <td>@item.SponsorCommission</td>
+                                        <td>@item.DistrictCommission</td>
+                                        <td>@item.DepotCommission</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="12" class="no-record">No records found.</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <!-- jQuery already comes from the layout - only the DataTables plugin is needed here -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            if ($('#franchiseTable tbody tr td.no-record').length === 0) {
+                $('#franchiseTable').DataTable({ autoWidth: false, pageLength: 10 });
+            }
+        });
+    </script>
+}

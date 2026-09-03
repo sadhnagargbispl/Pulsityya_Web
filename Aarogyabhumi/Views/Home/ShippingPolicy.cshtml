@@ -1,0 +1,84 @@
+﻿@{
+    // company identity comes from companymaster via CompanyDetail.GetCompanydetail()
+    var cmpName = Convert.ToString(Session["CompName"]);
+    var cmpMail = Convert.ToString(Session["CompMail"]);
+    var cmpPhone = Convert.ToString(Session["ContactNo"]);
+    var cmpAdd = Convert.ToString(Session["CompAdd"]);
+    var cmpSite = Convert.ToString(Session["WebSite"]);
+}
+@{
+    ViewBag.Title = "Shipping Policy";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="contents">
+    <div class="breadcrmb">
+        <img src="~/theme/img/page-banner.jpg" alt="Shipping Policy">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <h1>Shipping Policy</h1>
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a class="active">Shipping Policy</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-row">
+        <div class="container">
+            <div class="txt-page">
+                <h2 class="first-head">Shipping Policy <span class="brdr"></span></h2>
+<p>Orders may be placed online on the website of M/s <strong>@(cmpName)</strong> (hereinafter “@(cmpName) ”) at <a href="@(cmpSite)" target="_blank" rel="noopener">@Convert.ToString(Session["WebPortal"])</a> or picked up from @(cmpName) ’s office and/or any franchisee outlet. Details are given below:</p>
+
+                    <h5 class="mt-3">Pickup from Office or Franchisee Outlet</h5>
+                    <p>Pickup orders can be placed at any outlet. Payment options for pickup orders: Cash, Demand Draft, Credit Card and Debit Card.</p>
+                    <p><strong>Pickup hours for all outlets:</strong></p>
+                    <ul>
+                        <li>Monday to Friday: 10:00 a.m. - 06:00 p.m.</li>
+                        <li>Saturday: 10:00 a.m. - 01:30 p.m.</li>
+                        <li>Sunday: Closed</li>
+                    </ul>
+                    <p>Please refer to the website for latest updates and information.</p>
+
+                    <h5 class="mt-3">Home Delivery</h5>
+                    <p>Home delivery orders can be placed on the website or by placing the order at the office / franchisee office.</p>
+
+                    <h6 class="mt-2">Payment</h6>
+                    <ul>
+                        <li><strong>Orders placed at Office:</strong> Cash, Debit Card, Credit Card, other online payments through wallets.</li>
+                        <li><strong>Online orders:</strong> Credit Card, Debit Card, Net Banking, Account Transfers (RTGS/NEFT/IMPS), other online payments through wallets.</li>
+                    </ul>
+
+                    <h6 class="mt-2">Charges for Home Delivery Orders</h6>
+                    <p>Delivery charges are determined at checkout and constitute the final fees for delivering goods. We maintain standard delivery charges for most addresses.</p>
+
+                    <h6 class="mt-2">For shipping within India</h6>
+                    <p>There are no shipping charges applicable on any orders. No additional delivery fees will be added to the purchase amount.</p>
+
+                    <h5 class="mt-3">Shipment Condition, Acceptance &amp; Claims</h5>
+                    <ul>
+                        <li>Shipments are assumed in perfect condition when the carrier takes possession. By signing "received" on the delivery note, the recipient acknowledges satisfactory condition.</li>
+                        <li>Do not sign if there are damages or shortages. Hidden damages discovered after the carrier leaves or other discrepancies must be notified within 24 hours of receipt. Failure to notify within 24 hours will be deemed acceptance and will cancel the right to request correction.</li>
+                    </ul>
+
+                    <h5 class="mt-3">Dispatch &amp; Delivery Time</h5>
+                    <p>Orders are typically shipped the next business day. Orders placed on Saturday after 2:30 p.m. will be shipped on the following Monday. Delivery time varies by location; average delivery is between 2–7 days. Deliveries may not occur on Sundays or major holidays per the delivery partner's policy.</p>
+
+                    <h5 class="mt-3">Delivery of the Product</h5>
+                    <ul>
+                        <li>@(cmpName) may use various delivery models. Risk of damage, loss, or deterioration during transit is on @(cmpName) until delivery.</li>
+                        <li>@(cmpName) warrants products are as listed and meet descriptions and specifications on the website.</li>
+                        <li>Shipping address and PIN code will be verified before payment. If an address is not serviceable, an alternate address may be provided by the customer.</li>
+                        <li>Dispatch times are not guaranteed and should not be relied upon as such. Delivery will not occur unless full payment has been made.</li>
+                        <li>If a customer refuses or neglects to accept delivery, they may be liable for non-acceptance. @(cmpName) may evaluate reasons for non-acceptance and decide whether to redeliver or process a refund per the refund policy.</li>
+                        <li>Title and other rights in products pass to the customer upon delivery and full payment. Upon delivery, products are deemed accepted by the customer and risk of loss passes to the customer.</li>
+                        <li>Before accepting delivery, customers should ensure packaging is not damaged or tampered with.</li>
+                    </ul>
+
+                    <h5 class="mt-3">Governing Law</h5>
+                    <p>Any dispute between the customer and @(cmpName) arising from this policy shall be referred to a sole arbitrator appointed by @(cmpName) and adjudicated as per the Arbitration and Conciliation Act, 1996. Proceedings shall be within the jurisdiction of District Courts in Bhilwara (Rajashthan, India). Arbitration proceedings shall be held in Pune. The arbitrator's decision shall be final and binding. Breach of this covenant may make the customer liable for damages and legal costs.</p>
+            </div>
+        </div>
+    </div>
+</section>

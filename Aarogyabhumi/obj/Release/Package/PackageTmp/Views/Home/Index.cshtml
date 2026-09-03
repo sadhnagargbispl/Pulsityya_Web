@@ -1,0 +1,170 @@
+@model Shopinv.Models.M_Category
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="contents">
+
+    <!-- hero slider -->
+    @{ Html.RenderAction("IndexBanner", "Home");}
+
+    <!-- we recommend -->
+    @if (Model.SpecialProductList != null && Model.SpecialProductList.Count() > 0)
+    {
+        var recCarousel = Model.SpecialProductList.Count() > 4;
+        <div class="product-row">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-8"><h2 class="first-head">We Recommend <span class="brdr"></span><span>Unique 6 + 1 Offer</span></h2></div>
+                    <div class="col-xs-4"><a href="~/CategoryList/CategoryList" class="btn btn-more">View All</a></div>
+                </div>
+                <div class="@(recCarousel ? "product-carousel owl-carousel" : "row")">
+                    @foreach (var item in Model.SpecialProductList)
+                    {
+                        if (recCarousel)
+                        {
+                            @Html.Partial("_ProductCard", item)
+                        }
+                        else
+                        {
+                            <div class="col-xs-6 col-sm-3">@Html.Partial("_ProductCard", item)</div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- quality -->
+    <div class="qlty-row">
+        <div class="container">
+            <h1 class="first-head">Premium Quality,<br>Made for you <span class="brdr"></span></h1>
+            <p>Clean ingredients, Powerful results For a better you, inside and out</p>
+            <a href="~/CategoryList/CategoryList" class="btn btn-more">Shop Collection</a>
+        </div>
+    </div>
+
+    <!-- best sellers -->
+    @if (Model.TopSellerProduct != null && Model.TopSellerProduct.Count() > 0)
+    {
+        var topCarousel = Model.TopSellerProduct.Count() > 4;
+        <div class="product-row">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-8"><h2 class="first-head">Our Best Selling Products <span class="brdr"></span></h2></div>
+                    <div class="col-xs-4"><a href="~/CategoryList/CategoryList" class="btn btn-more">View All</a></div>
+                </div>
+                <div class="@(topCarousel ? "product-carousel owl-carousel" : "row")">
+                    @foreach (var item in Model.TopSellerProduct)
+                    {
+                        if (topCarousel)
+                        {
+                            @Html.Partial("_ProductCard", item)
+                        }
+                        else
+                        {
+                            <div class="col-xs-6 col-sm-3">@Html.Partial("_ProductCard", item)</div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- welcome -->
+    <div class="wlcme-row">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-lg-5">
+                    <div class="img-col"><img src="~/theme/img/wlcme.jpg" alt="Welcome to Pulastya Globals India"></div>
+                </div>
+                <div class="col-sm-6 col-lg-7">
+                    <h1 class="first-head">Welcome to Pulastya <span class="brdr"></span><span>A Better Tomorrow Together !</span></h1>
+                    <p>
+                        Pulastya Globals India (P) Limited is a professionally managed direct-selling company established in 2024, with a vision to
+                        create a trusted platform for quality-driven health and wellness products.
+                    </p>
+                    <p>
+                        Registered under the Companies Act, 2013, the company is committed to building a transparent, ethical and sustainable
+                        direct-selling ecosystem where quality products and meaningful business opportunities come together.
+                    </p>
+                    <p><a href="~/Home/About" class="btn btn-more">Learn more</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- advantages -->
+    <div class="adv-row">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-6 col-sm-3">
+                    <div class="adv">
+                        <div class="adv-icon"><img src="~/theme/img/icon-price.png" alt="Transparent Price" /></div>
+                        <div class="adv-text">
+                            <p><strong>Transparent Price</strong>No hidden cost, we offer transparent prices.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                    <div class="adv">
+                        <div class="adv-icon"><img src="~/theme/img/icon-rewards.png" alt="Rewards &amp; Recognition" /></div>
+                        <div class="adv-text">
+                            <p><strong>Rewards &amp; Recognition</strong>Get rewarded and recognized for your hard work consistently.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                    <div class="adv">
+                        <div class="adv-icon"><img src="~/theme/img/icon-payout.png" alt="Instant Payout" /></div>
+                        <div class="adv-text">
+                            <p><strong>Instant Payout</strong>Receive your earnings instantly with fast and secure payouts.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                    <div class="adv">
+                        <div class="adv-icon"><img src="~/theme/img/icon-support.png" alt="24 X 7 Support" /></div>
+                        <div class="adv-text">
+                            <p><strong>24 X 7 Support</strong>Receive prompt assistance around the clock from our team.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+@{ var popupBanner = Model.PopupBannerList != null ? Model.PopupBannerList.FirstOrDefault() : null; }
+@if (popupBanner != null)
+{
+    <div class="modal fade" id="onloadModalimg" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Welcome!</h4>
+                </div>
+                <div class="modal-body">
+                    <img src="@Url.Content(popupBanner.ImagePath)" alt="" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sub" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if ($('#onloadModalimg').length && !sessionStorage.getItem('onloadModalShown')) {
+                $('#onloadModalimg').modal({ backdrop: 'static', keyboard: false });
+                sessionStorage.setItem('onloadModalShown', 'true');
+            }
+        });
+    </script>
+}

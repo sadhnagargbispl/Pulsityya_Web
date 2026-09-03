@@ -1,0 +1,85 @@
+﻿@using Shopinv.Entity
+@model Shopinv.Models.M_Category
+@{
+    ViewBag.Title = "My Coupons";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var hasCoupons = Model.GetCouponDetailNew != null && Model.GetCouponDetailNew.Any();
+}
+
+<section class="contents">
+    <div class="breadcrmb plain">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a class="active">My Coupons</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-row">
+        <div class="my-account">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="acc-body">
+                            <h4>My Coupons</h4>
+
+                            <div class="acc-panel">
+                                <div class="table-responsive">
+                                    <table class="table mytable" style="white-space:nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th>Coupon Code</th>
+                                                <th>Amount</th>
+                                                <th>Use Date</th>
+                                                <th>Used In Order No.</th>
+                                                <th>Issue Date</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (hasCoupons)
+                                            {
+                                                foreach (var item in Model.GetCouponDetailNew)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <strong>@item.CouponNo</strong>
+                                                            <a class="edit" href="javascript:void(0);" onclick="Copycoupon('@item.CouponNo')" title="Copy code"><i class="fa fa-copy"></i></a>
+                                                        </td>
+                                                        <td>&#8377; @item.Amount</td>
+                                                        <td>@item.Useddate</td>
+                                                        <td>@item.Usedorderno</td>
+                                                        <td>@item.IssueDate</td>
+                                                        <td>@item.Status</td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr><td colspan="6" class="no-record">No coupons available.</td></tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <script type="text/javascript">
+        function Copycoupon(coupon) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(coupon);
+            }
+            alert(coupon + ' coupon code copied');
+        }
+    </script>
+}

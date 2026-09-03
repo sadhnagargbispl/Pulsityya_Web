@@ -1,0 +1,118 @@
+﻿@model Shopinv.Models.GroupDirectReport
+@{
+    ViewBag.Title = "Level Wise Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="contents">
+    <div class="breadcrmb plain">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a class="active">Level Wise Report</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-row">
+        <div class="my-account">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="acc-body">
+                            <h4>Level Wise Report</h4>
+
+                            <div class="acc-panel">
+                                <div class="row">
+                                    <div class="col-xs-6 col-sm-4">
+                                        <div class="form-group">
+                                            <label>View by</label>
+                                            <select id="levelwise" onchange="ChangeLevel()" class="form-control">
+                                                <option value="0">Level Wise</option>
+                                                <option value="2">Indirect</option>
+                                                <option value="1">Direct</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-4" id="leveltypediv">
+                                        <div class="form-group">
+                                            <label>Level</label>
+                                            <select id="leveltype" class="form-control">
+                                                @foreach (var item in Model.m_Levels)
+                                                {
+                                                    <option value="@item.MLevel">@item.LevelName</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-4">
+                                        <div class="form-group">
+                                            <label>&nbsp;</label>
+                                            <a href="javascript:void(0);" onclick="GetDetail()" class="btn btn-sub" style="display:block">Search</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <select id="status" class="form-control" style="display:none;">
+                                    <option value="">All</option>
+                                    <option value="Y">Active</option>
+                                    <option value="N">Deactive</option>
+                                </select>
+                            </div>
+
+                            @if (Model.referalDownlineins != null && Model.referalDownlineins.Count() > 0)
+                            {
+                                foreach (var item in Model.referalDownlineins)
+                                {
+                                    <div class="row">
+                                        <div class="col-xs-4"><div class="stat-box"><span>Direct</span><strong>@item.RegisterLeft</strong></div></div>
+                                        <div class="col-xs-4"><div class="stat-box"><span>Indirect</span><strong>@item.RegisterRight</strong></div></div>
+                                        <div class="col-xs-4"><div class="stat-box"><span>Total</span><strong>@(item.RegisterLeft + item.RegisterRight)</strong></div></div>
+                                    </div>
+                                }
+                            }
+
+                            <div class="acc-panel" id="Grdwallet">
+                                @Html.Partial("Levelwisereport_partail", Model)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <script type="text/javascript">
+        function ChangeLevel() {
+            var levelwise = $("#levelwise").val();
+            if (levelwise !== "0") {
+                $("#leveltypediv").hide();
+                $("#leveltype").val('0');
+            } else {
+                $("#leveltypediv").show();
+                $("#leveltype").val('0');
+            }
+        }
+
+        function GetDetail() {
+            var MLevel = $("#levelwise").val();
+            var leveltype = $("#leveltype").val();
+            if (leveltype !== "0") {
+                MLevel = leveltype;
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/Home/GetLevelReport")',
+                dataType: "json",
+                data: { MLevel: MLevel, Legno: "0", ActiveStatus: "" }
+            }).done(function (data) {
+                $('#Grdwallet').html(data.tblOrder);
+            }).fail(function (error) {
+                alert(error.statusText);
+            });
+        }
+    </script>
+}

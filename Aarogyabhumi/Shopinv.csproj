@@ -1,0 +1,614 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B8A4A11B-21C6-4837-808C-06B614B74BED}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Shopinv</RootNamespace>
+    <AssemblyName>Shopinv</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort>44316</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.2.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.9\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.9\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Unity.Abstractions, Version=5.11.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.11.1\lib\net45\Unity.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Container, Version=5.11.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.11.1\lib\net45\Unity.Container.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mvc5, Version=1.4.0.0, Culture=neutral, PublicKeyToken=43da31bc42a85347, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.Mvc5.1.4.0\lib\net45\Unity.Mvc5.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <Private>True</Private>
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\UnityConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CategoryListController.cs" />
+    <Compile Include="Controllers\CheckOrderController.cs" />
+    <Compile Include="Controllers\CheckOutController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ManualKamController.cs" />
+    <Compile Include="Controllers\ProductDetailController.cs" />
+    <Compile Include="Controllers\ViewCartController.cs" />
+    <Compile Include="Entity\E_Banner.cs" />
+    <Compile Include="Entity\E_CartDetails.cs" />
+    <Compile Include="Entity\E_Category.cs" />
+    <Compile Include="Entity\E_CheckOut.cs" />
+    <Compile Include="Entity\E_CouponDetail.cs" />
+    <Compile Include="Entity\E_FranchiseName.cs" />
+    <Compile Include="Entity\E_Grivance.cs" />
+    <Compile Include="Entity\E_OrderReport.cs" />
+    <Compile Include="Entity\E_Payment.cs" />
+    <Compile Include="Entity\E_PendingTrans.cs" />
+    <Compile Include="Entity\E_ProdPrizeList.cs" />
+    <Compile Include="Entity\E_Product.cs" />
+    <Compile Include="Entity\E_RankAchiver.cs" />
+    <Compile Include="Entity\E_RegisterUser.cs" />
+    <Compile Include="Entity\E_SendOTP.cs" />
+    <Compile Include="Entity\E_UserDetail.cs" />
+    <Compile Include="Entity\E_UserPoints.cs" />
+    <Compile Include="LogHelper.cs" />
+    <Compile Include="Models\ExternalLogin.cs" />
+    <Compile Include="Models\M_Changepassword.cs" />
+    <Compile Include="Models\M_Complaint.cs" />
+    <Compile Include="Models\M_payreqCashFreenew.cs" />
+    <Compile Include="Models\M_Profile.cs" />
+    <Compile Include="Models\M_Referral.cs" />
+    <Compile Include="Models\M_UserKYC.cs" />
+    <Compile Include="Models\SendboxAuthenticate.cs" />
+    <Compile Include="SiteExtension\CompanyDetail.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="interface\I_Banner.cs" />
+    <Compile Include="interface\I_Category.cs" />
+    <Compile Include="interface\I_CouponReport.cs" />
+    <Compile Include="interface\I_Login.cs" />
+    <Compile Include="interface\I_OrderReport.cs" />
+    <Compile Include="interface\I_Package.cs" />
+    <Compile Include="interface\I_PayMode.cs" />
+    <Compile Include="interface\I_Product.cs" />
+    <Compile Include="interface\I_register.cs" />
+    <Compile Include="Models\Aarogyaidactivation.cs" />
+    <Compile Include="Models\BLLDBOperations.cs" />
+    <Compile Include="Models\DbOperation.cs" />
+    <Compile Include="Models\Extension.cs" />
+    <Compile Include="Models\GroupDirectReport.cs" />
+    <Compile Include="Models\LoginLPlus.cs" />
+    <Compile Include="Models\M_GetWallettype.cs" />
+    <Compile Include="Models\M_CashFreeRequest.cs" />
+    <Compile Include="Models\M_CashFreeResponse.cs" />
+    <Compile Include="Models\M_Category.cs" />
+    <Compile Include="Models\M_Franchiselist.cs" />
+    <Compile Include="Models\M_Franchisetype.cs" />
+    <Compile Include="Models\M_Product.cs" />
+    <Compile Include="Models\M_Register.cs" />
+    <Compile Include="Models\M_ShowFranchiselist.cs" />
+    <Compile Include="Models\M_Userdetails.cs" />
+    <Compile Include="Models\M_WalletDetail.cs" />
+    <Compile Include="Models\Register.cs" />
+    <Compile Include="Models\RegisterUser.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\R_Banner.cs" />
+    <Compile Include="Repository\R_Category.cs" />
+    <Compile Include="Repository\R_CouponReport.cs" />
+    <Compile Include="Repository\R_Login.cs" />
+    <Compile Include="Repository\R_OrderReport.cs" />
+    <Compile Include="Repository\R_Package.cs" />
+    <Compile Include="Repository\R_PayMode.cs" />
+    <Compile Include="Repository\R_Product.cs" />
+    <Compile Include="Repository\R_register.cs" />
+    <Compile Include="SiteExtension\KycRequiredFilter.cs" />
+    <Compile Include="SiteExtension\MediaUrl.cs" />
+    <Compile Include="SiteExtension\TextCrypto.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="theme\css\bootstrap.min.css" />
+    <Content Include="theme\css\custom-mvc.css" />
+    <Content Include="theme\css\font-awesome.min.css" />
+    <Content Include="theme\css\layout.css" />
+    <Content Include="theme\css\layout-responsive.css" />
+    <Content Include="theme\css\menu.css" />
+    <Content Include="theme\css\message.css" />
+    <Content Include="theme\css\popup-view.css" />
+    <Content Include="theme\fonts\FontAwesome.otf" />
+    <Content Include="theme\fonts\fontawesome-webfont.eot" />
+    <Content Include="theme\fonts\fontawesome-webfont.svg" />
+    <Content Include="theme\fonts\fontawesome-webfont.ttf" />
+    <Content Include="theme\fonts\fontawesome-webfont.woff" />
+    <Content Include="theme\fonts\fontawesome-webfont.woff2" />
+    <Content Include="theme\img\arrow-icon-left.png" />
+    <Content Include="theme\img\arrow-icon-right.png" />
+    <Content Include="theme\img\favicon.ico" />
+    <Content Include="theme\img\filter-icon.png" />
+    <Content Include="theme\img\hero-banner-01.jpg" />
+    <Content Include="theme\img\hero-banner-02.jpg" />
+    <Content Include="theme\img\hero-banner-03.jpg" />
+    <Content Include="theme\img\icon-american-express.jpg" />
+    <Content Include="theme\img\icon-app-store.jpg" />
+    <Content Include="theme\img\icon-buyer.png" />
+    <Content Include="theme\img\icon-cart.png" />
+    <Content Include="theme\img\icon-cart-wht.png" />
+    <Content Include="theme\img\icon-close.png" />
+    <Content Include="theme\img\icon-first-head.png" />
+    <Content Include="theme\img\icon-google-play.jpg" />
+    <Content Include="theme\img\icon-hide-pwd.png" />
+    <Content Include="theme\img\icon-master-card.jpg" />
+    <Content Include="theme\img\icon-minus.png" />
+    <Content Include="theme\img\icon-payout.png" />
+    <Content Include="theme\img\icon-plus.png" />
+    <Content Include="theme\img\icon-price.png" />
+    <Content Include="theme\img\icon-rewards.png" />
+    <Content Include="theme\img\icon-rupay-card.jpg" />
+    <Content Include="theme\img\icon-search.png" />
+    <Content Include="theme\img\icon-show-pwd.png" />
+    <Content Include="theme\img\icon-support.png" />
+    <Content Include="theme\img\icon-visa-card.jpg" />
+    <Content Include="theme\img\icon-wishlist.png" />
+    <Content Include="theme\img\icon-x-twitter.png" />
+    <Content Include="theme\img\logo.png" />
+    <Content Include="theme\img\logo-icon.png" />
+    <Content Include="theme\img\page-banner.jpg" />
+    <Content Include="theme\img\page-home-back-01.jpg" />
+    <Content Include="theme\img\sample-product.jpg" />
+    <Content Include="theme\img\wlcme.jpg" />
+    <Content Include="theme\js\bootstrap.min.js" />
+    <Content Include="theme\js\enquiry.js" />
+    <Content Include="theme\js\html5shiv.min.js" />
+    <Content Include="theme\js\inactive.js" />
+    <Content Include="theme\js\item_filter.js" />
+    <Content Include="theme\js\jquery.min.js" />
+    <Content Include="theme\js\layout.js" />
+    <Content Include="theme\js\respond.min.js" />
+    <Content Include="theme\js\shop.js" />
+    <Content Include="theme\plugins\accordion\css\woco-accordion.min.css" />
+    <Content Include="theme\plugins\accordion\js\jquery-1.11.3.min.js" />
+    <Content Include="theme\plugins\accordion\js\woco.accordion.min.js" />
+    <Content Include="theme\plugins\animation\css\animate.css" />
+    <Content Include="theme\plugins\animation\js\wow.min.js" />
+    <Content Include="theme\plugins\nivo-slider\nivo.css" />
+    <Content Include="theme\plugins\nivo-slider\nivo.js" />
+    <Content Include="theme\plugins\nivo-slider\nivo-custom.css" />
+    <Content Include="theme\plugins\owl-carousel\owl.carousel.js" />
+    <Content Include="theme\plugins\owl-carousel\owl.carousel.min.css" />
+    <Content Include="theme\plugins\owl-carousel\owl.custom.css" />
+    <Content Include="theme\plugins\owl-carousel\owl.theme.default.min.css" />
+    <Content Include="theme\plugins\price-slider\jquery-ui.min.css" />
+    <Content Include="theme\plugins\price-slider\jquery-ui.min.js" />
+    <Content Include="theme\plugins\price-slider\range-slider.css" />
+    <Content Include="theme\plugins\spotlight-master\css\spotlight.min.css" />
+    <Content Include="theme\plugins\spotlight-master\js\spotlight.min.js" />
+    <Content Include="assets\css\banner.css" />
+    <Content Include="assets\css\blog.css" />
+    <Content Include="assets\css\bootstrap.min.css" />
+    <Content Include="assets\css\custom.css" />
+    <Content Include="assets\css\flaticon.css" />
+    <Content Include="assets\css\fontawesome.min.css" />
+    <Content Include="assets\css\footer.css" />
+    <Content Include="assets\css\magnific-popup.min.css" />
+    <Content Include="assets\css\meanmenu.css" />
+    <Content Include="assets\css\owl.carousel.min.css" />
+    <Content Include="assets\css\owl.theme.default.min.css" />
+    <Content Include="assets\css\responsive.css" />
+    <Content Include="assets\css\scrollCue.css" />
+    <Content Include="assets\css\shop.css" />
+    <Content Include="assets\css\style.css" />
+    <Content Include="assets\fonts\flaticon_mycollection.svg" />
+    <Content Include="assets\images\all_men_jewellery.jpg" />
+    <Content Include="assets\images\background.jpg" />
+    <Content Include="assets\images\background_1.png" />
+    <Content Include="assets\images\bg_1.jpg" />
+    <Content Include="assets\images\bns-services\bsn_project_1.png" />
+    <Content Include="assets\images\bns-services\bsn_project_2.png" />
+    <Content Include="assets\images\bns-services\bsn_project_3.png" />
+    <Content Include="assets\images\bns-services\bsn_project_4.png" />
+    <Content Include="assets\images\bns-services\bsn_project_5.png" />
+    <Content Include="assets\images\bns-services\bsn_project_6.png" />
+    <Content Include="assets\images\favicon.ico" />
+    <Content Include="assets\images\favicon.png" />
+    <Content Include="assets\images\gold-chain\gold_chain_1.jpg" />
+    <Content Include="assets\images\gold-chain\gold_chain_10.jpg" />
+    <Content Include="assets\images\gold-chain\gold_chain_11.jpg" />
+    <Content Include="assets\images\gold-chain\gold_chain_12.jpg" />
+    <Content Include="assets\images\gold-chain\gold_chain_13.jpg" />
+    <Content Include="assets\images\gold-chain\gold_chain_14.jpg" />
+    <Content Include="assets\images\gold-chain\gold_chain_15.jpg" />
+    <Content Include="assets\images\gold-chain\gold_chain_2.jpg" />
+    <Content Include="assets\images\gold-chain\gold_chain_3.jpg" />
+    <Content Include="assets\images\gold-chain\gold_chain_4.jpg" />
+    <Content Include="assets\images\gold-chain\gold_chain_5.jpg" />
+    <Content Include="assets\images\gold-chain\gold_chain_6.jpg" />
+    <Content Include="assets\images\gold-chain\gold_chain_7.jpg" />
+    <Content Include="assets\images\gold-chain\gold_chain_8.jpg" />
+    <Content Include="assets\images\gold-chain\gold_chain_9.jpg" />
+    <Content Include="assets\images\home-img.png" />
+    <Content Include="assets\images\homeimg.png" />
+    <Content Include="assets\images\home_img.jpg" />
+    <Content Include="assets\images\logo.png" />
+    <Content Include="assets\images\logo\11.png" />
+    <Content Include="assets\images\logo\12.png" />
+    <Content Include="assets\images\menbracelets.jpg" />
+    <Content Include="assets\images\menchains.jpg" />
+    <Content Include="assets\images\menpendants.jpg" />
+    <Content Include="assets\images\menrings.jpg" />
+    <Content Include="assets\images\products_1.png" />
+    <Content Include="assets\images\products_2.png" />
+    <Content Include="assets\images\products_3.png" />
+    <Content Include="assets\images\products_4.png" />
+    <Content Include="assets\images\product_cat\bracelet.png" />
+    <Content Include="assets\images\product_cat\chain.png" />
+    <Content Include="assets\images\product_cat\kada.png" />
+    <Content Include="assets\images\product_cat\pendent.png" />
+    <Content Include="assets\images\product_cat\ring.png" />
+    <Content Include="assets\images\product_cat\rings.png" />
+    <Content Include="assets\images\product_cat\rudraksha.png" />
+    <Content Include="assets\images\secure_payments.png" />
+    <Content Include="assets\images\secure_payments1.png" />
+    <Content Include="assets\images\services\brandedproducts.jpg" />
+    <Content Include="assets\images\services\food.jpg" />
+    <Content Include="assets\images\services\gv.jpg" />
+    <Content Include="assets\images\services\holiday.jpg" />
+    <Content Include="assets\images\services\movie.jpg" />
+    <Content Include="assets\images\services\onlinestore.jpg" />
+    <Content Include="assets\images\services\petrocard.jpg" />
+    <Content Include="assets\images\services\utility.jpg" />
+    <Content Include="assets\images\slider\1.png" />
+    <Content Include="assets\images\slider\2.png" />
+    <Content Include="assets\images\slider\3.png" />
+    <Content Include="assets\images\slider\slider-0.jpg" />
+    <Content Include="assets\images\slider\slider-1.jpg" />
+    <Content Include="assets\images\slider\slider-2.jpg" />
+    <Content Include="assets\images\slider\slider-3.jpg" />
+    <Content Include="assets\images\slider\slider-4.jpg" />
+    <Content Include="assets\images\tatkim\all_men_jewellery.jpg" />
+    <Content Include="assets\images\tatkim\menbracelets.jpg" />
+    <Content Include="assets\images\tatkim\menchains.jpg" />
+    <Content Include="assets\images\tatkim\menpendants.jpg" />
+    <Content Include="assets\images\tatkim\menrings.jpg" />
+    <Content Include="assets\images\tatkim\Men’s Ring.png" />
+    <Content Include="assets\images\users\user_1.jpg" />
+    <Content Include="assets\images\users\user_2.jpg" />
+    <Content Include="assets\images\users\user_3.jpg" />
+    <Content Include="assets\images\users\user_4.jpg" />
+    <Content Include="assets\js\ajaxchimp.min.js" />
+    <Content Include="assets\js\bootstrap.bundle.min.js" />
+    <Content Include="assets\js\contact-form-script.js" />
+    <Content Include="assets\js\custom.js" />
+    <Content Include="assets\js\form-validator.min.js" />
+    <Content Include="assets\js\jquery.magnific-popup.min.js" />
+    <Content Include="assets\js\jquery.meanmenu.js" />
+    <Content Include="assets\js\jquery.min.js" />
+    <Content Include="assets\js\mixitup.min.js" />
+    <Content Include="assets\js\owl.carousel.min.js" />
+    <Content Include="assets\js\scrollCue.min.js" />
+    <Content Include="assets\Plan\vxf.html" />
+    <Content Include="Content\PagedList.css" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="img\Qr\3fdf3c96-47a2-4f73-a72c-deb1ce05cc8e.jpg" />
+    <Content Include="UploadedPaymentImages\3fdf3c96-47a2-4f73-a72c-deb1ce05cc8e.jpg" />
+    <Content Include="UploadedPaymentImages\Adharback.png" />
+    <Content Include="UploadedPaymentImages\Adharfront.png" />
+    <Content Include="Uploads\KYC\5e8da6c4-0839-4671-b7e8-2a38a83331f1.jpg" />
+    <Content Include="Uploads\KYC\8bd5bc2c-25b4-40dd-a144-dadf9dd14099.jpg" />
+    <Content Include="Uploads\KYC\a4806b9c-1573-4a70-b267-b8e830db94df.jpg" />
+    <Content Include="Uploads\KYC\bd77c0b0-5426-480d-9e99-ae80ac63e459.jpg" />
+    <Content Include="Uploads\KYC\ecf794d1-1934-456e-abe0-22006bda94cd.jpg" />
+    <Content Include="vender\bootstrap\css\bootstrap.min.css" />
+    <Content Include="vender\bootstrap\js\bootstrap.bundle.min.js" />
+    <Content Include="vender\icofont\icofont.min.css" />
+    <Content Include="vender\jquery\jquery.min.js" />
+    <Content Include="vender\slick\slick\ajax-loader.gif" />
+    <Content Include="vender\slick\slick\fonts\slick.svg" />
+    <Content Include="vender\slick\slick\slick-theme.css" />
+    <Content Include="vender\slick\slick\slick.css" />
+    <Content Include="vender\slick\slick\slick.min.js" />
+    <Content Include="Web.config" />
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="assets\images\Men’s Ring\" />
+    <Folder Include="Views\ManualKam\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assets\fonts\flaticon_mycollection.eot" />
+    <Content Include="assets\fonts\flaticon_mycollection.ttf" />
+    <Content Include="assets\fonts\flaticon_mycollection.woff" />
+    <Content Include="assets\fonts\flaticon_mycollection.woff2" />
+    <Content Include="assets\images\01.avif" />
+    <Content Include="assets\images\02.avif" />
+    <Content Include="assets\images\04.avif" />
+    <Content Include="assets\images\3.avif" />
+    <Content Include="assets\images\gold-chain\chain_photo\BCH-14_1_1024x1024 %281%29.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\BCH-14_1_1024x1024 %282%29.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\BCH-14_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-03_2_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-06_2_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-07_2_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-09_2_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-10_2_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-11_2_1024x1024 %281%29.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-11_2_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-13_2_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-15_2_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-43_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-44_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-45_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-46_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-48_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-50_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\CH-52_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-BCH-08_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-BCH-12_1_1024x1024 %281%29.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-BCH-12_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-BCH-15_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-BCH-16_1_1024x1024.jpg.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-BCH-16_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-17_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-18_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-20_1_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-31_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-33_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-40_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-58_1_1024x1024 %281%29.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-58_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-59_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-62_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-63_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-65_1_c50f7957-1eba-474c-9852-3f4eea4574ce_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-76_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-77_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-78_1_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\FJ-CH-81_1_1024x1024.webp" />
+    <Content Include="assets\images\gold-chain\chain_photo\IMG_20231031_102112_1024x1024.webp" />
+    <Content Include="assets\webfonts\fa-brands-400.ttf" />
+    <Content Include="assets\webfonts\fa-brands-400.woff2" />
+    <Content Include="assets\webfonts\fa-regular-400.ttf" />
+    <Content Include="assets\webfonts\fa-regular-400.woff2" />
+    <Content Include="assets\webfonts\fa-solid-900.ttf" />
+    <Content Include="assets\webfonts\fa-solid-900.woff2" />
+    <Content Include="assets\webfonts\fa-v4compatibility.ttf" />
+    <Content Include="assets\webfonts\fa-v4compatibility.woff2" />
+    <None Include="packages.config" />
+    <Content Include="vender\icofont\fonts\icofont.woff" />
+    <Content Include="vender\icofont\fonts\icofont.woff2" />
+    <Content Include="vender\slick\slick\fonts\slick-1.eot" />
+    <Content Include="vender\slick\slick\fonts\slick.eot" />
+    <Content Include="vender\slick\slick\fonts\slick.ttf" />
+    <Content Include="vender\slick\slick\fonts\slick.woff" />
+    <Content Include="Views\Account\SignUp.cshtml" />
+    <Content Include="Views\CategoryList\CategoryList.cshtml" />
+    <Content Include="Views\CategoryList\_CategorySideBar.cshtml" />
+    <Content Include="Views\CategoryList\_FilterProductRangeWise.cshtml" />
+    <Content Include="Views\CheckOrder\CheckOrder.cshtml" />
+    <Content Include="Views\CheckOut\CheckOut.cshtml" />
+    <Content Include="Views\CheckOut\PaymentProceed.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\Contact.cshtml" />
+    <Content Include="Views\Home\DesktopHeader.cshtml" />
+    <Content Include="Views\Home\Footer.cshtml" />
+    <Content Include="Views\Home\GetCartCount.cshtml" />
+    <Content Include="Views\Home\GetCartDetails.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\IndexBanner.cshtml" />
+    <Content Include="Views\Home\Mobile_header.cshtml" />
+    <Content Include="Views\Home\MyCoupon.cshtml" />
+    <Content Include="Views\Home\Myorders.cshtml" />
+    <Content Include="Views\Home\OrderDetail.cshtml" />
+    <Content Include="Views\ProductDetail\ProductDetail.cshtml" />
+    <Content Include="Views\ProductDetail\_Imagedetail.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_IndexLayout.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\_ProductCard.cshtml" />
+    <Content Include="theme\css\bs5-compat.css" />
+    <Content Include="Views\ViewCart\CartProducts.cshtml" />
+    <Content Include="Views\ViewCart\ViewCart.cshtml" />
+    <Content Include="Views\Home\PrivacyPolicy.cshtml" />
+    <Content Include="Views\Home\ReturnPolicy.cshtml" />
+    <Content Include="Views\Home\ShippingPolicy.cshtml" />
+    <Content Include="Views\Account\ResiterUserdetail.cshtml" />
+    <Content Include="Views\Home\VisionMission.cshtml" />
+    <Content Include="Views\Home\BankDetail.cshtml" />
+    <Content Include="Views\Home\FranchiseList.cshtml" />
+    <Content Include="Views\Home\WalletDetail.cshtml" />
+    <Content Include="Views\Home\WalletDetail_partail.cshtml" />
+    <Content Include="Views\Home\Levelwisereport.cshtml" />
+    <Content Include="Views\Home\Levelwisereport_partail.cshtml" />
+    <Content Include="Views\Home\LevelIncome.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Home\OfferBanner.cshtml" />
+    <Content Include="Views\ProductDetail\ProductReview_partial.cshtml" />
+    <Content Include="Views\ViewCart\Wishlist.cshtml" />
+    <Content Include="Views\CheckOrder\Checkofflineorder.cshtml" />
+    <Content Include="Views\Home\DirectSellerContrazt.cshtml" />
+    <Content Include="Views\Home\Selfdeclaration.cshtml" />
+    <Content Include="Views\Home\Termsofuse.cshtml" />
+    <Content Include="Views\Home\Grievanceredressal.cshtml" />
+    <Content Include="Views\Home\Disclaimer.cshtml" />
+    <Content Include="Views\Home\Cancellationpolicy.cshtml" />
+    <Content Include="Views\Home\UserKyc.cshtml" />
+    <Content Include="Views\Account\ChangePassword.cshtml" />
+    <Content Include="Views\Account\RaiseComplaint.cshtml" />
+    <Content Include="Views\Account\TicketList.cshtml" />
+    <Content Include="Views\Account\Complaintdetail_partail.cshtml" />
+    <Content Include="Views\Home\ReferalLinkPage.cshtml" />
+    <Content Include="Views\Home\KYCWarning.cshtml" />
+    <Content Include="Views\Home\UpdateUserKyc.cshtml" />
+    <Content Include="Views\Account\Forgotpass.cshtml" />
+    <Content Include="Views\Account\ChangeTxnPassword.cshtml" />
+    <Content Include="Views\Home\MemberProfile.cshtml" />
+    <Content Include="Views\Home\BrandPortalDirectlogin.cshtml" />
+    <Content Include="SiteDoc\DIRECTSELLERCONTRACT.pdf" />
+    <Content Include="SiteDoc\company-master-setup.sql" />
+    <Content Include="Views\Home\Certificate.cshtml" />
+    <Content Include="Views\CheckOut\CashFreeApi.cshtml" />
+    <Content Include="Views\Home\UpdateUserKycByapi.cshtml" />
+    <Content Include="Views\Home\UserKycByapi.cshtml" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>51143</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost:44316/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

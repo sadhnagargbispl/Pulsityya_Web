@@ -1,0 +1,68 @@
+﻿@model Shopinv.Models.M_Referral
+@{
+    ViewBag.Title = "Refer & Earn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var safeUrl = Model.urlLeft != null ? Model.urlLeft.Replace("+", "%2B") : "";
+}
+
+<section class="contents">
+    <div class="breadcrmb plain">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a class="active">Refer &amp; Earn</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-row">
+        <div class="my-account">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="acc-body">
+                            <h4>My Referral Link</h4>
+
+                            <div class="acc-panel">
+                                <h5>Share your link</h5>
+                                <p>Anyone who registers through this link will be placed under your ID.</p>
+
+                                <div class="form-group">
+                                    <label>Referral Link</label>
+                                    <input type="text" id="myText" value="@Model.urlLeft" class="form-control" readonly="readonly" />
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <a href="javascript:void(0);" onclick="Copyref()" class="btn btn-sub" style="display:block">
+                                            <i class="fa fa-copy"></i>&nbsp; Copy link
+                                        </a>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <a href="https://wa.me/?text=@safeUrl" target="_blank" class="btn btn-brdr" style="display:block">
+                                            <i class="fa fa-whatsapp"></i>&nbsp; Share on WhatsApp
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <script type="text/javascript">
+        function Copyref() {
+            var input = document.getElementById("myText");
+            input.select();
+            input.setSelectionRange(0, 99999);
+            try { document.execCommand("copy"); } catch (e) { }
+            alert("Referral link copied.");
+        }
+    </script>
+}

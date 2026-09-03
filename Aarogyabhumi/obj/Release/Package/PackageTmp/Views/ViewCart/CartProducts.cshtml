@@ -1,0 +1,158 @@
+﻿@{
+    // pulled from m_companymaster; blank column keeps the built-in default
+    Func<string, string, string> comp = (key, fallback) =>
+    {
+        var v = Convert.ToString(Session[key]);
+        return string.IsNullOrWhiteSpace(v) ? fallback : v.Trim();
+    };
+    var freeShip = comp("FreeShipAmount", "2500");
+}
+@model Shopinv.Models.M_Category
+@{
+    var cart = Model.CartDetail;
+    var hasItems = cart != null && cart.Any();
+
+    decimal totMrp = hasItems ? cart.Sum(s => (s.MRP > 0 ? s.MRP : s.Price) * s.qty) : 0;
+    decimal totPrice = hasItems ? cart.Sum(s => s.Price * s.qty) : 0;
+    decimal totDiscount = totMrp - totPrice;
+    decimal totBv = hasItems ? cart.Sum(s => s.bv * s.qty) : 0;
+    decimal totPv = hasItems ? cart.Sum(s => s.PV * s.qty) : 0;
+    decimal totWeight = hasItems ? cart.Sum(s => s.Weight * s.qty) : 0;
+    decimal courierCharge = Session["CourierCharge"] != null ? Convert.ToDecimal(Session["CourierCharge"]) : 0;
+    decimal netPayable = totPrice + courierCharge;
+    var cartCount = hasItems ? cart.Count() : 0;
+}
+
+<div class="cart-row">
+    @if (!hasItems)
+    {
+        <div class="empty-cart-msg">
+            <p>
+                Your cart is empty
+                <span>Looks like you haven&#39;t added anything to your cart yet.</span>
+            </p>
+            <a href="~/CategoryList/CategoryList" class="btn btn-sub btn-shop">Continue Shopping</a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-sm-7 col-md-8">
+                <div class="cart-item">
+                    <h5>My Shopping Cart (@cartCount item@(cartCount == 1 ? "" : "s"))</h5>
+
+                    @foreach (var data in cart)
+                    {
+                        var lineDiscount = 0;
+                        if (data.MRP > 0 && data.MRP > data.Price)
+                        {
+                            lineDiscount = Convert.ToInt32(Math.Round(((data.MRP - data.Price) * 100) / data.MRP));
+                        }
+                        <div class="crt-lst" data-prodid="@data.ProdId" data-stock="@data.Stockqty">
+                            <input type="hidden" id="prodname_@data.ProdId" value="@data.ProdName" />
+                            <p class="pr_remove">
+                                <a onclick="DeleteRow(this,'@data.id','@data.ProdId','@data.imagePath','@data.qty','@data.Price','@data.bv','@data.IpAddress')" title="Remove"></a>
+                            </p>
+                            <div class="crt-pic">
+                                <a href="~/ProductDetail/ProductDetail?ProdId=@data.ProdId">
+                                    <img src="@data.imagePath" onerror="this.src='@Url.Content("~/theme/img/sample-product.jpg")';" alt="@data.ProdName" />
+                                </a>
+                            </div>
+                            <div class="crt-inf">
+                                <p class="pr_name">
+                                    <span>Product ID @data.ProdId</span>
+                                    <a href="~/ProductDetail/ProductDetail?ProdId=@data.ProdId">@data.ProdName</a>
+                                </p>
+                                <div class="row">
+                                    <div class="col-xs-5 col-md-4 col-lg-3">
+                                        <div class="num-incr-decr">
+                                            <span class="decrMent" dt-min="1"></span>
+                                            <input step="1" value="@data.qty" type="text" name="quantity" id="qtyText_@data.ProdId" readonly>
+                                            <span class="incrMent" dt-max="@(data.Stockqty > 0 ? data.Stockqty : 50)"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7 col-md-8 col-lg-9">
+                                        <p class="pr_rate">
+                                            @if (data.MRP > data.Price)
+                                            {
+                                                <span class="pr_mrp">&#8377; @data.MRP</span>
+                                            }
+                                            <span class="pr_offerprice">&#8377; @data.Price</span>
+                                            @if (lineDiscount > 0)
+                                            {
+                                                <span class="pr_discount">@lineDiscount% Off</span>
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                                <p class="pr_size_color">
+                                    @if (!string.IsNullOrEmpty(data.Color))
+                                    {
+                                        <span>Colour : @data.Color</span>
+                                    }
+                                    @if (!string.IsNullOrEmpty(data.Size))
+                                    {
+                                        <span>Size : @data.Size</span>
+                                    }
+                                    <span>BV : @data.bv.ToString("0.##")</span>
+                                </p>
+                            </div>
+                        </div>
+                    }
+
+                    <a href="~/CategoryList/CategoryList" class="btn btn-sub btn-shop">Continue Shopping</a>
+                </div>
+            </div>
+            <div class="col-sm-5 col-md-4">
+                <div class="price-lst-smry">
+                    <h5>Order Summary</h5>
+                    <ul>
+                        <li><span class="lft">Total MRP</span><span class="rght">&#8377; @String.Format("{0:N2}", totMrp)</span></li>
+                        <li><span class="lft">Discount on MRP (-)</span><span class="rght">&#8377; @String.Format("{0:N2}", totDiscount)</span></li>
+                        <li class="ftr"><span class="lft">Grand Total</span><span class="rght">&#8377; @String.Format("{0:N2}", totPrice)</span></li>
+
+                        <li><span class="lft">Shipping Fee (+)</span><span class="rght">&#8377; @String.Format("{0:N2}", courierCharge)</span></li>
+                        <li class="ftr"><span class="lft">Net Payable</span><span class="rght">&#8377; @String.Format("{0:N2}", netPayable)</span></li>
+                        <li class="vp"><span class="lft">Total BV</span><span class="rght">@totBv.ToString("0.##")</span></li>
+                    </ul>
+
+                    <ul class="smry-nte">
+                        <li>Free Delivery on order above &#8377; @freeShip/-.</li>
+                        <li>Tax included. Shipping calculated at checkout.</li>
+                    </ul>
+
+                    <a class="btn btn-sub btn-order" href="javascript:void(0);"
+                       onclick="prceedCheckOut(this,@totBv.ToString(System.Globalization.CultureInfo.InvariantCulture),@totWeight.ToString(System.Globalization.CultureInfo.InvariantCulture));">Proceed to checkout</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    // The demo stepper (layout.js) updates the input first - this posts the new
+    // quantity to the server afterwards and re-renders the cart.
+    (function () {
+        function pushQty($lst) {
+            var prodid = $lst.data('prodid');
+            var qty = $lst.find('input[name=quantity]').val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/ViewCart/UpadteCartdetail")',
+                data: { ProdId: prodid, Quantity: qty }
+            }).done(function (data) {
+                if (data && data.tblOrder) {
+                    $("#cartProducts").html(data.tblOrder);
+                }
+            }).fail(function (error) {
+                alert(error.statusText);
+            });
+        }
+
+        $('.cart-row').off('click.qty').on('click.qty', '.num-incr-decr .incrMent, .num-incr-decr .decrMent', function () {
+            var $lst = $(this).closest('.crt-lst');
+            // let layout.js apply its min/max rules first
+            setTimeout(function () { pushQty($lst); }, 0);
+        });
+    })();
+</script>

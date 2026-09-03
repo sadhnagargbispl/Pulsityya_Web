@@ -1,0 +1,85 @@
+﻿@{
+    // pulled from m_companymaster; blank column keeps the built-in default
+    Func<string, string, string> comp2 = (key, fallback) =>
+    {
+        var v = Convert.ToString(Session[key]);
+        return string.IsNullOrWhiteSpace(v) ? fallback : v.Trim();
+    };
+    var compHours = comp2("CompWorkingHours", "Mon-Sat : 09:00AM to 08:00PM, Sunday : Close");
+    var compTagline = comp2("CompTagline", "A Better Tomorrow Together");
+}
+@{
+    ViewBag.Title = "Contact Us";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var compName = Convert.ToString(Session["CompName"]);
+    var compMail = Convert.ToString(Session["CompMail"]);
+    var compPhone = Convert.ToString(Session["ContactNo"]);
+    var compAdd = Convert.ToString(Session["CompAdd"]);
+}
+
+<section class="contents">
+    <div class="breadcrmb">
+        <img src="~/theme/img/page-banner.jpg" alt="Contact Us">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <h1>Contact Us</h1>
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a class="active">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-row">
+        <div class="container">
+            <h2 class="first-head">@compName <span class="brdr"></span><span>We are here to help you</span></h2>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <div class="cnt-card">
+                        <div class="cnt-icon"><i class="fa fa-map-pin"></i></div>
+                        <h4>Address</h4>
+                        <p>@compAdd</p>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <div class="cnt-card">
+                        <div class="cnt-icon"><i class="fa fa-phone"></i></div>
+                        <h4>Call us</h4>
+                        <p><a href="tel:@compPhone">@compPhone</a></p>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <div class="cnt-card">
+                        <div class="cnt-icon"><i class="fa fa-envelope"></i></div>
+                        <h4>Email us</h4>
+                        <p><a href="mailto:@compMail">@compMail</a></p>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <div class="cnt-card">
+                        <div class="cnt-icon"><i class="fa fa-clock-o"></i></div>
+                        <h4>Working hours</h4>
+                        <p>@compHours</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="txt-page">
+                <h4>Have a question or a complaint?</h4>
+                <p>
+                    Raise a support ticket from your account and our team will get back to you. You can track the status of every
+                    ticket you have raised from the complaint list.
+                </p>
+                <p>
+                    <a href="~/Account/RaiseComplaint" class="btn btn-sub">Raise a complaint</a>
+                    <a href="~/Account/TicketList" class="btn btn-brdr">My complaints</a>
+                    <a href="~/Home/Grievanceredressal" class="btn btn-brdr">Grievance redressal</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>

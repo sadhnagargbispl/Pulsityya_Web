@@ -1,0 +1,55 @@
+@{
+    ViewBag.Title = "Forgot Password";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="contents">
+    <div class="content-row">
+        <div class="container">
+            <div class="login-bar">
+                <div class="login-col">
+                    <h3>Forgot your password ?</h3>
+                    <p>Enter your user ID and we will send your password to the registered mobile / email.</p>
+
+                    <div class="form-group">
+                        <label>User ID</label>
+                        <input type="text" id="userid" class="form-control" placeholder="Enter your user ID" />
+                    </div>
+
+                    <input type="button" id="signupbtn" value="Get Password" class="btn btn-sub" onclick="Forgotpassword();" />
+
+                    <p class="link-register">Remembered it ? <a href="~/Account/Login">Login</a> instead.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <script type="text/javascript">
+        function Forgotpassword() {
+            var userid = $("#userid").val();
+            if (userid === "") {
+                alert("Enter user id.");
+                $("#userid").focus();
+                return false;
+            }
+            $("#signupbtn").prop("disabled", true).val("Please wait . . .");
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/Account/Forgotpassword")',
+                dataType: "json",
+                timeout: 900000,
+                data: { Userid: userid }
+            }).done(function (data) {
+                alert(data.msg);
+                $("#userid").val('');
+            }).fail(function (error) {
+                alert(error.statusText);
+            }).always(function () {
+                $("#signupbtn").prop("disabled", false).val("Get Password");
+            });
+        }
+    </script>
+}

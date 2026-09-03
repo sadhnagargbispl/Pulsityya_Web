@@ -1,0 +1,25 @@
+@model Shopinv.Models.M_Category
+@{
+    string imageUrl = System.Configuration.ConfigurationManager.AppSettings["ImageUrl"];
+    if (!string.IsNullOrEmpty(imageUrl))
+    {
+        imageUrl = imageUrl.TrimEnd('/');
+    }
+}
+<section class="slider">
+    <div class="owl-carousel slide-carousel">
+        @if (Model.ShowBanner != null && Model.ShowBanner.Count() > 0)
+        {
+            foreach (var item in Model.ShowBanner)
+            {
+                <div class="slide"><img src="@imageUrl/@item.ImagePath" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/hero-banner-01.jpg")';" alt="Pulastya Globals India (P) Limited" /></div>
+            }
+        }
+        else
+        {
+            <div class="slide"><img src="~/theme/img/hero-banner-01.jpg" alt="Pulastya Globals India (P) Limited" /></div>
+            <div class="slide"><img src="~/theme/img/hero-banner-02.jpg" alt="Pulastya Globals India (P) Limited" /></div>
+            <div class="slide"><img src="~/theme/img/hero-banner-03.jpg" alt="Pulastya Globals India (P) Limited" /></div>
+        }
+    </div>
+</section>

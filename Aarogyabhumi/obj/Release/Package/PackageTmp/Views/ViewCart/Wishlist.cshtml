@@ -1,0 +1,102 @@
+@model Shopinv.Models.M_Category
+@{
+    ViewBag.Title = "Wishlist";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var hasItems = Model.CartDetail != null && Model.CartDetail.Count() > 0;
+}
+
+@{ Html.RenderAction("OfferBanner", "Home");}
+
+<section class="contents">
+    <div class="breadcrmb">
+        <img src="~/theme/img/page-banner.jpg" alt="Wishlist">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <h1>Wishlist</h1>
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a class="active">Wishlist</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-row">
+        <div class="container">
+            <div class="cart-row">
+                @if (!hasItems)
+                {
+                    <div class="empty-cart-msg">
+                        <p>
+                            Your wishlist is empty
+                            <span>Tap the heart on any product to save it for later.</span>
+                        </p>
+                        <a href="~/CategoryList/CategoryList" class="btn btn-sub btn-shop">Browse Products</a>
+                    </div>
+                }
+                else
+                {
+                    <h5>Saved Items (@Model.CartDetail.Count())</h5>
+                    foreach (var item in Model.CartDetail)
+                    {
+                        <div class="crt-lst">
+                            <p class="pr_remove">
+                                <a onclick="RemoveFromWishlist('@item.ProdId')" title="Remove"></a>
+                            </p>
+                            <div class="crt-pic">
+                                <a href="~/ProductDetail/ProductDetail?ProdId=@item.ProdId">
+                                    <img src="@item.imagePath" onerror="this.src='@Url.Content("~/theme/img/sample-product.jpg")';" alt="@item.ProdName" />
+                                </a>
+                            </div>
+                            <div class="crt-inf">
+                                <p class="pr_name">
+                                    <span>Product ID @item.ProdId</span>
+                                    <a href="~/ProductDetail/ProductDetail?ProdId=@item.ProdId">@item.ProdName</a>
+                                </p>
+                                <p class="pr_rate">
+                                    @if (item.MRP > item.prodprice)
+                                    {
+                                        <span class="pr_mrp">&#8377; @item.MRP</span>
+                                    }
+                                    <span class="pr_offerprice">&#8377; @item.prodprice</span>
+                                    @if (item.Stockqty != 0)
+                                    {
+                                        <span class="pr_discount">In Stock</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="pr_discount">Sold Out</span>
+                                    }
+                                </p>
+                                <p class="pr_size_color">
+                                    <a href="~/ProductDetail/ProductDetail?ProdId=@item.ProdId" class="btn btn-sub btn-sm">View product</a>
+                                </p>
+                            </div>
+                        </div>
+                    }
+
+                    <a href="~/CategoryList/CategoryList" class="btn btn-sub btn-shop">Continue Shopping</a>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <script type="text/javascript">
+        function RemoveFromWishlist(pcode) {
+            if (!confirm("Remove this item from your wishlist ?")) { return false; }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/ProductDetail/SaveToWishlist")',
+                dataType: "json",
+                data: { ProductID: pcode }
+            }).done(function (data) {
+                alert(data.msg);
+                window.location.reload();
+            }).fail(function (error) {
+                alert(error.statusText);
+            });
+        }
+    </script>
+}

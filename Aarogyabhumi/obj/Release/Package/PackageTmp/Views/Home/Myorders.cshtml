@@ -1,0 +1,157 @@
+@using Shopinv.Entity
+@model Shopinv.Models.M_Category
+@{
+    ViewBag.Title = "Orders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var idno = Session["IDNO"];
+    var franchiseUrl = System.Configuration.ConfigurationManager.AppSettings["FranchiseUrl"];
+    var hasOrders = Model.OrderReport != null && Model.OrderReport.Any(o => !string.IsNullOrEmpty(o.Orderno));
+}
+
+<section class="contents">
+    <div class="breadcrmb plain">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a class="active">Orders</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--  -->
+    <div class="content-row">
+        <div class="my-account">
+            <div class="container">
+                <div class="table-responsive">
+                    <table class="table mytable ordrtable">
+                        <thead>
+                            <tr>
+                                <th>Order No</th>
+                                <th>Order Date</th>
+                                <th>Order Amount</th>
+                                <th>Courier Charge</th>
+                                <th>By Wallet</th>
+                                <th>By Online</th>
+                                <th>Paid BV</th>
+                                <th>Dispatch Status</th>
+                                <th>Remark</th>
+                                <th>Pay Mode</th>
+                                <th>Courier Name</th>
+                                <th>Docket No</th>
+                                <th>Docket Date</th>
+                                <th>Track</th>
+                                <th>Download Bill</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (hasOrders)
+                            {
+                                foreach (var item in Model.OrderReport)
+                                {
+                                    if (!string.IsNullOrEmpty(item.Orderno))
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a class="view" href="javascript:void(0)" onclick="ShowGrdOrderNo(this,'@item.Orderno','@item.status','@idno')">@item.Orderno</a>
+                                            </td>
+                                            <td>@item.orderdate</td>
+                                            <td>@String.Format("{0:N2}", item.OrderAmount + item.CourierCharge)</td>
+                                            <td>@String.Format("{0:N2}", item.CourierCharge)</td>
+                                            <td>@item.Pinwallet</td>
+                                            <td>@item.Chamt</td>
+                                            <td>@item.PV</td>
+                                            <td>@item.status</td>
+                                            <td></td>
+                                            <td>@item.Mode</td>
+                                            <td>
+                                                @if (item.CourierName != "-- SELECT --")
+                                                {
+                                                    @item.CourierName
+                                                }
+                                            </td>
+                                            <td>@item.DocketNo</td>
+                                            <td>
+                                                @if (item.DocketDate != "01-Jan-1900")
+                                                {
+                                                    @item.DocketDate
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(item.Website) && item.Website != "#")
+                                                {
+                                                    <a class="view" href="@item.Website" target="_blank">Track</a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.status == "Dispatched" || item.status == "Partial Dispatched")
+                                                {
+                                                    <a class="view" href="javascript:void(0)" onclick="showbillno('@item.InvBillno','@idno','@item.status')">Download</a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="15" class="no-record">You have not placed any order yet.</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--modal box-->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog" style="max-width: 700px;">
+            <div class="modal-content">
+                <button type="button" class="close" data-dismiss="modal"></button>
+                <h4>Order Detail</h4>
+                <div id="GrdOrderNo">
+                    @if (Model.OrderNoDetail != null && Model.OrderNoDetail.Count() > 0)
+                    {
+                        @Html.Partial("OrderDetail", Model)
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <script type="text/javascript">
+        function showbillno(OrderId, idno, status) {
+            if (status === 'Dispatched' || status === 'Partial Dispatched') {
+                window.open("@franchiseUrl/Invoice/DownloadPdf?Pm=" + window.btoa(OrderId) + "&id=" + idno, "_blank");
+            }
+        }
+
+        function ShowGrdOrderNo(obj, OrderId, status, idno) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/Home/SrchOrderDetail")',
+                dataType: "json",
+                data: { OrderId: OrderId }
+            }).done(function (data) {
+                $('#GrdOrderNo').html(data.tblOrder);
+                $('#myModal').modal('show');
+            }).fail(function (error) {
+                alert(error.statusText);
+            });
+        }
+
+        function Showofflineorderdetail(OrderId) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/Home/Showofflineorderdetail")',
+                dataType: "json",
+                data: { OrderId: OrderId }
+            }).done(function (data) {
+                $('#GrdOrderNo').html(data.tblOrder);
+                $('#myModal').modal('show');
+            });
+        }
+    </script>
+}

@@ -1,0 +1,36 @@
+@model Shopinv.Models.M_Category
+@using Shopinv.Entity;
+@{
+    var categories = Model.DDLCategory;
+    if (categories == null)
+    {
+        categories = Session["DDLCategory"] as IEnumerable<E_Category>;
+    }
+    var activeCat = Convert.ToString(Session["ddlCatName"]);
+}
+
+<p class="ct-head">Browse Categories</p>
+<div class="itm-ct-lst">
+    <ul>
+        <li><a href="~/CategoryList/CategoryList" class="@(string.IsNullOrEmpty(activeCat) ? "active" : "")">All Products</a></li>
+        @if (categories != null)
+        {
+            foreach (var cat in categories)
+            {
+                <li>
+                    <a href="~/CategoryList/CategoryList?CatName=@cat.CatName"
+                       class="@(string.Equals(activeCat, cat.CatName, StringComparison.OrdinalIgnoreCase) ? "active" : "")">@cat.CatName</a>
+                    @if (cat.subCategory != null && cat.subCategory.Any())
+                    {
+                        <ul class="@(string.Equals(activeCat, cat.CatName, StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                            @foreach (var sub in cat.subCategory)
+                            {
+                                <li><a href="~/CategoryList/CategoryList?CatName=@cat.CatName&Subcate=@sub.SubCatName">@sub.SubCatName</a></li>
+                            }
+                        </ul>
+                    }
+                </li>
+            }
+        }
+    </ul>
+</div>

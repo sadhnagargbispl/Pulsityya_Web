@@ -1,0 +1,131 @@
+@{
+    ViewBag.Title = "Cart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="contents">
+    <div class="breadcrmb">
+        <img src="~/theme/img/page-banner.jpg" alt="Cart">
+        <div class="breadcrmb-content">
+            <div class="container">
+                <h1>Cart</h1>
+                <ul class="breadcrmb-loc">
+                    <li><a href="~/Home/Index">Home</a></li>
+                    <li><a class="active">Cart</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--  -->
+    <div class="content-row">
+        <div class="container" id="cartProducts"></div>
+    </div>
+    <input type="hidden" id="kitid" value="@HttpContext.Current.Session["KitId"]" />
+</section>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            GetCartProducts();
+        });
+
+        function GetCartProducts() {
+            $.ajax({
+                url: '@Url.Content("~/ViewCart/CartProducts")',
+                type: 'GET',
+                dataType: "html",
+                data: {
+                    Actiontype: 'Rpt',
+                    UNQId: window.sessionStorage.getItem("SCUniqid"),
+                    ScRegid: window.sessionStorage.getItem("ScRegid")
+                }
+            }).done(function (result) {
+                $("#cartProducts").html(result);
+            }).fail(function (error) {
+                alert(error.statusText);
+            });
+            return false;
+        }
+
+        function DeleteRow(obj, id, ProdId, imagePath, qty, Price, bv, IpAddress) {
+            if (!confirm("Are you sure you want to remove this item ?")) { return false; }
+            var prodname = $("#prodname_" + ProdId).val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/ViewCart/DeleteLstRow")',
+                data: {
+                    Id: id, ProdId: ProdId, ProdName: prodname, imagePath: imagePath,
+                    qty: qty, Price: Price, bv: bv, IpAddress: IpAddress
+                }
+            }).done(function () {
+                window.location.reload();
+            }).fail(function (error) {
+                alert(error.statusText);
+            });
+            return false;
+        }
+
+        function prceedCheckOut(obj, TotalBV, totalWeight) {
+            if (!confirm("Do you want to proceed ?")) { return false; }
+
+            var kitid = parseInt($("#kitid").val(), 10);
+            if (kitid >= 3) {
+                var billtype = $("#billtype").val();
+                if (billtype === "0") {
+                    alert("Please select bill type");
+                    return false;
+                }
+            }
+            if (TotalBV === "0" || TotalBV === 0) {
+                alert("Oops! You haven't added any products yet. Please choose a product to continue.");
+                window.location.href = '@Url.Content("~/Home/Index")';
+                return false;
+            }
+            ProductWiseStock(TotalBV);
+            return false;
+        }
+
+        function ProductWiseStock(TotalBV) {
+            $.ajax({
+                url: '@Url.Content("~/ViewCart/ProductWiseStock")',
+                type: 'post',
+                dataType: "json",
+                data: { SpecialInstruction: $("#specialInstructions").val() }
+            }).done(function (result) {
+                if (result.msg !== "") {
+                    alert(result.msg);
+                } else {
+                    CheckStatus(TotalBV);
+                }
+            }).fail(function (error) {
+                alert(error.statusText);
+            });
+        }
+
+        function CheckStatus(TotalBV) {
+            var kitid = parseInt($("#kitid").val(), 10);
+            var billtype = "A";
+            if (kitid >= 3) {
+                billtype = $("#billtype").val();
+                if (billtype === "0") {
+                    alert("Please select bill type");
+                    return false;
+                }
+            }
+            $.ajax({
+                url: '@Url.Content("~/ViewCart/CheckStatus")',
+                type: 'GET',
+                data: { Billtype: billtype }
+            }).done(function (result) {
+                if (result.code === "201") {
+                    window.location.href = '@Url.Content("~/CheckOut/CheckOut")';
+                } else {
+                    alert(result.msg);
+                }
+            }).fail(function (error) {
+                alert(error.statusText);
+            });
+            return false;
+        }
+    </script>
+}
