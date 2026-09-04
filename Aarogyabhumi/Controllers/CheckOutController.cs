@@ -473,7 +473,7 @@ namespace Shopinv.Controllers
                     decimal totalgst = CheckOutDetail.Sum(s => (s.Gst * s.qty));
                     decimal ToTpayAmount = CheckOutDetail.Sum(s => (s.Netamount));
                     decimal Totalamount = CheckOutDetail.Sum(s => (s.amount));
-                    string apiurl = CpanelUrl + "/CheckLogin?token=abUnMar5489pidlAewUF4875brlE8a4i5n61106&UserName=" + Convert.ToString(Session["IDNO"]) + "&Password=" + Convert.ToString(Session["password"]) + "&action=addbv&amount=" + Convert.ToString(Totalamount) + "&billtype=R&kitid=0&totalpv=" + Convert.ToString(Session["totalpv"]) + "&gst=" + totalgst + "&netamount=" + ToTpayAmount + "&TxnData=" + randomordernumber + ";" + Convert.ToString(Session["totalbv"]) + ";BVCredit";
+                    string apiurl = CpanelUrl + "/CheckLogin?token=abUnMar5489pidlAewUF4875brlE8a4i5n61112&UserName=" + Convert.ToString(Session["IDNO"]) + "&Password=" + Convert.ToString(Session["password"]) + "&action=addbv&amount=" + Convert.ToString(Totalamount) + "&billtype=R&kitid=0&totalpv=" + Convert.ToString(Session["totalpv"]) + "&gst=" + totalgst + "&netamount=" + ToTpayAmount + "&TxnData=" + randomordernumber + ";" + Convert.ToString(Session["totalbv"]) + ";BVCredit";
                     var detail = JsonConvert.SerializeObject(req);
                     var response = Callgetfunction(apiurl);
                     var output = JsonConvert.DeserializeObject<Bsnaddbresponse>(response);
