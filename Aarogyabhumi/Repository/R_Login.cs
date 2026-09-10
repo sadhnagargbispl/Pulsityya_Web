@@ -487,7 +487,7 @@ namespace Shopinv.Repoistory
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
                 string reqId = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-                string url = "https://wa.bisplindia.in/api/method/frappe_whatsapp.whatsapp_chat.send_template";
+                string url = System.Configuration.ConfigurationManager.AppSettings["WhatsappApiUrl"];
 
                 // Template ke {{1}} {{2}} {{3}} order ke hisaab se message
                 string whatsappMsg =

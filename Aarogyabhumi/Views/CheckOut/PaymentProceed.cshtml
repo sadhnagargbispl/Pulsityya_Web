@@ -1,10 +1,24 @@
-﻿@model Shopinv.Models.M_Category
+@model Shopinv.Models.M_Category
 @{
-    ViewBag.Title = "PaymentProceed";
+    ViewBag.Title = "Payment";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var CourierCharge = Convert.ToDecimal(Session["CourierCharge"]);
     var totalamount = Convert.ToDecimal(Session["totalamount"]);
     var totalnetpay = totalamount + CourierCharge;
+}
+@section styles {
+    <style>
+        .cart-row .pay-pane .dlvry-note b {
+            color: #176a3a;
+            font-size: 1.2em;
+        }
+        .cart-row .pay-pane .btn-order {
+            margin-top: 5px;
+        }
+        .cart-row .pay-pane .btn-order[disabled] {
+            opacity: .65;
+        }
+    </style>
 }
 
 <script type="text/javascript">
@@ -286,7 +300,7 @@
 <script type="text/javascript">
     /*
     ------------------ OLD WALLET / GATEWAY CODE (COMMENTED) ------------------
-    (code safely commented — unchanged)
+    (code safely commented - unchanged)
     ---------------------------------------------------------------------------
     */
 
@@ -362,131 +376,99 @@
             }
         });
     }
+
+    // payment method picker (replaces the old BS5 "pill" tabs)
+    $(document).on('click', '.pay-methods .pay-method', function () {
+        var pane = $(this).attr('data-pane');
+        $('.pay-methods .pay-method').removeClass('active');
+        $(this).addClass('active');
+        $('#v-pills-tabContent > .tab-pane').removeClass('active in');
+        $(pane).addClass('active in');
+    });
 </script>
 
-<section class="py-5">
+<div class="breadcrmb">
+    <img src="~/theme/img/page-banner.jpg" alt="Payment">
+    <div class="breadcrmb-content">
+        <div class="container">
+            <h1>Payment</h1>
+            <ul class="breadcrmb-loc">
+                <li><a href="~/Home/Index">Home</a></li>
+                <li><a href="~/ViewCart/ViewCart">Cart</a></li>
+                <li><a href="~/CheckOut/CheckOut">Checkout</a></li>
+                <li><a class="active">Payment</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!--  -->
+<div class="content-row">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="card shadow border-0 rounded-4">
-                    <!-- Header with new color -->
-                    <div class="card-header text-white rounded-top-4 py-3" style="background-color:#212529;">
-                        <h5 class="mb-0 text-center" style="color:white !important">
-                            <i class="fa fa-credit-card"></i> &nbsp; Select Payment Method
-                        </h5>
-                    </div>
-
-                    <div class="card-body bg-light">
+        <div class="cart-row">
+            <div class="row">
+                <div class="col-sm-7 col-md-8">
+                    <div class="container-address">
+                        <h5><i class="fa fa-credit-card"></i>&nbsp; Select Payment Method</h5>
                         <div class="row">
                             <!-- LEFT SIDE NAV -->
-                            <div class="col-md-4 border-end">
-                                <div class="nav flex-column my-account-pills " id="v-pills-tab" role="tablist" aria-orientation="vertical">
-
-                                    <button class="nav-link border-bottom active" id="v-pills-my-address-tab" data-bs-toggle="pill" data-bs-target="#v-pills-my-address" type="button">
-                                        <i class="fa fa-qrcode"></i> &nbsp; Shopping Wallet
+                            <div class="col-sm-5">
+                                <div class="pay-methods" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                    <button class="pay-method active" id="v-pills-my-address-tab" data-pane="#v-pills-my-address" type="button">
+                                        <i class="fa fa-google-wallet"></i> Shopping Wallet
                                     </button>
-                                    @*<button class="nav-link border-bottom" id="v-pills-my-order-tab" data-bs-toggle="pill" data-bs-target="#v-pills-my-order" type="button">
-                                        <i class="fa fa-qrcode"></i> &nbsp; Payment Gateway
-                                    </button>*@
-
-
                                     <!-- Only Offline Active -->
-                                    <button class="nav-link border-bottom" id="v-pills-my-offlineorder-tab" data-bs-toggle="pill" data-bs-target="#v-pills-my-offlineorder" type="button" style="display:none;">
-                                        <i class="fa fa-qrcode"></i> &nbsp; Payment Gateway
+                                    <button class="pay-method" id="v-pills-my-offlineorder-tab" data-pane="#v-pills-my-offlineorder" type="button" style="display:none;">
+                                        <i class="fa fa-qrcode"></i> Payment Gateway
                                     </button>
                                 </div>
                             </div>
 
                             <!-- RIGHT SIDE CONTENT -->
-                            <div class="col-md-8">
+                            <div class="col-sm-7">
                                 <div class="tab-content" id="v-pills-tabContent">
-                                    <div class="p-4 tab-pane fade show active" id="v-pills-my-address" role="tabpanel" tabindex="0" aria-labelledby="#v-pills-my-address-tab">
-                                        <div class="row row-cols-xl-1 row-cols-lg-1 row-cols-md-1 row-cols-1 g-3">
-                                            <div class="col">
-                                                <div class="form-check osahan-radio-box osahan-netbanking w-100 bg-white border p-3 rounded-4">
-                                                    <div class="d-flex align-items-center justify-content-between w-100 mb-1 ">
-                                                        <h6 class="m-0">Shopping Wallet Fund : <span class="text-success"><b id="spnShoppingFund">Rs. 0.00/-</b></span></h6>
-                                                    </div>
-                                                    @*@if(@HttpContext.Current.Session["ActiveStatus"].ToString()=="Y")
-                                                        {
-                                                            <div class="d-flex align-items-center justify-content-between w-100 mb-1" id="divrepurchase">
-                                                            <h6 class="m-0">Repurchase Wallet Fund : <span class="text-success"><b id="spnRepurchaseFund">Rs. 0.00/-</b></span></h6>
-                                                        </div>
-                                                        }*@
-                                                    <div class="osahan-radio-box-inner mt-3">
-                                                        <div class="form-group mt-3">
-                                                            <h6 class="m-0">
-                                                                Total Amount:
-                                                            </h6>
-                                                            <input readonly type="text" name="" id="Amount" class="form-control fs-small rounded-0 p-2" placeholder="Enter Amount Here..." aria-describedby="helpId" value="@Session["totalamount"]">
-                                                        </div>
-                                                        @*<div class="form-group mt-3">
-                                                                <h6 class="m-0">
-                                                                    Shopping Wallet:
-                                                                </h6>
-                                                                <input type="text" name="" id="ShoppingWallet" class="form-control fs-small rounded-0 p-2" placeholder="Enter Amount Here..." aria-describedby="helpId" onchange="checkWAmt();">
-                                                            </div>*@
-
-                                                        @*<div class="form-group mt-3" id="divrepurchasewallet">
-                                                                <h6 class="m-0">
-                                                                    Repurchase Wallet:
-                                                                </h6>
-                                                                <input type="text" name="" id="RepurchaseWallet" class="form-control fs-small rounded-0 p-2" placeholder="Enter Amount Here..." aria-describedby="helpId" onchange="checkRamt();">
-                                                            </div>*@
-                                                        @*<a href="javascript:void(0);" onclick="SaveProceed()" class="btn btn-danger btn-sm rounded-2 mt-3" data-bs-toggle="offcanvas" data-bs-target="#orderconfirm" aria-controls="orderconfirm" id="walletpaybtn">Pay Now</a>*@
-
-                                                        <button type="button" onclick="SaveProceed()" class="btn btn-danger btn-sm rounded-2 mt-3" id="walletpaybtn">Pay</button>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    <div class="tab-pane fade in active pay-pane" id="v-pills-my-address" role="tabpanel" aria-labelledby="v-pills-my-address-tab">
+                                        <div class="dlvry-note">
+                                            <strong>Shopping Wallet Fund</strong>
+                                            <b id="spnShoppingFund">Rs. 0.00/-</b>
                                         </div>
+                                        <div class="form-group">
+                                            <label>Total Amount</label>
+                                            <input readonly type="text" name="" id="Amount" class="form-control" placeholder="Enter Amount Here..." aria-describedby="helpId" value="@Session["totalamount"]">
+                                        </div>
+                                        <button type="button" onclick="SaveProceed()" class="btn btn-sub btn-order" id="walletpaybtn">Pay</button>
                                     </div>
 
-                                    @*<div class="p-4 tab-pane fade " id="v-pills-my-order" role="tabpanel" tabindex="0" aria-labelledby="#v-pills-my-order-tab">
-                                        <div class="row row-cols-xl-1 row-cols-lg-1 row-cols-md-1 row-cols-1 g-3">
-                                            <div class="col">
-                                                <div class="form-check osahan-radio-box osahan-netbanking w-100 bg-white border p-3 rounded-4">
-
-                                                    <div class="osahan-radio-box-inner mt-3">
-                                                        <div class="form-group mt-3">
-                                                            <h6 class="m-0">
-                                                                Total Amount:
-                                                            </h6>
-                                                            <input readonly type="text" name="" id="Amount" class="form-control fs-small rounded-0 p-2" placeholder="Enter Amount Here..." aria-describedby="helpId" value="@Session["totalamount"]">
-                                                        </div>
-                                                        <button type="button" onclick="SaveProceed()" class="btn btn-danger btn-sm rounded-2 mt-3" id="walletpaybtn">Pay</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>*@
-
                                     <!-- OFFLINE PAYMENT ACTIVE -->
-                                    <div class="tab-pane fade" id="v-pills-my-offlineorder" role="tabpanel">
-                                        <div class="bg-white rounded-4 shadow-sm p-4">
-                                          
-                                            <div class="form-group mb-4">
-                                                <label class="form-label fw-semibold">Total Amount</label>
-                                                <input type="text" readonly value="@totalnetpay" id="pgamount" name="pgamount" class="form-control">
-                                            </div>
-
-                                            <div class="text-center">
-                                                <button id="pgpayBtn" type="button"
-                                                        class="btn btn-lg px-5 rounded-pill text-white"
-                                                        style="background-color:#212529;"
-                                                        onclick="CashfreeInitiate()">
-                                                    <i class="fa fa-paper-plane"></i> &nbsp; Submit Payment
-                                                </button>
-                                            </div>
+                                    <div class="tab-pane fade pay-pane" id="v-pills-my-offlineorder" role="tabpanel" aria-labelledby="v-pills-my-offlineorder-tab">
+                                        <div class="form-group">
+                                            <label>Total Amount</label>
+                                            <input type="text" readonly value="@totalnetpay" id="pgamount" name="pgamount" class="form-control">
                                         </div>
+                                        <button id="pgpayBtn" type="button" class="btn btn-sub btn-order" onclick="CashfreeInitiate()">
+                                            <i class="fa fa-paper-plane"></i>&nbsp; Submit Payment
+                                        </button>
                                     </div>
                                     <!-- END OFFLINE -->
                                 </div>
                             </div>
-                        </div> <!-- row end -->
+                        </div>
                     </div>
-                </div> <!-- card end -->
+                </div>
+
+                <div class="col-sm-5 col-md-4">
+                    <div class="price-lst-smry">
+                        <h5>Payment Summary</h5>
+                        <ul>
+                            <li><span class="lft">Order Amount</span><span class="rght">&#8377;@String.Format("{0:N2}", totalamount)</span></li>
+                            <li><span class="lft">Shipping Fee (+)</span><span class="rght">&#8377;@String.Format("{0:N2}", CourierCharge)</span></li>
+                            <li class="ftr"><span class="lft">Net Payable </span><span class="rght">&#8377;@String.Format("{0:N2}", totalnetpay)</span></li>
+                        </ul>
+                        <ul class="smry-nte">
+                            <li>The wallet Pay button is shown only when your balance covers the net payable amount.</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</section>
+</div>

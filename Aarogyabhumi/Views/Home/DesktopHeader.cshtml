@@ -7,8 +7,8 @@
 
 <div class="container px-0 px-xl-3">
     <a class="navbar-brand m-0 d-lg-block flex-shrink-0" href="~/Home/Index">
-        <img src="~/img/resources/logo.png" alt="Gmart Logo" class="img-fluid logo-img d-none d-lg-block">
-        <img src="~/img/resources/logo.png" alt="Gmart Logo" class="img-fluid logo-img d-lg-none">
+        <img src="@Convert.ToString(Session["CompLogoUrl"])" alt="@Convert.ToString(Session["CompTitle"])" class="img-fluid logo-img d-none d-lg-block">
+        <img src="@Convert.ToString(Session["CompLogoUrl"])" alt="@Convert.ToString(Session["CompTitle"])" class="img-fluid logo-img d-lg-none">
     </a>
 
     <div class="border rounded-pill overflow-hidden osahan-top-search w-100 ms-5 me-4 d-none d-lg-flex bg-white">

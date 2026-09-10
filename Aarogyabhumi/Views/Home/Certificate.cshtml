@@ -1,122 +1,108 @@
-﻿
 @{
     ViewBag.Title = "Legal";
     Layout = "~/Views/Shared/_Layout.cshtml";
-}
-<div class="mini-banner bg-success py-3">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-12 text-center">
 
-            </div>
+    // document image / file URLs come from Web.config (appSettings Doc*Url); an empty key hides the tile
+    var appCfg = System.Configuration.ConfigurationManager.AppSettings;
+    var certificates = new[]
+    {
+        new { Url = appCfg["DocIncorporationUrl"], Name = "Certificate of Incorporation" },
+        new { Url = appCfg["DocRegistrationUrl"], Name = "Registration Certificate" },
+        new { Url = appCfg["DocFoodSafetyUrl"], Name = "Food Safety License" },
+        new { Url = appCfg["DocTrademarkUrl"], Name = "Trademark Certificate" }
+    };
+    var documents = new[]
+    {
+        new { Url = appCfg["DocArticlesUrl"], Name = "e Articles of Association" },
+        new { Url = appCfg["DocMemorandumUrl"], Name = "e Memorandum of Association" }
+    };
+}
+
+<style>
+    /* image preview modal (its styles lived in the old ~/assets theme) */
+    #cert-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 9999;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 50px 15px 20px;
+        text-align: center;
+    }
+    #cert-modal.open {
+        display: block;
+    }
+    #cert-modal .cert-modal-img {
+        max-width: 100%;
+        max-height: 100%;
+        background: #fff;
+    }
+    #cert-modal .cert-close {
+        position: absolute;
+        top: 8px;
+        right: 15px;
+        background: none;
+        border: 0;
+        color: #fff;
+        font-size: 36px;
+        line-height: 1;
+        cursor: pointer;
+    }
+</style>
+
+<div class="breadcrmb">
+    <img src="@Url.Content("~/theme/img/page-banner.jpg")" alt="Compliance Documents">
+    <div class="breadcrmb-content">
+        <div class="container">
+            <h1>Compliance Documents</h1>
+            <ul class="breadcrmb-loc">
+                <li><a href="@Url.Content("~/Home/Index")">Home</a></li>
+                <li><a class="active">Compliance Documents</a></li>
+            </ul>
         </div>
     </div>
 </div>
 
-<div class="contact-area bg-light pt-5 pb-5">
+<!-- Modal HTML -->
+<div id="cert-modal" aria-hidden="true" role="dialog">
+    <button class="cert-close" aria-label="Close">&times;</button>
+    <img class="cert-modal-img" alt="Certificate preview">
+</div>
+
+<div class="content-row">
     <div class="container">
-        <div class="row align-items-start">
+        <div class="txt-page">
 
+            <h4 class="mb-3">Compliance Documents</h4>
+            <hr>
 
-
-            <div class="contact-info bg-white rounded p-4  mb-4 row">
-
-                <h4 class="mb-3 ">Compliance Documents </h4>
-                <hr>
-
-                <!-- Modal HTML -->
-                <div id="cert-modal" aria-hidden="true" role="dialog">
-                    <button class="cert-close" aria-label="Close">×</button>
-                    <img class="cert-modal-img" alt="Certificate preview">
-                </div>
-                @*<a href="~/assets/images/Demo.avif">*@
-
-            <div class="col-lg-3">
-
-
-                @*<a href="#" class="cert-zoom" data-src="https://d9.bisplindia.in/demo/assets/images/certificate/1.jpg">
-            <img src="https://d9.bisplindia.in/demo/assets/images/certificate/1.jpg" class="card-img-top" alt="Certificate of Incorporation">
-        </a>*@
-
-                <a href="#" class="cert-zoom" data-src=" https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg">
-                    <img src=" https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" class="card-img-top" alt="Certificate of Incorporation">
-                </a>
-                <div class="text-center mt-2">
-                    <p class="card-text"> Certificate of Incorporation </p>
-                </div>
+            <div class="row">
+                @foreach (var doc in certificates.Where(d => !string.IsNullOrEmpty(d.Url)))
+                {
+                    <div class="col-md-3 col-sm-6">
+                        <a href="#" class="cert-zoom doc-tile" data-src="@doc.Url">
+                            <img src="@doc.Url" alt="@doc.Name">
+                        </a>
+                        <span class="doc-cap">@doc.Name</span>
+                    </div>
+                }
             </div>
 
+            <hr>
 
-                <div class="col-lg-3">
-                    @*<a href="#" class="cert-zoom" data-src="https://d9.bisplindia.in/demo/assets/images/certificate/2.jpg">
-                        <img src="https://d9.bisplindia.in/demo/assets/images/certificate/2.jpg" class="card-img-top" alt="...">
-                    </a>*@
-
-                     <a href="#" class="cert-zoom" data-src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg">
-     <img src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" class="card-img-top" alt="...">
- </a>
-                    <div class="text-center mt-2">
-                        <p class="card-text"> Registration Certificate </p>
+            <div class="row">
+                @foreach (var doc in documents.Where(d => !string.IsNullOrEmpty(d.Url)))
+                {
+                    <div class="col-md-3 col-sm-6">
+                        <a href="@doc.Url" target="_blank" class="doc-tile">
+                            <img src="@doc.Url" alt="@doc.Name">
+                        </a>
+                        <span class="doc-cap">@doc.Name</span>
                     </div>
-                </div>
-
-                <div class="col-lg-3">
-                    @*<a href="#" class="cert-zoom" data-src="https://d9.bisplindia.in/demo/assets/images/certificate/3.jpg">
-            <img src="https://d9.bisplindia.in/demo/assets/images/certificate/3.jpg" class="card-img-top" alt="...">
-        </a>*@
-
-                    <a href="#" class="cert-zoom" data-src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg">
-                        <img src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" class="card-img-top" alt="...">
-                    </a>
-                    <div class="text-center mt-2">
-                        <p class="card-text"> Food Sefety License </p>
-                    </div>
-                </div>
-
-                <div class="col-lg-3">
-                    @*<a href="#" class="cert-zoom" data-src="https://d9.bisplindia.in/demo/assets/images/certificate/4.jpg">
-            <img src="https://d9.bisplindia.in/demo/assets/images/certificate/4.jpg" class="card-img-top" alt="...">
-        </a>*@
-                    <a href="#" class="cert-zoom" data-src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg">
-                        <img src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" class="card-img-top" alt="...">
-                    </a>
-                    <div class="text-center mt-2">
-                        <p class="card-text">Trademark Certificate </p>
-                    </div>
-                </div>
-
-
-                <div class="clearfix"></div>
-                <hr class="mt-4 mb-4">
-
-                <div class="col-lg-3">
-                    @*<a href="https://d9.bisplindia.in/demo/assets/images/certificate/e_articles_of_association.pdf" target="_blank">
-        <img src="https://d9.bisplindia.in/demo/assets/images/certificate/pdf.jpg" class="card-img-top card" alt="..."></a>*@
-
-                    <a href="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" target="_blank">
-                        <img src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" class="card-img-top card" alt="...">
-                    </a>
-
-                    <div class="text-center mt-2">
-                        <p class="card-text"> e Articles of Association  </p>
-                    </div>
-                </div>
-
-
-
-                <div class="col-lg-3">
-                    @*<a href="https://d9.bisplindia.in/demo/assets/images/certificate/e_memorandum_of_association.pdf" target="_blank">
-        <img src="https://d9.bisplindia.in/demo/assets/images/certificate/pdf.jpg" class="card-img-top card" alt="..."></a>*@
-
-                    <a href="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" target="_blank">
-                        <img src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" class="card-img-top card" alt="...">
-                    </a>
-
-                    <div class="text-center mt-2">
-                        <p class="card-text"> e Memorandum of Association  </p>
-                    </div>
-                </div>
-
+                }
             </div>
 
         </div>

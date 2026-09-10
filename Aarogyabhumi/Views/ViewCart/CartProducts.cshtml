@@ -1,4 +1,4 @@
-﻿@model Shopinv.Models.M_Category
+@model Shopinv.Models.M_Category
 @{
 
     var TotPrice = Model.CartDetail.Sum(s => (s.Price * s.qty));
@@ -21,10 +21,14 @@
     var GstWithOutPrice = 0;
     var GstAmt = 0;
 
+    var isDistributor = Convert.ToString(Session["MemMode"]) == "D";
+    var noImage = Url.Content("~/theme/img/sample-product.jpg");
 }
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css" rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
+@*
+    Partial - rendered into #cartProducts (ViewCart.cshtml) by GET /ViewCart/CartProducts and
+    returned as "tblOrder" (Extension.RenderRazorViewToString) by UpadteCartdetail / DeleteLstRow.
+    jQuery / Bootstrap are already on the page (layout), so they are NOT loaded again here.
+*@
 
 <script type="text/javascript">
     function checkcoupon()
@@ -97,7 +101,7 @@ else {
                         alert("cart Deatails Updated!");
                     }
                     $("#cartProducts").html('').html(data.tblOrder);
-                    
+
                 }
 
             });
@@ -132,7 +136,7 @@ else {
                         alert("cart Deatails Updated!");
                     }
                     $("#cartProducts").html('').html(data.tblOrder);
-                    
+
                 }
 
             });
@@ -213,234 +217,129 @@ else {
 
 </script>
 
+<div class="cart-row">
+    @if (Model.CartDetail != null && Model.CartDetail.Any())
+    {
+        <div class="row">
+            <div class="col-sm-7 col-md-8">
+                <div class="cart-item" id="cartTable">
+                    <h5>My Shopping Cart</h5>
+                    <p class="crt-count">You have @cartCount items in your cart</p>
 
-<!-- Features Area -->
-<div class="products-details-area bg-white ">
-    <div class="container my-4">
-        <div class="shop-details-content pl-0">
-            <div class="card shadow-lg border-0 rounded-3 p-2">
-                <div class="row g-0">
-                    <div class="col-12 p-3">
-                        <h5 class="fw-bold mb-3">My Shopping Cart</h5>
-                        <p class="text-muted">You have @cartCount items in your cart</p>
-
-                        <div class="table-responsive">
-                            <table class="table table-bordered shadow-sm align-middle mb-0" id="cartTable">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Details</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Total</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (Model.CartDetail != null && Model.CartDetail.Any())
-                                    {
-                                        foreach (var data in Model.CartDetail)
-                                        {
-                                            <tr data-price="@data.Price" data-bv="@data.bv">
-                                                <td>
-                                                    <a href="~/ProductDetail/ProductDetail?ProdID=@data.ProdId">
-                                                        <img src="@data.imagePath"
-                                                             onerror="this.src='https://genesisemart.com/img/noimage.png';"
-                                                             alt="@data.ProdName"
-                                                             class="img-fluid rounded"
-                                                             style="max-width: 90px;">
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    <h6 class="fw-bold mb-1">@data.ProdName</h6>
-                                                    <p class="mb-0">
-                                                        <span class="badge bg-success">In Stock</span>
-                                                        <span class="text-muted">| Product ID: @data.ProdId</span>
-                                                    </p>
-                                                </td>
-                                                <td>
-                                                    <span class="h6 text-success fw-bold">
-                                                        ₹@String.Format("{0:N2}", data.Price)
-                                                    </span><br>
-                                                    @if (Convert.ToString(Session["MemMode"]) == "D")
-                                                    {
-                                                        <span class="text-primary small">SV: @data.bv</span>
-                                                    }
-
-                                                </td>
-                                                <td class="text-center">
-                                                    <div class="input-group input-group-sm mx-auto" style="max-width: 100px;">
-                                                        <button class="btn btn-outline-secondary btn-minus"
-                                                                type="button"
-                                                                onclick="UpdateProdQtyMinus(this,@data.ProdId,@data.Price);">
-                                                            -
-                                                        </button>
-                                                        <input type="number"
-                                                               class="form-control text-center quantity"
-                                                               id="qtyText_@data.ProdId"
-                                                               value="@data.qty"
-                                                               min="1"
-                                                               readonly>
-                                                        <button class="btn btn-outline-secondary btn-plus"
-                                                                type="button"
-                                                                onclick="UpdateProdQty(this,@data.ProdId,@data.Price);">
-                                                            +
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                                <td class="item-total fw-bold text-success">
-                                                    ₹@String.Format("{0:N2}", data.Price * data.qty)
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-danger btn-sm btn-remove"
-                                                            onclick="DeleteRow(this,'@data.id','@data.ProdId','@data.imagePath','@data.qty','@data.Price','@data.bv','@data.IpAddress')">
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <tr>
-                                            <td colspan="6" class="text-center text-muted py-4">
-                                                <i class="fa fa-shopping-cart fa-2x mb-2"></i><br />
-                                                Your cart is empty.
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row g-3 mt-3">
-                    <!-- LEFT: Special Instructions -->
-                    @*<div class="col-md-6" style="visibility">
-                            <div class="card shadow-sm border-0 rounded-3 p-3 h-100">
-                                <h5 class="fw-bold mb-3">Special Instructions for Seller</h5>
-                                <textarea id="specialInstructions"
-                                          class="form-control"
-                                          rows="3"
-                                          placeholder="Special instructions for seller"></textarea>
-                            </div>
-                        </div>*@
-                    <div class="col-md-6">
-                    </div>
-                    <!-- RIGHT: Order Summary -->
-                    <div class="col-md-6">
-                        <div class="card shadow-sm border-0 rounded-3 p-3 h-100">
-                            <h5 class="fw-bold mb-3">Order Summary</h5>
-
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Subtotal</span>
-                                <span class="fw-bold" id="subtotal">₹@String.Format("{0:N2}", TotPrice)</span>
-                            </div>
-
-                            @if (Convert.ToString(Session["MemMode"]) == "D")
-                            {
-                                <div class="d-flex justify-content-between text-success mb-2">
-                                    <span>Total SV</span>
-                                    <span id="totalbv">@Totbv</span>
-                                </div>
-                            }
-                            @*<div class="d-flex justify-content-between mb-2">
-                                <span>Shipping Charge</span>
-                                <span class="fw-bold" id="subtotal">₹@String.Format("{0:N2}", CourierCharge)</span>
-                            </div>*@
-                            <div class="d-flex justify-content-between fw-bold h5 mt-3">
-                                <span>Grand Total</span>
-                                <span class="text-success" id="grandTotal">₹@String.Format("{0:N2}", TotPrice)</span>
-                            </div>
-
-                            <hr>
-
-                            <p class="text-muted small mb-3">
-                                <i class="fa fa-info-circle me-1 text-secondary"></i>
-                                Tax included. Shipping calculated at checkout.
+                    @foreach (var data in Model.CartDetail)
+                    {
+                        var detailUrl = Url.Content("~/ProductDetail/ProductDetail?ProdID=" + data.ProdId);
+                        var discount = 0;
+                        if (data.MRP > 0 && data.MRP > data.Price)
+                        {
+                            discount = Convert.ToInt32(Math.Round(((data.MRP - data.Price) * 100) / data.MRP));
+                        }
+                        <div class="crt-lst" data-price="@data.Price" data-bv="@data.bv">
+                            <p class="pr_remove">
+                                <a href="javascript:void(0);" class="btn-remove" title="Remove"
+                                   onclick="DeleteRow(this,'@data.id','@data.ProdId','@data.imagePath','@data.qty','@data.Price','@data.bv','@data.IpAddress')"></a>
                             </p>
-
-                            <a href="javascript:void(0);"
-                               onclick="prceedCheckOut(this,@Totbv,0);"
-                               class="btn btn-dark w-100 mb-2">
-                                <i class="fa fa-credit-card me-2"></i> Proceed to Checkout
-                            </a>
-                            <a href="~/Home/Index" class="btn btn-outline-danger w-100">
-                                <i class="fa fa-shopping-cart me-2"></i> Continue Shopping
-                            </a>
+                            <div class="crt-pic">
+                                <a href="@detailUrl">
+                                    <img src="@data.imagePath" alt="@data.ProdName"
+                                         onerror="this.onerror=null;this.src='@noImage';" />
+                                </a>
+                            </div>
+                            <div class="crt-inf">
+                                <p class="pr_name"><span>Product ID @data.ProdId</span><a href="@detailUrl">@data.ProdName</a></p>
+                                <div class="row">
+                                    <div class="col-xs-5 col-md-3 col-lg-2">
+                                        @* no dt-min / dt-max / step on purpose: layout.js's generic +/- handler stays a
+                                           no-op here and the live AJAX functions below own the quantity *@
+                                        <div class="num-incr-decr">
+                                            <span class="decrMent" title="Decrease" onclick="UpdateProdQtyMinus(this,'@data.ProdId',@data.Price);"></span>
+                                            <input type="text" class="quantity" id="qtyText_@data.ProdId" value="@data.qty" readonly>
+                                            <span class="incrMent" title="Increase" onclick="UpdateProdQty(this,'@data.ProdId',@data.Price);"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7 col-md-9 col-lg-10">
+                                        <p class="pr_rate">
+                                            @if (discount > 0)
+                                            {
+                                                <span class="pr_mrp">&#8377; @String.Format("{0:N2}", data.MRP)</span>
+                                            }
+                                            <span class="pr_offerprice">&#8377; @String.Format("{0:N2}", data.Price)</span>
+                                            @if (discount > 0)
+                                            {
+                                                <span class="pr_discount">@discount% Off</span>
+                                            }
+                                        </p>
+                                        <p class="pr_total">
+                                            Total : <b class="item-total">&#8377;@String.Format("{0:N2}", data.Price * data.qty)</b>
+                                            @if (isDistributor)
+                                            {
+                                                <span class="pr_sv">SV : @data.bv</span>
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    }
+
+                    <a href="~/Home/Index" class="btn btn-sub btn-shop">Continue Shopping</a>
                 </div>
             </div>
+            <div class="col-sm-5 col-md-4">
+                <div class="price-lst-smry">
+                    <h5>Order Summary</h5>
+                    <ul>
+                        <li><span class="lft">Subtotal</span><span class="rght" id="subtotal">&#8377;@String.Format("{0:N2}", TotPrice)</span></li>
+                        @if (isDistributor)
+                        {
+                            <li class="vp"><span class="lft">Total SV</span><span class="rght" id="totalbv">@Totbv</span></li>
+                        }
+                        <li class="ftr"><span class="lft">Grand Total </span><span class="rght" id="grandTotal">&#8377;@String.Format("{0:N2}", TotPrice)</span></li>
+                    </ul>
 
-            <script>
-                function updateCart() {
-                    let subtotal = 0;
-                    document.querySelectorAll("#cartTable tbody tr").forEach(row => {
-                        let price = parseFloat(row.dataset.price);
-                        let qty = parseInt(row.querySelector(".quantity").value) || 1;
-                        let total = price * qty;
-                        subtotal += total;
-                        row.querySelector(".item-total").innerText = "₹" + total.toLocaleString("en-IN");
-                    });
+                    <ul class="smry-nte">
+                        <li>Tax included. Shipping calculated at checkout.</li>
+                    </ul>
 
-                    document.getElementById("subtotal").innerText = "₹" + subtotal.toLocaleString("en-IN");
-                    document.getElementById("grandTotal").innerText = "₹" + subtotal.toLocaleString("en-IN");
-                }
-
-                //document.querySelectorAll(".btn-plus").forEach(btn => {
-                //    btn.addEventListener("click", e => {
-                //        let input = e.target.closest(".input-group").querySelector(".quantity");
-                //        input.value = parseInt(input.value) + 1;
-                //        updateCart();
-                //    });
-                //});
-
-                //document.querySelectorAll(".btn-minus").forEach(btn => {
-                //    btn.addEventListener("click", e => {
-                //        let input = e.target.closest(".input-group").querySelector(".quantity");
-                //        input.value = Math.max(1, parseInt(input.value) - 1);
-                //        updateCart();
-                //    });
-                //});
-
-                document.querySelectorAll(".btn-remove").forEach(btn => {
-                    btn.addEventListener("click", e => {
-                        e.target.closest("tr").remove();
-                        updateCart();
-                    });
-                });
-
-                updateCart();
-            </script>
+                    <a class="btn btn-sub btn-order" href="javascript:void(0);" onclick="prceedCheckOut(this,@Totbv,0);">Proceed to checkout</a>
+                </div>
+            </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="empty-cart-msg">
+            <p>Your cart is empty.<span>Looks like you haven't added any products yet.</span></p>
+            <a href="~/Home/Index" class="btn btn-sub btn-shop">Continue Shopping</a>
+        </div>
+    }
 </div>
 
+<script>
+    function updateCart() {
+        var fmt = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+        var subtotal = 0;
+        document.querySelectorAll("#cartTable .crt-lst").forEach(function (row) {
+            var price = parseFloat(row.dataset.price) || 0;
+            var qtyBox = row.querySelector(".quantity");
+            var qty = (qtyBox ? parseInt(qtyBox.value) : 1) || 1;
+            var total = price * qty;
+            subtotal += total;
+            var itemTotal = row.querySelector(".item-total");
+            if (itemTotal) {
+                itemTotal.innerText = "\u20B9" + total.toLocaleString("en-IN", fmt);
+            }
+        });
 
-<script src="vender/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="vender/jquery/jquery.min.js"></script>
-<script src="vender/slick/slick/slick.min.js"></script>
-<script src="js/quantity.js"></script>
-<script src="js/script.js"></script>
+        var subtotalBox = document.getElementById("subtotal");
+        var grandTotalBox = document.getElementById("grandTotal");
+        if (subtotalBox) {
+            subtotalBox.innerText = "\u20B9" + subtotal.toLocaleString("en-IN", fmt);
+        }
+        if (grandTotalBox) {
+            grandTotalBox.innerText = "\u20B9" + subtotal.toLocaleString("en-IN", fmt);
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    updateCart();
+</script>

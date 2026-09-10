@@ -1,13 +1,29 @@
-﻿@model Shopinv.Models.M_Category
-
-@if (Model.ProductReview != null && Model.ProductReview.Count() > 0)
+@model Shopinv.Models.M_Category
+@*
+    Review list - rendered inside #reviewdiv by ProductDetail.cshtml and re-rendered by
+    ProductDetailController.SaveReview after a review is saved (returned as tblOrder).
+    Uses .review-item / .rev-head / .rev-stars from theme/css/custom-mvc.css.
+*@
+@if (Model != null && Model.ProductReview != null && Model.ProductReview.Any())
 {
     foreach (var item in Model.ProductReview)
     {
-        <div class="review-item border-bottom pb-3 mb-3">
-            <p class="mb-1"><strong>@item.username</strong> <span class="text-muted">- @item.Rating Stars</span></p>
-            <p>"@item.Review"</p>
+        var rating = item.Rating < 0 ? 0 : (item.Rating > 5 ? 5 : item.Rating);
+        <div class="review-item">
+            <p class="rev-head">
+                <strong>@item.username</strong>
+                <span class="rev-stars" title="@item.Rating Stars">
+                    @for (var s = 1; s <= 5; s++)
+                    {
+                        <i class="fa @(s <= rating ? "fa-star" : "fa-star-o")"></i>
+                    }
+                </span>
+            </p>
+            <p>@item.Review</p>
         </div>
     }
-
+}
+else
+{
+    <p class="no-review">No reviews yet. Be the first to review this product.</p>
 }

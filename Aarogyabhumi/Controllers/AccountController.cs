@@ -1,4 +1,4 @@
-using Antlr.Runtime;
+﻿using Antlr.Runtime;
 using Antlr.Runtime.Misc;
 using Newtonsoft.Json;
 using Shopinv.Entity;
@@ -50,6 +50,13 @@ namespace Shopinv.Controllers
         private readonly static string Sendbox_accountverify = ConfigurationManager.AppSettings["Sendbox_accountverify"];
         private readonly static string Sendbox_aadharverify = ConfigurationManager.AppSettings["Sendbox_aadharverify"];
         private readonly static string Sendbox_aadharverifyotp = ConfigurationManager.AppSettings["Sendbox_aadharverifyotp"];
+        private readonly static string DocumentBaseUrl = ConfigurationManager.AppSettings["DocumentBaseUrl"];
+        private readonly static string StateListApiUrl = ConfigurationManager.AppSettings["StateListApiUrl"];
+        private readonly static string CPanelUrl = ConfigurationManager.AppSettings["CPanelUrl"];
+        private readonly static string DocOcrPanUrl = ConfigurationManager.AppSettings["DocOcrPanUrl"];
+        private readonly static string DocOcrAadhaarUrl = ConfigurationManager.AppSettings["DocOcrAadhaarUrl"];
+        private readonly static string GvPortalUrl = ConfigurationManager.AppSettings["GvPortalUrl"];
+        private readonly static string StorePortalUrl = ConfigurationManager.AppSettings["StorePortalUrl"];
         CompanyDetail companyDetail;
         private readonly IHubbleSSORepository _ssoRepo;
         public AccountController(I_Login ilogin, I_Product iprod)
@@ -374,8 +381,8 @@ namespace Shopinv.Controllers
                     aadharno = obj.aadharno ?? "",
                     //frontimg = obj.FrontImage,   // DS logic same — null aaye to bhi safe
                     //backimg = obj.BackImage
-                    frontimg = "https://d9.bisplindia.in" + AadharFrontPath,
-                    backimg = "https://d9.bisplindia.in" + AadharBackPath,
+                    frontimg = DocumentBaseUrl + AadharFrontPath,
+                    backimg = DocumentBaseUrl + AadharBackPath,
                 };
 
                 var detail = JsonConvert.SerializeObject(reqregistration);
@@ -481,7 +488,7 @@ namespace Shopinv.Controllers
             req.countrycode = "1";
             List<State> lst = new List<State>();
             var detail = JsonConvert.SerializeObject(req);
-            var stateresponse = CallPostFunction(detail, "https://cpanel.bsnprojects.com//Processapiwithk");
+            var stateresponse = CallPostFunction(detail, StateListApiUrl);
             var output = JsonConvert.DeserializeObject<Stateroot>(stateresponse);
             if (output != null && output.response == "OK")
             {
@@ -539,7 +546,7 @@ namespace Shopinv.Controllers
             string password = Convert.ToString(Session["password"]);
             var lgnT = "uid=" + idNo + "&pwd=" + password;
             var lgntenc = TextCrypto.Encrypt(lgnT);
-            string url = "https://d9cpanel.bisplindia.in/Default.aspx?lgnT=" + lgntenc;
+            string url = CPanelUrl.TrimEnd('/') + "/Default.aspx?lgnT=" + lgntenc;
             // Step 4: Redirect
             return Redirect(url);
         }
@@ -571,7 +578,7 @@ namespace Shopinv.Controllers
                     content.Add(fileContent, "Image", OcrImage.FileName);
 
                     var response = await client.PostAsync(
-                           "https://dococr.bisplindia.in/api/DocumentOCR/PenDocOcrImage",
+                           DocOcrPanUrl,
                         content);
 
                     var result = await response.Content.ReadAsStringAsync();
@@ -619,7 +626,7 @@ namespace Shopinv.Controllers
 
                     // API Call (Synchronous)
                     HttpResponseMessage response = client.PostAsync(
-                        "https://dococr.bisplindia.in/api/DocumentOCR/AadhaarCardOcr",
+                        DocOcrAadhaarUrl,
                         content).Result;
 
                     string result = response.Content.ReadAsStringAsync().Result;
@@ -1725,8 +1732,8 @@ JsonRequestBehavior.AllowGet);
                     idproofid = IdType,
                     idproofno = Aadharno,
 
-                    frontaddressproof = "https://d9.bisplindia.in" + AadharFrontPath,
-                    backaddressproof = "https://d9.bisplindia.in" + AadharBackPath,
+                    frontaddressproof = DocumentBaseUrl + AadharFrontPath,
+                    backaddressproof = DocumentBaseUrl + AadharBackPath,
                 };
                 var detail = JsonConvert.SerializeObject(requestData);
                 var response = CallPostFunction(detail, Apiurl);
@@ -1783,7 +1790,7 @@ JsonRequestBehavior.AllowGet);
                     reqtype = "formupload",
                     userid = Convert.ToString(Session["IDNO"]),
                     passwd = Convert.ToString(Session["password"]),
-                    formupload = "https://d9.bisplindia.in" + kycdocpatch
+                    formupload = DocumentBaseUrl + kycdocpatch
                 };
 
                 var detail = JsonConvert.SerializeObject(requestData);
@@ -1954,7 +1961,7 @@ JsonRequestBehavior.AllowGet);
             string html = $@"
             <html>
             <body onload='document.forms[0].submit()'>
-                <form method='POST' action='https://gv.d9cpanel.bisplindia.in/members/index.php'>
+                <form method='POST' action='{GvPortalUrl}'>
                     <input type='hidden' name='token' value='1a027ace746dccad5151c31954e39be3' />
                     <input type='hidden' name='mod' value='interLogin' />
                     <input type='hidden' name='userid' value='{Session["IDNO"]}' />
@@ -1981,7 +1988,7 @@ JsonRequestBehavior.AllowGet);
             string html = $@"
     <html>
     <body onload='document.forms[0].submit()'>
-        <form method='POST' action='https://store.d9cpanel.bisplindia.in/members/index.php'>
+        <form method='POST' action='{StorePortalUrl}'>
             <input type='hidden' name='token' value='453ecd0dca082bc94cac8d06406305f1' />
             <input type='hidden' name='mod' value='interLogin' />
             <input type='hidden' name='userid' value='{Session["IDNO"]}' />
@@ -2090,20 +2097,20 @@ JsonRequestBehavior.AllowGet);
                     citycode = "0",
                     idproofid = IdType,
                     idproofno = Aadharno,
-                    frontaddressproof = "https://d9.bisplindia.in" + AadharFrontPath,
-                    backaddressproof = "https://d9.bisplindia.in" + AadharBackPath,
+                    frontaddressproof = DocumentBaseUrl + AadharFrontPath,
+                    backaddressproof = DocumentBaseUrl + AadharBackPath,
                     accounttype = Actype,
                     accountno = Acno,
                     bankcode = Bank,
                     bankname = Bankname,
                     branchname = BranchName,
                     ifsccode = IFSCCode,
-                    bankimage = "https://d9.bisplindia.in" + BankDocPath,
+                    bankimage = DocumentBaseUrl + BankDocPath,
                     panno = PanNo,
-                    panimage = "https://d9.bisplindia.in" + PanDocPath,
+                    panimage = DocumentBaseUrl + PanDocPath,
                     areaname = "",
                     areacode = "0",
-                    formupload = "https://d9.bisplindia.in" + kycdocpatch,
+                    formupload = DocumentBaseUrl + kycdocpatch,
                 };
                 var detail = JsonConvert.SerializeObject(kyc);
                 var response = CallPostFunction(detail, Apiurl);

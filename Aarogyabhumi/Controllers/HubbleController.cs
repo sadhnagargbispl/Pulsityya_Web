@@ -37,7 +37,7 @@ namespace Shopinv.Controllers
 
             if (string.IsNullOrEmpty(token))
                 return RedirectToAction("Index", "Home");
-            string sdkUrl = "https://vouchers.myhubble.money/sdk/gc/" +
+            string sdkUrl = ConfigurationManager.AppSettings["HubbleSdkUrl"] +
                             "?clientId=" + clientId +
                             "&appSecret=" + appSecret +
                             "&token=" + token;

@@ -41,9 +41,12 @@
                     <tbody>
                         <tr>
                             <th>
-                                <img src="~/img/logo.png" style="width:200px;" />
+                                @if (!string.IsNullOrEmpty(Convert.ToString(Session["CompLogoUrl"])))
+                                {
+                                    <img src="@Convert.ToString(Session["CompLogoUrl"])" style="width:200px;" alt="@Convert.ToString(Session["CompName"])" />
+                                }
                             </th>
-                            <th>Aarogyambhumi India Pvt. Ltd. </th>
+                            <th>@Convert.ToString(Session["CompName"])</th>
                             <th>192605001473</th>
                             <th>ICIC0001926</th>
                             <th>Asansol - APCAR</th>

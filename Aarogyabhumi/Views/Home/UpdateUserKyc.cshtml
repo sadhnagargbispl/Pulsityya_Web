@@ -13,8 +13,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title> Welcome to Make & Growth | Every Deal for Smart Savings & Top-Quality Shopping </title>
-    <link rel="icon" type="image/png" href="~/assets/images/favicon.png">
+    <title> Welcome to @Convert.ToString(Session["CompTitle"]) </title>
+    <link rel="icon" href="@Convert.ToString(Session["CompLogoUrl"])">
 
     <!-- Primary Meta Tags -->
     <meta name="description"
@@ -28,8 +28,8 @@
     <meta property="og:title" content="@Convert.ToString(Session["CompTitle"])| Smart Shopping & Digital Gift Vouchers">
     <meta property="og:description"
           content="Shop smarter with @Convert.ToString(Session["CompTitle"]). Explore exclusive gift vouchers and a wide range of quality products at the best prices. Savings and convenience in every deal!">
-    <meta property="og:image" content="assets/images/og-image.jpg">
-    <meta property="og:url" content="https://d9cpanel.bisplindia.in/">
+    <meta property="og:image" content="@Convert.ToString(Session["CompLogoUrl"])">
+    <meta property="og:url" content="@Convert.ToString(Session["WebSite"])">
     <meta property="og:type" content="website">
 
     <!-- Twitter -->
@@ -37,7 +37,7 @@
     <meta name="twitter:title" content="@Convert.ToString(Session["CompTitle"]) | Smart Shopping & Gift Voucher Deals">
     <meta name="twitter:description"
           content="Discover digital gift vouchers and budget-friendly online shopping with @Convert.ToString(Session["CompTitle"]). Better quality, better value — always.">
-    <meta name="twitter:image" content="assets/images/og-image.jpg">
+    <meta name="twitter:image" content="@Convert.ToString(Session["CompLogoUrl"])">
 
 
     <link rel="stylesheet" href="~/assets/css/bootstrap.min.css">

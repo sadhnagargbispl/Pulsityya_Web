@@ -1,43 +1,42 @@
-﻿
+
 @{
     ViewBag.Title = "Selfdeclaration";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="mini-banner bg-success py-3">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-12 text-center">
-            </div>
+<div class="breadcrmb">
+    <img src="@Url.Content("~/theme/img/page-banner.jpg")" alt="Self Declaration">
+    <div class="breadcrmb-content">
+        <div class="container">
+            <h1>Self Declaration</h1>
+            <ul class="breadcrmb-loc">
+                <li><a href="@Url.Content("~/Home/Index")">Home</a></li>
+                <li><a class="active">Self Declaration</a></li>
+            </ul>
         </div>
     </div>
 </div>
-<div class="contact-area bg-light pt-5 pb-5">
+
+<div class="content-row">
     <div class="container">
-        <div class="row align-items-start">
+        <div class="txt-page">
 
-            <div class="col-lg-12">
-                <div class="contact-info bg-white rounded p-4 mb-4">
+            <h4 class="mb-3">Self Declaration</h4>
+            <hr>
 
-                    <h4 class="mb-3">Self Declaration</h4>
-                    <hr>
+            <p><strong>SELF DECLARATION UNDER CLAUSE 5 (1) (C) OF CONSUMER PROTECTION (DIRECT SELLING) RULES, 2021</strong></p>
 
-                    <p><strong>SELF DECLARATION UNDER CLAUSE 5 (1) (C) OF CONSUMER PROTECTION (DIRECT SELLING) RULES, 2021</strong></p>
+            <p>I, Mr. Mukund Bhausaheb Wakale, Nodal Officer of @Convert.ToString(Session["CompName"]) declare that @Convert.ToString(Session["CompTitle"]) is compliant with the following:</p>
 
-                    <p>I, Mr. Mukund Bhausaheb Wakale, Nodal Officer of @Convert.ToString(Session["CompTitle"]) Consultancy India Private Limited declare that @Convert.ToString(Session["CompTitle"]) Consultancy is compliant with the following:</p>
+            <ol>
+                <li>@Convert.ToString(Session["CompTitle"]) is not involved in any pyramid scheme, as defined in clause 3(i)(i) of Consumer Protection (Direct Selling) Rules, 2021.</li>
+                <li>@Convert.ToString(Session["CompTitle"]) is not involved in any money circulation scheme, as defined in clause 3(i)(f) of Consumer Protection (Direct Selling) Rules, 2021.</li>
+                <li>@Convert.ToString(Session["CompTitle"]) is compliant with all the provisions of the Consumer Protection (Direct Selling) Rules, 2021, issued by Department of Consumer Affairs.</li>
+            </ol>
 
-                    <ol>
-                        <li>@Convert.ToString(Session["CompTitle"]) Consultancy is not involved in any pyramid scheme, as defined in clause 3(i)(i) of Consumer Protection (Direct Selling) Rules, 2021.</li>
-                        <li>@Convert.ToString(Session["CompTitle"]) Consultancy is not involved in any money circulation scheme, as defined in clause 3(i)(f) of Consumer Protection (Direct Selling) Rules, 2021.</li>
-                        <li>@Convert.ToString(Session["CompTitle"]) Consultancy is compliant with all the provisions of the Consumer Protection (Direct Selling) Rules, 2021, issued by Department of Consumer Affairs.</li>
-                    </ol>
+            <p class="sign">For @Convert.ToString(Session["CompName"])</p>
 
-                    <p class="mt-4">For @Convert.ToString(Session["CompTitle"]) Consultancy India Private Limited</p>
-
-                    @*<p class="mt-3 mb-0"><strong>Mukund Bhausaheb Wakale</strong><br>Nodal Officer</p>*@
-
-                </div>
-            </div>
+            @*<p class="mt-3 mb-0"><strong>Mukund Bhausaheb Wakale</strong><br>Nodal Officer</p>*@
 
         </div>
     </div>

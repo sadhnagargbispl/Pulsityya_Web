@@ -30,6 +30,11 @@ namespace Shopinv.Controllers
         private readonly I_PayMode ipaymode = null;
         CompanyDetail companyDetail;
         private readonly string IsTest = "True";
+        private readonly static string CPanelUrl = System.Configuration.ConfigurationManager.AppSettings["CPanelUrl"];
+        private readonly static string CashfreeOrderUrl = System.Configuration.ConfigurationManager.AppSettings["CashfreeOrderUrl"];
+        private readonly static string CashfreeReturnUrl = System.Configuration.ConfigurationManager.AppSettings["CashfreeReturnUrl"];
+        private readonly static string CashfreeSandboxOrderUrl = System.Configuration.ConfigurationManager.AppSettings["CashfreeSandboxOrderUrl"];
+        private readonly static string CashfreeSandboxReturnUrl = System.Configuration.ConfigurationManager.AppSettings["CashfreeSandboxReturnUrl"];
         public CheckOutController(I_Category icateogry, I_Product iprod, I_Login _ilogin, I_PayMode ipaymode)
         {
             this.icateogry = icateogry;
@@ -430,7 +435,7 @@ else
                     //req.TxnData = Billno + ";" + Amount + ";BVCredit";
                     //req.Amount = Amount;
                     Session["Newkitid"] = "2";
-                    string apiurl = "https://d9cpanel.bisplindia.in/CheckLogin?token=abUnMar5489pidlAewUF4875brlE8a4i5n61108&UserName=" + Convert.ToString(Session["IDNO"]) + "&Password=" + Convert.ToString(Session["password"]) + "&action=addbv&amount=" + Convert.ToString(Session["totalamount"]) + "&totalpv=" + Convert.ToString(Session["totalpv"]) + "&billtype=" + Convert.ToString(Session["Kitbilltype"]) + "&kitid=" + Convert.ToString(Session["Newkitid"]) + "&TxnData=" + randomordernumber + ";" + Convert.ToString(Session["totalbv"]) + ";BVCredit";
+                    string apiurl = CPanelUrl.TrimEnd('/') + "/CheckLogin?token=abUnMar5489pidlAewUF4875brlE8a4i5n61108&UserName=" + Convert.ToString(Session["IDNO"]) + "&Password=" + Convert.ToString(Session["password"]) + "&action=addbv&amount=" + Convert.ToString(Session["totalamount"]) + "&totalpv=" + Convert.ToString(Session["totalpv"]) + "&billtype=" + Convert.ToString(Session["Kitbilltype"]) + "&kitid=" + Convert.ToString(Session["Newkitid"]) + "&TxnData=" + randomordernumber + ";" + Convert.ToString(Session["totalbv"]) + ";BVCredit";
                     var detail = JsonConvert.SerializeObject(req);
                     var response = Callgetfunction(apiurl);
                     var output = JsonConvert.DeserializeObject<Bsnaddbresponse>(response);
@@ -985,17 +990,16 @@ else
                         {
                             x_client_id = "11649217141cb3d4d36a36ffa9c1294611";
                             x_client_secret = "cfsk_ma_prod_4f8ad5a28de217d91cb53ad6176d96ef_d9f03137";
-                            Url = "https://api.cashfree.com/pg/orders";
-                            returnurl = "https://d9cpanel.bisplindia.in/CheckOut/PaymentSuccessCashFree?order_id={order_id}";
+                            Url = CashfreeOrderUrl;
+                            returnurl = CashfreeReturnUrl;
                             // Mode = "PROD";
                         }
                         else
                         {
                             x_client_id = "TEST430329ae80e0f32e41a393d78b923034";
                             x_client_secret = "TESTaf195616268bd6202eeb3bf8dc458956e7192a85";
-                            Url = "https://sandbox.cashfree.com/pg/orders";
-                            returnurl = "https://localhost:44316/CheckOut/PaymentSuccessCashFree?order_id={order_id}";
-                            //returnurl = "https://d9cpanel.bisplindia.in/CheckOut/PaymentSuccessCashFree?order_id={order_id}";
+                            Url = CashfreeSandboxOrderUrl;
+                            returnurl = CashfreeSandboxReturnUrl;
                             //Mode = "TEST";
                         }
                         cash.order_amount = (float)Convert.ToDouble(PGAmount);
@@ -1025,7 +1029,7 @@ else
                         DataSet dsss = convertJsonStringToDataSet(strresponse);
                         if (dsss.Tables[0].Rows[0]["order_status"].ToString().ToUpper() == "ACTIVE")
                         {
-                            string Bvapiurl = "https://d9cpanel.bisplindia.in/CheckLogin?token=abUnMar5489pidlAewUF4875brlE8a4i5n61102&UserName=" + Convert.ToString(Session["IDNO"]) + "&Password=" + Convert.ToString(Session["password"]) + "&action=addbv&amount=" + Convert.ToString(Session["totalamount"]) + "&billtype=" + Convert.ToString(Session["Kitbilltype"]) + "&kitid=" + Convert.ToString(Session["Newkitid"]) + "&TxnData=" + randomordernumber + ";" + Convert.ToString(Session["totalbv"]) + ";BVCredit";
+                            string Bvapiurl = CPanelUrl.TrimEnd('/') + "/CheckLogin?token=abUnMar5489pidlAewUF4875brlE8a4i5n61102&UserName=" + Convert.ToString(Session["IDNO"]) + "&Password=" + Convert.ToString(Session["password"]) + "&action=addbv&amount=" + Convert.ToString(Session["totalamount"]) + "&billtype=" + Convert.ToString(Session["Kitbilltype"]) + "&kitid=" + Convert.ToString(Session["Newkitid"]) + "&TxnData=" + randomordernumber + ";" + Convert.ToString(Session["totalbv"]) + ";BVCredit";
                             paymentid = dsss.Tables[0].Rows[0]["payment_session_id"].ToString();
                             //save order in temp table
                             string hostName = Dns.GetHostName();
@@ -1144,13 +1148,13 @@ else
                 {
                     x_client_id = "11649217141cb3d4d36a36ffa9c1294611";
                     x_client_secret = "cfsk_ma_prod_4f8ad5a28de217d91cb53ad6176d96ef_d9f03137";
-                    Url = "https://api.cashfree.com/pg/orders/" + order_id + "/payments";
+                    Url = CashfreeOrderUrl.TrimEnd('/') + "/" + order_id + "/payments";
                 }
                 else
                 {
                     x_client_id = "TEST430329ae80e0f32e41a393d78b923034";
                     x_client_secret = "TESTaf195616268bd6202eeb3bf8dc458956e7192a85";
-                    Url = "https://sandbox.cashfree.com/pg/orders/" + order_id + "/payments";
+                    Url = CashfreeSandboxOrderUrl.TrimEnd('/') + "/" + order_id + "/payments";
                 }
                 var client = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);

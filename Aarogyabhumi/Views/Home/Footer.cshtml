@@ -1,4 +1,11 @@
-﻿@model Shopinv.Models.LoginLPlus
+@model Shopinv.Models.LoginLPlus
+@{
+    var ftFacebook = Convert.ToString(Session["FacebookUrl"]);
+    var ftInstagram = Convert.ToString(Session["InstagramUrl"]);
+    var ftTwitter = Convert.ToString(Session["TwitterUrl"]);
+    var ftLinkedIn = Convert.ToString(Session["LinkedInUrl"]);
+    var ftAbout = Convert.ToString(Session["CompAboutUs"]);
+}
 <!-- Add Font Awesome CDN -->
 <!-- Footer Section Area -->
 <div class="footer-area bg-111111 pt-70 pb-40 border-bottom">
@@ -7,13 +14,28 @@
             <div class="col-lg-4 col-sm-6">
                 <div class="single-footer-widget logo-content">
                     <div class="logo">
-                        <a href="#"> <img src="~/assets/images/logo/12.png" class="border-1" width="200"></a>
-                        <p class="mt-3 text-white">At TAT Kim Jewellers, we take pride in crafting exquisite jewelry that blends tradition with modernity. Our commitment to quality, innovation, and customer satisfaction ensures that every piece tells a unique story.</p>
+                        <a href="#"> <img src="@Convert.ToString(Session["CompLogoUrl"])" class="border-1" width="200" alt="@Convert.ToString(Session["CompTitle"])"></a>
+                        @if (!string.IsNullOrEmpty(ftAbout))
+                        {
+                            <p class="mt-3 text-white">@ftAbout</p>
+                        }
                         <div class="mt-2">
-                            <span class="text-center p-2 bg-white" style="height: 30px; width: 30px;"> <a class="text-dark" href="#" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a></span>
-                            <span class="text-center p-2 bg-white" style="height: 30px; width: 30px;"> <a class="text-dark" href="#" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a></span>
-                            <span class="text-center p-2 bg-white" style="height: 30px; width: 30px;"> <a class="text-dark" href="#" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a></span>
-                            <span class="text-center p-2 bg-white" style="height: 30px; width: 30px;"> <a class="text-dark" href="#" target="_blank"><i class="fa fa-linkedin-square" aria-hidden="true"></i></a></span>
+                            @if (!string.IsNullOrEmpty(ftFacebook))
+                            {
+                                <span class="text-center p-2 bg-white" style="height: 30px; width: 30px;"> <a class="text-dark" href="@ftFacebook" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a></span>
+                            }
+                            @if (!string.IsNullOrEmpty(ftInstagram))
+                            {
+                                <span class="text-center p-2 bg-white" style="height: 30px; width: 30px;"> <a class="text-dark" href="@ftInstagram" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a></span>
+                            }
+                            @if (!string.IsNullOrEmpty(ftTwitter))
+                            {
+                                <span class="text-center p-2 bg-white" style="height: 30px; width: 30px;"> <a class="text-dark" href="@ftTwitter" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a></span>
+                            }
+                            @if (!string.IsNullOrEmpty(ftLinkedIn))
+                            {
+                                <span class="text-center p-2 bg-white" style="height: 30px; width: 30px;"> <a class="text-dark" href="@ftLinkedIn" target="_blank"><i class="fa fa-linkedin-square" aria-hidden="true"></i></a></span>
+                            }
                         </div>
                     </div>
                 </div>
@@ -61,7 +83,7 @@
                 <div class="col-lg-12 col-md-12">
                     <div class="subscribe-content">
                         <div class="content">
-                            <p>Copyright &copy; 2025. <a href="#" class="text-white"><b> TAT Kim Jewellers  </b></a> all rights reserved.</p>
+                            <p>Copyright &copy; @DateTime.Now.Year. <a href="#" class="text-white"><b> @Convert.ToString(Session["CompName"]) </b></a> all rights reserved.</p>
                         </div>
                     </div>
                 </div>

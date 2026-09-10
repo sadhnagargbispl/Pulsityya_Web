@@ -1,58 +1,60 @@
-﻿
-<div class="axil-product-cart-area">
-    <div class="product-table-heading">
-        <h4 class="title">OrderDetail: <span id="lblOrder"></span></h4>
-    </div>
-    <div class="table-responsive text-nowrap carttable">
-        @if (Model.OrderNoDetail != null)
+@* Order detail popup body - rendered inside #GrdOrderNo on Myorders
+   (directly, and via /Home/SrchOrderDetail + /Home/Showofflineorderdetail as JSON tblOrder).
+   Model is M_Category (dynamic here, as before). *@
+@{
+    string ordNo = "";
+    if (Model != null && Model.OrderNoDetail != null)
+    {
+        foreach (var first in Model.OrderNoDetail)
         {
-
-            <table class="table table-bordered">
-                <thead>
-                    <tr class="nowrap info">
-                        <th>OrderNo</th>
-                        <th>ProductName</th>
-
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        @*<th>Size</th>
-
-                            <th>Color</th>*@
-                        <th>Dispatch Qty</th>
+            if (first.OrderId == 0)
+            {
+                ordNo = Convert.ToString(first.Transid);
+            }
+            else
+            {
+                ordNo = Convert.ToString(first.OrderId);
+            }
+            break;
+        }
+    }
+    var detailRows = 0;
+}
+<h4>Order Detail@(string.IsNullOrEmpty(ordNo) ? "" : " - Order No. #")<span id="lblOrder">@ordNo</span></h4>
+<div class="table-responsive">
+    @if (Model != null && Model.OrderNoDetail != null)
+    {
+        <table class="table mytable">
+            <thead>
+                <tr>
+                    <th>ProductName</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Dispatch Qty</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderNoDetail)
+                {
+                    detailRows++;
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td>@item.Qty</td>
+                        <td>@item.Price</td>
+                        <td>@item.DispatchQty</td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.OrderNoDetail)
-                    {
-                        <tr>
-                            <td>
-                                @if (item.OrderId == 0)
-                                {
-                                    @item.Transid
-                                }
-                                else
-                                {
-                                    @item.OrderId
-                                }
-                            </td>
-                            <td>@item.ProductName</td>
-
-                            <td>
-                                @item.Qty
-                            </td>
-                            <td>@item.Price</td>
-                            @*<td>@item.Size</td>
-                                <td>@item.Color</td>*@
-                            <td>@item.DispatchQty</td>
-
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <center> <p> No Record Found</p></center>
-        }
-    </div>
+                }
+                @if (detailRows == 0)
+                {
+                    <tr>
+                        <td colspan="4" class="no-record">No Record Found</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="no-record">No Record Found</p>
+    }
 </div>

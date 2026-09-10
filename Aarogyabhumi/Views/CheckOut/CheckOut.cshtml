@@ -1,6 +1,6 @@
-﻿@model Shopinv.Models.M_Category
+@model Shopinv.Models.M_Category
 @{
-    ViewBag.Title = "CheckOut";
+    ViewBag.Title = "Checkout";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var TotPrice = Model.CartDetail.Sum(s => (s.Price * s.qty));
 
@@ -20,13 +20,39 @@
     decimal TotalAmount = 0;
     int Totalbunchbv = 0;
     int TotalBV = 0;
+
+    var noImage = Url.Content("~/theme/img/sample-product.jpg");
+    var freeShipAmount = Convert.ToString(Session["FreeShipAmount"]);
+    var compName = Convert.ToString(Session["CompName"]);
+    var compAdd = Convert.ToString(Session["CompAdd"]);
 }
-<style>
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        display: none;
-    }
-</style>
+@section styles {
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            display: none;
+        }
+        .cart-row .container-address label .text-danger {
+            font-weight: 400;
+        }
+        .cart-row .label-check {
+            font-weight: 400;
+            cursor: pointer;
+        }
+        .cart-row .label-check input[type=checkbox] {
+            margin: 0 6px 0 0;
+            vertical-align: -2px;
+        }
+        .cart-row .price-lst-smry ul li .crt-lst .pr_rate span.pr_qty {
+            color: #777;
+            margin-right: 8px;
+        }
+        .cart-row .price-lst-smry .empty-sum {
+            color: #999;
+            text-align: center;
+        }
+    </style>
+}
 <script type="text/javascript">
     $(document).ready(function () {
         if ($("#OA").is(":checked")) {
@@ -62,14 +88,14 @@
         charge = @CourierCharge;
     }
 
-    $("#shippingCharge").text("₹" + charge);
+    $("#shippingCharge").text("\u20B9" + charge);
 
     var baseAmount = @ToTpayAmount - @CourierCharge;
     var finalAmount = baseAmount + charge;
 
-    $("#netAmount").text("₹ " + finalAmount.toFixed(2));
+    $("#netAmount").text("\u20B9 " + finalAmount.toFixed(2));
 
-    // 👇 SESSION UPDATE
+    // SESSION UPDATE
     $.ajax({
         url: '/CheckOut/UpdateCourierCharge',
         type: 'POST',
@@ -88,7 +114,7 @@
             dataType: "json",
             success: function (data) {
 
-                console.log("Party Data:", data);   // 🔥 CHECK THIS
+                console.log("Party Data:", data);   // CHECK THIS
 
                 var dropdown = $("#ParentPartyCode");
                 dropdown.empty();
@@ -115,7 +141,7 @@
     $(document).on('change', '#ParentPartyCode', function () {
         debugger;
         var selectedOption = $(this).find('option:selected');
-        var partyCode = $(this).val();   // ✅ BEST WAY
+        var partyCode = $(this).val();   // BEST WAY
         $.ajax({
             type: "POST",
             url: '/CheckOut/DeliverycheckCenterAddress',
@@ -135,7 +161,7 @@
         });
 
     });
-    // ✅ STOCK CHECK FUNCTION (returns promise)
+    // STOCK CHECK FUNCTION (returns promise)
 function ProductWiseStock() {
 
     var SpecialInstruction = $("#specialInstructions").val();
@@ -153,7 +179,7 @@ function ProductWiseStock() {
 }
 
 
-// ✅ MAIN FUNCTION
+// MAIN FUNCTION
 function SaveOtherAddressDetail(obj, action) {
 
     var GrossTotPrice = @GrossTotPrice;
@@ -175,7 +201,7 @@ function SaveOtherAddressDetail(obj, action) {
     var DeliveryAddressID = $("#DeliveryAddressID").val();
     var PartyCode = "";
 
-    // ✅ Delivery option validation
+    // Delivery option validation
     if (!DeliveryAddressID) {
         alert("Please Select the Delivery Option !");
         return;
@@ -194,7 +220,7 @@ function SaveOtherAddressDetail(obj, action) {
         PartyCode = $("#HomepartyCodeType").text();
     }
 
-    // ✅ Form validations
+    // Form validations
     var FirstName = $("#otherdetailUser_Firstname").val();
     if (!FirstName) {
         alert("Please enter First Name");
@@ -237,7 +263,7 @@ function SaveOtherAddressDetail(obj, action) {
         return;
     }
 
-    // ✅ Terms check
+    // Terms check
     if (!$("#terms").is(":checked")) {
         alert("Please check terms and condition");
         return;
@@ -248,17 +274,17 @@ function SaveOtherAddressDetail(obj, action) {
         return;
     }
 
-    // ✅ Confirm
+    // Confirm
     var r = confirm("Do you Want to continue to pay?");
     if (!r) {
         window.location.href = "/CheckOut/CheckOut";
         return;
     }
 
-    // ✅ SHOW LOADER (optional)
+    // SHOW LOADER (optional)
     $(".preloader").show();
 
-    // ✅ STEP 1: CHECK STOCK
+    // STEP 1: CHECK STOCK
     if (DeliveryAddressID == "Self PickUP") {
         ProductWiseStock().done(function (result) {
 
@@ -270,7 +296,7 @@ function SaveOtherAddressDetail(obj, action) {
                 return;
             }
 
-            // ✅ STEP 2: SAVE ADDRESS
+            // STEP 2: SAVE ADDRESS
             $.ajax({
                 type: "POST",
                 url: '/CheckOut/SaveAddressDetail',
@@ -361,174 +387,6 @@ function SaveOtherAddressDetail(obj, action) {
 
 
 }
-    @*function ProductWiseStock() {
-        var SpecialInstruction = $("#specialInstructions").val();
-        var partyCode = $("#ParentPartyCode").val(); // ✅ get from dropdown
-        $.ajax({
-            url: '/CheckOut/ProductWiseStock',
-            type: 'post',
-            async: false,
-            datatype: "json",
-            data: { SpecialInstruction: SpecialInstruction, PartyCode: partyCode }
-        }).done(function (result) {
-            if (result.msg != "") {
-                alert(result.msg);
-                return;
-            }
-
-        }).fail(function (error) {
-            alert(error.statusText);
-            $(".preloader").hide();
-        });
-    }
-    function SaveOtherAddressDetail(obj, action) {
-        debugger
-            var GrossTotPrice = @GrossTotPrice;
-if (GrossTotPrice <= 0) {
-    alert("Oops! You haven't added any products yet. Please choose a product to continue.");
-    window.location.href = "/Home/Index";
-    return false;
-        }
-
-        var memmode = $("#memmode").val();
-        var kitid = $("#kitid").val();
-        var Kitbilltype = "A";
-        if (memmode == "D" && kitid != "1") {
-            Kitbilltype = $("#Kitbilltype").val();
-        }
-        debugger;
-        var DeliveryAddressID = $("#DeliveryAddressID").val();
-        var PartyCode = "";
-        if (DeliveryAddressID == "0" || DeliveryAddressID == "") {
-            alert("Please Select the Delivery Option !");
-            return;
-        }
-        else {
-            if (DeliveryAddressID == "Self PickUP") {
-                PartyCode = $("#ParentPartyCode").val();
-                if (PartyCode == "0" || PartyCode == "") {
-                    alert("Please Select the Delivery Center");
-                    return;
-                }
-            }
-            else {
-                PartyCode = $("#HomepartyCodeType").text();
-            }
-        }
-        //var DeliveryAddressID = $("#DeliveryAddressID").val();
-        //var PartyCode = "";
-        //if (DeliveryAddressID == "0" || DeliveryAddressID == "") {
-        //    alert("Please Select the Delivery Option !");
-        //    return;
-        //}
-        //else {
-        //    if (DeliveryAddressID == "1") {
-        //        PartyCode = $("#ParentPartyCode").val();
-        //        if (PartyCode == "0" || PartyCode == "") {
-        //            alert("Please Select the Delivery Center");
-        //            return;
-        //        }
-        //    }
-        //    else {
-        //        PartyCode = $("#HomepartyCodeType").text();
-        //    }
-        //}
-
-        var FirstName = $("#otherdetailUser_Firstname").val();
-        if (FirstName == "" || FirstName == "0") {
-            alert("Please enter First Name");
-            return;
-        }
-        //var Lastname = $("#otherdetailUser_LastName").val();
-        var Lastname = "";
-        //if (Lastname == "" || Lastname == "0") {
-        //    alert("Please enter Last Name");
-        //    return;
-        //}
-        var Address = $("#otherdetailUser_Address").val();
-        if (Address == "" || Address == "0") {
-            alert("Please enter Address");
-            return;
-        }
-        var mobl = $("#otherdetailUser_MobileNo").val();
-        if (mobl == "" || mobl == "0" || mobl.length !== 10) {
-            alert("Please enter valid Mobile No ");
-            return;
-        }
-        var StateCode = $("#otherdetailUser_StateCode").val();
-        if (StateCode == "" || StateCode == "0") {
-            alert("Please Select the State");
-            return;
-        }
-        var District = $("#otherdetailUser_District").val();
-        //if (District == "" || District == "0") {
-        //    alert("Please enter the District");
-        //    return;
-        //}
-        var City = $("#otherdetailUser_City").val();
-        if (City == "" || City == "0") {
-            alert("Please enter City");
-            return;
-        }
-
-        var PinCode = $("#otherdetailUser_PinCode").val();
-        if (PinCode == "" || PinCode == "0") {
-            alert("Please enter PinCode");
-            return;
-        }
-        var email = $("#otherdetailUser_Email").val();
-        if (email == "" || email == "0") {
-            alert("Please enter email");
-            return;
-        }
-        var AlternateMobileno = $("#otherdetailUser_AlternateMobileno").val();
-        var bAddr = $('#billingAddress').val();
-        var bCity = $('#billingCity').val();
-        var bPin = $('#billingPincode').val();
-        var bState = $('#otherdetailUser_BillingStateCode').val();
-
-        if (!$("#terms").is(":checked")) {
-            $("#termsError").removeClass("d-none");
-            $("#terms").focus();
-            alert("Please check terms and condition");
-            return false;
-        }
-        if (!$("#ReturnShipping").is(":checked")) {
-            //$("#termsError").removeClass("d-none");
-            $("#ReturnShipping").focus();
-            alert("Please check Return and Shipping");
-            return false;
-        }
-        var r = confirm("Do you Want to continue to pay?")
-        ProductWiseStock();
-        if (r == true) {
-            $.ajax({
-                type: "POST",
-                url: '/CheckOut/SaveAddressDetail',
-                async: false,
-                dataType: "Json",
-                data: {
-                    Action: action, FirstName: FirstName, Lastname: Lastname, Mobile: mobl,
-                    StateCode: StateCode, District: District, City: City,
-                    Address: Address, PinCode: PinCode, Email: email, PartyCode: PartyCode,
-                    AlternateMobileno: AlternateMobileno, BillingAddress: bAddr, BillingCity: bCity,
-                    BillingPinCode: bPin, BillingStateCodebState: bState, Kitbilltype: Kitbilltype
-                },
-                success: function (data) {
-                    if (data.msg == "NotExist") {
-                        window.location.href = "/CheckOut/PaymentProceed";
-                    }
-                    else {
-                        alert(data.msg);
-                    }
-                }
-            });
-        }
-        else {
-            window.location.href = "/CheckOut/CheckOut";
-        }
-
-    }*@
 
     function Checkmobileno() {
         var mobl = $("#otherdetailUser_MobileNo").val();
@@ -562,213 +420,139 @@ if (GrossTotPrice <= 0) {
     }
 </script>
 
-<!-- Mini Banner (Green Offer Bar) -->
-<div class="mini-banner bg-success py-3">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-12 text-center">
-
-            </div>
+<div class="breadcrmb">
+    <img src="~/theme/img/page-banner.jpg" alt="Checkout">
+    <div class="breadcrmb-content">
+        <div class="container">
+            <h1>Checkout</h1>
+            <ul class="breadcrmb-loc">
+                <li><a href="~/Home/Index">Home</a></li>
+                <li><a href="~/ViewCart/ViewCart">Cart</a></li>
+                <li><a class="active">Checkout</a></li>
+            </ul>
         </div>
     </div>
 </div>
-
-<!--  Checkout + Summary Section -->
-<div class="products-details-area bg-white">
-    <div class="container-fluid">
-        <div class="shop-details-content pl-0 card shadow-lg border-0 mt-3 mb-3">
-            <div class="row align-items-start">
+<!--  -->
+<div class="content-row">
+    <div class="container">
+        <div class="cart-row">
+            <div class="row">
                 <!-- LEFT SIDE: Checkout Form -->
-                <div class="col-lg-8 mt-2">
-                    <div class="card shadow-sm border-0 p-4">
-                        <h5 class="fw-bold mb-3">Shipping Address</h5>
-                        <form class="p-3 border rounded shadow-sm bg-white">
-
-                            <div class="mb-3">
-                                <label class="form-label">Purchase By <span class="text-danger">*</span></label>
-                                @Html.TextBoxFor(x => x.otherdetailUser.Firstname, new { @class = "form-control border", @placeholder = "Customer Name", required = "required" })
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Email Address <span class="text-danger">*</span></label>
-                                @Html.TextBoxFor(x => x.otherdetailUser.Email, new { @class = "form-control border", @placeholder = "Email", @type = "email", @required = "required", @onchange = "validateEmail();" })
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Mobile No. <span class="text-danger">*</span></label>
-                                @Html.TextBoxFor(x => x.otherdetailUser.MobileNo, new
-                                {
-                                    @class = "form-control border",
-                                    @placeholder = "Mobile No",
-                                    @type = "tel",
-                                    @maxlength = "10",
-                                    @pattern = "[0-9]{10}",
-                                    @inputmode = "numeric",
-                                    @required = "required",
-                                    @oninput = "this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);",
-                                    @onchange = "Checkmobileno();"
-                                })
-                            </div>
-                            @*<div class="mb-3">
-            <label class="form-label">Mobile No. <span class="text-danger">*</span></label>
-            @Html.TextBoxFor(x => x.otherdetailUser.MobileNo, new { @class = "form-control border", @placeholder = "Mobile No", @type = "number", @required = "required", @onchange = "Checkmobileno();" })
-        </div>*@
-
-                            @*<div class="mb-3">
-            <label class="form-label">Alternate Mobile No.</label>
-            @Html.TextBoxFor(x => x.otherdetailUser.AlternateMobileno, new { @class = "form-control border", @placeholder = "Alternate Mobile No", @type = "number", @onchange = "Checkmobileno();" })
-        </div>*@
-
-                            @*<h5 class="mt-4 mb-3 fw-bold">Shipping Address</h5>*@
-                            <div class="mb-3">
-                                <label class="form-label">Address <span class="text-danger">*</span></label>
-                                @Html.TextAreaFor(x => x.otherdetailUser.Address, new { @class = "form-control border", @rows = "3", @placeholder = "Enter address", required = "required" })
-                            </div>
-
+                <div class="col-sm-7 col-md-8">
+                    <div class="container-address">
+                        <h5>Shipping Address</h5>
+                        <form>
                             <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">State <span class="text-danger">*</span></label>
-                                    @Html.DropDownListFor(a => a.otherdetailUser.StateCode, new SelectList(ViewBag.StateList as System.Collections.IEnumerable, "StateCode", "State"), "--Select State--", new { @class = "form-control border", required = "required" })
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label>Purchase By <span class="text-danger">*</span></label>
+                                        @Html.TextBoxFor(x => x.otherdetailUser.Firstname, new { @class = "form-control text-capitalize", @placeholder = "Customer Name", required = "required" })
+                                    </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">City <span class="text-danger">*</span></label>
-                                    @Html.TextBoxFor(x => x.otherdetailUser.City, new { @class = "form-control border", @placeholder = "City", required = "required" })
+                                <div class="col-xs-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Email ID <span class="text-danger">*</span></label>
+                                        @Html.TextBoxFor(x => x.otherdetailUser.Email, new { @class = "form-control", @placeholder = "Email", @type = "email", @required = "required", @onchange = "validateEmail();" })
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Mobile No. <span class="text-danger">*</span></label>
+                                        @Html.TextBoxFor(x => x.otherdetailUser.MobileNo, new
+                                        {
+                                            @class = "form-control",
+                                            @placeholder = "Mobile No",
+                                            @type = "tel",
+                                            @maxlength = "10",
+                                            @pattern = "[0-9]{10}",
+                                            @inputmode = "numeric",
+                                            @required = "required",
+                                            @oninput = "this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);",
+                                            @onchange = "Checkmobileno();"
+                                        })
+                                    </div>
                                 </div>
                             </div>
-
+                            <!--  -->
                             <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Pincode <span class="text-danger">*</span></label>
-                                    @Html.TextBoxFor(x => x.otherdetailUser.PinCode, new { @class = "form-control border", @placeholder = "Pincode", required = "required", @onchange = "Checkpincode();" })
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label>Address <span class="text-danger">*</span></label>
+                                        @Html.TextAreaFor(x => x.otherdetailUser.Address, new { @class = "form-control text-capitalize", @rows = "3", @placeholder = "Enter address", required = "required" })
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label>State <span class="text-danger">*</span></label>
+                                        @Html.DropDownListFor(a => a.otherdetailUser.StateCode, new SelectList(ViewBag.StateList as System.Collections.IEnumerable, "StateCode", "State"), "--Select State--", new { @class = "form-control", required = "required" })
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label>City <span class="text-danger">*</span></label>
+                                        @Html.TextBoxFor(x => x.otherdetailUser.City, new { @class = "form-control text-capitalize", @placeholder = "City", required = "required" })
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label>Pincode <span class="text-danger">*</span></label>
+                                        @Html.TextBoxFor(x => x.otherdetailUser.PinCode, new { @class = "form-control", @placeholder = "Pincode", required = "required", @maxlength = "6", @onkeypress = "return isNumber(event)", @onchange = "Checkpincode();" })
+                                    </div>
                                 </div>
                             </div>
-                            @*<h5 class="mt-4 mb-3 fw-bold">Billing Address</h5>
-        <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" id="sameAsShipping" onclick="copyShipping()">
-            <label class="form-check-label" for="sameAsShipping">
-                Same as Shipping Address
-            </label>
-        </div>
-        <div class="mb-3">
-            <label for="billingAddress" class="form-label">Address</label>
-            <textarea class="form-control border" id="billingAddress" name="billingAddress" rows="3" placeholder="Enter your billing address" required=""></textarea>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">State</label>
-                @Html.DropDownListFor(a => a.otherdetailUser.BillingStateCode, new SelectList(ViewBag.StateList as System.Collections.IEnumerable, "StateCode", "State"), "--Select State--", new { @class = "form-control border", required = "required" })
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="billingCity" class="form-label">City</label>
-                <input type="text" class="form-control border" id="billingCity" name="billingCity" placeholder="City" required="">
-            </div>
-
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="billingPincode" class="form-label">Pincode</label>
-                <input type="text" class="form-control border" id="billingPincode" name="billingPincode" placeholder="Pincode" required="">
-            </div>
-        </div>*@
                         </form>
                     </div>
                 </div>
 
                 <!-- RIGHT SIDE: Order Summary -->
-                <div class="col-lg-4 mt-2">
-                    <div class="card border-0 p-3 mt-4 mt-lg-0 shadow">
-                        <h5 class="fw-bold mb-3">Order Summary</h5>
-                        <div class="select" id="selfPickSection">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Delivery Address : </label>
-                                    <div class="select-box">
-                                        <select class="form-control" id="DeliveryAddressID" name="otherdetailUser.DeliveryAddress">
-                                            <option value="">Select Delivery Type</option>
-                                            @*<option value="0">Select Address</option>*@
-                                            <option value="Self PickUP">Self PickUP</option>
-                                            <option value="By Courier">By Courier</option>
-                                        </select>
-                                        @*@Html.DropDownListFor(m => m.otherdetailUser.DeliveryAddress,
-                                                 ViewBag.DeliveryAddressList as IEnumerable<SelectListItem>,
-                                                 "Select Delivery Type",
-                                                 new
-                                            {
-                                                     id = "DeliveryAddressID",
-                                                     @class = "form-control"
-                                                 })*@
-                                    </div>
-                                </div>
+                <div class="col-sm-5 col-md-4">
+                    <div class="price-lst-smry">
+                        <h5>Order Summary</h5>
+                        <div id="selfPickSection">
+                            <div class="form-group">
+                                <label>Delivery Address</label>
+                                <select class="form-control" id="DeliveryAddressID" name="otherdetailUser.DeliveryAddress">
+                                    <option value="">Select Delivery Type</option>
+                                    <option value="Self PickUP">Self PickUP</option>
+                                    <option value="By Courier">By Courier</option>
+                                </select>
                             </div>
                             <div class="form-group" id="partyCodeAddress" style="display:none">
-
+                                <label>Delivery Center</label>
                                 <select id="ParentPartyCode" class="form-control">
                                     <option value="">Select Delivery Center</option>
                                 </select>
-
                             </div>
-                            <hr>
 
-                            @*<p class="box space-30" style="MARGIN-TOP:15PX; display:none" id="divCenterAddress"></p>*@
-                            <div class="alert alert-success bg-grey" id="divAlertAddress" style="display:none">
+                            <div class="dlvry-note" id="divAlertAddress" style="display:none">
                                 <strong>Address : </strong><span id="divCenterAddress"></span>
                             </div>
 
-
-                            <div class="alert alert-success bg-grey" id="homeDeliveryAddress" style="display:none">
-                                @*<p id="HomepartyCodeType" style="display:none">WRA05<P>*@
+                            @* never shown by the JS; #HomepartyCodeType's text is the PartyCode sent for "By Courier" - keep it *@
+                            <div class="dlvry-note" id="homeDeliveryAddress" style="display:none">
                                 <label id="HomepartyCodeType" style="display:none" value="WR">WR</label>
-                                DM JAIPUR HOME GALLERY (JAIPUR - RAJASTHAN)<br />
-                                <strong>Address : </strong>114, OFFICERS CAMPUS, VISHNU MARG, KHATIPURA ROAD
+                                @if (!string.IsNullOrEmpty(compName))
+                                {
+                                    <strong>@compName</strong>
+                                }
+                                @if (!string.IsNullOrEmpty(compAdd))
+                                {
+                                    <span>@compAdd</span>
+                                }
                             </div>
 
-                            <div class="alert alert-success bg-grey" id="FranchiseAddress" style="display:none">
-                                @*<p id="HomepartyCodeType" style="display:none">WRA05<P>*@
+                            <div class="dlvry-note" id="FranchiseAddress" style="display:none">
                                 <label id="FranchisepartyCodeType" style="display:none" value=""></label>
                                 <lable id="FranchisepartyCodeAddress"></lable>
-
                             </div>
-                        </div>
-                        <!--  Product Table -->
-                        <div class="table-responsive mb-3">
-                            <table class="table align-middle">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Product</th>
-                                        <th class="text-center">Qty</th>
-                                        <th class="text-end">Price</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (Model.CartDetail != null && Model.CartDetail.Any())
-                                    {
-                                        foreach (var item in Model.CartDetail)
-                                        {
-                                            <tr>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <img src="@item.imagePath" class="rounded me-2 border" width="50" height="50" onerror="this.src='https://genesisemart.com/img/noimage.png';" />
-                                                        <span>@item.ProdName</span>
-                                                    </div>
-                                                </td>
-                                                <td class="text-center">@item.qty</td>
-                                                <td class="text-end">₹@String.Format("{0:N2}", item.Price * item.qty)</td>
-                                            </tr>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <tr>
-                                            <td colspan="3" class="text-center text-muted py-4">Your cart is empty.</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
                         </div>
 
                         @if (Convert.ToString(Session["MemMode"]) == "D" && Convert.ToInt32(Session["KitId"]) != 1)
                         {
-                            <div class="d-flex justify-content-between text-success mb-2">
-                                <select id="Kitbilltype" class="form-select">
+                            <div class="form-group">
+                                <label>Purchase Type</label>
+                                <select id="Kitbilltype" class="form-control">
                                     @if (Convert.ToInt32(Session["KitId"]) == 2)
                                     {
                                         <option value="A">Topup</option>
@@ -789,64 +573,62 @@ if (GrossTotPrice <= 0) {
                         }
                         <input id="memmode" type="hidden" value="@Convert.ToString(Session["MemMode"])" />
                         <input id="kitid" type="hidden" value="@Convert.ToInt32(Session["KitId"])" />
-                        <!-- Totals -->
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Subtotal</span>
-                            <span class="fw-bold">₹@String.Format("{0:N2}", TotPrice)</span>
-                        </div>
 
-                        @if (Convert.ToString(Session["MemMode"]) == "D")
-                        {
-                            <div class="d-flex justify-content-between text-success mb-2">
-                                <span>Total SV</span>
-                                <span>@Totbv</span>
-                            </div>
-                        }
+                        <ul>
+                            <!-- Products -->
+                            <li>
+                                @if (Model.CartDetail != null && Model.CartDetail.Any())
+                                {
+                                    foreach (var item in Model.CartDetail)
+                                    {
+                                        <div class="crt-lst">
+                                            <div class="crt-pic">
+                                                <img src="@item.imagePath" alt="@item.ProdName" onerror="this.onerror=null;this.src='@noImage';" />
+                                            </div>
+                                            <div class="crt-inf">
+                                                <p class="pr_name">@item.ProdName</p>
+                                                <p class="pr_rate">
+                                                    <span class="pr_qty">Qty : @item.qty</span>
+                                                    <span class="pr_offerprice">&#8377;@String.Format("{0:N2}", item.Price * item.qty)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p class="empty-sum">Your cart is empty.</p>
+                                }
+                            </li>
+                            <!-- Totals -->
+                            <li><span class="lft">Subtotal</span><span class="rght">&#8377;@String.Format("{0:N2}", TotPrice)</span></li>
+                            @if (Convert.ToString(Session["MemMode"]) == "D")
+                            {
+                                <li class="vp"><span class="lft">Total SV</span><span class="rght">@Totbv</span></li>
+                            }
+                            <li><span class="lft">Shipping Fee (+)</span><span class="rght" id="shippingCharge">&#8377;@CourierCharge</span></li>
+                            <li class="ftr"><span class="lft">Net Payable </span><span class="rght" id="netAmount">&#8377;@ToTpayAmount</span></li>
+                        </ul>
 
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Shipping Charge</span>
-                            <span id="shippingCharge">₹@CourierCharge</span>
-                        </div>
-                        @*<div class="d-flex justify-content-between fw-bold h5 mt-3">
-                                <span>Grand Total</span>
-                                <span class="text-success">₹@String.Format("{0:N2}", ToTpayAmount)</span>
-                            </div>*@
-                        @*<div class="d-flex justify-content-between text-success mb-2">
-                                <span>Coupon Applied</span>
-                                <span>- ₹@HttpContext.Current.Session["couponamount"]</span>
-                            </div>*@
-                        <div class="d-flex justify-content-between fw-bold h6">
-                            <span>Net Amount</span>
-                            <span class="text-success" id="netAmount">₹@ToTpayAmount</span>
-                        </div>
-
-                        <hr>
-                        <p class="text-muted small mb-3">
-                            <i class="fa fa-info-circle me-1 text-secondary"></i> Free Delivery on Order above Rs. 4999/-.
-                        </p>
-                        <p class="text-muted small mb-3">
-                            <i class="fa fa-info-circle me-1 text-secondary"></i> Tax included. Shipping calculated at checkout.
-                        </p>
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="terms" name="terms" required="">
-                            <label class="form-check-label" for="terms" id="dtc">
-                                I agree to the <a href="javascript:void()" data-bs-toggle="modal" data-bs-target="#exampleModal">Terms &amp; Conditions</a>
+                        <ul class="smry-nte">
+                            @if (!string.IsNullOrEmpty(freeShipAmount))
+                            {
+                                <li>Free Delivery on Order above Rs. @freeShipAmount/-.</li>
+                            }
+                            <li>Tax included. Shipping calculated at checkout.</li>
+                        </ul>
+                        <div class="form-group" style="margin-bottom:0px!important">
+                            <label class="label-check" id="dtc">
+                                <input type="checkbox" id="terms" name="terms" required="">I agree to the <a href="javascript:void(0);" data-toggle="modal" data-target="#exampleModal">Terms &amp; Conditions</a>.
                             </label>
                         </div>
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="ReturnShipping" name="ReturnShipping" required="">
-                            <label class="form-check-label" for="ReturnShipping" id="rsc">
-                                <a href="/Home/ReturnPolicy" target="_blank">
-                                    Agree with Return
-                                </a>  & <a href="/Home/ShippingPolicy" target="_blank">
-                                    Shipping Policy
-                                </a>
-                                @*<a href="https://d9cpanel.bisplindia.in/">(Visit Website)</a>*@
+                        <div class="form-group" style="margin-bottom:10px!important">
+                            <label class="label-check" id="rsc">
+                                <input type="checkbox" id="ReturnShipping" name="ReturnShipping" required="">I agree with <a href="/Home/ReturnPolicy" target="_blank">Return</a> &amp; <a href="/Home/ShippingPolicy" target="_blank">Shipping</a> policy.
                             </label>
                         </div>
-                        <a href="javascript:void(0);" onclick="SaveOtherAddressDetail(this, 'SaveUserShippingDetail')" class="btn btn-dark w-100 mb-2">
-                            <i class="fa fa-credit-card me-2"></i> Proceed To Pay
-                        </a>
+
+                        <a class="btn btn-sub btn-order" href="javascript:void(0);" onclick="SaveOtherAddressDetail(this, 'SaveUserShippingDetail')">Proceed to Pay</a>
                     </div>
                 </div>
             </div>
@@ -854,17 +636,21 @@ if (GrossTotPrice <= 0) {
     </div>
 </div>
 
-<div class="modal modal-lg fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+<!-- Terms & Conditions (Bootstrap 3 modal) -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Declaration of Voluntary Purchase</h4>
+            </div>
             <div class="modal-body">
-                <p>Declaration of Voluntary Purchase</p>
                 <p>I hereby declare that I am purchasing the product(s) of my own free will and with my full consent. I confirm that I am completely satisfied with the product information provided and have made this purchase happily and without any pressure, coercion, or undue influence from any person.</p>
                 <p>I further declare that I have personally read, understood, and verified all details, terms, conditions, and specifications of the product(s) from the official website before making this purchase.</p>
                 <p>I fully agree and accept that the purchase is voluntary and based on my independent decision.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

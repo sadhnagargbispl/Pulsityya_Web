@@ -179,7 +179,7 @@
                 {
                     <div class="col-lg-5 p-3 text-center">
                         <div class="product-image-container position-relative">
-                            <img id="mainImage" src="@item.ImagePath" onerror="this.src='https://franchise.tatkimjewellers.in/images/DefaultProduct.jpg';" alt="Product Image" class="img-fluid rounded shadow main-product-image" style="cursor: zoom-in; max-height:400px;">
+                            <img id="mainImage" src="@item.ImagePath" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/sample-product.jpg")';" alt="Product Image" class="img-fluid rounded shadow main-product-image" style="cursor: zoom-in; max-height:400px;">
                         </div>
 
                         <div class="d-flex justify-content-center mt-3 overflow-auto" style="white-space: nowrap;">

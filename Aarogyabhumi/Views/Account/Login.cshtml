@@ -1,118 +1,85 @@
-﻿@model Shopinv.Models.LoginLPlus
+@model Shopinv.Models.LoginLPlus
 @{
-    ViewBag.Title = "Login - Make & Growth";
+    ViewBag.Title = "Login";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles {
+    <style>
+        .login-bar .login-col .alert-line {
+            margin-bottom: 20px;
+        }
+
+        .login-bar .login-col .form-group.remember-me {
+            margin-bottom: 10px !important;
+        }
+
+        .login-bar .login-col .label-check {
+            cursor: pointer;
+        }
+
+        .login-bar .login-col .label-check input {
+            margin-right: 5px;
+            vertical-align: -2px;
+        }
+
+        .login-bar .login-col form.was-validated .form-control:invalid {
+            border-color: #c0392b;
+        }
+    </style>
 }
 
 @if (ViewBag.Message != null)
 {
     <script type="text/javascript">
-        window.onload = function () {
-            alert("@ViewBag.Message");
-        };
+        window.addEventListener("load", function () {
+            alert("@Html.Raw(HttpUtility.JavaScriptStringEncode(Convert.ToString(ViewBag.Message)))");
+        });
     </script>
 }
 
-<!-- Mini Banner (Green Offer Bar) -->
-<div class="mini-banner bg-success py-3">
+<div class="content-row">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-12 text-center">
+        <div class="login-bar">
+            <div class="login-col">
+                <h3>Are you Registered ?</h3>
+                <p>Have an account with us? Log in to get started.</p>
 
+                @if (ViewBag.Message != null)
+                {
+                    <div class="alert-line err">@ViewBag.Message</div>
+                }
+
+                @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label for="UserName">Email ID / Username</label>
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @placeholder = "Enter your email or username", @required = "required", autofocus = "autofocus" })
+                        @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <label for="Password">Password</label>
+                        <div class="fo-pass-block">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control fo-pass", @placeholder = "Enter your password", @required = "required" })
+                            <span toggle=".fo-pass" class="toggle-password open-eye"></span>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group remember-me">
+                        <label class="label-check" for="rememberMe"><input type="checkbox" id="rememberMe" name="rememberMe"> Remember Me</label>
+                    </div>
+                    <a href="@Url.Action("Forgotpass", "Account")" class="link-forgot">Forgot password ?</a>
+                    <button type="submit" class="btn btn-sub">Login</button>
+                }
+
+                <p class="link-register">Don't have an account yet ? <a href="@Url.Action("SignUp", "Account")">Sign up</a> now.</p>
             </div>
         </div>
     </div>
 </div>
 
-<div class="container my-5">
-    <div class="card shadow-lg border-0 mx-auto" style="max-width: 500px;">
-        @if (ViewBag.Message != null)
-        {
-            <div class="alert alert-danger">
-                @ViewBag.Message
-            </div>
-        }
-        <div class="card-header bg-success text-white text-center">
-            <h4 class="mb-0 text-white">Login</h4>
-        </div>
-        <div class="card-body">
-            @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
-            {
-                @Html.AntiForgeryToken()
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email / Username</label>
-                    @Html.TextBoxFor(m => m.UserName,
-    new
-         {
-        @class = "form-control",
-        @placeholder = "Enter your email or username",
-        @required = "required",
-        autofocus = "autofocus"
-    })
-                    @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger small" })
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    @Html.PasswordFor(m => m.Password,
-    new
-         {
-        @class = "form-control",
-        @placeholder = "Enter your password",
-        @required = "required"
-    })
-                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small" })
-                </div>
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
-                    <label class="form-check-label" for="rememberMe">Remember Me</label>
-                </div>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-success">Login</button>
-                </div>
-            }
-            <div class="text-center mt-3">
-                <a href="~/Account/SignUp">New user? Register</a> | <a href="~/Account/Forgotpass">Forgot Password?</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-    
-
-<!-- Extra Styling (only for this page) -->
-    <style>
-        .login-section {
-            background: linear-gradient(135deg, #f8fff8 0%, #e8f9e8 100%);
-            min-height: 80vh;
-        }
-
-        .card {
-            border-radius: 20px !important;
-        }
-
-        .btn-success {
-            background: #094479;
-            border: none;
-            transition: all 0.3s;
-        }
-
-            .btn-success:hover {
-                background: #F99E02;
-                transform: translateY(-2px);
-                box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
-            }
-
-        .form-control:focus {
-            border-color: #094479;
-            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-        }
-
-        a.text-success:hover {
-            text-decoration: underline !important;
-        }
-    </style>
-
-
+@section scripts {
     <script>
         // Bootstrap form validation
         (function () {
@@ -129,4 +96,4 @@
             })
         })()
     </script>
-
+}

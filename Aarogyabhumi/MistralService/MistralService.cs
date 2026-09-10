@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Net;
@@ -102,6 +102,10 @@ Always fill the speak field. If unsure, action=""unknown"" with a helpful speak.
             if (string.IsNullOrWhiteSpace(apiKey))
                 return BuildSpeak("Voice service configured nahi hai. Web.config me MistralApiKey set karein.");
 
+            var apiUrl = ConfigurationManager.AppSettings["MistralApiUrl"];
+            if (string.IsNullOrWhiteSpace(apiUrl))
+                return BuildSpeak("Voice service configured nahi hai. Web.config me MistralApiUrl set karein.");
+
             var serializer = new JavaScriptSerializer();
 
             var userContent =
@@ -122,7 +126,7 @@ Always fill the speak field. If unsure, action=""unknown"" with a helpful speak.
 
             var json = serializer.Serialize(payload);
 
-            using (var req = new HttpRequestMessage(HttpMethod.Post, "https://api.mistral.ai/v1/chat/completions"))
+            using (var req = new HttpRequestMessage(HttpMethod.Post, apiUrl))
             {
                 req.Headers.TryAddWithoutValidation("Authorization", "Bearer " + apiKey);
                 req.Content = new StringContent(json, Encoding.UTF8, "application/json");

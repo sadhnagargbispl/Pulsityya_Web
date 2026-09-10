@@ -1,112 +1,58 @@
-﻿@model Shopinv.Models.M_Category
+@model Shopinv.Models.M_Category
+@*
+    Product image gallery - demo/product-detail.asp (.itm-dtls-carousel + spotlight zoom)
+    plus a thumbnail strip (the live page had one).
 
-@if (Model.ProductDetail != null && Model.ProductDetail.Count()>0)
-{
-    foreach (var item in Model.ProductDetail)
+    Rendered inline by ProductDetail.cshtml inside #prdarea, and re-rendered by
+    ProductDetailController.GetImageBycolor (injected into #prdarea by Imagebycolorid()),
+    so it must stay self-contained: no @section here. The carousel / thumbnail
+    behaviour lives in ProductDetail.cshtml (initDetailGallery).
+*@
+@{
+    // the image server returns this URL when a product has no picture (Web.config: DefaultProductImageUrl)
+    var serverDefaultImg = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["DefaultProductImageUrl"]);
+    var fallbackImg = Url.Content("~/theme/img/sample-product.jpg");
+    var images = new System.Collections.Generic.List<string>();
+    var altText = "";
+
+    if (Model != null && Model.ProductDetail != null)
     {
-
-        <div class="col-lg-10 order-lg-2">
-            <div class="single-product-thumbnail-wrap zoom-gallery">
-                <div class="single-product-thumbnail product-large-thumbnail-3 axil-product big-product">
-                    <div class="thumbnail">
-                        <a href=@item.ImagePath class="popup-zoom">
-                            <img src=@item.ImagePath alt="Product Images">
-                        </a>
-                    </div>
-                    @if (@item.ImagePath1 != null)
-                    {
-                        <div class="thumbnail">
-                            <a href=@item.ImagePath1 class="popup-zoom">
-                                <img src=@item.ImagePath1 alt="Product Images">
-
-                            </a>
-                        </div>
-                    }
-                    @if (@item.ImagePath2 != null)
-                    {
-                        <div class="thumbnail">
-                            <a href=@item.ImagePath2 class="popup-zoom">
-                                <img src=@item.ImagePath2 alt="Product Images">
-                            </a>
-                        </div>
-                    }
-                    @if (@item.ImagePath3 != null)
-                    {
-                        <div class="thumbnail">
-                            <a href=@item.ImagePath3 class="popup-zoom">
-                                <img src=@item.ImagePath3 alt="Product Images">
-                            </a>
-                        </div>
-                    }
-                    @if (@item.ImagePath4 != null)
-                    {
-                        <div class="thumbnail">
-                            <a href=@item.ImagePath4 class="popup-zoom">
-                                <img src=@item.ImagePath4 alt="Product Images">
-                            </a>
-                        </div>
-                    }
-                    @if (@item.ImagePath5 != null)
-                    {
-                        <div class="thumbnail">
-                            <a href=@item.ImagePath5 class="popup-zoom">
-                                <img src=@item.ImagePath5 alt="Product Images">
-                            </a>
-                        </div>
-                    }
-
-                </div>
-                @*<div class="product-quick-view position-view">
-                        <a href=@item.ImagePath class="popup-zoom">
-                            <i class="far fa-search-plus"></i>
-                        </a>
-                    </div>*@
-            </div>
-        </div>
-        <div class="col-lg-2 order-lg-1">
-            <div class="product-small-thumb-3 small-thumb-wrapper h-scroll">
-                <div class="small-thumb-img">
-                    <img src=@item.ImagePath alt="thumb image">
-                </div>
-                @if (@item.ImagePath1 != null)
+        var prod = Model.ProductDetail.FirstOrDefault();
+        if (prod != null)
+        {
+            altText = prod.ProductName;
+            foreach (var path in new[] { prod.ImagePath, prod.ImagePath1, prod.ImagePath2, prod.ImagePath3, prod.ImagePath4, prod.ImagePath5 })
+            {
+                if (!string.IsNullOrWhiteSpace(path)
+                    && !string.Equals(path.Trim(), serverDefaultImg, StringComparison.OrdinalIgnoreCase)
+                    && !images.Contains(path))
                 {
-                    <div class="small-thumb-img">
-                        <img src=@item.ImagePath1 alt="thumb image">
-                    </div>
-
+                    images.Add(path);
                 }
-                @if (@item.ImagePath2 != null)
-                {
-                    <div class="small-thumb-img">
-                        <img src=@item.ImagePath2 alt="thumb image">
-                    </div>
-                }
-                @if (@item.ImagePath3 != null)
-                {
-                    <div class="small-thumb-img">
-                        <img src=@item.ImagePath3 alt="thumb image">
-                    </div>
-                }
-                @if (@item.ImagePath4 != null)
-                {
-                    <div class="small-thumb-img">
-                        <img src=@item.ImagePath4 alt="thumb image">
-                    </div>
-                }
-                @if (@item.ImagePath5 != null)
-                {
-                    <div class="small-thumb-img">
-                        <img src=@item.ImagePath5 alt="thumb image">
-                    </div>
-                }
-
-            </div>
-        </div>
-
+            }
+        }
+    }
+    if (images.Count == 0)
+    {
+        images.Add(fallbackImg);
     }
 }
-
-
-
-
-
+<div class="spotlight-group">
+    <div class="owl-carousel itm-dtls-carousel">
+        @foreach (var img in images)
+        {
+            <a class="spotlight" href="@img"><img src="@img" onerror="this.onerror=null;this.src='@fallbackImg';this.parentNode.href='@fallbackImg';" alt="@altText" /></a>
+        }
+    </div>
+</div>
+@if (images.Count > 1)
+{
+    <ul class="pr-thumbs">
+        @for (var i = 0; i < images.Count; i++)
+        {
+            <li class="@(i == 0 ? "active" : "")">
+                <a href="javascript:void(0)" data-index="@i"><img src="@images[i]" onerror="this.onerror=null;this.src='@fallbackImg';" alt="@altText" /></a>
+            </li>
+        }
+    </ul>
+}

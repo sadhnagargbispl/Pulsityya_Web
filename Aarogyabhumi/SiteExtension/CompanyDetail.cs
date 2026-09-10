@@ -32,8 +32,32 @@ namespace Shopinv.SiteExtension
             HttpContext.Current.Session["CompName"] = Convert.ToString(ds.Tables[0].Rows[0]["CompName"]);
             HttpContext.Current.Session["WebPortal"] = Convert.ToString(ds.Tables[0].Rows[0]["WebPortal"]);
             HttpContext.Current.Session["WebSite"] = Convert.ToString(ds.Tables[0].Rows[0]["WebSite"]);
-            HttpContext.Current.Session["CompTitle"] = Convert.ToString(ds.Tables[0].Rows[0]["CompTitle"]);
+            // CompTitle is stored as a greeting ("Welcome to XYZ"); the views use it as the brand name
+            string compTitle = Convert.ToString(ds.Tables[0].Rows[0]["CompTitle"]).Trim();
+            if (compTitle.StartsWith("Welcome to ", StringComparison.OrdinalIgnoreCase))
+                compTitle = compTitle.Substring("Welcome to ".Length).Trim();
+            HttpContext.Current.Session["CompTitle"] = compTitle != "" ? compTitle : Convert.ToString(ds.Tables[0].Rows[0]["CompName"]);
             HttpContext.Current.Session["MobileNo"] = Convert.ToString(ds.Tables[0].Rows[0]["MobileNo"]);
+
+            // optional m_companymaster columns used by the theme header/footer (SiteDoc/company-master-setup.sql).
+            // Read only when Sp_GetCompanydetail returns them, so the site keeps working before the script is run.
+            DataColumnCollection compCols = ds.Tables[0].Columns;
+            foreach (string col in new[] { "CompTagline", "CompAboutUs", "CompWorkingHours", "FreeShipAmount", "FacebookUrl", "InstagramUrl", "TwitterUrl", "YoutubeUrl", "LinkedInUrl", "CompGSTNo" })
+            {
+                HttpContext.Current.Session[col] = compCols.Contains(col) ? Convert.ToString(ds.Tables[0].Rows[0][col]) : "";
+            }
+
+            // the logo comes only from m_companymaster.logourl: a full URL, a site path,
+            // or a file name on the ImageUrl server (Web.config). Empty = no logo image.
+            string compLogo = compCols.Contains("logourl") ? Convert.ToString(ds.Tables[0].Rows[0]["logourl"]).Trim() : "";
+            if (compLogo != "" && !compLogo.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            {
+                if (compLogo.StartsWith("~") || compLogo.StartsWith("/"))
+                    compLogo = VirtualPathUtility.ToAbsolute(compLogo.StartsWith("/") ? "~" + compLogo : compLogo);
+                else
+                    compLogo = Convert.ToString(ConfigurationManager.AppSettings["ImageUrl"]).TrimEnd('/') + "/" + compLogo;
+            }
+            HttpContext.Current.Session["CompLogoUrl"] = compLogo;
 
             if (HttpContext.Current.Session["UserDetail"] != null)
             {

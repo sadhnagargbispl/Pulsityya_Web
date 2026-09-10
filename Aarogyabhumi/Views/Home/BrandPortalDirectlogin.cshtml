@@ -11,7 +11,7 @@
     <title>BrandPortalDirectlogin</title>
 </head>
 <body>
-    <form method="post" action="https://abiplshopping.com/members/index.php" name="frm2Post">
+    <form method="post" action="@System.Configuration.ConfigurationManager.AppSettings["BrandPortalUrl"]" name="frm2Post">
         <input type="hidden" name="token" value="@Model.token" />
         <input type="hidden" name="mod" value="@Model.mod" />
         <input type="hidden" name="userid" value="@Model.userid" />

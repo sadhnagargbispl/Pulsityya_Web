@@ -169,7 +169,7 @@
             {
                 <div class="row align-items-center">
                     <div class="col-4 cartimg">
-                        <img src="@item.imagePath" onerror="this.src='https://franchise.aarogyabhumi.net/images/DefaultProduct.jpg';" alt="" class="img-fluid border rounded-4">
+                        <img src="@item.imagePath" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/sample-product.jpg")';" alt="" class="img-fluid border rounded-4">
                     </div>
                     <div class="col-8">
                         <div class="position-relative">

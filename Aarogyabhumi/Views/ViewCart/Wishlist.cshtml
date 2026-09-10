@@ -1,7 +1,29 @@
-﻿@model Shopinv.Models.M_Category
+@model Shopinv.Models.M_Category
 @{
     ViewBag.Title = "Wishlist";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var noImage = Url.Content("~/theme/img/sample-product.jpg");
+}
+@section styles {
+    <style>
+        .cart-row .crt-lst .pr_name a {
+            color: inherit;
+        }
+        .cart-row .crt-lst .wl-stock {
+            margin: 6px 0 0 !important;
+            font-size: 0.85em;
+            font-weight: 700;
+        }
+        .cart-row .crt-lst .wl-stock.in {
+            color: #176a3a;
+        }
+        .cart-row .crt-lst .wl-stock.out {
+            color: #c0392b;
+        }
+        .cart-row .wl-list {
+            margin-bottom: 15px;
+        }
+    </style>
 }
 <script type="text/javascript">
     function SaveToWishlist(pcode) {
@@ -22,92 +44,83 @@
     }
 </script>
 
+<div class="breadcrmb">
+    <img src="~/theme/img/page-banner.jpg" alt="Wishlist">
+    <div class="breadcrmb-content">
+        <div class="container">
+            <h1>Wishlist</h1>
+            <ul class="breadcrmb-loc">
+                <li><a href="~/Home/Index">Home</a></li>
+                <li><a class="active">Wishlist</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
 
 @{ Html.RenderAction("OfferBanner", "Home");}
 
-
-
-
-<div class="products-details-area bg-white ">
-    <div class="container my-4">
-        <div class="shop-details-content pl-0">
-
-            <div class="card shadow-lg border-0 rounded-3 p-2">
-                <div class="row g-0">
-                    <div class="col-12 p-3">
-
-                        <h5 class="fw-bold mb-3">Wishlist Details</h5>
-
-                        <div class="table-responsive">
-                            <table class="table table-bordered shadow-sm align-middle mb-0" id="cartTable">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Details</th>
-                                        <th>Price</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    <!-- Product Row 1 -->
-                                    @if (Model.CartDetail != null && Model.CartDetail.Count() > 0)
-                                    {
-                                        foreach (var item in Model.CartDetail)
+<!--  -->
+<div class="content-row">
+    <div class="container">
+        <div class="cart-row">
+            @if (Model.CartDetail != null && Model.CartDetail.Count() > 0)
+            {
+                <h5>Wishlist Details</h5>
+                <div class="row wl-list">
+                    @foreach (var item in Model.CartDetail)
+                    {
+                        var detailUrl = Url.Content("~/ProductDetail/ProductDetail?ProdID=" + item.ProdId);
+                        var discount = 0;
+                        if (item.MRP > 0 && item.MRP > item.prodprice)
+                        {
+                            discount = Convert.ToInt32(Math.Round(((item.MRP - item.prodprice) * 100) / item.MRP));
+                        }
+                        <div class="col-sm-6">
+                            <div class="crt-lst">
+                                <p class="pr_remove">
+                                    <a href="javascript:void(0);" class="btn-remove" title="Remove from wishlist" onclick="SaveToWishlist('@item.ProdId')"></a>
+                                </p>
+                                <div class="crt-pic">
+                                    <a href="@detailUrl">
+                                        <img src="@item.imagePath" alt="@item.ProdName"
+                                             onerror="this.onerror=null;this.src='@noImage';" />
+                                    </a>
+                                </div>
+                                <div class="crt-inf">
+                                    <p class="pr_name"><span>SKU : @item.ProdId</span><a href="@detailUrl">@item.ProdName</a></p>
+                                    <p class="pr_rate">
+                                        @if (discount > 0)
                                         {
-                                            <tr>
-                                                <td>
-                                                    <img src="@item.imagePath"
-                                                         alt="@item.ProdName"
-                                                         class="img-fluid rounded"
-                                                         style="max-width: 90px;">
-                                                </td>
-                                                <td>
-                                                    <h6 class="fw-bold mb-1">@item.ProdName</h6>
-                                                    <p class="mb-0">
-                                                        @if (item.Stockqty != 0)
-                                                        {
-                                                            <span class="badge bg-success">In Stock</span>
-                                                        }
-                                                        else
-                                                        {
-                                                            <span class="badge bg-danger">Sold Out</span>
-                                                        }
-                                                        |
-                                                        <span class="text-muted">SKU: @item.ProdId</span>
-                                                    </p>
-                                                    @*<small><b>Size:</b> 22 INC</small>*@
-                                                </td>
-                                                <td>
-                                                    <span class="h6 text-success fw-bold">₹ @item.prodprice</span><br>
-                                                    <del class="text-muted small">₹@item.MRP</del><br>
-                                                    @*<span class="text-danger small">Save ₹</span>*@
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-danger btn-sm btn-remove" onclick="SaveToWishlist(@item.ProdId)">
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                            <span class="pr_mrp">&#8377; @item.MRP</span>
                                         }
+                                        <span class="pr_offerprice">&#8377; @item.prodprice</span>
+                                        @if (discount > 0)
+                                        {
+                                            <span class="pr_discount">@discount% Off</span>
+                                        }
+                                    </p>
+                                    @if (item.Stockqty != 0)
+                                    {
+                                        <p class="wl-stock in"><i class="fa fa-check-circle"></i> In Stock</p>
                                     }
-
-
-
-                                </tbody>
-                            </table>
+                                    else
+                                    {
+                                        <p class="wl-stock out"><i class="fa fa-times-circle"></i> Sold Out</p>
+                                    }
+                                </div>
+                            </div>
                         </div>
-
-                    </div>
-
-
-
+                    }
                 </div>
-
-
-            </div>
-
-
+                <a href="~/Home/Index" class="btn btn-sub btn-shop">Continue Shopping</a>
+            }
+            else
+            {
+                <div class="empty-cart-msg">
+                    <p>Your wishlist is empty.<span>Save the products you like and find them here later.</span></p>
+                    <a href="~/Home/Index" class="btn btn-sub btn-shop">Continue Shopping</a>
+                </div>
+            }
         </div>
     </div>
 </div>
