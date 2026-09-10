@@ -14,7 +14,7 @@ using System.Web.Mvc;
 
 namespace Shopinv.Controllers
 {
-    //[KycRequired]
+    [KycRequired]
     public class ProductDetailController : Controller
     {
         private readonly I_Category icateogry = null;
@@ -32,13 +32,6 @@ namespace Shopinv.Controllers
         // GET: ProductDetail
         public ActionResult ProductDetail(M_Category objg, string ProdId)
         {
-            // opened without a product id (or with a bogus one) - the stored
-            // procedures return no result sets and Tables[0] would throw
-            if (string.IsNullOrWhiteSpace(ProdId))
-            {
-                return RedirectToAction("CategoryList", "CategoryList");
-            }
-
             Session["Isredirect"] = null;
             Session["ProdId"] = ProdId;
             List<E_Product> AsloAvailableProd = new List<E_Product>();
@@ -48,30 +41,72 @@ namespace Shopinv.Controllers
             objg.ProductDetail = iprod.ProductDetail(ProdId);
             DataSet dsprod1 = iprod.GetProdAvailable(ProdId);
             DataSet colorsize = iprod.Get_ColorSizeimgaeBYid("byprodid", ProdId, "0", "");
-
-            if (dsprod1 != null && dsprod1.Tables.Count > 0 && dsprod1.Tables[0].Rows.Count > 0)
+            if (dsprod1.Tables[0].Rows.Count > 0)
             {
                 foreach (DataRow dr1 in dsprod1.Tables[0].Rows)
                 {
-                    E_Product obj1 = new E_Product()
+                    try
                     {
-                        ProductName = dr1["ProductName"].ToString(),
-                        ProdId = dr1["ProdId"].ToString(),
-                        BV = (decimal)dr1["BV"],
-                        PV = (int)dr1["PV"],
-                        Discount = (decimal)dr1["Discount"],
-                        ImagePath = SiteExtension.MediaUrl.Rehost(dr1["ImagePath"].ToString()),
-                        Price = (decimal)dr1["Price"],
-                        MRP = (decimal)dr1["MRP"],
-                        BunchQty = (decimal)dr1["BunchQty"],
-                        Weight = (decimal)dr1["Weight"],
-                        Gst = (decimal)dr1["Gst"],
-                        StockQTY = (decimal)dr1["StockQTY"]
-                    };
-                    AsloAvailableProd.Add(obj1);
+                        E_Product obj1 = new E_Product()
+                        {
+                            ProductName = dr1["ProductName"].ToString(),
+                            ProdId = dr1["ProdId"].ToString(),
+                            BV = Convert.ToDecimal(dr1["BV"]),
+                            PV = Convert.ToInt32(dr1["PV"]),
+                            Discount = Convert.ToDecimal(dr1["Discount"]),
+                            ImagePath = dr1["ImagePath"].ToString(),
+                            Price = Convert.ToDecimal(dr1["Price"]),
+                            MRP = Convert.ToDecimal(dr1["MRP"]),
+                            BunchQty = Convert.ToDecimal(dr1["BunchQty"]),
+                            Weight = dr1["Weight"].ToString(),
+                            Gst = Convert.ToDecimal(dr1["Gst"]),
+                            StockQTY = Convert.ToDecimal(dr1["StockQTY"])
+                        };
+
+                        AsloAvailableProd.Add(obj1);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(
+                            $"Error Row ProductId={dr1["ProdId"]} " +
+                            $"\nBV={dr1["BV"]} ({dr1["BV"]?.GetType()})" +
+                            $"\nPV={dr1["PV"]} ({dr1["PV"]?.GetType()})" +
+                            $"\nDiscount={dr1["Discount"]} ({dr1["Discount"]?.GetType()})" +
+                            $"\nPrice={dr1["Price"]} ({dr1["Price"]?.GetType()})" +
+                            $"\nMRP={dr1["MRP"]} ({dr1["MRP"]?.GetType()})" +
+                            $"\nBunchQty={dr1["BunchQty"]} ({dr1["BunchQty"]?.GetType()})" +
+                            $"\nGst={dr1["Gst"]} ({dr1["Gst"]?.GetType()})" +
+                            $"\nStockQTY={dr1["StockQTY"]} ({dr1["StockQTY"]?.GetType()})",
+                            ex);
+                    }
                 }
             }
-            if (colorsize != null && colorsize.Tables.Count > 0 && colorsize.Tables[0].Rows.Count > 0)
+            //if (dsprod1.Tables[0].Rows.Count > 0)
+            //{
+            //    foreach (DataRow dr1 in dsprod1.Tables[0].Rows)
+            //    {
+            //        E_Product obj1 = new E_Product()
+            //        {
+            //            ProductName = dr1["ProductName"].ToString(),
+            //            ProdId = dr1["ProdId"].ToString(),
+            //            BV = (decimal)dr1["BV"],
+            //            PV = (int)dr1["PV"],
+            //            Discount = (decimal)dr1["Discount"],
+            //            ImagePath = dr1["ImagePath"].ToString(),
+            //            Price = (decimal)dr1["Price"],
+            //            MRP = (decimal)dr1["MRP"],
+            //            BunchQty = (decimal)dr1["BunchQty"],
+            //            Weight = dr1["Weight"].ToString(),
+            //            Gst = (decimal)dr1["Gst"],
+
+            //            StockQTY = (decimal)dr1["StockQTY"]
+            //        };
+            //        AsloAvailableProd.Add(obj1);
+
+            //    }
+
+            //}
+            if (colorsize.Tables[0].Rows.Count > 0)
             {
                 foreach (DataRow dr1 in colorsize.Tables[0].Rows)
                 {
@@ -84,7 +119,7 @@ namespace Shopinv.Controllers
                 }
             }
             //------------------------size---------------------------
-            if (colorsize != null && colorsize.Tables.Count > 1 && colorsize.Tables[1].Rows.Count > 0)
+            if (colorsize.Tables[1].Rows.Count > 0)
             {
                 foreach (DataRow dr1 in colorsize.Tables[1].Rows)
                 {
@@ -100,19 +135,39 @@ namespace Shopinv.Controllers
             objg.GetSizes = e_SizeMasters;
             objg.TopSellerProduct = iprod.GetTopSellerProduct();
             objg.RelatedProduct = AsloAvailableProd;
-          
-            if (Session["UserDetail"] != null)
-            {
-                Getkycreq req = new Getkycreq();
-                req.islogin = "N";
-                req.reqtype = "getkyc";
-                req.userid = Convert.ToString(Session["IDNO"]);
-                req.passwd = Convert.ToString(Session["password"]);
-                string jsonreq = JsonConvert.SerializeObject(req);
-                var response = CallPostFunction(jsonreq, Apiurl);
-                Getkycres kycresponse = JsonConvert.DeserializeObject<Getkycres>(response);
-                ViewBag.kycstatus = kycresponse.idverf;
-            }
+            //objg.ProductReview = iprod.GetProductReview(Convert.ToInt32(ProdId));
+            //if (Session["UserId"] != null)
+            //{
+            //    DataSet dsw= iprod.CheckProductwiseWishlist(Convert.ToInt32(Session["FormNo"]), Convert.ToInt32(ProdId));
+            //    if(dsw==null && dsw.Tables[0].Rows.Count <= 0)
+            //    {
+            //        objg.ProductDetail.FirstOrDefault().IsWishlist = "N";
+            //    }
+            //    else if(dsw !=null && dsw.Tables[0].Rows.Count>0 && Convert.ToString(dsw.Tables[0].Rows[0]["ActiveStatus"])=="Y")
+            //    {
+            //        objg.ProductDetail.FirstOrDefault().IsWishlist = "Y";
+            //    }
+            //    else if (dsw != null && dsw.Tables[0].Rows.Count > 0 && Convert.ToString(dsw.Tables[0].Rows[0]["ActiveStatus"]) == "N")
+            //    {
+            //        objg.ProductDetail.FirstOrDefault().IsWishlist = "N";
+            //    }
+            //    else
+            //    {
+            //        objg.ProductDetail.FirstOrDefault().IsWishlist = "N";
+            //    }
+            //}
+            //if (Session["UserDetail"] != null)
+            //{
+            //    Getkycreq req = new Getkycreq();
+            //    req.islogin = "N";
+            //    req.reqtype = "getkyc";
+            //    req.userid = Convert.ToString(Session["IDNO"]);
+            //    req.passwd = Convert.ToString(Session["password"]);
+            //    string jsonreq = JsonConvert.SerializeObject(req);
+            //    var response = CallPostFunction(jsonreq, Apiurl);
+            //    Getkycres kycresponse = JsonConvert.DeserializeObject<Getkycres>(response);
+            //    ViewBag.kycstatus = kycresponse.idverf;
+            //}
             return View(objg);
         }
         public ActionResult CheckLogin()
@@ -152,28 +207,28 @@ namespace Shopinv.Controllers
 
                     if (Convert.ToString(item["Imagepath"]) != "")
                     {
-                        dd.ImagePath = SiteExtension.MediaUrl.Rehost(Convert.ToString(item["Imagepath"]));
+                        dd.ImagePath = Convert.ToString(item["Imagepath"]);
 
                     }
                     if (Convert.ToString(item["Imagepath1"]) != "")
                     {
-                        dd.ImagePath1 = SiteExtension.MediaUrl.Rehost(Convert.ToString(item["Imagepath1"]));
+                        dd.ImagePath1 = Convert.ToString(item["Imagepath1"]);
                     }
                     if (Convert.ToString(item["Imagepath2"]) != "")
                     {
-                        dd.ImagePath2 = SiteExtension.MediaUrl.Rehost(Convert.ToString(item["Imagepath2"]));
+                        dd.ImagePath2 = Convert.ToString(item["Imagepath2"]);
                     }
                     if (Convert.ToString(item["Imagepath3"]) != "")
                     {
-                        dd.ImagePath3 = SiteExtension.MediaUrl.Rehost(Convert.ToString(item["Imagepath3"]));
+                        dd.ImagePath3 = Convert.ToString(item["Imagepath3"]);
                     }
                     if (Convert.ToString(item["Imagepath4"]) != "")
                     {
-                        dd.ImagePath4 = SiteExtension.MediaUrl.Rehost(Convert.ToString(item["Imagepath4"]));
+                        dd.ImagePath4 = Convert.ToString(item["Imagepath4"]);
                     }
                     if (Convert.ToString(item["Imagepath5"]) != "")
                     {
-                        dd.ImagePath5 = SiteExtension.MediaUrl.Rehost(Convert.ToString(item["Imagepath5"]));
+                        dd.ImagePath5 = Convert.ToString(item["Imagepath5"]);
                     }
                     lst.Add(dd);
                     break;
@@ -216,8 +271,7 @@ namespace Shopinv.Controllers
             Session["Cartdetailsftch"] = objg.CartDetail;
             var cartCount = objg.CartDetail != null ? objg.CartDetail.Count() : 0;
             var TotPrice = objg.CartDetail != null ? objg.CartDetail.Sum(s => s.Price * s.qty).ToString() : "0";
-            var cartprodCount = objg.CartDetail != null ? objg.CartDetail.Where(p=>p.ProdId== ProductCode).Count() : 0;
-            return Json(new { save, TotPrice, cartCount, cartprodCount });
+            return Json(new { save, TotPrice, cartCount });
         }
 
         public ActionResult AddProductInCartOuter(M_Category objg, string Action, string ProductCode, string Qty, string ProdName, string Image, string Price, string Bv, string UniqId, string PV, string Weight, string Color, string SIZE)

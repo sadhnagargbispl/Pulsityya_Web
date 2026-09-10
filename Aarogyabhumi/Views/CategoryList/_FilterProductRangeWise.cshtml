@@ -1,54 +1,87 @@
-@model Shopinv.Models.M_Category
-@using Shopinv.Entity;
-@{
-    // rendered inline by CategoryList (ProductList) and by the sort actions (SrchFilterProductList)
-    var products = Model.SrchFilterProductList != null && Model.SrchFilterProductList.Any()
-        ? Model.SrchFilterProductList
-        : Model.ProductList;
+﻿@model Shopinv.Models.M_Category
 
-    if (products == null)
-    {
-        products = new List<E_Product>();
-    }
-    var sortValue = Convert.ToString(ViewBag.Sorting);
-}
+<script type="text/javascript">
+    $(document).ready(function () {
+        debugger;
+        $('#sorting').change(function () {
+            debugger;
+            var Selected = $("#sorting").val();
+            if (Selected == "LH") {
+                LowToHigh();
+            }
+            else {
+                HighToLow();
+            }
+        });
+    });
+</script>
 
-<div class="row">
-    <div class="col-xs-8 col-sm-12">
-        <div class="itm-fltr">
-            <div class="fltr-typ">
-                Sort By :
-                <select id="sorting">
-                    <option value="" @(sortValue == "" ? "selected" : "")>Newest</option>
-                    <option value="LH" @(sortValue == "LH" ? "selected" : "")>Price Low - High</option>
-                    <option value="HL" @(sortValue == "HL" ? "selected" : "")>Price High - Low</option>
-                </select>
-            </div>
+
+<div class="row g-0 mb-1">
+    <div class="d-flex justify-content-between mb-3">
+        <div class="results">
+            @if (Model.SrchFilterProductList != null && Model.SrchFilterProductList.Count() > 0)
+            {
+                <p>Showing: @Model.SrchFilterProductList.Count() Results</p>
+            }
+            else
+            {
+                <p>Showing: 0 Results</p>
+            }
+        </div>
+        <div class="shortby">
+            <label for="sorting" class="me-2">Sort by:</label>
+            <select id="sorting" class="form-select form-select-sm d-inline-block w-auto">
+                <option value="" selected>Default</option>
+                <option value="LH">Price: Low to High</option>
+                <option value="HL">Price: High to Low</option>
+            </select>
         </div>
     </div>
-    <div class="hidden-sm hidden-md hidden-lg col-xs-4"><div class="mb-fltr">Filter</div></div>
-</div>
 
-<div class="itm-lst">
-    <div class="row">
-        @if (products.Any())
-        {
-            foreach (var product in products)
-            {
-                <div class="col-xs-6 col-sm-4 col-item" data-listing-price="@product.Price" data-id="@product.ProdId">
-                    <input type="hidden" class="range_price_item" value="@Math.Round(product.Price)" />
-                    @Html.Partial("_ProductCard", product)
+    <hr>
+
+    @foreach (var product in Model.SrchFilterProductList)
+    {
+
+        <div class="col-lg-3 col-sm-6 col-6 aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
+            <div class="item">
+                <input type="hidden" id="hdnprodname" value="@product.ProductName" />
+                <input type="hidden" id="hdnimage" value="@product.ImagePath" />
+                <input type="hidden" id="hdnprodid" value="@product.ProdId" />
+                <input type="hidden" id="hdnBunchQty" value="@product.BunchQty" />
+                <input type="hidden" id="hdnBv" value="@product.BV" />
+                <input type="hidden" id="hdnMRP" value="@product.MRP" />
+                <input type="hidden" id="hdnprice" value="@product.Price" />
+                <input type="hidden" id="hdnPV" value="@product.PV" />
+                <input type="hidden" id="hdnWeight" value="@product.Weight" />
+                <input type="hidden" id="hdnGst" value="@product.Gst" />
+                <input type="hidden" id="hdnStcok" value="@product.StockQTY" />
+                <div class="card border-1 shadow-sm pb-0 p-1 m-1">
+                    <div class="shop-image text-center">
+                        <a href="~/ProductDetail/ProductDetail?ProdId=@product.ProdId"> <img src="@product.ImagePath" alt="@product.ProductName" class="img-fluid rounded"></a>
+                    </div>
+                    <div class="content text-center mt-3">
+                        <h6 class="fw-bold">@product.ProductName </h6>
+                        <div class="price mb-2">
+                            <span class="text-muted text-decoration-line-through me-2">₹@product.MRP</span>
+                            <span class="fw-bold text-success">₹@product.Price</span>
+                        </div>
+
+                        <div class="rating mt-0 pb-2" style="font-size: 0.5rem;">
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                        </div>
+                    </div>
                 </div>
-            }
-        }
-        else
-        {
-            <div class="no-product">
-                <p>
-                    No products found
-                    <span>Please try another category or clear your filters.</span>
-                </p>
+
             </div>
-        }
-    </div>
+        </div>
+    }
+
+
+    <!-- Product Info -->
 </div>

@@ -14,7 +14,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Shopinv</RootNamespace>
     <AssemblyName>Shopinv</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
@@ -25,7 +25,6 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,6 +46,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json.Bson, Version=1.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.Bson.1.0.2\lib\net45\Newtonsoft.Json.Bson.dll</HintPath>
+    </Reference>
     <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
       <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
     </Reference>
@@ -54,18 +56,32 @@
       <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\netstandard1.1\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\netstandard1.1\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.6.0.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
@@ -110,7 +126,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="Unity.Abstractions, Version=5.11.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.5.11.1\lib\net45\Unity.Abstractions.dll</HintPath>
     </Reference>
@@ -140,11 +155,12 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AIAssistantController.cs" />
     <Compile Include="Controllers\CategoryListController.cs" />
     <Compile Include="Controllers\CheckOrderController.cs" />
     <Compile Include="Controllers\CheckOutController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ManualKamController.cs" />
+    <Compile Include="Controllers\HubbleController.cs" />
     <Compile Include="Controllers\ProductDetailController.cs" />
     <Compile Include="Controllers\ViewCartController.cs" />
     <Compile Include="Entity\E_Banner.cs" />
@@ -152,6 +168,7 @@
     <Compile Include="Entity\E_Category.cs" />
     <Compile Include="Entity\E_CheckOut.cs" />
     <Compile Include="Entity\E_CouponDetail.cs" />
+    <Compile Include="Entity\E_DelistedDirectSeller.cs" />
     <Compile Include="Entity\E_FranchiseName.cs" />
     <Compile Include="Entity\E_Grivance.cs" />
     <Compile Include="Entity\E_OrderReport.cs" />
@@ -164,15 +181,23 @@
     <Compile Include="Entity\E_SendOTP.cs" />
     <Compile Include="Entity\E_UserDetail.cs" />
     <Compile Include="Entity\E_UserPoints.cs" />
-    <Compile Include="LogHelper.cs" />
+    <Compile Include="interface\IHubbleSSORepository.cs" />
+    <Compile Include="interface\I_DelistedDirectSeller.cs" />
+    <Compile Include="MistralService\MistralService.cs" />
+    <Compile Include="Models\AadharOtpRequest.cs" />
     <Compile Include="Models\ExternalLogin.cs" />
+    <Compile Include="Models\HubbleSSOUserModel.cs" />
     <Compile Include="Models\M_Changepassword.cs" />
     <Compile Include="Models\M_Complaint.cs" />
+    <Compile Include="Models\M_DelistedDirectSeller.cs" />
     <Compile Include="Models\M_payreqCashFreenew.cs" />
     <Compile Include="Models\M_Profile.cs" />
     <Compile Include="Models\M_Referral.cs" />
     <Compile Include="Models\M_UserKYC.cs" />
     <Compile Include="Models\SendboxAuthenticate.cs" />
+    <Compile Include="Models\ubbleSSOTokenModel.cs" />
+    <Compile Include="Repository\HubbleSSORepository.cs" />
+    <Compile Include="Repository\R_DelistedDirectSeller.cs" />
     <Compile Include="SiteExtension\CompanyDetail.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -216,85 +241,9 @@
     <Compile Include="Repository\R_Product.cs" />
     <Compile Include="Repository\R_register.cs" />
     <Compile Include="SiteExtension\KycRequiredFilter.cs" />
-    <Compile Include="SiteExtension\MediaUrl.cs" />
     <Compile Include="SiteExtension\TextCrypto.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="theme\css\bootstrap.min.css" />
-    <Content Include="theme\css\custom-mvc.css" />
-    <Content Include="theme\css\font-awesome.min.css" />
-    <Content Include="theme\css\layout.css" />
-    <Content Include="theme\css\layout-responsive.css" />
-    <Content Include="theme\css\menu.css" />
-    <Content Include="theme\css\message.css" />
-    <Content Include="theme\css\popup-view.css" />
-    <Content Include="theme\fonts\FontAwesome.otf" />
-    <Content Include="theme\fonts\fontawesome-webfont.eot" />
-    <Content Include="theme\fonts\fontawesome-webfont.svg" />
-    <Content Include="theme\fonts\fontawesome-webfont.ttf" />
-    <Content Include="theme\fonts\fontawesome-webfont.woff" />
-    <Content Include="theme\fonts\fontawesome-webfont.woff2" />
-    <Content Include="theme\img\arrow-icon-left.png" />
-    <Content Include="theme\img\arrow-icon-right.png" />
-    <Content Include="theme\img\favicon.ico" />
-    <Content Include="theme\img\filter-icon.png" />
-    <Content Include="theme\img\hero-banner-01.jpg" />
-    <Content Include="theme\img\hero-banner-02.jpg" />
-    <Content Include="theme\img\hero-banner-03.jpg" />
-    <Content Include="theme\img\icon-american-express.jpg" />
-    <Content Include="theme\img\icon-app-store.jpg" />
-    <Content Include="theme\img\icon-buyer.png" />
-    <Content Include="theme\img\icon-cart.png" />
-    <Content Include="theme\img\icon-cart-wht.png" />
-    <Content Include="theme\img\icon-close.png" />
-    <Content Include="theme\img\icon-first-head.png" />
-    <Content Include="theme\img\icon-google-play.jpg" />
-    <Content Include="theme\img\icon-hide-pwd.png" />
-    <Content Include="theme\img\icon-master-card.jpg" />
-    <Content Include="theme\img\icon-minus.png" />
-    <Content Include="theme\img\icon-payout.png" />
-    <Content Include="theme\img\icon-plus.png" />
-    <Content Include="theme\img\icon-price.png" />
-    <Content Include="theme\img\icon-rewards.png" />
-    <Content Include="theme\img\icon-rupay-card.jpg" />
-    <Content Include="theme\img\icon-search.png" />
-    <Content Include="theme\img\icon-show-pwd.png" />
-    <Content Include="theme\img\icon-support.png" />
-    <Content Include="theme\img\icon-visa-card.jpg" />
-    <Content Include="theme\img\icon-wishlist.png" />
-    <Content Include="theme\img\icon-x-twitter.png" />
-    <Content Include="theme\img\logo.png" />
-    <Content Include="theme\img\logo-icon.png" />
-    <Content Include="theme\img\page-banner.jpg" />
-    <Content Include="theme\img\page-home-back-01.jpg" />
-    <Content Include="theme\img\sample-product.jpg" />
-    <Content Include="theme\img\wlcme.jpg" />
-    <Content Include="theme\js\bootstrap.min.js" />
-    <Content Include="theme\js\enquiry.js" />
-    <Content Include="theme\js\html5shiv.min.js" />
-    <Content Include="theme\js\inactive.js" />
-    <Content Include="theme\js\item_filter.js" />
-    <Content Include="theme\js\jquery.min.js" />
-    <Content Include="theme\js\layout.js" />
-    <Content Include="theme\js\respond.min.js" />
-    <Content Include="theme\js\shop.js" />
-    <Content Include="theme\plugins\accordion\css\woco-accordion.min.css" />
-    <Content Include="theme\plugins\accordion\js\jquery-1.11.3.min.js" />
-    <Content Include="theme\plugins\accordion\js\woco.accordion.min.js" />
-    <Content Include="theme\plugins\animation\css\animate.css" />
-    <Content Include="theme\plugins\animation\js\wow.min.js" />
-    <Content Include="theme\plugins\nivo-slider\nivo.css" />
-    <Content Include="theme\plugins\nivo-slider\nivo.js" />
-    <Content Include="theme\plugins\nivo-slider\nivo-custom.css" />
-    <Content Include="theme\plugins\owl-carousel\owl.carousel.js" />
-    <Content Include="theme\plugins\owl-carousel\owl.carousel.min.css" />
-    <Content Include="theme\plugins\owl-carousel\owl.custom.css" />
-    <Content Include="theme\plugins\owl-carousel\owl.theme.default.min.css" />
-    <Content Include="theme\plugins\price-slider\jquery-ui.min.css" />
-    <Content Include="theme\plugins\price-slider\jquery-ui.min.js" />
-    <Content Include="theme\plugins\price-slider\range-slider.css" />
-    <Content Include="theme\plugins\spotlight-master\css\spotlight.min.css" />
-    <Content Include="theme\plugins\spotlight-master\js\spotlight.min.js" />
     <Content Include="assets\css\banner.css" />
     <Content Include="assets\css\blog.css" />
     <Content Include="assets\css\bootstrap.min.css" />
@@ -342,6 +291,8 @@
     <Content Include="assets\images\homeimg.png" />
     <Content Include="assets\images\home_img.jpg" />
     <Content Include="assets\images\logo.png" />
+    <Content Include="assets\images\logo2.png" />
+    <Content Include="assets\images\logo1.png" />
     <Content Include="assets\images\logo\11.png" />
     <Content Include="assets\images\logo\12.png" />
     <Content Include="assets\images\menbracelets.jpg" />
@@ -382,7 +333,6 @@
     <Content Include="assets\images\tatkim\menchains.jpg" />
     <Content Include="assets\images\tatkim\menpendants.jpg" />
     <Content Include="assets\images\tatkim\menrings.jpg" />
-    <Content Include="assets\images\tatkim\Men’s Ring.png" />
     <Content Include="assets\images\users\user_1.jpg" />
     <Content Include="assets\images\users\user_2.jpg" />
     <Content Include="assets\images\users\user_3.jpg" />
@@ -390,6 +340,7 @@
     <Content Include="assets\js\ajaxchimp.min.js" />
     <Content Include="assets\js\bootstrap.bundle.min.js" />
     <Content Include="assets\js\contact-form-script.js" />
+    <Content Include="assets\js\voice-assistant.js" />
     <Content Include="assets\js\custom.js" />
     <Content Include="assets\js\form-validator.min.js" />
     <Content Include="assets\js\jquery.magnific-popup.min.js" />
@@ -398,7 +349,6 @@
     <Content Include="assets\js\mixitup.min.js" />
     <Content Include="assets\js\owl.carousel.min.js" />
     <Content Include="assets\js\scrollCue.min.js" />
-    <Content Include="assets\Plan\vxf.html" />
     <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -433,7 +383,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="assets\images\Men’s Ring\" />
-    <Folder Include="Views\ManualKam\" />
+    <Folder Include="SignUp\Sign\" />
+    <Folder Include="Views\AIAssistant\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\fonts\flaticon_mycollection.eot" />
@@ -494,6 +445,7 @@
     <Content Include="assets\webfonts\fa-solid-900.woff2" />
     <Content Include="assets\webfonts\fa-v4compatibility.ttf" />
     <Content Include="assets\webfonts\fa-v4compatibility.woff2" />
+    <Content Include="assets\images\Demo.avif" />
     <None Include="packages.config" />
     <Content Include="vender\icofont\fonts\icofont.woff" />
     <Content Include="vender\icofont\fonts\icofont.woff2" />
@@ -525,8 +477,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_IndexLayout.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Shared\_ProductCard.cshtml" />
-    <Content Include="theme\css\bs5-compat.css" />
+    <Content Include="Views\Shared\_VoiceAssistant.cshtml" />
     <Content Include="Views\ViewCart\CartProducts.cshtml" />
     <Content Include="Views\ViewCart\ViewCart.cshtml" />
     <Content Include="Views\Home\PrivacyPolicy.cshtml" />
@@ -565,11 +516,16 @@
     <Content Include="Views\Home\MemberProfile.cshtml" />
     <Content Include="Views\Home\BrandPortalDirectlogin.cshtml" />
     <Content Include="SiteDoc\DIRECTSELLERCONTRACT.pdf" />
-    <Content Include="SiteDoc\company-master-setup.sql" />
     <Content Include="Views\Home\Certificate.cshtml" />
     <Content Include="Views\CheckOut\CashFreeApi.cshtml" />
     <Content Include="Views\Home\UpdateUserKycByapi.cshtml" />
     <Content Include="Views\Home\UserKycByapi.cshtml" />
+    <Content Include="Views\Home\Registerofds.cshtml" />
+    <Content Include="Views\Home\DeListedDsd.cshtml" />
+    <Content Include="Views\Home\GrievanceRedressalMechanism.cshtml" />
+    <Content Include="Views\Home\CheckStatus.cshtml" />
+    <Content Include="Views\Home\GrievanceRRedressal.cshtml" />
+    <Content Include="Views\Home\Complaintdetail_partail.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

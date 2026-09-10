@@ -27,6 +27,7 @@
         public string Action { get; set; }
         public string TxnData { get; set; }
         public string Amount { get; set; }
+
     }
 
 

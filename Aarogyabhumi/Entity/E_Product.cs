@@ -25,15 +25,13 @@ namespace Shopinv.Entity
         public string Liner { get; set; }
         public string ProductDiscription { get; set; }
         public decimal BunchQty { get; set; }
-        public decimal Weight { get; set; }
+        public string Weight { get; set; }
         public decimal StockQuantiy { get; set; }
         public string FranchisepartyCode { get; set; }
         public decimal Gst { get; set; }
         public decimal StockQTY { get; set; }
-        public Boolean isCart { get; set; } 
-        public decimal CartQty { get; set; }    
         public IEnumerable<E_ProductDetail> ProductDetail { get; set; }
-
+        public string BatchNo { get; set; }
     }
     public class E_ProductDetail
     {
@@ -42,7 +40,7 @@ namespace Shopinv.Entity
         public string SubcatName { get; set; }
         public string CatName { get; set; }
         public decimal BV { get; set; }
-        public decimal PV { get; set; }
+        public Int32 PV { get; set; }
         public decimal Discount { get; set; }
         public string ImagePath { get; set; }
         public decimal Price { get; set; }
@@ -62,7 +60,7 @@ namespace Shopinv.Entity
         public decimal Gst { get; set; }
         public decimal StockQTY { get; set; }
         public string IsWishlist { get; set; }
-        public decimal ProdCommssn { get; set; }    
+        public string BatchNo{ get; set; }
     }
 
     public class E_ProductReview

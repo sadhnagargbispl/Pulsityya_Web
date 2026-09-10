@@ -1,12 +1,4 @@
-﻿@{
-    // company identity comes from companymaster via CompanyDetail.GetCompanydetail()
-    var cmpName = Convert.ToString(Session["CompName"]);
-    var cmpMail = Convert.ToString(Session["CompMail"]);
-    var cmpPhone = Convert.ToString(Session["ContactNo"]);
-    var cmpAdd = Convert.ToString(Session["CompAdd"]);
-    var cmpSite = Convert.ToString(Session["WebSite"]);
-}
-
+﻿
 @{
     Layout = null;
 }
@@ -21,30 +13,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title> Welcome to @(cmpName) | Every Deal for Smart Savings & Top-Quality Shopping </title>
+    <title> Welcome to Make & Growth | Every Deal for Smart Savings & Top-Quality Shopping </title>
     <link rel="icon" type="image/png" href="~/assets/images/favicon.png">
 
     <!-- Primary Meta Tags -->
     <meta name="description"
-          content="@(cmpName) is your smart shopping partner offering digital gift vouchers, affordable online shopping, and exclusive deals. Enjoy quality products, great value, and seamless savings in every purchase.">
+          content="@Convert.ToString(Session["CompTitle"]) is your smart shopping partner offering digital gift vouchers, affordable online shopping, and exclusive deals. Enjoy quality products, great value, and seamless savings in every purchase.">
     <meta name="keywords"
-          content="@(cmpName) , Gift Vouchers, Online Shopping, Smart Savings, Best Deals, Affordable Products, E-commerce, Digital Gifting, Shopping Offers">
-    <meta name="author" content="@(cmpName)">
+          content="@Convert.ToString(Session["CompTitle"]), Gift Vouchers, Online Shopping, Smart Savings, Best Deals, Affordable Products, E-commerce, Digital Gifting, Shopping Offers">
+    <meta name="author" content="@Convert.ToString(Session["CompTitle"])">
     <meta name="robots" content="index, follow">
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:title" content="@(cmpName) | Smart Shopping & Digital Gift Vouchers">
+    <meta property="og:title" content="@Convert.ToString(Session["CompTitle"])| Smart Shopping & Digital Gift Vouchers">
     <meta property="og:description"
-          content="Shop smarter with @(cmpName) . Explore exclusive gift vouchers and a wide range of quality products at the best prices. Savings and convenience in every deal!">
+          content="Shop smarter with @Convert.ToString(Session["CompTitle"]). Explore exclusive gift vouchers and a wide range of quality products at the best prices. Savings and convenience in every deal!">
     <meta property="og:image" content="assets/images/og-image.jpg">
-    <meta property="og:url" content="@(cmpSite)">
+    <meta property="og:url" content="https://d9cpanel.bisplindia.in/">
     <meta property="og:type" content="website">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@(cmpName) | Smart Shopping & Gift Voucher Deals">
+    <meta name="twitter:title" content="@Convert.ToString(Session["CompTitle"]) | Smart Shopping & Gift Voucher Deals">
     <meta name="twitter:description"
-          content="Discover digital gift vouchers and budget-friendly online shopping with @(cmpName) . Better quality, better value — always.">
+          content="Discover digital gift vouchers and budget-friendly online shopping with @Convert.ToString(Session["CompTitle"]). Better quality, better value — always.">
     <meta name="twitter:image" content="assets/images/og-image.jpg">
 
 
@@ -69,7 +61,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
+
     <style>
         @@media only screen and (max-width : 767px) {
             .top-header-left-content ul li {
@@ -111,7 +103,7 @@
         </div>
     </div>
     <div class="container">
-        
+
 
 
         <form class="p-4 bg-white rounded shadow-sm">
@@ -171,11 +163,15 @@
                                         <select class="form-select" id="IdType">
                                             @foreach (var item in Model.kycTypeMasters)
                                             {
-                                                @*if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.addressdetail.idtype)) && Convert.ToString(Model.Userkycres.addressdetail.idtype) == item.IdType)
-                                                    {
-                                                        <option value="@item.Id" selected>@item.IdType</option>
-                                                    }*@
-                                                <option value="@item.Id">@item.IdType</option>
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.addressdetail.idtype)) && Convert.ToString(Model.Userkycres.addressdetail.idtype) == item.IdType)
+                                                {
+                                                    <option value="@item.Id" selected>@item.IdType</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.Id">@item.IdType</option>
+                                                }
+
                                             }
                                         </select>
                                     </div>
@@ -203,27 +199,28 @@
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Account Type</label>
                                         <select class="form-select" id="Actype">
-                                            @*@if (!string.IsNullOrEmpty(Model.Userkycres.bankdetail.accounttype))
+                                            @if (!string.IsNullOrEmpty(Model.Userkycres.bankdetail.accounttype) && Model.Userkycres.bankdetail.accounttype == "")
+                                            {
+                                                <option value="0">CHOOSE ACCOUNT TYPE</option>
+                                                if (Model.Userkycres.bankdetail.accounttype == "SAVING ACCOUNT")
                                                 {
-                                                    if (Model.Userkycres.bankdetail.accounttype == "SAVING ACCOUNT")
-                                                    {
-                                                        <option value="SAVING ACCOUNT" selected>SAVING ACCOUNT</option>
-                                                    }
-                                                    if (Model.Userkycres.bankdetail.accounttype == "CURRENT ACCOUNT")
-                                                    {
-                                                        <option value="CURRENT ACCOUNT" selected>CURRENT ACCOUNT</option>
-                                                    }
-
+                                                    <option value="SAVING ACCOUNT" selected>SAVING ACCOUNT</option>
                                                 }
-                                                else
+                                                if (Model.Userkycres.bankdetail.accounttype == "CURRENT ACCOUNT")
                                                 {
-                                                    <option value="0">CHOOSE ACCOUNT TYPE</option>
-                                                    <option value="SAVING ACCOUNT">SAVING ACCOUNT</option>
-                                                    <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>
-                                                }*@
-                                            <option value="0">CHOOSE ACCOUNT TYPE</option>
-                                            <option value="SAVING ACCOUNT">SAVING ACCOUNT</option>
-                                            <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>
+                                                    <option value="CURRENT ACCOUNT" selected>CURRENT ACCOUNT</option>
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                                <option value="0">CHOOSE ACCOUNT TYPE</option>
+                                                <option value="SAVING ACCOUNT">SAVING ACCOUNT</option>
+                                                <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>
+                                            }
+                                            @*<option value="0">CHOOSE ACCOUNT TYPE</option>
+                                                <option value="SAVING ACCOUNT">SAVING ACCOUNT</option>
+                                                <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>*@
                                         </select>
                                     </div>
 
@@ -241,7 +238,11 @@
                                                 {
                                                     <option value="@item.BankCode" selected>@item.BankName</option>
                                                 }
-                                                <option value="@item.BankCode">@item.BankName</option>
+                                                else
+                                                {
+                                                    <option value="@item.BankCode">@item.BankName</option>
+                                                }
+
                                             }
                                         </select>
                                     </div>
@@ -294,12 +295,20 @@
 
                             <div class="border border-secondary rounded p-3 bg-light">
                                 <div class="mb-3">
-                                    <label class="form-label mb-1 ">Front Address Proof (allow only jpg,jpeg,png)</label>
+                                    <label class="form-label mb-1 ">
+                                        Front Address Proof (allow only jpg,jpeg,png)
+                                        <br />
+                                        <small style="color:red">The file size must not exceed 2 MB.</small>
+                                    </label>
                                     <input type="file" id="Aadharfront" class="form-control" />
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label mb-1 ">Back Address Proof (allow only jpg,jpeg,png)</label>
+                                    <label class="form-label mb-1 ">
+                                        Back Address Proof (allow only jpg,jpeg,png)
+                                        <br />
+                                        <small style="color:red">The file size must not exceed 2 MB.</small>
+                                    </label>
                                     <input type="file" id="Aadharback" class="form-control" />
                                 </div>
 
@@ -307,7 +316,11 @@
 
 
                             <div class="border border-secondary rounded p-3 bg-light mt-3">
-                                <label class="form-label">Bank KYC (allow only jpg,jpeg,png)</label>
+                                <label class="form-label">
+                                    Bank KYC (allow only jpg,jpeg,png)
+                                    <br />
+                                    <small style="color:red">The file size must not exceed 2 MB.</small>
+                                </label>
                                 <input type="file" id="Bankdoc" class="form-control" />
                             </div>
 
@@ -315,18 +328,23 @@
 
 
                             <div class="border border-secondary rounded p-3 bg-light mt-3">
-                                <label class="form-label">PAN Card Upload (allow only jpg,jpeg,png)</label>
+                                <label class="form-label">
+                                    PAN Card Upload (allow only jpg,jpeg,png)
+                                    <br />
+                                    <small style="color:red">The file size must not exceed 2 MB.</small>
+                                </label>
                                 <input type="file" id="Pandoc" class="form-control" />
                             </div>
 
 
 
-                            <div class="border border-secondary rounded p-3 bg-light mt-3">
+                            <div class="border border-secondary rounded p-3 bg-light mt-3" style="display:none">
                                 <h6 class="fw-bold mb-3">Direct Seller PDF</h6>
                                 <div class="mb-3">
                                     <div>
                                         <a href="~/Account/Downloadpdf" class="btn btn-sm btn-outline-primary me-2" download="">Download PDF</a>
                                     </div>
+                                    <small style="color:red">The PDF file size must not exceed 5 MB.</small>
                                     <div class="form-text"> कृपया ऊपर दी गई PDF फ़ाइल डाउनलोड करें, आवश्यक विवरण भरें और फिर यहाँ दोबारा Upload करें। </div>
 
                                 </div>
@@ -404,11 +422,14 @@
                                         <select class="form-select" id="IdType" disabled>
                                             @foreach (var item in Model.kycTypeMasters)
                                             {
-                                                @*if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.addressdetail.idtype)) && Convert.ToString(Model.Userkycres.addressdetail.idtype) == item.IdType)
-                                                    {
-                                                        <option value="@item.Id" selected>@item.IdType</option>
-                                                    }*@
-                                                <option value="@item.Id">@item.IdType</option>
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.addressdetail.idtype)) && Convert.ToString(Model.Userkycres.addressdetail.idtype) == item.IdType)
+                                                {
+                                                    <option value="@item.Id" selected>@item.IdType</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.Id">@item.IdType</option>
+                                                }
                                             }
                                         </select>
                                     </div>
@@ -436,27 +457,27 @@
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Account Type</label>
                                         <select class="form-select" id="Actype" disabled>
-                                            @*@if (!string.IsNullOrEmpty(Model.Userkycres.bankdetail.accounttype))
+                                            @if (!string.IsNullOrEmpty(Model.Userkycres.bankdetail.accounttype) && Model.Userkycres.bankdetail.accounttype != "")
+                                            {
+                                                <option value="0">CHOOSE ACCOUNT TYPE</option>
+                                                if (Model.Userkycres.bankdetail.accounttype == "SAVING ACCOUNT")
                                                 {
-                                                    if (Model.Userkycres.bankdetail.accounttype == "SAVING ACCOUNT")
-                                                    {
-                                                        <option value="SAVING ACCOUNT" selected>SAVING ACCOUNT</option>
-                                                    }
-                                                    if (Model.Userkycres.bankdetail.accounttype == "CURRENT ACCOUNT")
-                                                    {
-                                                        <option value="CURRENT ACCOUNT" selected>CURRENT ACCOUNT</option>
-                                                    }
-
+                                                    <option value="SAVING ACCOUNT" selected>SAVING ACCOUNT</option>
                                                 }
-                                                else
+                                                if (Model.Userkycres.bankdetail.accounttype == "CURRENT ACCOUNT")
                                                 {
-                                                    <option value="0">CHOOSE ACCOUNT TYPE</option>
-                                                    <option value="SAVING ACCOUNT">SAVING ACCOUNT</option>
-                                                    <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>
-                                                }*@
-                                            <option value="0">CHOOSE ACCOUNT TYPE</option>
-                                            <option value="SAVING ACCOUNT">SAVING ACCOUNT</option>
-                                            <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>
+                                                    <option value="CURRENT ACCOUNT" selected>CURRENT ACCOUNT</option>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <option value="0">CHOOSE ACCOUNT TYPE</option>
+                                                <option value="SAVING ACCOUNT">SAVING ACCOUNT</option>
+                                                <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>
+                                            }
+                                            @*<option value="0">CHOOSE ACCOUNT TYPE</option>
+                                                <option value="SAVING ACCOUNT">SAVING ACCOUNT</option>
+                                                <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>*@
                                         </select>
                                     </div>
 
@@ -474,7 +495,10 @@
                                                 {
                                                     <option value="@item.BankCode" selected>@item.BankName</option>
                                                 }
-                                                <option value="@item.BankCode">@item.BankName</option>
+                                                else
+                                                {
+                                                    <option value="@item.BankCode">@item.BankName</option>
+                                                }
                                             }
                                         </select>
                                     </div>
@@ -527,12 +551,20 @@
 
                             <div class="border border-secondary rounded p-3 bg-light">
                                 <div class="mb-3">
-                                    <label class="form-label mb-1 ">Front Address Proof (allow only jpg,jpeg,png)</label>
+                                    <label class="form-label mb-1 ">
+                                        Front Address Proof (allow only jpg,jpeg,png)
+                                        <br />
+                                        <small style="color:red">The file size must not exceed 2 MB.</small>
+                                    </label>
                                     <input type="file" id="Aadharfront" class="form-control" disabled />
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label mb-1 ">Back Address Proof (allow only jpg,jpeg,png)</label>
+                                    <label class="form-label mb-1 ">
+                                        Back Address Proof (allow only jpg,jpeg,png)
+                                        <br />
+                                        <small style="color:red">The file size must not exceed 2 MB.</small>
+                                    </label>
                                     <input type="file" id="Aadharback" class="form-control" disabled />
                                 </div>
 
@@ -540,7 +572,11 @@
 
 
                             <div class="border border-secondary rounded p-3 bg-light mt-3">
-                                <label class="form-label">Bank KYC (allow only jpg,jpeg,png)</label>
+                                <label class="form-label">
+                                    Bank KYC (allow only jpg,jpeg,png)
+                                    <br />
+                                    <small style="color:red">The file size must not exceed 2 MB.</small>
+                                </label>
                                 <input type="file" id="Bankdoc" class="form-control" disabled />
                             </div>
 
@@ -548,20 +584,24 @@
 
 
                             <div class="border border-secondary rounded p-3 bg-light mt-3">
-                                <label class="form-label">PAN Card Upload (allow only jpg,jpeg,png)</label>
+                                <label class="form-label">
+                                    PAN Card Upload (allow only jpg,jpeg,png)
+                                    <br />
+                                    <small style="color:red">The file size must not exceed 2 MB.</small>
+                                </label>
                                 <input type="file" id="Pandoc" class="form-control" disabled />
                             </div>
 
 
 
-                            <div class="border border-secondary rounded p-3 bg-light mt-3">
+                            <div class="border border-secondary rounded p-3 bg-light mt-3" style="display:none">
                                 <h6 class="fw-bold mb-3">Direct Seller PDF</h6>
                                 <div class="mb-3">
                                     <div>
                                         <a href="~/Account/Downloadpdf" class="btn btn-sm btn-outline-primary me-2" download="">Download PDF</a>
                                     </div>
                                     <div class="form-text"> कृपया ऊपर दी गई PDF फ़ाइल डाउनलोड करें, आवश्यक विवरण भरें और फिर यहाँ दोबारा Upload करें। </div>
-
+                                    <small style="color:red">The PDF file size must not exceed 5 MB.</small>
                                 </div>
                                 (allow only pdf)
                                 <!-- File Upload -->
@@ -642,9 +682,11 @@
                     contentType: false,
                     processData: false,
                     beforeSend: function () {
+                        debugger;
                         $("#kycbtn").prop("disabled", true).text("Saving...");
                     },
                     success: function (response) {
+                        debugger;
                         if (response.success) {
 
                             location.reload();
@@ -727,8 +769,9 @@
 
                 let allowed = [".jpg", ".jpeg", ".png", ".pdf"];
                 let files = ["#Aadharfront", "#Aadharback", "#Bankdoc", "#Pandoc"];
-
+                let maxSizeimg = 2 * 1024 * 1024; // 2 MB
                 for (let file of files) {
+                    let input = $(file)[0];
                     let name = $(file).val();
                     if (name) {
                         let ext = name.substring(name.lastIndexOf('.')).toLowerCase();
@@ -736,18 +779,38 @@
                             alert("Invalid file type: " + name);
                             $(file).focus(); return false;
                         }
+
+                        // Size check (2 MB)
+                        let fileObj = input.files[0];
+                        if (fileObj && fileObj.size > maxSizeimg) {
+                            alert("File size must not exceed 2 MB.");
+                            $(file).val("");   // clear selected file
+                            $(file).focus();
+                            return false;
+                        }
                     }
                 }
 
                 let kycallowed = [".pdf"];
                 let kycfiles = ["#kycdoc"];
+                let maxSize = 5 * 1024 * 1024; // 5MB
                 for (let file of kycfiles) {
                     let name = $(file).val();
+                    let input = $(file)[0];
                     if (name) {
                         let ext = name.substring(name.lastIndexOf('.')).toLowerCase();
                         if (!kycallowed.includes(ext)) {
                             alert("Invalid file type: " + name);
                             $(file).focus(); return false;
+                        }
+
+                        // Size check
+                        let fileObj = input.files[0];
+                        if (fileObj && fileObj.size > maxSize) {
+                            alert("The PDF file size must not exceed 5 MB.");
+                            $(file).val("");   // clear selected file
+                            $(file).focus();
+                            return false;
                         }
                     }
                 }
@@ -755,6 +818,8 @@
                 return true;
             }
         });
+
+        
     </script>
 
     <script src="~/assets/js/jquery.min.js"></script>
@@ -776,21 +841,35 @@
     <script>
         function setStep(step) {
 
-            // hide all steps
+            // Hide all steps
             for (let i = 1; i <= 4; i++) {
-                document.getElementById("step" + i).classList.remove("active");
-                document.getElementById("s" + i).classList.remove("step-active");
-                document.getElementById("s" + i).classList.add("step-pending");
+
+                let stepDiv = document.getElementById("step" + i);
+                let stepIndicator = document.getElementById("s" + i);
+
+                if (stepDiv) {
+                    stepDiv.classList.remove("active");
+                }
+
+                if (stepIndicator) {
+                    stepIndicator.classList.remove("step-active");
+                    stepIndicator.classList.add("step-pending");
+                }
             }
 
-            // show current step
-            document.getElementById("step" + step).classList.add("active");
+            // Show current step
+            let currentStep = document.getElementById("step" + step);
+            if (currentStep) {
+                currentStep.classList.add("active");
+            }
 
-            // highlight current indicator
-            document.getElementById("s" + step).classList.add("step-active");
-            document.getElementById("s" + step).classList.remove("step-pending");
+            // Highlight current indicator
+            let currentIndicator = document.getElementById("s" + step);
+            if (currentIndicator) {
+                currentIndicator.classList.add("step-active");
+                currentIndicator.classList.remove("step-pending");
+            }
         }
-
 
         function nextStep(step) {
             setStep(step + 1);
@@ -800,8 +879,9 @@
             setStep(step - 1);
         }
 
-        // default open step 1
-        setStep(1);
+        document.addEventListener("DOMContentLoaded", function () {
+            setStep(1);
+        });
     </script>
 </body>
 </html>

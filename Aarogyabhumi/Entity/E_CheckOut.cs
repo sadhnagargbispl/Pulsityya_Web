@@ -30,10 +30,6 @@ namespace Shopinv.Entity
         public string ImagePath { get; set; }
         public decimal MRP { get; set; }
         public decimal BV { get; set; }
-        public decimal PV { get; set; } 
-        public decimal LessEB { get; set; }
-        public decimal DP { get; set; }
-        public decimal finalprice { get; set; }
 
         //public string Imagepath { get; set; }
     }

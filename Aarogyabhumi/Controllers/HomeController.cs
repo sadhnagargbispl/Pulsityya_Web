@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
 using PagedList;
 using Shopinv.Entity;
 using Shopinv.Interface;
@@ -16,26 +17,24 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-
 namespace Shopinv.Controllers
 {
-    //[KycRequired]
+    [KycRequired]
     public class HomeController : Controller
     {
         private readonly I_Category _icateogry = null;
         private readonly I_Product _iprod = null;
         private readonly I_Banner _ibanner = null;
         private readonly I_OrderReport iorderrept = null;
+        private readonly I_DelistedDirectSeller iler = null;
         CompanyDetail companyDetail;
         private readonly static string Apiurl = ConfigurationManager.AppSettings["ApiUrl"];
-        public HomeController(I_Category icateogry,
-            I_Product i_Product,
-            I_OrderReport iorderrept,
-            I_Banner ibanner)
+        public HomeController(I_Category icateogry, I_Product i_Product, I_OrderReport iorderrept, I_DelistedDirectSeller iler, I_Banner ibanner)
         {
             this._icateogry = icateogry;
             this._iprod = i_Product;
             this.iorderrept = iorderrept;
+            this.iler = iler;
             _ibanner = ibanner;
             companyDetail = new CompanyDetail(this._iprod);
             companyDetail.GetCompanydetail();
@@ -49,7 +48,6 @@ namespace Shopinv.Controllers
             objg.SpecialProductList = _iprod.GetSpecialProduct();
             objg.FeaturedProduct = _iprod.GetFeaturedProduct();
             objg.TopSellerProduct = _iprod.GetTopSellerProduct();
-            objg.PopupBannerList = _ibanner.Showpopup("1");
             //objg.ProductReview = _iprod.GetTopProductReview();                               
             //objg.DealsOfTheWeek = _iprod.DealsOfTheWeek();
 
@@ -145,26 +143,6 @@ namespace Shopinv.Controllers
                 var userid = Session["UserId"];
                 var Formno = Convert.ToString(Session["FormNo"]);
                 obj.OrderReport = iorderrept.GetOrderdetail(Convert.ToString(userid), Formno);
-                //obj.OfflineOrderReport = iorderrept.GetOfflineOrderdetail(Formno);
-
-                //            obj.OrderReport = iorderrept
-                //.GetOrderdetail(Convert.ToString(userid), Formno)
-                //.Select(x =>
-                //{
-                //    x.Ordertype = "W";
-                //    return x;
-                //})
-                //.Concat(
-                //    iorderrept.GetOfflineOrderdetail(Formno)
-                //    .Select(x =>
-                //    {
-                //        x.Ordertype = "O";
-                //        return x;
-                //    })
-                //).ToList();
-
-                //            obj.OrderReport = obj.OrderReport.OrderByDescending(p=>p.orderdate1).ToList();
-
                 return View(obj);
             }
             else
@@ -180,6 +158,7 @@ namespace Shopinv.Controllers
             var tblOrder = Extension.RenderRazorViewToString(this.ControllerContext, "OrderDetail", obj);
             return Json(new { tblOrder });
         }
+
 
 
         public ActionResult MyCoupon()
@@ -445,7 +424,6 @@ namespace Shopinv.Controllers
             var tblOrder = Extension.RenderRazorViewToString(this.ControllerContext, "Levelwisereport_partail", obj);
             return Json(new { tblOrder });
         }
-
         public ActionResult LevelIncome()
         {
             if (Session["UserDetail"] != null)
@@ -487,31 +465,46 @@ namespace Shopinv.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-
         public ActionResult DirectSellerContrazt()
         {
             return View();
         }
-
         public ActionResult UserKyc()
         {
             if (Session["UserDetail"] != null)
             {
-              //  string dojFromDb = Convert.ToString(Session["Doj"]);
-              //  DateTime userDoj = DateTime.ParseExact(
-              //    dojFromDb,
-              //    "dd-MM-yyyy HH:mm:ss",
-              //    CultureInfo.InvariantCulture
-              //);
+                //  string dojFromDb = Convert.ToString(Session["Doj"]);
+                //  DateTime userDoj = DateTime.ParseExact(
+                //    dojFromDb,
+                //    "dd-MM-yyyy HH:mm:ss",
+                //    CultureInfo.InvariantCulture
+                //);
+                string dojFromDb = Convert.ToString(Session["Doj"]);
 
-              //  DateTime compareDate = DateTime.ParseExact(
-              //   "23-01-2026",
-              //   "dd-MM-yyyy",
-              //  CultureInfo.InvariantCulture);
-              //  if (Convert.ToString(Session["ispancard"]) == "Y" && userDoj.Date >= compareDate)
-              //  {
-              //      return RedirectToAction("UserKycByapi", "Home");
-              //  }
+                DateTime userDoj;
+
+                if (DateTime.TryParseExact(
+                        dojFromDb,
+                        "dd-MM-yyyy HH:mm:ss",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None,
+                        out userDoj))
+                {
+                    // success
+                }
+                else
+                {
+                    // fallback parsing (auto detect format)
+                    userDoj = Convert.ToDateTime(dojFromDb);
+                }
+                DateTime compareDate = DateTime.ParseExact(
+                 "23-01-2026",
+                 "dd-MM-yyyy",
+                CultureInfo.InvariantCulture);
+                if (Convert.ToString(Session["ispancard"]) == "Y" && userDoj.Date >= compareDate)
+                {
+                    return RedirectToAction("UserKycByapi", "Home");
+                }
 
                 M_UserKYC obj = new M_UserKYC();
                 Getkycreq req = new Getkycreq();
@@ -528,13 +521,12 @@ namespace Shopinv.Controllers
                 obj.BankLists = _iprod.GetbankLists();
                 obj.kycTypeMasters = _iprod.kycTypeMasters();
 
-                
+
                 return View(obj);
             }
             return RedirectToAction("Index", "Home");
         }
-
-        public ActionResult UserKycByapi() 
+        public ActionResult UserKycByapi()
         {
             if (Session["UserDetail"] != null)
             {
@@ -572,10 +564,6 @@ namespace Shopinv.Controllers
             }
             return lst;
         }
-
-
-
-
         public ActionResult ReferalLinkPage()
         {
             if (Session["UserDetail"] != null)
@@ -598,9 +586,6 @@ namespace Shopinv.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
-
-
-
         public string CallPostFunction(string detail, string url)
         {
             try
@@ -633,12 +618,10 @@ namespace Shopinv.Controllers
             }
             return "";
         }
-
         public ActionResult KYCWarning()
         {
             return View();
         }
-
         public ActionResult MemberProfile()
         {
             if (Session["UserDetail"] != null)
@@ -658,10 +641,223 @@ namespace Shopinv.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
-
         public ActionResult Certificate()
         {
             return View();
+        }
+        public ActionResult RegisterOfDs(int? page)
+        {
+            int pageSize = 10;                 // kitne records per page
+            int pageNumber = page ?? 1;        // current page
+
+            M_DelistedDirectSeller obj = new M_DelistedDirectSeller();
+
+            var list = iler.GetRegisterOrderdetail()
+                           .OrderBy(x => x.MemberID)
+                           .ToPagedList(pageNumber, pageSize);
+
+            obj.DirectsellerReport = list;
+
+            return View(obj);
+        }
+        //public ActionResult RegisterOfDs()
+        //{
+        //    M_DelistedDirectSeller obj = new M_DelistedDirectSeller();
+        //    obj.DirectsellerReport = iler.GetRegisterOrderdetail();
+        //    return View(obj);
+        //}
+        public ActionResult DeListedDsd(int? page)
+        {
+
+            //M_DelistedDirectSeller obj = new M_DelistedDirectSeller();
+            //obj.DirectsellerReport = iler.GetOrderdetail();
+            //return View(obj);
+            int pageSize = 10;                 // kitne records per page
+            int pageNumber = page ?? 1;        // current page
+
+            M_DelistedDirectSeller obj = new M_DelistedDirectSeller();
+
+            var list = iler.GetOrderdetail()
+                           .OrderBy(x => x.MemberID)
+                           .ToPagedList(pageNumber, pageSize);
+
+            obj.DirectsellerReport = list;
+
+            return View(obj);
+        }
+        public ActionResult GrievanceRRedressal()
+        {
+            return View();
+        }
+        public ActionResult GrievanceRedressalMechanism()
+        {
+            M_Complaint obj = new M_Complaint();
+            obj.complainttype = GetComplainttype();
+            return View(obj);
+        }
+        public List<Complainttype> GetComplainttype()
+        {
+            List<Complainttype> complist = new List<Complainttype>();
+            try
+            {
+                Complainttypelist req = new Complainttypelist();
+                req.islogin = "N";
+                req.reqtype = "complainttypewithoutlogin";
+                req.userid = Convert.ToString(Session["IDNO"]);
+                req.passwd = Convert.ToString(Session["password"]);
+                var detail = JsonConvert.SerializeObject(req);
+                var response = CallPostFunction(detail, Apiurl);
+                complainttyperes res = JsonConvert.DeserializeObject<complainttyperes>(response);
+                if (res.response == "OK")
+                {
+                    complist = res.complainttype;
+                }
+            }
+            catch
+            {
+
+            }
+            return complist;
+        }
+        [HttpPost]
+        public ActionResult SaveCompaint(string Complaintid, string Subject, string Email, string Name, string Mobileno, string Description, string memberid)
+        {
+            string msg = string.Empty;
+            string status = "";
+            try
+            {
+                Compaintreq req = new Compaintreq();
+                req.islogin = "N";
+                req.reqtype = "savecomplaintwithout";
+                req.userid = Convert.ToString(Session["IDNO"]);
+                req.passwd = Convert.ToString(Session["password"]);
+                req.complaintid = Complaintid;
+                req.idno = Convert.ToString(memberid);
+                req.name = Name;
+                req.mobileno = Mobileno;
+                req.email = Email;
+                req.subject = Subject;
+                req.description = Description;
+                var detail = JsonConvert.SerializeObject(req);
+                var response = CallPostFunction(detail, Apiurl);
+                Compaintres res = JsonConvert.DeserializeObject<Compaintres>(response);
+                if (res.response == "OK")
+                {
+                    msg = res.msg;
+                    status = "OK";
+                }
+                else
+                {
+                    msg = res.msg;
+                }
+            }
+            catch
+            {
+
+            }
+            return Json(new { msg, status });
+        }
+        [HttpPost]
+        public ActionResult memberdatacheck(string memberid)
+        {
+            try
+            {
+                Compaintmemberdatareq req = new Compaintmemberdatareq
+                {
+                    islogin = "N",
+                    reqtype = "getmemberdata",
+                    memberid = memberid
+                };
+                var detail = JsonConvert.SerializeObject(req);
+                var response = CallPostFunction(detail, Apiurl);
+                Compaintmemberdatares res = JsonConvert.DeserializeObject<Compaintmemberdatares>(response);
+                return Json(res); // 👈 Full JSON return
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    response = "ERROR",
+                    msg = "Server error",
+                    error = ex.Message
+                });
+            }
+        }
+        public ActionResult GetComplaintReplyDetails(string complaintid)
+        {
+            ComplaintReplyDetailsRes obj = new ComplaintReplyDetailsRes();
+            try
+            {
+                ComplaintReplyDetailsReq req = new ComplaintReplyDetailsReq();
+                req.islogin = "N";
+                req.reqtype = "complaintreplywith";
+                req.userid = Convert.ToString(Session["IDNO"]);
+                req.passwd = Convert.ToString(Session["password"]);
+                req.complaintid = complaintid;
+                var detail = JsonConvert.SerializeObject(req);
+                var response = CallPostFunction(detail, Apiurl);
+                obj = JsonConvert.DeserializeObject<ComplaintReplyDetailsRes>(response);
+            }
+            catch
+            {
+
+            }
+            var tblOrder = Extension.RenderRazorViewToString(this.ControllerContext, "Complaintdetail_partail", obj);
+            return Json(new { tblOrder });
+        }
+        [HttpPost]
+        public JsonResult CheckCheckStatus(string Complaintid, string memberid)
+        {
+            var list = Complaintdetail(memberid, Complaintid, "1", "100");
+
+            if (list != null && list.Count > 0)
+            {
+                return Json(new
+                {
+                    response = "OK",
+                    list = list,
+                    msg = "Success"
+                }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new
+                {
+                    response = "FAIL",
+                    list = new List<Complaintdetail>(),
+                    msg = "No record found"
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public ActionResult CheckStatus()
+        {
+        return View();
+        }
+        private List<Complaintdetail> Complaintdetail(string idno, string Complaintno, string from, string to)
+        {
+            List<Complaintdetail> rlist = new List<Complaintdetail>();
+            try
+            {
+                ComplaintDetailsreq req = new ComplaintDetailsreq();
+                req.islogin = "N";
+                req.reqtype = "complaintdetailwithno";
+                req.userid = Convert.ToString(idno);
+                req.passwd = Convert.ToString(Complaintno);
+                req.from = from;
+                req.to = to;
+                var detail = JsonConvert.SerializeObject(req);
+                var response = CallPostFunction(detail, Apiurl);
+                ComplaintDetailsRes res = JsonConvert.DeserializeObject<ComplaintDetailsRes>(response);
+                if (res.response == "OK")
+                {
+                    rlist = res.complaintdetail;
+                }
+            }
+            catch
+            {
+
+            }
+            return rlist;
         }
     }
 }

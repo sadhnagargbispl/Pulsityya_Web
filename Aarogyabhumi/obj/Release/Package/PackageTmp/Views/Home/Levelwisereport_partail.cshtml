@@ -1,17 +1,22 @@
-@using PagedList.Mvc;
+﻿@using PagedList.Mvc;
 @model Shopinv.Models.GroupDirectReport
 
-<div class="table-responsive">
-    <table class="table mytable" style="white-space:nowrap">
-        <thead>
+
+<div class="table-responsive bg-white">
+    <table class="table table-bordered text-center mb-0 nowrap">
+        <thead class="table-light">
             <tr>
-                <th class="col-num">S.No</th>
-                <th>Level</th>
-                <th>ID No</th>
-                <th>Member Name</th>
-                <th>Sponsor ID</th>
-                <th>Sponsor Name</th>
-                <th>Joining Date</th>
+                <th scope="col">SNo</th>
+                <th scope="col">Level</th>
+                <th scope="col">ID No</th>
+                <th scope="col">Member Name</th>
+                <th scope="col">Sponsor ID</th>
+                <th scope="col">Sponsor Name</th>
+                @*<th scope="col">BV</th>
+                <th scope="col">Package Name</th>*@
+                @*<th scope="col">Active Status</th>*@
+                <th scope="col">Joining Date</th>
+                @*<th scope="col">Activation Date</th>*@
             </tr>
         </thead>
         <tbody>
@@ -19,35 +24,45 @@
             {
                 foreach (var item in Model.m_LevelDetails)
                 {
-                    <tr>
-                        <td class="col-num">@item.SNo</td>
-                        <td>@item.Mlevel</td>
+                    <tr class="">
+                        <td>@item.SNo </td>
+                        <td> @item.Mlevel</td>
                         <td>@item.Idno</td>
                         <td>@item.MemName</td>
                         <td>@item.Sponsorid</td>
                         <td>@item.MemberName</td>
+                        @*<td>@item.BV</td>
+                        <td>@item.Packagename</td>*@
+                        @*<td>@item.Status</td>*@
                         <td>@item.Doj</td>
+                        @*<td>@item.UpgradeDate</td>*@
                     </tr>
+
                 }
             }
             else
             {
-                <tr><td colspan="7" class="no-record">No record found.</td></tr>
+                <tr>
+                    <td colspan="8">
+                        No Record Found
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
 </div>
+<div class="col-lg-12">
 
-@if (Model.pagerCount != null && Model.pagerCount.Count > 0)
-{
-    <div class="pager-row">
-        @Html.PagedListPager(Model.pagerCount, page => Url.Action("Levelwisereport", "Home", new { page }), new PagedListRenderOptions
-   {
-       DisplayLinkToFirstPage = PagedListDisplayMode.Never,
-       DisplayLinkToLastPage = PagedListDisplayMode.Never,
-       DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
-       DisplayLinkToNextPage = PagedListDisplayMode.Always,
-       MaximumPageNumbersToDisplay = 10
-   })
-    </div>
-}
+    @if (Model.pagerCount != null && Model.pagerCount.Count > 0)
+    {
+        Html.PagedListPager(Model.pagerCount, page => Url.Action("Levelwisereport", "Home", new { page }), new PagedListRenderOptions
+        {
+            DisplayLinkToFirstPage = PagedListDisplayMode.Never,
+            DisplayLinkToLastPage = PagedListDisplayMode.Never,
+            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+            DisplayLinkToNextPage = PagedListDisplayMode.Always,
+            MaximumPageNumbersToDisplay = 10
+        });
+    }
+
+</div>

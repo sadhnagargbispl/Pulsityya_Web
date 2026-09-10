@@ -54,6 +54,10 @@ namespace Shopinv.Models
         [Compare("Password", ErrorMessage = "Password and Confirm Password do not match")]
         public string ConfirmPassword { get; set; }
         public string fortype { get; set; }
+        public string Address { get; set; }
+        public string aadharno { get; set; }
+        public string FrontImage { get; set; }
+        public string BackImage { get; set; }
     }
 
 

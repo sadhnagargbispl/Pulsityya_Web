@@ -1,419 +1,1366 @@
 ﻿@model Shopinv.Models.RegisterUser
 @{
-    // company identity comes from companymaster via CompanyDetail.GetCompanydetail()
-    var cmpName = Convert.ToString(Session["CompName"]);
-    var cmpMail = Convert.ToString(Session["CompMail"]);
-    var cmpPhone = Convert.ToString(Session["ContactNo"]);
-    var cmpAdd = Convert.ToString(Session["CompAdd"]);
-    var cmpSite = Convert.ToString(Session["WebSite"]);
-}
-@{
-    ViewBag.Title = "Register";
+    ViewBag.Title = "SignUp";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{ Html.RenderAction("OfferBanner", "Home");}
 
-<section class="contents">
-    <div class="content-row">
-        <div class="container">
-            <div class="login-bar">
-                <div class="login-col rgstr-col">
-                    <h3>Become a Direct seller</h3>
-                    <p>Please fill all the mandatory details to complete your registration.</p>
+<style>
+    .vc-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #fff;
+        border: 1.5px solid #ece3c8;
+        border-radius: 14px;
+        padding: 8px 8px 8px 16px;
+        box-shadow: 0 4px 16px rgba(184, 134, 11, 0.08);
+        margin: 0 0 8px;
+    }
 
-                    @using (Html.BeginForm("SignUp", "Account", FormMethod.Post, new { id = "registerForm" }))
-                    {
-                        @Html.HiddenFor(m => m.fortype, new { @id = "fortype" })
-                        <input type="hidden" id="hidside" value="@Model.side" />
+        .vc-bar.listening {
+            border-color: #f3b1b8;
+        }
 
-                        <div id="directSellerdiv">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Sponsor ID</label>
-                                        @Html.TextBoxFor(m => m.referralid, new { @id = "referralid", @placeholder = "Enter Sponsor ID", @class = "form-control", @required = "required" })
-                                        <span id="spid" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Full Name</label>
-                                        @Html.TextBoxFor(m => m.name, new { @id = "name", @placeholder = "Enter Full Name", @class = "form-control", @required = "required" })
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    .vc-bar-icon {
+        color: #b8860b;
+        font-size: 18px;
+        flex: 0 0 auto;
+    }
 
-                        <div id="pandiv">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>DOB</label>
-                                        @Html.TextBoxFor(m => m.dob, new { @id = "dob", @placeholder = "Enter Date Of Birth", @class = "form-control", @required = "required", @type = "date" })
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>PAN No.</label>
-                                        @Html.TextBoxFor(m => m.panno, new { @id = "panno", @placeholder = "Enter Pan Card No.", @class = "form-control" })
-                                        <input type="hidden" id="ispanverify" value="false" />
-                                        <span class="text-danger" id="panwait" style="display:none;">Wait for pan varification</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    .vc-bar-input {
+        flex: 1;
+        min-width: 0;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 15px;
+        color: #333;
+        padding: 10px 6px;
+    }
 
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    @Html.TextBoxFor(m => m.email, new { @id = "email", @placeholder = "Enter Email ID", @class = "form-control", @required = "required", @type = "email" })
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Mobile No.</label>
-                                    @Html.TextBoxFor(m => m.mobl, new { @maxlength = "10", @id = "mobl", @placeholder = "Enter Mobile Number", @class = "form-control", @required = "required", @onkeypress = "return isNumberKey(event);" })
-                                </div>
-                            </div>
-                        </div>
+        .vc-bar-input::placeholder {
+            color: #9a9a9a;
+        }
 
-                        <div class="form-group" style="margin:0px 0 20px!important">
-                            <label class="label-check" id="dtc">
-                                <input type="checkbox" id="terms" name="terms" required="">
-                                I agree with <a href="javascript:void(0);" data-toggle="modal" data-target="#exampleModal">Terms &amp; Conditions</a>.
-                            </label>
-                            <label class="label-check" id="ptc" style="display:none;">
-                                <input type="checkbox">I agree with <a href="javascript:void(0);">Terms &amp; Conditions</a>.
-                            </label>
-                        </div>
+    .vc-bar-mic {
+        flex: 0 0 auto;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        color: #fff;
+        font-size: 19px;
+        background: linear-gradient(145deg, #e6b13a, #b8860b);
+        box-shadow: 0 4px 12px rgba(184, 134, 11, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
 
-                        <div class="row">
-                            <div class="col-sm-3"><button type="submit" id="signupbtn" class="btn btn-sub">Register</button></div>
-                            <div class="col-sm-9"><p class="link-login">Have an account already ? please <a href="~/Account/Login">Login</a></p></div>
-                        </div>
-                    }
-                </div>
+        .vc-bar-mic:hover {
+            transform: scale(1.05);
+        }
+
+        .vc-bar-mic.listening {
+            background: linear-gradient(145deg, #ff5b6b, #d6293e);
+            box-shadow: 0 4px 12px rgba(214, 41, 62, 0.45);
+            animation: vcMicPulse 1.2s infinite;
+        }
+
+    @@keyframes vcMicPulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(214, 41, 62, 0.5);
+        }
+
+        70% {
+            box-shadow: 0 0 0 12px rgba(214, 41, 62, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(214, 41, 62, 0);
+        }
+    }
+
+    .vc-bar-status {
+        font-size: 12.5px;
+        color: #999;
+        margin: 0 0 16px;
+        padding-left: 4px;
+        min-height: 18px;
+        line-height: 1.5;
+    }
+
+        .vc-bar-status b {
+            color: #b8860b;
+        }
+
+    /* ===== Aadhar image preview ===== */
+    .rg-preview-wrap {
+        margin-top: 12px;
+        padding: 12px;
+        border: 2px solid #28a745;
+        border-radius: 10px;
+        background: #f8fff9;
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.1);
+        animation: slideDown 0.3s ease;
+    }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .rg-preview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px dashed #28a745;
+    }
+
+        .rg-preview-header span {
+            color: #28a745;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+            .rg-preview-header span i {
+                margin-right: 5px;
+            }
+
+    .rg-preview-remove {
+        background: #dc3545;
+        color: #fff;
+        border: none;
+        padding: 4px 12px;
+        border-radius: 5px;
+        font-size: 11px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: 500;
+    }
+
+        .rg-preview-remove:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .rg-preview-remove i {
+            margin-right: 3px;
+        }
+
+    .rg-preview-img {
+        display: block;
+        width: 100%;
+        max-height: 220px;
+        object-fit: contain;
+        border-radius: 6px;
+        background: #fff;
+        padding: 4px;
+        border: 1px solid #d4e8d8;
+    }
+
+    .rg-preview-name {
+        display: block;
+        margin-top: 8px;
+        text-align: center;
+        color: #555;
+        font-size: 12px;
+        font-style: italic;
+        word-break: break-all;
+    }
+
+    .d-none {
+        display: none !important;
+    }
+
+    /* ===== Terms & Conditions checkbox ===== */
+    .rg-terms {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        flex-wrap: nowrap;
+        padding: 14px 16px;
+        background: #fafafa;
+        border: 1px solid #e6e6e6;
+        border-radius: 10px;
+    }
+
+    .rg-terms-check {
+        flex: 0 0 auto;
+        width: 18px;
+        height: 18px;
+        margin: 2px 0 0;
+        cursor: pointer;
+    }
+
+    .rg-terms-text {
+        flex: 1 1 auto;
+        min-width: 0;
+        margin: 0;
+        font-size: 13.5px;
+        line-height: 1.6;
+        color: #555;
+        cursor: pointer;
+        /* IMPORTANT: allow normal word wrapping, not character-by-character */
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: break-word;
+        /* Override any global label uppercase/bold styling */
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        font-weight: 400 !important;
+    }
+
+        .rg-terms-text a {
+            color: #b8860b;
+            font-weight: 600;
+            text-decoration: none;
+            text-transform: none !important;
+            letter-spacing: normal !important;
+        }
+
+            .rg-terms-text a:hover {
+                text-decoration: underline;
+            }
+
+    @@media (max-width: 480px) {
+        .rg-terms {
+            align-items: flex-start;
+            padding: 12px 14px;
+            gap: 10px;
+        }
+
+        .rg-terms-check {
+            margin-top: 3px;
+        }
+
+        .rg-terms-text {
+            font-size: 12.5px;
+            line-height: 1.5;
+        }
+    }
+
+    /* ===== Terms and Conditions modal ===== */
+    .rg-terms-modal-content {
+        border-radius: 12px;
+        border: none;
+        overflow: hidden;
+    }
+
+    .rg-terms-modal-head {
+        background: linear-gradient(135deg, #2c2c54, #1a1a3a);
+        color: #fff;
+        border-bottom: none;
+        padding: 16px 20px;
+    }
+
+        .rg-terms-modal-head .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .rg-terms-modal-head .close {
+            color: #fff;
+            opacity: 0.8;
+            text-shadow: none;
+        }
+
+            .rg-terms-modal-head .close:hover {
+                opacity: 1;
+            }
+
+    .rg-terms-modal-body {
+        padding: 20px;
+        max-height: 60vh;
+        overflow-y: auto;
+        font-size: 13.5px;
+        line-height: 1.7;
+        color: #444;
+    }
+
+        .rg-terms-modal-body p {
+            margin-bottom: 14px;
+        }
+
+        .rg-terms-modal-body ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .rg-terms-modal-body li {
+            margin-bottom: 10px;
+        }
+
+    .rg-terms-modal-foot {
+        border-top: 1px solid #eee;
+        padding: 14px 20px;
+    }
+
+    /* Fallback so the modal works even without Bootstrap's modal JS/CSS loaded */
+    #myModalTerm.modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10050;
+        background: rgba(0, 0, 0, 0.55);
+        overflow-y: auto;
+    }
+
+
+        #myModalTerm.modal.show,
+        #myModalTerm.modal.in,
+        #myModalTerm.modal.rg-show {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+    #myModalTerm .modal-dialog {
+        width: 100%;
+        max-width: 560px;
+        margin: 0 auto;
+    }
+
+    #myModalTerm .modal-content {
+        background: #fff;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    /* Overlay - pura screen cover karega aur content ko center karega */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center; /* vertical center */
+        justify-content: center; /* horizontal center */
+        z-index: 9999;
+        padding: 16px; /* mobile par edges se touch na ho */
+    }
+
+    /* Modal box */
+    .modal-box {
+        background: #fff;
+        border-radius: 10px;
+        width: 100%;
+        max-width: 500px;
+        max-height: 90vh; /* mobile/small screen par overflow na ho */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    /* Header fixed rakhna hai */
+    .modal-header {
+        flex-shrink: 0;
+        padding: 16px 20px;
+    }
+
+    /* Body scrollable */
+    .modal-body {
+        overflow-y: auto;
+        padding: 16px 20px;
+    }
+
+    /* Footer (I Understand button) fixed rakhna hai */
+    .modal-footer {
+        flex-shrink: 0;
+        padding: 12px 20px;
+    }
+
+    /* Mobile ke liye extra adjustment */
+    @@media (max-width: 480px) {
+        #myModalTerm .modal-dialog {
+            max-width: 95%;
+        }
+
+        #myModalTerm .modal-content {
+            max-height: 85vh;
+        }
+    }
+
+    .rg-preview-wrap {
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 8px;
+        background: #fff;
+    }
+
+    .rg-preview-img {
+        width: 100%;
+        max-width: 280px;
+        height: 180px;
+        object-fit: contain;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+
+    .rg-preview-name {
+        display: block;
+        margin-top: 8px;
+        font-size: 14px;
+        color: #555;
+    }
+</style>
+<div class="mini-banner bg-success py-3">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 text-center">
             </div>
         </div>
     </div>
-</section>
+</div>
+
+<div class="container my-5">
+    <div class="card shadow border-0 mx-auto" style="max-width: 800px;">
+        <div class="card-header bg-dark text-white text-center">
+            <h4 class="mb-0 text-white">Registration Form </h4>
+        </div>
+
+        <div class="card-body registration-form">
+            @using (Html.BeginForm("SignUp", "Account", FormMethod.Post, new { id = "registerForm" }))
+            {
+
+                <div class="mb-3 d-flex gap-4">
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="userType" id="directSeller" value="D" required="" checked>
+                        <label class="form-check-label" for="directSeller"> Direct seller </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="userType" id="customer" value="P" required="">
+                        <label class="form-check-label" for="customer"> Customer  </label>
+                    </div>
+                    @Html.HiddenFor(m => m.fortype, new { @id = "fortype" })
+                    <input type="hidden" id="hidside" value="@Model.side" />
+                </div>
+
+                <div class="card p-3 mb-3" id="directSellerdiv">
+
+                    <div class="mb-3">
+                        <label for="fullname" class="form-label">Sponsor ID </label>
+                        @Html.TextBoxFor(m => m.referralid, new { @id = "referralid", @placeholder = "Enter Sponsor ID", @class = "form-control", @required = "required" })
+                        <span id="spid" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="leg" class="form-label">DSO</label>
+
+                        <div class="radiobutton d-flex gap-4">
+                            <div class="form-check">
+                                @Html.RadioButtonFor(m => m.side, "1", new { @id = "inlineRadio1", @class = "form-check-input", @required = "required" })
+                                <label class="form-check-label" for="left">DSO1 </label>
+                            </div>
+
+                            <div class="form-check">
+                                @Html.RadioButtonFor(m => m.side, "2", new { @id = "inlineRadio2", @class = "form-check-input", @required = "required" })
+                                <label class="form-check-label" for="right">DSO2</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card p-3 mb-3" id="aadharSection">
+                    <div class="rg-field">
+                        <label for="FrontImage">
+                            <i class="fa fa-id-card"></i>
+                            Aadhar Card Front Image
+                            <span class="rg-required">*</span>
+                        </label>
+                        <div class="rg-upload-box">
+                            <div class="rg-upload-icon">
+                                <i class="fa fa-cloud-upload"></i>
+                            </div>
+                            <input type="file"
+                                   id="FrontImage"
+                                   name="FrontImage"
+                                   class="form-control rg-file-input"
+                                   accept=".jpg,.jpeg,.png" />
+
+                        </div>
+                        <br />
+                        <!-- Preview -->
+                        <div class="rg-preview-wrap d-none" id="frontPreviewWrap">
+                            <div class="rg-preview-header">
+                                <span><i class="fa fa-check-circle"></i> Front Image Preview</span>
+                                <button type="button" class="rg-preview-remove" id="frontRemoveBtn">
+                                    <i class="fa fa-times"></i> Remove
+                                </button>
+                            </div>
+                            <img id="frontPreview" class="rg-preview-img" alt="Front Preview" />
+                            <small class="rg-preview-name" id="frontFileName"></small>
+                        </div>
+                    </div>
+                    <div class="rg-field">
+                        <label for="BackImage">
+                            <i class="fa fa-id-card"></i>
+                            Aadhar Card Back Image
+                            <span class="rg-required">*</span>
+                        </label>
+                        <div class="rg-upload-box">
+                            <div class="rg-upload-icon">
+                                <i class="fa fa-cloud-upload"></i>
+                            </div>
+                            <input type="file"
+                                   id="BackImage"
+                                   name="BackImage"
+                                   class="form-control rg-file-input"
+                                   accept=".jpg,.jpeg,.png" />
+                            <small class="rg-upload-text">
+                                Upload Back Side
+                            </small>
+                        </div>
+
+                        <!-- Preview -->
+                        <div class="rg-preview-wrap d-none" id="backPreviewWrap">
+                            <div class="rg-preview-header">
+                                <span><i class="fa fa-check-circle"></i> Back Image Preview</span>
+                                <button type="button" class="rg-preview-remove" id="backRemoveBtn">
+                                    <i class="fa fa-times"></i> Remove
+                                </button>
+                            </div>
+                            <img id="backPreview" class="rg-preview-img" alt="Back Preview" />
+                            <small class="rg-preview-name" id="backFileName"></small>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+
+                        <button type="button"
+                                id="btnVerifyAadhar" onclick="AadharVerifyAadhar()"
+                                class="btn btn-dark w-100 mt-4">
+                            Verify
+                        </button>
+
+                        <div class="mt-2">
+                            <span id="panwait"
+                                  class="fw-bold text-primary"
+                                  style="display:none;">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="fullname" class="form-label">Full Name</label>
+                    @Html.TextBoxFor(m => m.name, new { @id = "name", @placeholder = "Enter Full Name", @class = "form-control", @required = "required" })
+                </div>
+                <div class="mb-3" id="aadharnodiv">
+                    <label for="fullname" class="form-label">Aadhaar No</label>
+                    @Html.TextBoxFor(m => m.aadharno, new { @id = "aadharno", @placeholder = "Enter Aadhaar No", @class = "form-control", @required = "required" })
+                </div>
+                <div class="mb-3" id="addressdiv">
+                    <label for="fullname" class="form-label">Address</label>
+                    @Html.TextBoxFor(m => m.Address, new
+                    {
+                        @id = "Address",
+                        @placeholder = "Enter Address",
+                        @class = "form-control",
+                        @required = "required"
+                    })
+                </div>
+                <div class="card p-3 mb-3" id="pandiv" style="display:none;">
+                    <div class="mb-3">
+                        <label for="fullname" class="form-label">Date Of Birth</label>
+                        @Html.TextBoxFor(m => m.dob, new { @id = "dob", @placeholder = "Enter Date Of Birth", @class = "form-control", @type = "date" })
+                    </div>
+                    <div class="row" style="display:none;">
+                        <div class="col-lg-10 col-8">
+                            <div class=" mb-4">
+                                <div class="mb-2 fw-semibold">Upload PAN Image</div>
+                                <input type="file"
+                                       name="OcrImage"
+                                       id="OcrImage"
+                                       class="form-control"
+                                       accept=".jpg,.jpeg,.png" />
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-4">
+
+                            <button type="button"
+                                    id="panverifybtn"
+                                    onclick="PanVerifyAadhar()"
+                                    class="btn btn-dark">
+                                Verify
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-10 col-8">
+                            <div class="mb-3">
+                                <label class="form-label">PAN Card </label>
+                                @Html.TextBoxFor(m => m.panno, new { @id = "panno", @placeholder = "Enter Pan Card No.", @class = "form-control" })
+                                <input type="hidden" id="ispanverify" value="false" />
+
+                                <span class="text-danger" id="panwait" style="display:none;">Wait for pan varification</span>
+                            </div>
+                        </div>
+                        @*<div class="col-lg-2 col-4">
+                                <button type="button"
+                                        id="panverifybtn" onclick="PanVarification()"
+                                        class="btn btn-dark w-100 mt-4">
+                                    Verify
+                                </button>
+                            </div>*@
+                    </div>
+
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    @Html.TextBoxFor(m => m.email, new { @id = "email", @placeholder = "Enter Email ID", @class = "form-control", @required = "required", @type = "email" })
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    @Html.TextBoxFor(m => m.mobl, new { @maxlength = "10", @id = "mobl", @placeholder = "Enter Mobile Number", @class = "form-control", @required = "required", @onkeypress = "return isNumberKey(event);" })
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="terms" name="terms" required="">
+                    <label class="form-check-label" for="terms" id="dtc">
+                        I agree to the <a href="javascript:void()" data-bs-toggle="modal" data-bs-target="#exampleModal">Terms &amp; Conditions</a>
+                    </label>
+                    <label class="form-check-label" id="ptc" for="terms" style="display:none;">
+                        I agree to the <a href="javascript:void()" data-bs-toggle="modal" data-bs-target="#exampleModal1">Terms &amp; Conditions</a>
+                    </label>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" id="signupbtn" class="btn btn-dark">Register</button>
+                </div>
+
+            }
+
+
+        </div>
+
+    </div>
+</div>
 
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
+<div class="modal modal-lg fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Terms &amp; Conditions</h4>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Direct Seller Contract Agreement</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" style="max-height:60vh;overflow:auto">
-
+            <div class="modal-body">
+                <p>This agreement is agreed and accepted electronically &amp; online by and between the executing parties (Hereinafter mentioned and referred to as Direct Seller and the Direct Selling Entity which expressions shall mean and include their respective legal heirs, assigns, successors, administrators, and undertakers).</p>
+                <br />
+                <p>Be known that this Contract agreement is executed and entered into in accordance with the provisions of India Contract Act and Consumer Protection (Direct Selling) Rules, 2021 (Hereinafter referred to as the Rules)</p>
+                <br />
+                <p>Whereas the Direct Seller has voluntarily out of his / her own accord, sweet will and without any coercion whatsoever, mental, or physical, offered to join the Direct Selling Network business of the Direct Selling Entity named M/s @Convert.ToString(Session["CompTitle"]) Consultancy India Private Limited also referred as “@Convert.ToString(Session["CompTitle"]) Consultancy ” (Registered under the Companies Act, 2013) having head office at  -  C/O Sambhaji Sabale, S No 140/2A/1 Ghule Nagar Manjari BK Pune, Maharashtra, India, 412307.</p>
+                <br />
+                <p>And whereas the @Convert.ToString(Session["CompTitle"]) Consultancy is engaged in “Direct Selling business” which means marketing, distribution and sale of goods or providing of services through a network of Direct Seller as per its prescribed Marketing Plan (Which may be read as part and parcel of this agreement as the same is not being reproduced here for the sake of brevity) not falling under the pyramid or Money circulation scheme.</p>
+                <p>And whereas the Direct Seller named below along with his / her KYC particulars therein has, after being explained all the provisions of the said @Convert.ToString(Session["CompTitle"]) Consultancy  Marketing Plan, product details and the present E-contract Agreement in the vernacular language known to him by Shri ___________________ ID No. _______________, duly ascertained and satisfied by visiting the @Convert.ToString(Session["CompTitle"]) Consultancy ’s website www.d9cpanel.bisplindia.in, has voluntarily offered to join the business of the @Convert.ToString(Session["CompTitle"]) Consultancy  and resolved to enter into this E-contract agreement, hence this deed.</p>
+                <br />
+                <p>DEFINITION:</p>
+                <p>In this Contract</p>
+                <p>&quot;Direct Seller(s)&quot; means a person authorized by a Direct Selling entity through a legally enforceable written contract to undertake Direct Selling business on principal-to-principal basis.</p>
+                <p>“Direct Selling Entity” means the principal entity which sells or offer to sell goods or services through Direct Seller, but does not include an entity which is engaged in a pyramid scheme or money circulation scheme.</p>
+                <p>“Network of Sellers” means a network of Direct Seller formed by a Direct Selling entity to sell goods or services for the purpose of receiving consideration solely from such sale.</p>
+                <p>NOW THEREFORE THIS DEED AGREEMENTS AS UNDER:</p>
+                <p>The Direct Selling entity hereby agrees that it is fully compliant to the Consumer Protection Act, 2019, Consumer Protection (Direct Selling) Rules, 2021, Legal Metrology Act, 2009, E-commerce Rules, 2020 and all other Rules and laws applicable to an Indian Direct Selling Entity.</p>
+                <p>The Direct Selling entity assures and the Direct Seller agrees:</p>
+                <p>That this E-contract agreement has no provision that a Direct Seller will receive remuneration or incentive for the recruitment / enrolment only of new participants.</p>
+                <p>That it does not require a participant to purchase goods or services for an amount that exceeds the amount for which such goods or services can be expected to be sold or resold to consumers.</p>
+                <p>That it does not require a participant to pay any entry / registration fee / subscription fee, cost of sales demonstration equipment and materials or other fees relating to participation in the @Convert.ToString(Session["CompTitle"]) Consultancy ’s Direct Selling business.</p>
+                <p>That it has ascertained from the Marketing Plan provided by the @Convert.ToString(Session["CompTitle"]) Consultancy  (The same may be read as part and parcel of this E-contract agreement as the same is not being reproduced here for the sake of brevity), the stipulated amount of any or all types of Incentives, rewards, etc. including financial and non-financial benefits payable to the Direct Seller are calculated only and only on the basis of effective sale, marketing and distribution of products and in no way on the basis of  recruiting / sponsoring / introducing another Direct Seller.</p>
+                <p>Cooling Off Policy:</p>
+                <p>That the @Convert.ToString(Session["CompTitle"]) Consultancy  allows or provides to the Direct Seller herein a reasonable cooling off period in accordance with clause 3 (b) of the Rules, of the said Rules undertake to provide a newly registered Direct Seller a cooling off period of 7 days effective from the date of signing and execution of the contract agreement by him / her while registering as Direct Seller with us wherein the said Direct Seller can cancel the contract agreement without resulting in any breach of contract or levy of penalty.</p>
+                <p>That if such Direct Seller receive any form of compensation from the @Convert.ToString(Session["CompTitle"]) Consultancy during this Cooling Off period, they are obligated to repay the corresponding amount to the @Convert.ToString(Session["CompTitle"]) Consultancy . This repayment should be accompanied by a formal repudiation letter. The repayment can be made through methods like cash, cheque, demand draft (DD), NEFT, RTGS, and so on.</p>
+                <p>That if the @Convert.ToString(Session["CompTitle"]) Consultancy collects any fees, which may include training fees, franchise fees, fees for promotional materials, or any other fees, and if the Direct Seller decides to return all goods received at the time of joining, they have the entitlement to receive those fees back from the @Convert.ToString(Session["CompTitle"]) Consultancy. In this scenario, the @Convert.ToString(Session["CompTitle"]) Consultancy bears the responsibility of reimbursing these fees. This reimbursement will be made to the Direct Seller through methods like cash, cheque, demand draft (DD), NEFT, RTGS, or Net Banking. Applicable taxes such as TDS and GST will be adjusted, and the repayment will be accompanied by an appropriate repudiation letter.</p>
+                <p>Buyback Policy: The @Convert.ToString(Session["CompTitle"]) Consultancy provides buyback guarantee to every Direct Seller on the following terms:</p>
+                <p>If the product is in marketable* condition and is returned within 7 days of receipt of goods accompanied by the original invoice, 100% of the amount as refund will be given.</p>
+                <p>If the product is in Unmarketable** condition and is returned within 7 days of receipt of goods no refund will be given.</p>
+                <p>*Marketable* refers to products that are unused, sealed, and undamaged, not expired, not sessional, discontinued, or special promotional product or services.</p>
+                <p>The @Convert.ToString(Session["CompTitle"]) Consultancy commits to offering a warranty for the products it sells. Direct Seller has the option to request an exchange or return of a product within 30 days of purchase if they identify any manufacturing defect or if the purchased product is of sub quality. To initiate an exchange or refund process, the Direct Seller should present the original invoice, along with their identity proof and address proof, to @Convert.ToString(Session["CompTitle"]) Consultancy. This documentation will be required for verification purposes.</p>
+                <p>That the Direct Seller herein agrees that the @Convert.ToString(Session["CompTitle"]) Consultancy has established a “Grievance Redressal Mechanism” for Direct Seller to redress their grievances and complaints, annexed herewith which may be read as part and parcel of this agreement as the same is not being reproduced here for the sake of brevity.</p>
+                <p>That the applicant Direct Seller herein agrees that he / she has attained the minimum age of 18 years or 21 years in the state of Maharashtra and he / she shall knowingly sponsor any person under the age of 18 years or 21 years in the state of Maharashtra.</p>
+                <p>The @Convert.ToString(Session["CompTitle"]) Consultancy explicitly states that it does not ask, encourage, or seek any potential individuals, known as prospects or future Direct Seller, to invest any money in any way to join its Direct Selling business. However, the Direct Seller is responsible for covering the costs of the products they buy. It is important to note that there is no provision stating that the Direct Seller will earn money from recruiting other participants. Instead, the compensation the Direct Seller receives solely comes from the sales, marketing, and distribution of products. This compensation aligns with the @Convert.ToString(Session["CompTitle"]) Consultancy Marketing Plan outlined by the @Convert.ToString(Session["CompTitle"]) Consultancy. The Direct Seller agrees to abide by the terms of this agreement in its entirety, following the guidelines and principles set by the Direct Selling entity.</p>
+                <p>That the @Convert.ToString(Session["CompTitle"]) Consultancy will provide all support to the Direct Seller in delivery of the products through Franchisee / Pick-up centers / Available Courier / Transport or any other Logistics Service for maintaining effective support system.</p>
+                <p>That by accepting the offer of the Direct Seller herein the @Convert.ToString(Session["CompTitle"]) Consultancy requires him / her to do and complete the following steps. An Individual / Firm / entity eligible to enter into a contract as per the provisions of the Indian Contract Act, 1872 and wish to become a Direct Seller of the Direct Selling business of the @Convert.ToString(Session["CompTitle"]) Consultancy herein, can apply to become a Direct Seller for marketing and selling of @Convert.ToString(Session["CompTitle"]) Consultancy ’s product on pan India basis, in prescribed form through online method.</p>
+                <p>Fill the application form online and upload scanned KYC documents.</p>
+                <p>Accept the terms and condition of this E-contract agreement by clicking on “I AGREE” button below.</p>
+                <p>On the completion of the above process, the Direct Seller can take a printout of this agreement.</p>
+                <p>Upon the execution of this agreement and after the verification of all the KYC documents uploaded through the above process, the applicant shall be accepted as a Direct Seller of the @Convert.ToString(Session["CompTitle"]) Consultancy ’s business and a Unique Identification number and password shall be allotted to the applicant, to allow him / her to log on to access his / her own personal account maintained by the Direct Selling Entity on its website.</p>
+                <p>That the Direct Seller is required to upload the following self-attested documents within 30 days starting from the date of signing this Agreement. The acceptance of the terms of this agreement is confirmed by clicking the “I AGREE” button at the bottom of this document.</p>
+                <p>That the @Convert.ToString(Session["CompTitle"]) Consultancy upon scrutiny and verification of the Application and KYC particulars uploaded by the Direct Seller may re-consider its decision and reject the application. The Direct Seller acknowledges and accepts this possibility. The @Convert.ToString(Session["CompTitle"]) Consultancy holds the exclusive authority and freedom to decline the issuance of unique ID number, if the KYC and other documents are determined to be unsatisfactory, altered, counterfeit or not in accordance with the Government’s stipulated guidelines for this specific purpose.</p>
+                <p>That the KYC shall include but not limited to verified proof of address, proof of identity, and PAN as per the provisions of the Income Tax Act, 1961, as follows, duly issued by the Government of India or a State / UT government.</p>
+                <p>Aadhaar Card</p>
+                <p>Voter ID Card</p>
+                <p>Passport</p>
+                <p>Ration card</p>
+                <p>Any other identity document issued by the State / UT or central government which can be verified online.</p>
+                <p>Additional Documents required for Applicant in case of a company or firm:</p>
+                <p>CIN or Registration Certificate, MOA &amp; AOA, or Partnership Deed, as the case may be;</p>
+                <p>PAN, GSTIN, FSSAI (wherever applicable)</p>
+                <p>List of Directors / Partners of the applicant entity</p>
+                <p>Board Resolution / Authorization in favor of the Director / Partner signing and executing this E-Contract agreement and Application.</p>
+                <p>The Direct Seller herein declares that he / she / they has / have not been declared a bankrupt by a competent court of law as provided under clause (3) of section 79 of the Insolvency and Bankruptcy Code, 2016 and that he / she is neither of unsound mind nor convicted by any court of law in preceding five years” of the date of joining the Direct Selling entity’s business herein.</p>
+                <p>The Direct Seller herein agrees that he / she shall take appropriate steps to ensure the protection of all sensitive personal information provided by the consumer with the applicable laws for the time being in force and ensure adequate safeguards to prevent access to, or misuse of, data by unauthorized persons.</p>
+                <p>The Direct Seller herein agrees that he / she shall not visit a consumer’s premises without identity card and prior appointment or approval.</p>
+                <p>Scope of the Work:</p>
+                <p>That the Direct Seller shall market, distribute and sell the products of the @Convert.ToString(Session["CompTitle"]) Consultancy using word of mouth publicity, display and demonstration of the products, distribution of pamphlets, and door to door selling to consumers and prospective Direct Seller.</p>
+                <p>That the @Convert.ToString(Session["CompTitle"]) Consultancy shall be exclusive owner of the name and logo of the @Convert.ToString(Session["CompTitle"]) Consultancy. The Direct Seller shall not use the trademark, logo type and design anywhere without prior written permission from the @Convert.ToString(Session["CompTitle"]) Consultancy. This permission, if given, can be withdrawn at any time by the @Convert.ToString(Session["CompTitle"]) Consultancy. Violations if any, shall be termed as violation of this agreement and may result in termination of this agreement and Direct Seller of the Direct Seller, penal actions under the prevailing Intellectual Property Rights (IPR) laws and Rules at the sole discretion of the entity herein to which the Direct Seller herein agrees.</p>
+                <p>That the Direct Seller shall not manipulate, alter, amend, add, or delete any provisions of the @Convert.ToString(Session["CompTitle"]) Consultancy  herein @Convert.ToString(Session["CompTitle"]) Consultancy  Marketing Plan, pricing of products, BV etc., in any way whatsoever and shall not send, transmit, or otherwise communicate any messages to anybody on behalf of the @Convert.ToString(Session["CompTitle"]) Consultancy , contrary to @Convert.ToString(Session["CompTitle"]) Consultancy ’s policies, principles, instructions and prescriptions without prior written authorization and permission for the same by the @Convert.ToString(Session["CompTitle"]) Consultancy .</p>
+                <p>That the Direct Seller will get specified percentage / points-based (BV Points) Incentives pertaining to the sales for selling the @Convert.ToString(Session["CompTitle"]) Consultancy ’s products under this E-contract Agreement.</p>
+                <p>The @Convert.ToString(Session["CompTitle"]) Consultancy commits to providing the Direct Seller with comprehensive instruction books, catalogs, and pamphlets to assist in promoting sales, marketing, and distribution. Additionally, the @Convert.ToString(Session["CompTitle"]) Consultancy will ensure that mandatory orientation training is provided to the Direct Seller.</p>
+                <p>That the @Convert.ToString(Session["CompTitle"]) Consultancy shall issue photo identity cards to Direct Seller. This photo identity card shall be returned by the Direct Seller to the @Convert.ToString(Session["CompTitle"]) Consultancy at the expiry / termination / revocation of this agreement and / or shall be destroyed but shall not be misused in any way or form whatsoever. The identity card shall contain the Name &amp; Unique ID number (FSSAI Number, if applicable) of the Direct Seller.</p>
+                <p>The identity card provided by the @Convert.ToString(Session["CompTitle"]) Consultancy to the Direct Seller does not establish an employee – employer, service, or salaried relationship between the @Convert.ToString(Session["CompTitle"]) Consultancy and the Direct Seller.</p>
+                <p>The Direct Seller will not be authorized to collect any type of cash / cheque / demand draft in his own name, on behalf of the @Convert.ToString(Session["CompTitle"]) Consultancy. All cheques / demand drafts etc. should be drawn in the name of the @Convert.ToString(Session["CompTitle"]) Consultancy only and the same should be deposited with the @Convert.ToString(Session["CompTitle"]) Consultancy ’s office or other offices as may be specified by the @Convert.ToString(Session["CompTitle"]) Consultancy, within 24 hours of the time of receipt. Direct Seller shall hold the said cash collection / cheque / DD in trust for and on behalf of the @Convert.ToString(Session["CompTitle"]) Consultancy. Upon failure to deposit the said cash collection / cheque / DD, Direct Seller shall be liable to pay damages / compensation and Mesne-profit, if any. The receipt / invoice issued by the @Convert.ToString(Session["CompTitle"]) Consultancy only would be valid documentary evidence in the hand of the consumer. It means Direct Seller would not be authorized to issue any receipt / invoice on behalf of the @Convert.ToString(Session["CompTitle"]) Consultancy.</p>
+                <p>That the @Convert.ToString(Session["CompTitle"]) Consultancy may open following facilities for sale of its products:</p>
+                <p>Online Portal / E-commerce</p>
+                <p>Stores (Retail Outlets)</p>
+                <p>Authorized Sales Point / Pickup Center</p>
+                <p>That a Direct Seller is not authorized to sell any product of the @Convert.ToString(Session["CompTitle"]) Consultancy  herein on e-commerce platform / marketplace, without prior written consent, permission, or authorization of the entity herein the Direct Seller is also prohibited from listing, marketing, advertising, promoting, discussing, or selling any product, or the business opportunity on any website or online forum that offers auction as a mode of Selling.</p>
+                <p>That a Direct Seller and their legal representatives, including spouse, son, unmarried daughter, or husband, shall not be permitted to enroll under a different sponsor or misrepresent facts to the company at any time during the validity of this agreement. In the event that a Direct Seller is found engaging in such conduct, the company reserves the right to terminate the Direct Seller’s ID as well as the IDs of the aforementioned legal heirs. The company also reserves the right to initiate any other appropriate legal action, as deemed necessary.</p>
+                <p>Sales Incentives / Commission Structure or other Benefit: The Direct Seller shall be eligible for the following financial incentives and / or privileges:</p>
+                <p>Incentives on the sales, marketing, and distribution of products and / or services by the Direct Seller and his / her team or network of Direct Seller, as per the @Convert.ToString(Session["CompTitle"]) Consultancy Marketing Plan of the entity herein, annexed herewith but not being reproduced here for the sake of brevity.</p>
+                <p>Direct Seller has the authorization to market, sell, and distribute products offered by the @Convert.ToString(Session["CompTitle"]) Consultancy across all regions of India. There are no territorial restrictions or limits imposed on the sale of these products.</p>
+                <p>He / she can always check and inspect his / her account on the @Convert.ToString(Session["CompTitle"]) Consultancy ’s website by using his / her Unique ID and Password allotted to him / her by the @Convert.ToString(Session["CompTitle"]) Consultancy.</p>
+                <p>That the @Convert.ToString(Session["CompTitle"]) Consultancy reserves the right to restrict the list of products for a particular area / region.</p>
+                <p>Changes in pricing, government regulations, market influences, and other factors might force the @Convert.ToString(Session["CompTitle"]) Consultancy to change its Marketing plan. The decision of the @Convert.ToString(Session["CompTitle"]) Consultancy regarding these changes will be final and binding. Whenever such changes occur, they will be communicated through notifications posted on the website. These notifications will hold legal significance and will apply to all the Direct Seller. However, if any Direct Seller disagrees with and does not wish to be bound by these changes, they have the option to terminate this agreement within 30 days of such notification. To do so, the Direct Seller must provide a written notice expressing their objections to the @Convert.ToString(Session["CompTitle"]) Consultancy. If a Direct Seller continues their involvement in the Direct Selling business without submitting objections, it will be presumed that they have accepted all modification and amendments to the terms and conditions for future activities.</p>
+                <p>That all payments and transactions shall be valued in India Rupees (INR).</p>
+                <p>That the @Convert.ToString(Session["CompTitle"]) Consultancy does not guarantee / assure / promise or offer any facilitation fees or any amount or quantum of income whatsoever to the Direct Seller on account of becoming a Direct Seller of the @Convert.ToString(Session["CompTitle"]) Consultancy.</p>
+                <p>That Sales Incentives to the Direct Seller shall be subject to all statutory deductions as applicable like TDS etc.</p>
+                <p>That Sales Incentive accrued and paid to the Direct Seller is inclusive of all taxes.</p>
+                <p>That the @Convert.ToString(Session["CompTitle"]) Consultancy shall provide accurate and complete information to prospective and existing Direct Seller concerning the reasonable amount of earning opportunity and related rights and obligations.</p>
+                <p>That @Convert.ToString(Session["CompTitle"]) Consultancy does not require a Direct Seller to maintain an office or establishment in furtherance of his / her entrepreneurship and if a Direct Seller does so then he / she himself / herself will be responsible to bear such expenses and the @Convert.ToString(Session["CompTitle"]) Consultancy will in no way be responsible to refund or reimburse the same.</p>
+                <p>The Direct Seller agrees that he/she shall exclusively focus on selling the products and services offered by @Convert.ToString(Session["CompTitle"]) Consultancy. The Direct Seller shall not, during the tenure of this contract, directly or indirectly sell, market, promote, or engage in the sale of any products that are similar or identical to those offered by @Convert.ToString(Session["CompTitle"]) Consultancy, whether for any other company, brand, or individual. Further, the Direct Seller agrees that he/she shall not promote, represent, associate with, or engage in any manner with any other direct selling entity or direct selling opportunity during the validity of this contract.</p>
+                <p>That Unique Identification Number will have to be quoted by the Direct Seller in all his / her transactions and correspondence with the @Convert.ToString(Session["CompTitle"]) Consultancy. The Unique Identification Number once allotted cannot be altered at any point of time. That no communication will be entertained without Unique Identification Number and password. Direct Seller shall preserve the Unique Identification Number and Password properly as it is must for logging on to the website of the entity herein.</p>
+                <p>That the Direct Seller shall be faithful to the @Convert.ToString(Session["CompTitle"]) Consultancy and shall uphold the integrity and decorum to the @Convert.ToString(Session["CompTitle"]) Consultancy and shall maintain good relations with another Direct Seller also.</p>
+                <p>The Direct Seller is required to adhere to the policies, procedures, rules, and regulations established by the @Convert.ToString(Session["CompTitle"]) Consultancy. Additionally, they must comply with all applicable laws, rules, regulations, directives, and mandates issued by the Government of India, State Governments, Local bodies, Court of Law, and local administrations. Furthermore, the Direct Seller must refrain from engaging in any deceptive or unlawful trade practices, including Mis-Selling or unfair trade practices as outlined in clause 3 (f, g, and i), as defined in the Direct Selling Rules, 2021, and clauses 2(1), (18), (20), (41) to (43), and (47) of the Consumer Protection Act, 2019. In the event that the Direct Seller does engage in such activities, they will bear full responsibility for the consequences and outcomes thereof.</p>
+                <p>The Direct Seller has a responsibility to present, display, explain the @Convert.ToString(Session["CompTitle"]) Consultancy Marketing Plan to potential prospects exactly as they received it from the @Convert.ToString(Session["CompTitle"]) Consultancy. If the Direct Selling entity observes that the Direct Seller is functioning in a manner that goes against the stipulated guidelines or authorization of the @Convert.ToString(Session["CompTitle"]) Consultancy, the entity holds the exclusive authority to either terminate the Direct Seller’s involvement or restrict their participation in the business, regardless of whether a show cause notice is provided or not.</p>
+                <p>The @Convert.ToString(Session["CompTitle"]) Consultancy holds the authority to make changes to the terms &amp; conditions, products, @Convert.ToString(Session["CompTitle"]) Consultancy Marketing Plan, and policies, whether with or without prior notice. Such notifications may be communicated through the official website of the Direct Selling Entity. Any modifications or amendments will come into effect and be binding for the Direct Seller starting from the date of the respective notice.</p>
+                <p>That the Direct Seller is personally liable for delivery of goods to its customers. He is also liable to collect products from where it reaches last by the transporter / courier.</p>
+                <p>That the Direct Seller is prohibited from mentioning / posting / telecasting any inappropriate or defaming content about the @Convert.ToString(Session["CompTitle"]) Consultancy, its products, etc. in any social media platforms. If he / she does any act in contravention to this clause, then this contract agreement will be deemed terminated and the @Convert.ToString(Session["CompTitle"]) Consultancy reserves rights to initiate appropriate legal action against him / her.</p>
+                <p>That only one Direct Seller code shall be issued on one PAN Card.</p>
+                <p>That the Direct Seller hereby undertakes not to compel or induce or mislead any person with any false statement / promise to purchase products from the @Convert.ToString(Session["CompTitle"]) Consultancy or to become Direct Seller.</p>
+                <p>All statutory changes will be in force with immediate effect or as per the law prescribed.</p>
+                <p>The Direct Seller agrees and grants authorization to the @Convert.ToString(Session["CompTitle"]) Consultancy to generate their sales and purchase records, which will include information about products, prices, taxes, quantities, and other details related to the items they have sold. These records will be created in accordance with the applicable laws and regulations.</p>
+                <p>The Direct Selling entity bears the responsibility for ensuring the quality of products and services that the Direct Seller sells. Additionally, the @Convert.ToString(Session["CompTitle"]) Consultancy is obligated to provide guidance to the Direct Seller to uphold the best practices that safeguard consumer interests. This guidance should be provided within the legal and ethical boundaries. If a Direct Seller chooses to operate outside the established policies and guidance of the @Convert.ToString(Session["CompTitle"]) Consultancy, they will be held individually accountable for all their actions related to the sales of products and services.</p>
+                <p>Any notices or communications directed to the Direct Seller registered address, provided E-mail ID and mobile number mentioned in the registration form, whether sent through registered post, courier service, E-mail, or WhatsApp message, will be considered as officially delivered to the intended recipient. However, it is strongly recommended that Direct Seller promptly informs the @Convert.ToString(Session["CompTitle"]) Consultancy of any alterations to their address, E-mail ID, or mobile number. Failing to do so will render any claims of non-delivery by the Direct Seller invalid under any circumstances.</p>
+                <p>The term of this E-contract agreement is at will, subject to earlier termination in accordance with this E-contract agreement or in accordance with law. If this E-Contract Agreement is terminated for any reason whatsoever, the Direct Seller understands that his / her right to sell the products and receiving incentives with respect of his / her activities as a Direct Seller will cease immediately. @Convert.ToString(Session["CompTitle"]) Consultancy reserves the right to terminate this E-contract agreement if any condition(s) of this E-Contract Agreement are violated by a Direct Seller.</p>
+                <p>Limitation of Action: If a Direct Seller wishes to bring any grievance to the notice of the @Convert.ToString(Session["CompTitle"]) Consultancy he can do so as per the “Grievance Redressal Mechanism” annexed to this agreement may be read as part and parcel of this agreement as the same is not being reproduced here for the sake of brevity.</p>
+                <p>Indemnification: That the Direct Seller agrees to protect, defend, indemnify, and hold harmless @Convert.ToString(Session["CompTitle"]) Consultancy and its employees, officers, directors, agents, or representatives from and against any and all liabilities, damages, fines, penalties, and costs (including legal costs and disbursements) arising from or relating to:</p>
+                <p>Any breach of any statute, regulation, direction, orders, or standards notified by any governmental body, agency, or regulator applicable to the Direct Seller including payment and deposit of taxes; on account of Income tax, GST, Trade tax, Professional Tax, whenever applicable and shall obtain necessary registrations / licenses whenever applicable and required under law.</p>
                 <p>
-                    <b>@(cmpName) INDEPENDENT STAR ASSOCIATE AGREEMENT FORM</b>
-                    <br />
-                    I hereby declare that I am resident of India, my age is above 18 years. I have no criminal history. I have read and understood all the terms and conditions given in this agreement form. I confirm that my sponsor has explained me all the details and I have signed/ affixed thumb impression on agreement only after understanding all the terms and conditions. Therefore, I kindly represent contractual offer to @(cmpName) to appoint me as an IA (Independent associate) For all @(cmpName) products and services. *@(cmpName) is a Company incorporated under the Companies Act 2013, having its office @(cmpAdd).running business in name and style of @(cmpName) Here in after referred to as "The Company”. The Company is engaged into the business of direct selling on contract basis and other business activities as stated in the Object Clause of Memorandum of Association of the Company. The company is using its website exclusively to display the details of the products and business methods. It also uses verbal publicity to promote its Business. Individuals (Indian Citizen only) interested in becoming the IA of the company, can apply for the same in the prescribed form by filling each and every column mandatory. There is no deposit or any charges for becoming IA of the company. Before filling this form, IA should go through all the terms and conditions herein below thoroughly and if he agrees to the term and conditions, he shall append his signatures in the column provided hereunder as token of acceptance. The following words used in these presents shall have the meaning as defined here under:- *Direct Selling means marketing, distribution and sale of goods or providing of services as a part of network of direct selling other than under a pyramid scheme, Provided that such sale of goods or services occurs otherwise than through a “Permanent retail location” to the consumers, generally in their houses or at their workplace or through explanation and demonstration of such goods and services at a particular place *Direct selling Entity/ Company: Means a Company namely @(cmpName), not being engaged in a pyramid scheme, which sells or offers to sell goods or services through a direct seller. Provided that direct selling entity does not include any entity or business notified otherwise by the Government for the said purpose from time to time *Direct seller/IA: Means a person appointed or authorized and registered as Direct seller/ IA by a @(cmpName) through a legally enforceable written contract with the @(cmpName) to undertake direct selling business on principal-to-principal basis. *Consumer: Means a person who purchases goods or hires services for consumption and not for commercial purposes. It shall have the same meaning as provided under the Consumer Protection Act 1986. *Goods/products means goods as defined in the Sale of Goods Act, 1930 and “Service” means service as defined in the Consumer Protection Act, 2019 *Unique ID: Means unique identification number issued by the Company to the IA as token of acceptance of his /her application for Direct selling of the goods/services of the company. Sales incentive: Means amount of incentive payable to the IA for effecting sales of goods/products/services as stipulated in the contract between the IA and the direct selling entity. Password: Means unique code allotted to each IA to allow them to log on to the website of the company. Website: Means official website of the company i.e. @(cmpSite)
-                    * THE APPOINTMENT AND UNDERSTANDING: The Company upon Verification and scrutiny may register the applicant as "IA" for selling the goods/services/products of the company. The Company shall be at liberty to accept or reject the application at its discretion. The IA shall enjoy the following privileges: - 1. Incentive for effecting sale of goods/Products of the Company as per Marketing plan. 2.No territorial restriction to sale the goods/products/services. 3.Search and inspect his account on website of the Company through password awarded by the Company. 4. Earnings of the IA shall be in proportion to the volume of performance by the IA either by his personal efforts or through team as stipulated in the Company. An individual, upon appending his signature at the bottom of these presents, shall be deemed to have accepted the terms and conditions stipulated herein. Upon registration after scrutiny of the application, he shall become the IA of the company, Allotment of password and ID shall be construed as registered as IA
-                    Once the username & password is received, the IA must immediately change the password within 24 hours and should not be shared to anyone.
-                    For Placing order and to check any information he should take proper training from his Sponsor.
-                    Payment should not be given for Placing order to sponsor or upline
-                    If does so, IA is solely responsible if anything happens.
-                    If the product order delivery address is provided of Sponsor or any other person then IA is solely responsible if anything happens.
-                    And IA must check the products as soon as received and if any damage or product not in proper condition then it should be informed to company within 4 hours of receiving products. If does so it will be solely IA Responsibility.
-
-                    FSSAI FOOD REGISTRATION IS MANDATORY (IF IA WANTS TO DO BUSINESS) FOR PLACING ORDER. If not applied IA is solely responsible if anything happens.
-                    If IA is operating a office/Nutrition Club and selling @(cmpName) products and promoting business plan, he cannot use logo of company in board, or use product picture on board, and logo of company with part time or full-time business opportunity
-                    In case, he does so, warning letter will be sent by company to IA.
-                    Promotion Material like Boards, flyers etc., should be approved by Company before using.
-                    Before After pics of anyone cannot be used without their permission.
-                    Any images from Google cannot be used as may get copyright issues.
-                    The IA should not give any Medical Claim for @(cmpName) products to anyone
-                    If does so, he is solely responsible for any kind of issues.
-                    Take proper training of 90 days with Sponsor or upline before involving in any kind of activities.
-                    Company is not encouraging anyone to take office or do any kind of investment,
-                    It’s the IA sole responsibility if does so.
-                    Purpose for running a Nutrition club or office is to promote Healthy lifestyle to the people and can Earn part time/full time income.
-                    Does not keep or order Downline product at your office or Nutrition club.
-                    Product exchange with Downline is prohibited.
-                    Selling of product should not exceed MRP.
-                    In Nutrition club charges of the nutrition provided to customers is given by company
-                    Shakes should be given by asking the customers for chilled or normal shakes
-                    Follow the Disclaimer before giving products
+                    Any breach of the terms and conditions of this E-contract agreement by the
+                    Direct Seller,
                 </p>
-                <div class="section disclaimer">
-                    <h6>Disclaimer</h6>
-                    <p>
-                        These Product are not intended to cure or diagnose any kind of diseases
-                        Pregnant or lactating women or children below 18 years anyone or having health issues should consult their physician before consuming products.
-                        Checkup and counselling should not be chargeable.
-                        Free sampling of Product is solely choice of club owner.
-                        NUTRITION CLUB OWNERS should not take maintenance charges from downline.
-                        Its their mutual understanding if does so.
-                        NUTRITION CLUB owner cannot Purchase Products of @(cmpName) on any e-commerce platforms and should be purchased in his id through company website.
-                        Expiry Product cannot be used even for sampling
-                        IF ANY TRAINING IN NUTRITION CLUB, THEN SHOULD GIVE INVOICE IN THE NAME OF NC
-                        Nutrition club owner cannot use the name of the club in the name of @(cmpName).
-
-
-                        Any kind of activities done by IA in his Nutrition Club, he is solely responsible for that.
-
-                        If the IA is conducting any events or training in conference halls or banquet halls then he must take GST number if taking ticket charges from distributors or your team members
-                        THE COMPANY Is not encouraging their IAs to promote events for making money,
-                        The events done by them are for promoting healthy lifestyle and income opportunity
-
-                        The IA must follow the ethics provided by company in case of showing product results income
-                        Disclaimer:
-                        Achievement requires skills and years of hard work
-                        Individual Income may vary from person to person.
-                        Then he must provide GST bill in the name of your firm or NC and must take use copyright version for playing songs and music.
-                        In case if IA doesn’t follow the rules, he is solely responsible for that.
-
-
-                        The applicant hereby covenants that as under: * That he is clearly understood the marketing methods/plan, the compensation plan, its limitations and conditions. He agrees that he is not relying upon any misrepresentation or fraudulent inducement or assurance that is not set out in terms and conditions or other officially printed or published materials of the Company. *Relation between the Company and IA shall be governed, in addition to this agreement, by the rules and procedure mentioned in the marketing plan, available on website. The IA further confirms that he read and understood the terms and conditions carefully and agrees to be bound by them. *IA shall act as a freelancer and shall not commit any misfeasance to create any liability/ obligation on the Company. *It is made and understood in very clear terms that IA is not an Agent, Employee, nor an authorized representative of the Company or Its service providers. He is not authorized to receive or accept any amount/payment for and on behalf of the Company and any payment received by him will not be deemed to be received by the Company. The Company reserves its right to withheld /block/suspend the IA, If IA Takes the payment from his IA downlines, IA cross lines and his IA uplines. * IA, hereby declare that all the information furnished by him is true and correct. Company shall be at liberty to take any action against the IA in the event; it is discovered that the IA furnished any wrong/false information to the Company.
-                        GENERAL TERMS: The Company may appoint any person for Collection/ Distribution services. IA is required to visit the Company's official website from time to time to get such appointment and avail facilities make payment and collect valid receipt and products from its outlet/collection centre. The IA will be eligible for income, as per the volume of sale of Products/services/Business done by him, subject to the eligibility norms formulated by the Company from time to time. The Company does not guarantee/assure any particular or income to the IA. Track ID has to be quoted by the IA for all his/her transactions and correspondence with the Company. The track ID once chosen cannot be altered at any point of time. No communication will be entertained without unique ID and password. IA shall preserve the ID and password properly as it is "must" for logging on to website.
-                        Commission/income to the IA shall be subjected to statutory deductions as applicable. The Company reserves its right to withheld /block/suspend the IA in the event; the IA fails to provide any details as desired by the Company from time to time including but not limited to Pan Card Details.
-                        IA undertakes to adhere for policies, procedures, rules and regulations formed by the Company.
-
-                        The IA shall be faithful to the Company and shall uphold the integrity and decorum to the Company and shall maintain good relations with other IA and their clients.
-                        Company reserves the rights to modify the terms and conditions, products, plan, business and policies at anytime without notice. Modification shall be published through the official website of the Company and such modifications/amendment shall be applicable and binding upon the IA from the date of such notification.
-                        In case of death of IA either his nominee or one of the legal heirs with consent of all the legal heirs may join the Company as IA in place of the deceased provided, he applies in prescribed form and undertakes to abide all the rules and regulations, terms and conditions etc.in the same manner as that of the Original IA.
-                        In case of failure to arrival at such consent within six months from the date of death of the IA, no one has the right to claim for the earnings generated on that I'd after six months. For this Period the Company will keep his ID in abeyance.
-                        If any IA loses his contractual capacity due to any reason such as lunacy, bankruptcy or sentenced to imprisonment or any other legal embargo is created, his IA shall be continued through the person duly appointed by the competent Court.
-                        IA shall have to follow all statutory laws, rules and regulations in operation of their @(cmpName) business,
-                        IA shall not engage in any deceptive of unlawful trade practice as defined Statue.
-                        Some examples of unfair trade methods are: the false representation of a good or service; false free gift or prize offers; non-compliance with manufacturing standards; false advertising; or deceptive pricing or any medical claims.
-                        If any provision of these Terms and Conditions is declared invalid or unenforceable, the remaining provisions shall remain in full force and effect. IA shall not manipulate the @(cmpName) marketing plan or product's rate, VP, etc., in any way. IA shall not send, transmit or otherwise communicate any messages to anybody on behalf of the Company without any authority from the Company.
-                        IA or any other person under him is strictly prohibited to use any promotional Material, other than the developed and authorised from the Company.
-                        IA shall not use the @(cmpName) trademark, logotype, and design anywhere without the written consent from the Company. Said permission can be withdrawn at any time by the Company
-                        All the arrangements, expenses, permission from local authorities, complying with the rules of central and local body is the whole responsibility of IA for meetings and seminars conducted by IA.
-                        IA cannot sell Products of @(cmpName) Private limited on any e-commerce platforms If they do so, then Company can take action against him If Company gets any kind of evidence against IA.
-                        @(cmpName) Products are sold ONLY by its Company Website, it's Sales centre and Independent star associate and not by unauthorised sellers selling on any e-commerce platforms The Buyer or VC has a right to cross check IA identity card of @(cmpName) at the time of purchasing products from him/her @(cmpName) cannot give any assurance of quality of products sold through these E-commerce platforms For any assistance, please reach us on @(cmpMail)
-                        PROHIBITIONS:
-                        IA shall not be engaged in any activities of Multilevel marketing of other Company/Person. If it is found then such IA shall be terminated.
-                        IA is prohibited from listing, marketing, advertising, promoting, discussing, or selling any products, or the opportunity on any website or online forum that offers like auction as a mode of selling.
-                        Username & password of an IA should not be shared to anyone except the id holder
-                        Placing the order or taking Payment for order by upline should not be done.
-                        IA hereby undertakes not to compel or induce or mislead any person with any false statements / promise to purchase products from the Company or to become IA of the Company.
-                        In case IA misleads or induced anyone to join under him or takes anyone leads, whether cross line or downline,
-                        And if the company finds IA is not following the terms and conditions
-                        Then company has a right to block his id temporarily for first three months by sending mail to him
-                        Then can do it permanently also
-                        And hold his royalty income and bonus if bonus achiever for three months and permanent also
-
-                        The IA must follow the ethics of the company for creating any IA under him
-                        IA should also resolve the matter of -wrong id placed under sponsor or downline or cross line at the time of giving presentation to the new member
-                        And it's completely and solely new person responsibility if the new person is joining under him or any other person
-
-                        @(cmpName) management is not responsible or will not get involved for any id which is wrongly placed by sponsor or downline or cross line
-                        If any IA gives threatening messages to company through voice or text messages in WhatsApp or mail or any other social media for the wrong id placed or issue with sponsor or downline or any other personal reason
-                        Then company has a right to terminate his/her id by sending a warning letter
-                        And if this is repeated again then his/her id is permanently blocked and   his/her team transferred to sponsor or upline.
-                        And cannot join @(cmpName) again in his/her lifetime.
-                        New member has 100% right to choose his sponsor even if invited by anyone in the meeting physical or virtual
-
-                        And in case if any person joins under any other person not the invitee, then its responsibility is totally of his/her sponsor and three uplines to make him agree to join under invitee or whether he is willing to work, Company is not involved in this matter.
-                        Sponsor and his uplines and Tab team bonus achievers has right to transfer the id wrongly placed to the invitee if they are willing to do so in their organisation and the sponsor and uplines must be ready to support the IA even if the id is transferred
-                        This will be accepted by company only If given in Notary and get it registered in registrar office by government-authorized public official who verifies the identity of the parties, witnesses their signatures, and authenticates the document with their official seal and signature. along with signatures of four level royalty receivers and bonus achievers and IA.
-                        If any IA gives threatening messages to company through voice or text messages in WhatsApp or mail or any other social media for the wrong id placed or issue with sponsor or downline or any other personal reason
-
-                        Then company has a right to terminate his/her id by sending a warning letter
-                        And if this is repeated again then his/her id is permanently blocked and his/her team transferred to sponsor or upline.
-                        And cannot join @(cmpName) again in lifetime
-                        CORPORATE EVENTS
-                        If any IA doesn't behave properly in any corporate event or @(cmpName) distributor events like threatening women's or males too
-                        Fighting with each other for any personal reason
-                        Or using vulgar language in events or drunked while event is going on
-                        All this cannot be entertained by corporate then company will get his /her terminate his/her id by sending a warning letter
-                        And if this is repeated again then his/her id is permanently blocked and his/her team transferred to sponsor or upline.
-                        Any IA who is joining the corporate events or training physically like Wellness academy, success mantra, spectacular event, leadership training or any upcoming events is coming with his own willingness
-                        Note: - if any IA is having any health issues or any severe health disorders or diseases
-                        They are solely responsible for joining the corporate events
-                        Any IA who is diabetic or having any health issues
-                        And should have meal on time then he must bring or arrange something for himself till the lunch or any meal break provided by corporate.
-                        Children are not allowed in this corporate events below 17 years and IA is solely responsible for anything unusual happened to children.
-                        Event ticket is non refundable
-                        Any corporate event is just a distributor run event to provide knowledge and training to the distributors regarding Product and Plan.
-                    </p>
-                </div>
-
-                @*<p>
-                        Therefore, I kindly represent contractual offer to <b>@(cmpName)</b>
-                        to appoint me as an <b>ISA (Independent Star Associate)</b> for all @(cmpName) products and services.
-                    </p>*@
-
-                <div class="section">
-                    <h6>ORDER CANCELLATION </h6>
-                    <p>
-                        Order can be cancelled only if mail received through registered email id with valid reason. And company may confirm the same with the id holder
-                        If the IA accepts this
-                        Then he cannot receive the income and level qualification cannot be completed and this is sole responsibility of the id holder
-                        Note: - Order can be cancelled by IA one or two times in case of emergency
-                        And if this exceeds more than thrice then his id will be blocked permanently by company.
-
-                        COOLING OFF PERIOD: Any IA of the Company can cancel participation in the company within 30 days of free registration in Company. IA will receive full refund for any goods or services purchased if any.
-                        BUY BACK POLICY: Any IA can return the products 30days from date of invoice from the company RETURN POLICY: any IA of the company can return all the products not used; the product should be in saleable condition.
-                        DUTY AND CONFIDENTIALITY: Parties shall keep and maintain secrecy and confidentiality about the information for which they are obliged and expected to keep secret and not to disclose anybody other than the persons to whom is reasonably expected to be disclosed.
-                        SPECIAL CONDITIONS: Notwithstanding anything stated or provided herein, the Company shall have all powers and discretion to modify, alter or vary the terms and conditions in any manner it deems fit and shall be communicated through official website or other mode as the Company deems fit and proper. If any IA does not agree to such amendment, he may terminate his agreement within 45 days of such publication by giving a written consent to the Company. Without any objection to such modifications/ alterations, if IA continues his activities, it will be deemed that he had accepted all modifications and amendments in the terms and conditions for future.
-                        IA has to work with his Sponsor only and he does not have any right to change the Sponsor or can go for cross sponsoring or create another ID in the name of other family members with some other IA (cross lines), if done so company has a right to shift his ID to his original one with his team and his incomes also
-
-                        Golden supervisor and above ROYALTY & BONUS CONDITIONS -
-                        Royalty income & Bonus will be given to those who are attached with the system
-                        System means should be in touch with downline, sponsor and 5 level uplines and GET TEAM & above He/she must attend All the trainings both online ZOOM meetings and offline trainings in their sponsor clubs or meetings or any events organised by uplines or sponsor or corporate.
-                        Mail from sponsor and GET TEAM & Above must be received in between 1st to 15th of any month then action will be taken in between 20th to 30th of the present month and his income will be stopped next month and the amount is holded in the company only
-                        To release royalty also then the mail should be rec'd on the same dates Must attend All training online on zoom or other e- platform daily and monthly meetings offline meetings which is run by the uplines and company corporate events
-                        If the distributor is not participating in all this for 3-5 months then the sponsor or his upline can take action to hold his royalty income & above from 1-2 months through mail to company A distributor can do the retails and get wholesale income If the distributor started attending the events and get in touch with his downlines and sponsor and above then he will start getting his royalty income He/she must attend All the trainings both online ZOOM meetings and offline  for 20 days or more and it was monitored by his sponsor or upline and mail to company about this not to stop royalty from now onwards
-                        Note:-if id holder placed order in his id before 10th of a month, then his order cannot be cancelled and income will be given to him and can be holded from next month if mail again received by the sponsor or uplines.
-                        Previous Royalty income & bonus which is holded can not be released to him as it got rollup to his uplines To get the royalty & bonus you need to follow all this :- If you have some work or an emergency like some health related issues, any uncertain death ,exams ,marriage of himself/herself or any close family members then you need to inform to your sponsor or upline regarding this for a period of 3 months In this case, royalty income & bonus will also be issued. THE REASON FOR DOING THIS IS TO AVOID DUPLICATION OF THE SAME THING - TAKING ROYALTY & ABOVE WITHOUT ATTENDING MEETINGS AND IN TOUCH WITH THEIR TEAM TERMINATION: where a direct seller is found to have made no sales of goods and services for a period of up to two years since the contract was entered into, or since the date of the last sale made by the direct seller. Intimation letter may be given to the IA In Physical or electronic mail. IA can reply to the Notice within 7 days of the receipt of Notice. FORCE MAJEURE: Company shall not be liable for any failure to perform it's obligations where such failure had resulted due to Acts or Nature (including fire, flood, earthquake, storm, hurricane or other natural disaster),war, invasion, act of foreign enemies, hostilities (whether war is declared or not),civil war, rebellion, revolution, insurrection or failure of electricity ,any type of redirection by Govt. (Central or State),Local authorities etc., RESIGNATION *If the IA wants to resign or not willing to work with his existing sponsor He must get the details about resignation or sponsor changing ,mail should be send to company on support @(cmpSite) or contact on @(cmpPhone) to get the details If the IA submits the mail or give written consent to company ,his request would be accepted and within 45 working days from the date of submission And if the reason is valid from his behalf after verification He has a right to change the Sponsor after the completion of period of inactivity i.e. Two years *If the IA is in INACTIVITY PERIOD, then he doesn't have any right to Attend meetings or any corporate events, Trainings, Nutrition Hub and others. *If the IA or the IA's Spouse wanted to join under another Sponsor as a VC or IA, they must follow the period of inactivity (waiting period) before signing a new agreement. If they restart during this period then they have to restart the new date will be as such the new activity taken place. *IA Can submit as an Independent Star associate or VIP Customers agreement under new sponsor after 2years consecutive days of no activity *If the IA or IA Spouse enrol as an IA under another Sponsor without complying with the period of inactivity, @(cmpName) may terminate the membership place it under original sponsor or can take any action. *If the IA or IA Spouse is under the period of activity and if he is willing to take products Then he can take from his Sponsor or Uplines with their permission. *If the agreement is terminated, the IA and their spouse can apply for an IA under a different sponsor only after a lapse of the Period of Inactivity (2years) RECOURSE AND LEGAL APPLICABILITY: The terms and conditions stipulated in the forgoing paragraphs shall be governed in accordance with the law in force of India. Disputes, either civil or criminal in natural, shall be subject to the exclusive jurisdiction of the courts in Telangana only and nowhere else. If any dispute or difference arises out if it in relation to these presents, the same shall be referred to sole arbitrator appointed by the Company. IA shall not raise any objection, in case the Arbitrator so appointed in any manner whatsoever. Arbitration shall be conducted as per "Arbitration and conciliation Act,1996" as amended from time to time. venue of such Arbitration shall be in Rajasthan and the language shall be English. @(cmpName) liability, whether in contract, tort or otherwise arising out of or in connection with the agreement and or relationship arising there from shall not exceed actual damages or loss assessed by the Arbitrator or any other dispute resolution mechanism adopted by the parties or solemnly affirm and declare as follows: That I have read and understood the terms and conditions of IA of the Company. I have also gone through the Company's official website, printed materials, broachers and convinced about the business and I have applied to appoint me as a IA on my own violation. I declare that I have not been given any assurance or promise or inducement by the Company or its Directors or any of the management or my sponsor in regard to any fixed income incentive, prize or benefits on account of the products purchased by me. I have clearly understood that eligibility of income exclusively depends on my performance in business volumes as from terms and conditions. I further agree that company reserves the right to change the Business plan at any point of time without prior notice. I
-                        unique code allotted to each IA to allow them to log on to the website of the company. Website: Means official website of the company i.e. @(cmpSite)
-                        <b>THE APPOINTMENT AND UNDERSTANDING:</b> The Company upon Verification and scrutiny may register the applicant as "IA" for selling the goods/services/products of the company. The Company shall be at liberty to accept or reject the application at its discretion. The IA shall enjoy the following privileges: - 1. Incentive for effecting sale of goods/Products of the Company as per Marketing plan. 2.No territorial restriction to sale the goods/products/services. 3.Search and inspect his account on website of the Company through password awarded by the Company. 4. Earnings of the IA shall be in proportion to the volume of performance by the IA either by his personal efforts or through team as stipulated in the Company. An individual, upon appending his signature at the bottom of these presents, shall be deemed to have accepted the terms and conditions stipulated herein. Upon registration after scrutiny of the application, he shall become the IA of the company, Allotment of password and ID shall be construed as registered as IA
-                        Once the username & password is received, the IA must immediately change the password within 24 hours and should not be shared to anyone.
-                        For Placing order and to check any information he should take proper training from his Sponsor.
-                        Payment should not be given for Placing order to sponsor or upline
-                        If does so, IA is solely responsible if anything happens.
-                        If the product order delivery address is provided of Sponsor or any other person then IA is solely responsible if anything happens.
-                        And IA must check the products as soon as received and if any damage or product not in proper condition then it should be informed to company within 4 hours of receiving products. If does so it will be solely IA Responsibility.
-
-                        FSSAI FOOD REGISTRATION IS MANDATORY (IF IA WANTS TO DO BUSINESS) FOR PLACING ORDER. If not applied IA is solely responsible if anything happens.
-                        If IA is operating a office/Nutrition Club and selling @(cmpName) products and promoting business plan, he cannot use logo of company in board, or use product picture on board, and logo of company with part time or full-time business opportunity
-                        In case, he does so, warning letter will be sent by company to IA.
-                        Promotion Material like Boards, flyers etc., should be approved by Company before using.
-                        Before After pics of anyone cannot be used without their permission.
-                        Any kind of activities done by IA in his Nutrition Club, he is solely responsible for that.
-
-                        If the IA is conducting any events or training in conference halls or banquet halls then he must take GST number if taking ticket charges from distributors or your team members
-                        THE COMPANY Is not encouraging their IAs to promote events for making money,
-                        The events done by them are for promoting healthy lifestyle and income opportunity
-
-                        The IA must follow the ethics provided by company in case of showing product results income
-
-                    </p>
-                </div>
-
-                <div class="section">
-                    <h6>Disclaimer:</h6>
-                    <p>
-                        Achievement requires skills and years of hard work
-                        Individual Income may vary from person to person.
-                        Then he must provide GST bill in the name of your firm or NC and must take use copyright version for playing songs and music.
-                        In case if IA doesn’t follow the rules, he is solely responsible for that.
-
-
-                        The applicant hereby covenants that as under: * That he is clearly understood the marketing methods/plan, the compensation plan, its limitations and conditions. He agrees that he is not relying upon any misrepresentation or fraudulent inducement or assurance that is not set out in terms and conditions or other officially printed or published materials of the Company. *Relation between the Company and IA shall be governed, in addition to this agreement, by the rules and procedure mentioned in the marketing plan, available on website. The IA further confirms that he read and understood the terms and conditions carefully and agrees to be bound by them. *IA shall act as a freelancer and shall not commit any misfeasance to create any liability/ obligation on the Company. *It is made and understood in very clear terms that IA is not an Agent, Employee, nor an authorized representative of the Company or Its service providers. He is not authorized to receive or accept any amount/payment for and on behalf of the Company and any payment received by him will not be deemed to be received by the Company. The Company reserves its right to withheld /block/suspend the IA, If IA Takes the payment from his IA downlines, IA cross lines and his IA uplines. * IA, hereby declare that all the information furnished by him is true and correct. Company shall be at liberty to take any action against the IA in the event; it is discovered that the IA furnished any wrong/false information to the Company.
-                        Some examples of unfair trade methods are: the false representation of a good or service; false free gift or prize offers; non-compliance with manufacturing standards; false advertising; or deceptive pricing or any medical claims.
-                        If any provision of these Terms and Conditions is declared invalid or unenforceable, the remaining provisions shall remain in full force and effect. IA shall not manipulate the @(cmpName) marketing plan or product's rate, VP, etc., in any way. IA shall not send, transmit or otherwise communicate any messages to anybody on behalf of the Company without any authority from the Company.
-                        IA or any other person under him is strictly prohibited to use any promotional Material, other than the developed and authorised from the Company.
-                        IA shall not use the @(cmpName) trademark, logotype, and design anywhere without the written consent from the Company. Said permission can be withdrawn at any time by the Company
-                        All the arrangements, expenses, permission from local authorities, complying with the rules of central and local body is the whole responsibility of IA for meetings and seminars conducted by IA.
-                        IA cannot sell Products of @(cmpName) Private limited on any e-commerce platforms If they do so, then Company can take action against him If Company gets any kind of evidence against IA.
-                        @(cmpName) Products are sold ONLY by its Company Website, it's Sales centre and Independent star associate and not by unauthorised sellers selling on any e-commerce platforms The Buyer or VC has a right to cross check IA identity card of @(cmpName) at the time of purchasing products from him/her @(cmpName) cannot give any assurance of quality of products sold through these E-commerce platforms For any assistance, please reach us on @(cmpMail)
-                    </p>
-                </div>
-
-                @*<div class="section">
-                        <h6>Appointment & Understanding</h6>
-                        <ul>
-                            <li>Incentive for sales as per marketing plan</li>
-                            <li>No territorial restriction</li>
-                            <li>Online account access through password</li>
-                            <li>Earnings based on performance</li>
-                        </ul>
-                    </div>
-
-                    <div class="section">
-                        <h6>Responsibilities of ISA</h6>
-                        <ul>
-                            <li>Password must be changed within 24 hours</li>
-                            <li>Payments should not be given to sponsor/upline</li>
-                            <li>Products must be checked within 4 hours of delivery</li>
-                            <li>FSSAI registration is mandatory</li>
-                            <li>No medical claims allowed</li>
-                            <li>No use of company logo without approval</li>
-                        </ul>
-                    </div>
-
-                    <div class="section">
-                        <h6>Nutrition Club Rules</h6>
-                        <ul>
-                            <li>No use of company name in club name</li>
-                            <li>Selling price must not exceed MRP</li>
-                            <li>Expired products cannot be used</li>
-                            <li>Product exchange is prohibited</li>
-                        </ul>
-                    </div>
-
-
-                    <div class="section">
-                        <h6>Prohibitions</h6>
-                        <ul>
-                            <li>No multi-level marketing of other companies</li>
-                            <li>No selling on e-commerce platforms</li>
-                            <li>No misleading income or product claims</li>
-                        </ul>
-                    </div>*@
-
-                <div class="section">
-                    <h6> PROHIBITIONS: </h6>
-                    <p>
-                        IA shall not be engaged in any activities of Multilevel marketing of other Company/Person. If it is found then such IA shall be terminated.
-                        IA is prohibited from listing, marketing, advertising, promoting, discussing, or selling any products, or the opportunity on any website or online forum that offers like auction as a mode of selling.
-                        Username & password of an IA should not be shared to anyone except the id holder
-                        Placing the order or taking Payment for order by upline should not be done.
-                        IA hereby undertakes not to compel or induce or mislead any person with any false statements / promise to purchase products from the Company or to become IA of the Company.
-                        Sponsor and his uplines and Tab team bonus achievers has right to transfer the id wrongly placed to the invitee if they are willing to do so in their organisation and the sponsor and uplines must be ready to support the IA even if the id is transferred
-                        This will be accepted by company only If given in Notary and get it registered in registrar office by government-authorized public official who verifies the identity of the parties, witnesses their signatures, and authenticates the document with their official seal and signature. along with signatures of four level royalty receivers and bonus achievers and IA.
-                        If any IA gives threatening messages to company through voice or text messages in WhatsApp or mail or any other social media for the wrong id placed or issue with sponsor or downline or any other personal reason
-
-                        Then company has a right to terminate his/her id by sending a warning letter
-                        And if this is repeated again then his/her id is permanently blocked and his/her team transferred to sponsor or upline.
-                        And cannot join @(cmpName) again in lifetime
-
-                    </p>
-                </div>
-
-                <div class="section">
-                    <h6>Golden supervisor and above ROYALTY & BONUS CONDITIONS -</h6>
-                    <p>
-                        Royalty income & Bonus will be given to those who are attached with the system
-                        System means should be in touch with downline, sponsor and 5 level uplines and GET TEAM & above He/she must attend All the trainings both online ZOOM meetings and offline trainings in their sponsor clubs or meetings or any events organised by uplines or sponsor or corporate.
-                        Mail from sponsor and GET TEAM & Above must be received in between 1st to 15th of any month then action will be taken in between 20th to 30th of the present month and his income will be stopped next month and the amount is holded in the company only
-                        To release royalty also then the mail should be rec'd on the same dates Must attend All training online on zoom or other e- platform daily and monthly meetings offline meetings which is run by the uplines and company corporate events
-                        If the distributor is not participating in all this for 3-5 months then the sponsor or his upline can take action to hold his royalty income & above from 1-2 months through mail to company A distributor can do the retails and get wholesale income If the distributor started attending the events and get in touch with his downlines and sponsor and above then he will start getting his royalty income He/she must attend All the trainings both online ZOOM meetings and offline  for 20 days or more and it was monitored by his sponsor or upline and mail to company about this not to stop royalty from now onwards
-                        Note:-if id holder placed order in his id before 10th of a month, then his order cannot be cancelled and income will be given to him and can be holded from next month if mail again received by the sponsor or uplines.
-                        Previous Royalty income & bonus which is holded can not be released to him as it got rollup to his uplines To get the royalty & bonus you need to follow all this :- If you have some work or an emergency like some health related issues, any uncertain death ,exams ,marriage of himself/herself or any close family members then you need to inform to your sponsor or upline regarding this for a period of 3 months In this case, royalty income & bonus will also be issued. THE REASON FOR DOING THIS IS TO AVOID DUPLICATION OF THE SAME THING - TAKING ROYALTY & ABOVE WITHOUT ATTENDING MEETINGS AND IN TOUCH WITH THEIR TEAM TERMINATION: where a direct seller is found to have made no sales of goods and services for a period of up to two years since the contract was entered into, or since the date of the last sale made by the direct seller. Intimation letter may be given to the IA In Physical or electronic mail. IA can reply to the Notice within 7 days of the receipt of Notice. FORCE MAJEURE: Company shall not be liable for any failure to perform it's obligations where such failure had resulted due to Acts or Nature (including fire, flood, earthquake, storm, hurricane
-                        undertake not to misguide or induce dishonestly anybody to join the Company. I hereby agree and adhere to the terms and conditions as stipulated along with the agreement form and as mentioned above to agree to purchase the product as Consumer/ to do the IA activities. I hereby agree to submit all disputes to arbitration as provided in the terms and conditions of the company. I also declare that at present any other IA ship IDENTITY (ID) is not activated in my name. I have read and agreed to the terms and conditions and Privacy policy for @(cmpName)
-                    </p>
-                </div>
-
-                @*<div class="section">
-                        <h6>Declaration</h6>
-                        <p>
-                            I hereby confirm that I have read, understood, and accepted all the terms and conditions
-                            of this agreement and agree to abide by them.
-                        </p>
-                    </div>*@
+                <p>Any claim of any infringement of any intellectual property right or any other right of any third party or of law by the Direct Seller; or</p>
+                <p>Against all matters of embezzlement, misappropriation or misapplications of collection / moneys which may from time to time during the continuance of the Agreement come into his / her / its possession / control.</p>
+                <p>Relationship: The Direct Seller acknowledges that they function as an independently owned business entity. This Agreement does not establish them as an employee, associate, agent, or legal representative of the @Convert.ToString(Session["CompTitle"]) Consultancy for any purpose. The Direct Seller has no explicit or implicit authorization or authority to take on obligations on behalf of the @Convert.ToString(Session["CompTitle"]) Consultancy or to act in any way that would legally bind the entity. If a Direct Seller breaches this provision in any manner, they will be held accountable for all types of consequences, including financial, statutory, civil, or criminal implications.</p>
+                <p>Liability: Except for the provisions stated in this Agreement, the @Convert.ToString(Session["CompTitle"]) Consultancy holds no liability towards the Direct Seller for terminating this Agreement for any reason. This includes claims for loss or profit or any claims related to expenditures, investments, leases, capital investments, or other commitments undertaken by the other party in connection with the business, which were made based on or due to this Agreement.</p>
+                <p>Suspension, Revocation or Termination of this E-contract agreement:</p>
+                <p>That the @Convert.ToString(Session["CompTitle"]) Consultancy reserves the right to suspend the operation of this E-contract agreement, at any time, due to change in its own license conditions or upon directions from the competent government authorities. In such a situation, @Convert.ToString(Session["CompTitle"]) Consultancy shall not be responsible for any damage or loss caused or arisen out of aforesaid action.</p>
+                <p>If the Direct Seller breaches any of the terms outlined in this agreement, which they have previously accepted, the @Convert.ToString(Session["CompTitle"]) Consultancy reserves the right to act. Without diminishing other possible remedies, the entity can issue a written notice with a one-month notice period. This notice will request the Direct Seller to provide a written explanation for their actions. If the explanation is not provided or is deemed inadequate based on standard business norms, the @Convert.ToString(Session["CompTitle"]) Consultancy holds the authority to suspend, block or terminate the Direct Seller’s participation in the business. Consequently, the Direct Seller’s commissions will be discontinued.</p>
+                <p>That the Direct Seller may terminate this agreement at any time by giving a written notice of 30 days to the @Convert.ToString(Session["CompTitle"]) Consultancy at the head office of the @Convert.ToString(Session["CompTitle"]) Consultancy.</p>
+                <p>Actions pursuant to Suspension / Blocking / Termination of this E-contract agreement: That notwithstanding any other rights and remedies provided elsewhere in the agreement, upon termination of this agreement:</p>
+                <p>The Direct Seller shall not represent the @Convert.ToString(Session["CompTitle"]) Consultancy in any of its dealings.</p>
+                <p>The Direct Seller shall not intentionally or otherwise commit any act(s) as would keep a third party to believe that the @Convert.ToString(Session["CompTitle"]) Consultancy is still having Direct Selling agreement with the Direct Seller.</p>
+                <p>The Direct Seller shall stop using the @Convert.ToString(Session["CompTitle"]) Consultancy ’s name, trademark, logo, etc., in any audio or visual form.</p>
+                <p>All obligations and liabilities of such Direct Seller to the @Convert.ToString(Session["CompTitle"]) Consultancy existing on the date having accrued during the validity of this Agreement will have to be fulfilled, met, and satisfied by the Direct Seller in every manner whatsoever.</p>
+                <p>Governing Laws and Regulations</p>
+                <p>That this Agreements shall be governed by the provisions of the Indian Contract Act, 1872, the Consumer Protection Act, 2019, Consumer Protection (Direct Selling} Rules, 2021 or other laws of the land.</p>
+                <p>Dispute Settlement: The Direct Seller herein agrees and accepts that the remedial action available to him / her in the event of any interpretation of any question of law, dispute or difference arising under this agreement or in connection there-with (except as to the matters, the decision to which is specifically provided under this agreement), the same shall be as under:</p>
+                <p>As per the Grievance Redressal Mechanism offered by the @Convert.ToString(Session["CompTitle"]) Consultancy herein and forming part of this contract agreement, any dispute or difference arising out of or in connection with this Direct Seller/Direct Seller Agreement shall first be attempted to be resolved through mutual discussions within 30 (thirty) days of such dispute arising. In the event the Direct Seller/Direct Seller is not satisfied with the decision of the @Convert.ToString(Session["CompTitle"]) Consultancy or if any issue raised remains unresolved for more than two months, the matter shall be referred to the Grievance Redressal Committee constituted by the @Convert.ToString(Session["CompTitle"]) Consultancy.</p>
+                <p>Disputes, if any, remaining unresolved even after reference to the Grievance Redressal Committee, shall be finally resolved through binding arbitration in accordance with the provisions of the Indian Arbitration and Conciliation Act, 1996. The venue of arbitration shall be at Chhatrapati Sambhajinagar (Maharashtra, India), and the decision of the Arbitrator shall be final and binding on all parties. Subject to the foregoing, the courts at Chhatrapati Sambhajinagar (Maharashtra, India), have exclusive jurisdiction over matters arising out of or in relation to this agreement.</p>
+                <br />
+                <p>Force- Majeure: That if at any time, during the continuance of this agreement, the performance in whole or in part, by the @Convert.ToString(Session["CompTitle"]) Consultancy , of any obligation under this is prevented or delayed, by reason of war, or hostility, acts of the public enemy, civic commotion, sabotage, Act of State or direction from Statutory Authority, explosion, epidemic, quarantine restriction, strikes and lockouts, fire, floods, natural calamities / disaster or any act of God (hereinafter referred to as event), neither party shall, by reason of such event, be entitled to terminate this agreement, nor shall either party have any such claims for damages against the other, in respect of such non-performance or delay in performance. Provided that the services under this agreement shall be resumed as soon as practicable, after such event comes to an end or ceases to exist.</p>
+                <p>The Direct Seller hereby agrees as under:</p>
+                <p>That he / she has clearly understood the terms and conditions, as well as the Marketing Plan of the @Convert.ToString(Session["CompTitle"]) Consultancy, along with it associated its limitations and provisions.   He / she confirms that he / she is not relying upon any representation or promises that are not set out in this E-contract agreement.</p>
+                <p>That their association with the @Convert.ToString(Session["CompTitle"]) Consultancy and all their undertakings as outlined in this agreement shall be regulated, in conjunction with this agreement, by the regulations and processes specified in the @Convert.ToString(Session["CompTitle"]) Consultancy Marketing Plan accessible on the company website. The Direct Seller validates that they have either read through these documents or they have been read to them in a language they understand. He / she thereby agrees to be legally bound by the provisions stipulated in this agreement.</p>
+                <p>That he / she will function as an independent entity and will refrain from engaging in any actions that could result in misfeasance or malfeasance, causing liabilities or obligations of any kind upon the company.</p>
+                <p>That all the information provided to the @Convert.ToString(Session["CompTitle"]) Consultancy is accurate and truthful. The @Convert.ToString(Session["CompTitle"]) Consultancy holds the sole right and freedom to take appropriate action against him / her if it is discovered that the information furnished to the @Convert.ToString(Session["CompTitle"]) Consultancy was incorrect or false.</p>
+                <p>That any violation of the terms and conditions outlined in this agreement can lead to the termination of this agreement, as per the procedures detailed within.</p>
+                <p>That I am the individual concerned and am fully aware of the facts stated above. I voluntarily agree to be designated as a Direct Seller across India, in accordance with the terms and conditions contained within this agreement.</p>
+                <p>That I have carefully read and understood the terms and conditions concerning the appointment of a Direct Seller by the company. I have also reviewed the company&#x27;s official website, printed materials, brochures, and am convinced about the business. I am submitting my application to be appointed as a Direct Seller based on my personal choice.</p>
+                <p>That I commit to adhering to the policies, procedures, rules, and regulations established by the Company. I confirm that I have read, been explained, and fully comprehended the content of the document outlining the policies and procedures for the appointment of a Direct Seller.</p>
+                <br />
+                <p>IN TOKEN OF HIS / HER AGREEING TO AND ACCEPTING ALL PROVISIONS OF THIS CONTRACT AGREEMENT SET HEREINABOVE, HE / SHE IS CLICKING ON THE “I AGREE” BUTTON GIVEN HEREIN.</p>
+                <br />
+                <br />
+                <p>Name: _____________________________      Bank A/C No.: ___________________</p>
+                <p>S/O Shri.: ____________________________      IFSC Code: ______________________</p>
+                <p>Resident of: ____________________________________________________________</p>
+                <p>_________________</p>
+                <p>Pin Code: _____________</p>
+                <p>State: ________________________________</p>
+                <p>Pan No.: __________________________________________</p>
+                <p>Aadhar No.: _______________________________________</p>
+                <p>Name of the Bank &amp; Branch: __________________________</p>
+                <br />
+                <br />
+                <br />
+                <p>NODAL OFFICER</p>
+                <p>Mr.: Mukund Bahusaheb Wakale</p>
+                <p>Address: C/O Sambhaji Sabale , S No 140/2A/1 Ghule Nagar Manjari BK Pune, Maharashtra, India, 412307</p>
+                <p>Mob no.: 9307147691</p>
+                <p>E mail: makeandgrowthindia@gmal.com</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sub" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
 
-<!-- Sign Up Section Start -->
+<div class="modal modal-lg fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel1">TERMS & CONDITIONS FOR PURCHASE ORDER BY A CONSUMER</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="terms">
+                    <ol>
+                        <li>The consumer herein declares that he/she has voluntarily, without any coercion, placed order overleaf, online/digitally or personally, for purchasing the products being marketed by M/s @Convert.ToString(Session["CompTitle"]) Consultancy India Private Limited (hereinafter referred to as “@Convert.ToString(Session["CompTitle"]) Consultancy”).</li>
+                        <li>The consumer herein assures that he/she has visited the website: www.d9cpanel.bisplindia.in and asserted itself with the products and all relevant information thereto.</li>
+                        <li>The @Convert.ToString(Session["CompTitle"]) Consultancy herein assures to the consumer that it has employed sufficient measures to safeguard the data provided by it and the same is displayed on its website: www.d9cpanel.bisplindia.in.</li>
+                        <li>The @Convert.ToString(Session["CompTitle"]) Consultancy also assures the consumer that it has well defined Buy-back and refund policy and mechanism displayed on its website: www.d9cpanel.bisplindia.in.</li>
+                        <li>
+                            The @Convert.ToString(Session["CompTitle"]) Consultancy also assures the consumer that it has a well-defined “Grievance redressal mechanism” displayed on its website: www.d9cpanel.bisplindia.in. The remedial measures available to the consumer are:
+                            <ul>
+                                <li>Acknowledgement and Resolution of complaint by the @Convert.ToString(Session["CompTitle"]) Consultancy ’s customer care Cell within 48 hours of the time the complaint it receives at its end</li>
+                                <li>Within 30 days’ from the date of receipt of the complaint at its end by the Grievance Redressal Officer particulars of whom are displayed on its website: www.d9cpanel.bisplindia.in.</li>
+                                <li>Thereafter, if still unsatisfied, the consumer will have to approach the National Consumer Helpline or State Consumer Helpline (NCH or SCH) of which the @Convert.ToString(Session["CompTitle"]) Consultancy is a convergence partner.</li>
+                                <li>If still not satisfied with the resolution offered by NCH or SCH, as the case may be, the consumer can approach an appropriate consumer forum or consumer court.</li>
+                            </ul>
+                        </li>
+                        <li>These terms and conditions have been prescribed by the @Convert.ToString(Session["CompTitle"]) Consultancy, without prejudice, in accordance with the prevailing provisions of the Consumer Protection Act, 2019 and rules framed there under.</li>
+                    </ol>
+                </div>
 
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Sign Up Section Start -->
+<script>
+    // =====================================================================
+    // IMAGE COMPRESSION (NAYA) - IDs / logic me koi change nahi.
+    // Yeh capture-phase listener pehle chalta hai, file ko compress karke
+    // wapas same input me daal deta hai, phir aapke existing change handlers
+    // (preview + OCR + submit) usi compressed file par chalte hain.
+    // Isliye "compress hokar hi save" hota hai.
+    // =====================================================================
+    function compressImageFile(file, maxWidth, quality) {
+        return new Promise(function (resolve) {
+
+            // Sirf images compress karni hain
+            if (!file || !file.type || file.type.indexOf("image/") !== 0) {
+                resolve(file);
+                return;
+            }
+
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+
+                var img = new Image();
+
+                img.onload = function () {
+
+                    var w = img.width;
+                    var h = img.height;
+
+                    // Bade image ko maxWidth tak resize (aspect ratio same)
+                    if (w > maxWidth) {
+                        h = Math.round(h * maxWidth / w);
+                        w = maxWidth;
+                    }
+
+                    var canvas = document.createElement("canvas");
+                    canvas.width = w;
+                    canvas.height = h;
+
+                    var ctx = canvas.getContext("2d");
+
+                    // White background (PNG transparency ko safe banata hai)
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.drawImage(img, 0, 0, w, h);
+
+                    canvas.toBlob(function (blob) {
+
+                        if (!blob) {
+                            resolve(file);
+                            return;
+                        }
+
+                        // Agar compressed file original se choti hai tabhi use karo
+                        if (blob.size >= file.size) {
+                            resolve(file);
+                            return;
+                        }
+
+                        var newName = (file.name || "image").replace(/\.[^.]+$/, "") + ".jpg";
+
+                        var newFile = new File([blob], newName, {
+                            type: "image/jpeg",
+                            lastModified: Date.now()
+                        });
+
+                        resolve(newFile);
+
+                    }, "image/jpeg", quality);
+                };
+
+                img.onerror = function () { resolve(file); };
+                img.src = e.target.result;
+            };
+
+            reader.onerror = function () { resolve(file); };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function bindImageCompression(inputId) {
+
+        var input = document.getElementById(inputId);
+        if (!input) return;
+
+        input.addEventListener("change", function (e) {
+
+            var file = input.files && input.files[0];
+            if (!file) return;
+
+            // Re-dispatched (already compressed) event -> existing handlers ko jaane do
+            if (input.dataset.vcCompressed === "1") {
+                input.dataset.vcCompressed = "0";
+                return;
+            }
+
+            // Original raw event -> existing jQuery handlers rok do, pehle compress
+            e.stopImmediatePropagation();
+
+            compressImageFile(file, 1280, 0.7).then(function (newFile) {
+
+                try {
+                    var dt = new DataTransfer();
+                    dt.items.add(newFile);
+                    input.files = dt.files;
+                } catch (ex) {
+                    // Purane browser fallback: original file hi rahega
+                }
+
+                input.dataset.vcCompressed = "1";
+
+                // Ab change dobara fire karo taaki preview + OCR compressed file par chale
+                input.dispatchEvent(new Event("change", { bubbles: true }));
+            });
+
+        }, true); // <-- capture phase
+    }
+
+    $(document).ready(function () {
+        bindImageCompression("FrontImage");
+        bindImageCompression("BackImage");
+    });
+    // =====================================================================
+
+    var isOCRProcessing = false;
+
+    $(document).ready(function () {
+
+        // Register Button disabled on page load
+        $("#signupbtn").prop("disabled", true);
+
+        $("#panwait").hide();
+
+    });
+
+    function AadharVerifyAadhar() {
+
+        if (isOCRProcessing)
+            return;
+
+        var frontFile = $("#FrontImage")[0].files[0];
+        var backFile = $("#BackImage")[0].files[0];
+
+        if (!frontFile) {
+            alert("Please upload Front Aadhaar Image.");
+            return;
+        }
+
+        if (!backFile) {
+            alert("Please upload Back Aadhaar Image.");
+            return;
+        }
+
+        isOCRProcessing = true;
+
+        // Keep Register button disabled while OCR is running
+        $("#signupbtn").prop("disabled", true);
+
+        // Verify Button
+        $("#btnVerifyAadhar")
+            .prop("disabled", true)
+            .removeClass("btn-dark btn-success")
+            .addClass("btn-warning")
+            .html('<i class="fa fa-spinner fa-spin"></i> Please Wait...');
+
+        // Waiting Message
+        $("#panwait")
+            .removeClass("text-success text-danger")
+            .addClass("text-primary")
+            .html('<i class="fa fa-spinner fa-spin"></i> Aadhaar Verification is in progress...')
+            .show();
+
+        var formData = new FormData();
+        formData.append("FrontImage", frontFile);
+        formData.append("BackImage", backFile);
+
+        $.ajax({
+
+            url: "/Account/AadharOCR",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+
+            success: function (response) {
+
+                if (!response || response.code != 200) {
+
+                    alert(response.message || "OCR Failed");
+
+                    // OCR fail hone par bhi user manual bhar sakta hai -> enable check chala do
+                    checkRegisterEnable();
+
+                    $("#btnVerifyAadhar")
+                        .prop("disabled", false)
+                        .removeClass("btn-warning btn-success")
+                        .addClass("btn-dark")
+                        .html("Verify");
+
+                    $("#panwait")
+                        .removeClass("text-primary text-success")
+                        .addClass("text-danger")
+                        .html("❌ Aadhaar Verification Failed");
+
+                    return;
+                }
+
+                var front = response.data.front || {};
+                var back = response.data.back || {};
+                if (front.name) {
+                    $("#name").val(front.name).prop("readonly", true);
+                }
+
+                //if (front.name)
+                //    $("#name").val(front.name);
+
+                if (front.dob)
+                    $("#dob").val(formatDob(front.dob));
+
+                if (front.mobile)
+                    $("#mobl").val(front.mobile);
+
+                var aadhaarNo = front.aadhaarNumber || front.aadharNumber || front.aadharno;
+
+                if (aadhaarNo)
+                    $("#aadharno").val(aadhaarNo).prop("readonly", true);
+
+                var address = back.address || back.Address || back.fullAddress || back.completeAddress;
+
+                if (address)
+                    $("#Address").val(address).prop("readonly", true);
+
+                if (front.email)
+                    $("#email").val(front.email);
+
+                if (front.gender) {
+
+                    if (front.gender.toUpperCase() == "MALE")
+                        $("#Male").prop("checked", true);
+
+                    if (front.gender.toUpperCase() == "FEMALE")
+                        $("#Female").prop("checked", true);
+                }
+
+                if (back.state) {
+
+                    $("#ddlStateName option").each(function () {
+
+                        if ($(this).text().trim().toLowerCase() ==
+                            back.state.trim().toLowerCase()) {
+
+                            $(this).prop("selected", true);
+                            return false;
+                        }
+
+                    });
+
+                    $("#ddlStateName").trigger("change");
+                }
+
+                if (back.pinCode)
+                    $("#txtPinCode").val(back.pinCode);
+
+                if (back.city)
+                    $("#txtCity").val(back.city);
+
+                if (back.district)
+                    $("#txtDistrict").val(back.district);
+
+                // Aadhaar Verified
+                $("#btnVerifyAadhar")
+                    .removeClass("btn-warning")
+                    .addClass("btn-success")
+                    .html('<i class="fa fa-check"></i> Verified')
+                    .prop("disabled", true);
+
+                // OCR se fields bhar gaye -> enable check chala do
+                checkRegisterEnable();
+
+                $("#panwait")
+                    .removeClass("text-primary text-danger")
+                    .addClass("text-success")
+                    .html("✔ Aadhaar Verified Successfully");
+
+            },
+
+            error: function () {
+
+                // Error par bhi user manual bhar sakta hai -> enable check chala do
+                checkRegisterEnable();
+
+                $("#btnVerifyAadhar")
+                    .prop("disabled", false)
+                    .removeClass("btn-warning btn-success")
+                    .addClass("btn-dark")
+                    .html("Verify");
+
+                $("#panwait")
+                    .removeClass("text-primary text-success")
+                    .addClass("text-danger")
+                    .html("❌ OCR API Error");
+            },
+
+            complete: function () {
+
+                isOCRProcessing = false;
+
+            }
+        });
+    }
+
+    function formatDob(dob) {
+
+        if (!dob)
+            return "";
+
+        if (dob.indexOf("/") > -1) {
+
+            var p = dob.split("/");
+
+            if (p.length == 3)
+                return p[2] + "-" + p[1].padStart(2, '0') + "-" + p[0].padStart(2, '0');
+        }
+
+        return dob;
+    }
+
+
+    $(document).ready(function () {
+
+        // Front Image Preview
+        $("#FrontImage").change(function () {
+
+            if (this.files && this.files[0]) {
+
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $("#frontPreview").attr("src", e.target.result);
+                    $("#frontFileName").text($("#FrontImage")[0].files[0].name);
+                    $("#frontPreviewWrap").removeClass("d-none");
+                };
+
+                reader.readAsDataURL(this.files[0]);
+            }
+
+            triggerOCRIfBothUploaded();
+        });
+
+        // Back Image Preview
+        $("#BackImage").change(function () {
+
+            if (this.files && this.files[0]) {
+
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $("#backPreview").attr("src", e.target.result);
+                    $("#backFileName").text($("#BackImage")[0].files[0].name);
+                    $("#backPreviewWrap").removeClass("d-none");
+                };
+
+                reader.readAsDataURL(this.files[0]);
+            }
+
+            triggerOCRIfBothUploaded();
+        });
+
+    });
+    $(document).on("click", "#frontRemoveBtn", function () {
+
+        $("#FrontImage").val("");
+        $("#frontPreview").attr("src", "");
+        $("#frontFileName").text("");
+        $("#frontPreviewWrap").addClass("d-none");
+
+    });
+
+    $(document).on("click", "#backRemoveBtn", function () {
+
+        $("#BackImage").val("");
+        $("#backPreview").attr("src", "");
+        $("#backFileName").text("");
+        $("#backPreviewWrap").addClass("d-none");
+
+    });
+    $(document).ready(function () {
+
+        toggleAadharSection();
+
+        $("input[name='userType']").change(function () {
+            toggleAadharSection();
+        });
+
+    });
+
+    function toggleAadharSection() {
+
+        var userType = $("input[name='userType']:checked").val();
+
+        if (userType == "D") {
+
+            $("#aadharSection").show();
+
+            // Direct Seller -> Aadhaar images ab OPTIONAL (image ho ya na ho process na ruke)
+            $("#FrontImage, #BackImage").prop("required", false);
+
+            // Direct Seller -> Aadharno & Address visible + required
+            $("#aadharnodiv, #addressdiv").show();
+            $("#aadharno, #Address").prop("required", true);
+
+        } else {
+
+            $("#aadharSection").hide();
+
+            // Customer -> required hata do, varna hidden required field submit block kare
+            $("#FrontImage, #BackImage").prop("required", false);
+
+            // Customer -> Aadharno & Address hide + required hata do
+            $("#aadharnodiv, #addressdiv").hide();
+            $("#aadharno, #Address").prop("required", false);
+
+            // Clear uploaded files
+            $("#FrontImage").val("");
+            $("#BackImage").val("");
+
+            // Hide preview
+            $("#frontPreviewWrap").addClass("d-none");
+            $("#backPreviewWrap").addClass("d-none");
+
+            // Clear preview image
+            $("#frontPreview").attr("src", "");
+            $("#backPreview").attr("src", "");
+
+            $("#frontFileName").text("");
+            $("#backFileName").text("");
+        }
+
+        // Section toggle hone par button state dobara check karo
+        checkRegisterEnable();
+    }
+
+    // =====================================================================
+    // REGISTER BUTTON ENABLE LOGIC
+    // Direct Seller ke liye: image upload karke bhi, ya manual details
+    // (Name, Aadhaar No, Email, Mobile, Address, Sponsor ID) bhar ke bhi
+    // register kar sakta hai. Image zaroori NAHI -> OCR ke bina bhi enable.
+    // Customer ke liye: hamesha enabled.
+    // =====================================================================
+    function checkRegisterEnable() {
+
+        var userType = $("input[name='userType']:checked").val();
+
+        // Customer -> hamesha enabled (image/aadhaar ki zaroorat nahi)
+        if (userType == "P") {
+            $("#signupbtn").prop("disabled", false);
+            return;
+        }
+
+        // Direct Seller -> yeh sab manually ya OCR se bhare hone chahiye
+        var name = $.trim($("#name").val());
+        var aadharno = $.trim($("#aadharno").val());
+        var email = $.trim($("#email").val());
+        var mobl = $.trim($("#mobl").val());
+        var address = $.trim($("#Address").val());
+        var referralid = $.trim($("#referralid").val());
+
+        if (name !== "" && aadharno !== "" && email !== "" &&
+            mobl !== "" && address !== "" && referralid !== "") {
+            $("#signupbtn").prop("disabled", false);   // image ho ya na ho, enable
+        } else {
+            $("#signupbtn").prop("disabled", true);
+        }
+    }
+
+    $(document).ready(function () {
+
+        // In fields me kuch bhi type/change hone par dobara check karo
+        $(document).on("input change",
+            "#name, #aadharno, #email, #mobl, #Address, #referralid",
+            checkRegisterEnable);
+
+        // Direct/Customer switch par bhi check
+        $(document).on("change", "input[name='userType']", checkRegisterEnable);
+
+        // Page load par ek baar
+        checkRegisterEnable();
+    });
+</script>
 <script type="text/javascript">
     var message = '@ViewBag.msg';
-        if (message) {
-            alert(message);
+    if (message) {
+        alert(message);
     }
-    var response = '@ViewBag.response';
-    var idno = '@ViewBag.idno';
-    var password = '@ViewBag.password';
-    if (response == "OK") {
-        window.location.href = "/Account/ResiterUserdetail?idno=" + idno + "&passw=" + password;
-    }
+
     function isNumberKey(evt) {
         var charCode = (evt.which) ? evt.which : event.keyCode
         if (charCode == 46) {
@@ -438,15 +1385,8 @@
                 async: true,
                 data: { sponsor: referralid },
                 success: function (data) {
-                    debugger;
                     if (data.msg != "") {
                         $("#spid").text(data.msg);
-                        //if (data.err == "1") {
-                        //    $("#signupbtn").prop("disabled", true);
-                        //}
-                        //else {
-                        //    $("#signupbtn").prop("disabled", false);
-                        //}
                     }
                 },
                 failure: function (response) {
@@ -459,67 +1399,11 @@
         }
     }
 
-    function PanVarification() {
-        var ispanverify = $("#ispanverify").val();
-        if (ispanverify == "false") {
-            var panno = $("#panno").val();
-            var Name = $("#name").val();
-            var DOB = $("#dob").val();
-            $("#panverifybtn").prop("disabled", true);
-            if (Name == "" || Name == null) {
-                alert("Please enter full name");
-                $("#panverifybtn").prop("disabled", false);
-                return false;
-            }
-            if (DOB == "" || DOB == null) {
-                alert("Please enter DOB");
-                $("#panverifybtn").prop("disabled", false);
-                return false;
-            }
-            if (panno == "" || panno == null) {
-                alert("Please enter pan");
-                $("#panverifybtn").prop("disabled", false);
-                return false;
-            }
-            $("#panwait").show();
-
-            if (panno != "" || panno != null) {
-                $.ajax({
-                    type: "POST",
-                    url: "/Account/PanVerify",
-                    async: true,
-                    data: { Panno: panno, Name: Name, DOB: DOB },
-                    success: function (data) {
-                        debugger;
-                        alert(data.Message);
-                        if (data.Status == true) {
-                            $("#panno").prop("readonly", true);
-                            $("#name").prop("readonly", true);
-                            $("#dob").prop("readonly", true);
-                            $("#ispanverify").val("true");
-                            $("#signupbtn").prop("disabled", false);
-                        }
-                        else {
-                            $("#signupbtn").prop("disabled", true);
-                            $("#panverifybtn").prop("disabled", false);
-                        }
-                        $("#panwait").hide();
-                    },
-                    failure: function (response) {
-                        console.log(response.responseText);
-                    },
-                    error: function (response) {
-                        console.log(response.responseText);
-                    }
-                });
-            }
-        }
-
-    }
-
     $(document).ready(function () {
-        /*$("#signupbtn").prop("disabled", true);*/
+
+        $("#signupbtn").prop("disabled", true);
         $('#fortype').val($('input[name="userType"]:checked').val());
+
         // Update value when radio changes
         $('input[name="userType"]').change(function () {
             if ($(this).val() == "P") {
@@ -536,23 +1420,20 @@
                 $("#dtc").show();
                 $("#directSellerdiv").show();
                 $("#directSellerdiv :input").prop("disabled", false);
-                $("#pandiv").show();
+                $("#pandiv").hide();
                 $("#pandiv :input").prop("disabled", false);
                 $("#signupbtn").prop("disabled", true);
             }
 
-
             $('#fortype').val($(this).val());
+
+            // Radio switch ke baad enable state dobara evaluate karo
+            checkRegisterEnable();
         });
 
         $('#referralid').on('focusout', function () {
             GetSponsor();
         });
-
-        $('#panno').on('focusout', function () {
-            //PanVarification();
-        });
-
 
         $('#panno').on('keypress', function (e) {
             var value = $(this).val();
@@ -594,42 +1475,54 @@
                 }
             }
         });
-        $('#signupbtn').on('click', function (e) {
-            debugger;
+
+        // =================================================================
+        // FORM SUBMIT -> AJAX (page reload NAHI hoga)
+        // Validation fail hone par file inputs / preview / Verified state /
+        // baaki text boxes / enabled button - sab intact rahenge.
+        // Button type="submit" rehne se native required validation pehle chalti hai.
+        // =================================================================
+        $('#registerForm').on('submit', function (e) {
+            e.preventDefault();
+
             var email = $("#email").val();
             if (email != "" && validateEmail(email) == false) {
                 alert("Please enter valid email");
-                alert("Please enter valid email");
-                $("#Apply").prop('disabled', false);
                 return false;
             }
-            //var ispanverify = $("#ispanverify").val();
-            //if (ispanverify != "true") {
-            //    alert("Please verify pan");
-            //}
-            //var pan = $('#panno').val().toUpperCase();
-            //var regex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-            //if (!regex.test(pan)) {
-            //    alert("Invalid PAN Number");
-            //    return false;
-            //}
-            //var password = $("#password").val();
-            //if (password == "") {
-            //    alert("Please enter password");
-            //    $("#password").focus();
-            //    return false;
-            //}
-            //var confirmPassword = $("#confirmPassword").val();
-            //if (confirmPassword == "") {
-            //    alert("Please enter confirmPassword");
-            //    $("#confirmPassword").focus();
-            //    return false;
-            //}
-            //if (password != confirmPassword) {
-            //    alert("Password and Confirm Password do not match");
-            //    return false;
-            //}
+
+            var btn = $('#signupbtn');
+            var originalText = btn.html();
+
+            btn.prop("disabled", true)
+               .html('<i class="fa fa-spinner fa-spin"></i> Please Wait...');
+
+            // Poora form (compressed files sahit) FormData me
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: '/Account/SignUp',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                    if (res && res.success) {
+                        window.location.href = "/Account/ResiterUserdetail?idno="
+                            + res.idno + "&passw=" + res.password;
+                    } else {
+                        // Sirf alert. Page reload nahi hua -> kuch lose nahi hoga.
+                        alert((res && res.msg) ? res.msg : "Something went wrong");
+                        btn.prop("disabled", false).html(originalText);
+                    }
+                },
+                error: function () {
+                    alert("Server error. Please try again.");
+                    btn.prop("disabled", false).html(originalText);
+                }
+            });
         });
+
     });
 </script>
 

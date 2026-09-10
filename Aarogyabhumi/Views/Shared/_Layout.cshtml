@@ -1,375 +1,503 @@
-﻿@{
-    var themeVer = "1.0";
-    var userName = Convert.ToString(Session["UserName"]);
-    var isLoggedIn = Session["UserDetail"] != null && !string.IsNullOrEmpty(userName);
-    var cartCount = Convert.ToString(Session["CartCount"]);
-    if (string.IsNullOrEmpty(cartCount))
-    {
-        cartCount = Convert.ToString(Session["cartcount"]);
-    }
-    if (string.IsNullOrEmpty(cartCount))
-    {
-        cartCount = "0";
-    }
-    // ---- company identity: everything below comes from m_companymaster
-    //      (CompanyDetail.GetCompanydetail). A blank column keeps the default. ----
-    Func<string, string, string> comp = (key, fallback) =>
-    {
-        var v = Convert.ToString(Session[key]);
-        return string.IsNullOrWhiteSpace(v) ? fallback : v.Trim();
-    };
-
-    var compName = comp("CompName", "Pulastya Globals India (P) Limited");
-    var compMail = comp("CompMail", "");
-    var compPhone = comp("ContactNo", "");
-    var compAdd = comp("CompAdd", "");
-    var compLogo = comp("CompLogo", Url.Content("~/theme/img/logo.png"));
-    var compTagline = comp("CompTagline", "A Better Tomorrow Together");
-    var compAbout = comp("CompAboutUs",
-        "At " + compName + ", we believe that a healthier lifestyle begins with informed choices and access to reliable products. "
-        + "Our focus is on offering carefully developed health and wellness solutions while continuously working towards improving "
-        + "product quality, customer experience and distributor support.");
-    var compHours = comp("CompWorkingHours", "Mon-Sat : 09:00AM to 08:00PM, Sunday : Close");
-    var freeShip = comp("FreeShipAmount", "2500");
-
-    var social = new[] {
-        new { Url = comp("FacebookUrl",  "https://www.facebook.com/profile.php?id=61554688337187"), Icon = "fa-facebook fa-lg" },
-        new { Url = comp("InstagramUrl", "https://www.instagram.com/pulastyaglobals_india"),        Icon = "fa-instagram fa-lg" },
-        new { Url = comp("TwitterUrl",   "https://x.com/pulastya4614321"),                          Icon = "fa-x-twitter" },
-        new { Url = comp("YoutubeUrl",   "https://www.youtube.com/" + "@" + "PulastyaGlobalsIndiaPrivateLtd"), Icon = "fa-youtube-play fa-lg" },
-        new { Url = comp("LinkedInUrl",  "https://www.linkedin.com"),                               Icon = "fa-linkedin fa-lg" }
-    }.Where(s => !string.IsNullOrWhiteSpace(s.Url)).ToList();
-}
-<!doctype html>
+﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>@(ViewBag.Title == null ? "Home" : ViewBag.Title) | @compName | @compTagline</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="~/theme/img/favicon.ico" />
-    <meta name="description" content="@compName - quality driven health and wellness products through a transparent, ethical direct selling ecosystem." />
-    <meta name="keywords" content="Pulastya Globals, direct selling, health, wellness, herbal, ayurveda, personal care" />
-    <meta name="theme-color" content="#176a3a" />
-    <meta name="language" content="EN" />
-    <meta name="audience" content="all">
-    <meta name="content-Language" content="English">
-    <meta name="distribution" content="global">
-    <meta property="og:title" content="@compName | @compTagline" />
-    <meta property="og:description" content="Quality driven health and wellness products." />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!--css styles -->
-    <link rel="stylesheet" href="~/theme/css/bootstrap.min.css">
-    <!-- BS5 utility classes still used by the inner pages, re-implemented on BS3 -->
-    <link rel="stylesheet" href="~/theme/css/bs5-compat.css?ver=@themeVer">
-    <link rel="stylesheet" href="~/theme/css/layout.css?ver=@themeVer">
-    <link rel="stylesheet" href="~/theme/css/layout-responsive.css?ver=@themeVer">
-    <link rel="stylesheet" href="~/theme/css/popup-view.css?ver=@themeVer">
-    <link rel="stylesheet" href="~/theme/css/font-awesome.min.css">
-    <link rel="stylesheet" href="~/theme/css/message.css">
-    <!--nav styles-->
-    <link rel="stylesheet" href="~/theme/css/menu.css?ver=@themeVer">
-    <!--Plugins-->
-    <link rel="stylesheet" href="~/theme/plugins/nivo-slider/nivo.css">
-    <link rel="stylesheet" href="~/theme/plugins/nivo-slider/nivo-custom.css">
-    <link rel="stylesheet" href="~/theme/plugins/animation/css/animate.css">
-    <link rel="stylesheet" href="~/theme/plugins/owl-carousel/owl.custom.css?ver=@themeVer">
-    <link rel="stylesheet" href="~/theme/plugins/owl-carousel/owl.carousel.min.css">
-    <link rel="stylesheet" href="~/theme/plugins/owl-carousel/owl.theme.default.min.css">
-    <!--MVC overrides-->
-    <link rel="stylesheet" href="~/theme/css/custom-mvc.css?ver=@themeVer">
-    <!--Fonts-->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght&#64;0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+    <title> Welcome @Convert.ToString(Session["CompTitle"]) | Every Deal for Smart Savings & Top-Quality Shopping </title>
+    <title> @Convert.ToString(Session["CompTitle"]) </title>
 
-    <!-- jQuery is loaded up front so inline page scripts inside @@RenderBody keep working -->
-    <script src="~/theme/js/jquery.min.js"></script>
+    <!-- Primary Meta Tags -->
+    <meta name="description"
+          content="@Convert.ToString(Session["CompTitle"]) is your smart shopping partner offering digital gift vouchers, affordable online shopping, and exclusive deals. Enjoy quality products, great value, and seamless savings in every purchase.">
+    <meta name="keywords"
+          content="@Convert.ToString(Session["CompTitle"]) , Online Shopping, Smart Savings, Best Deals, Affordable Products, E-commerce, Digital Gifting, Shopping Offers">
+    <meta name="author" content="@Convert.ToString(Session["CompTitle"]) ">
+    <meta name="robots" content="index, follow">
 
-    @RenderSection("styles", required: false)
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="@Convert.ToString(Session["CompTitle"])  | Smart Shopping & Digital Gift Vouchers">
+    <meta property="og:description"
+          content="@Convert.ToString(Session["CompTitle"]) . Explore exclusive gift vouchers and a wide range of quality products at the best prices. Savings and convenience in every deal!">
+    <meta property="og:image" content="assets/images/og-image.jpg">
+    <meta property="og:url" content="https://d9cpanel.bisplindia.in/">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@Convert.ToString(Session["CompTitle"]) | Smart Shopping & Gift Voucher Deals">
+    <meta name="twitter:description"
+          content="Discover digital gift vouchers and budget-friendly online shopping with @Convert.ToString(Session["CompTitle"]) . Better quality, better value — always.">
+    <meta name="twitter:image" content="assets/images/og-image.jpg">
+
+
+    <link rel="stylesheet" href="~/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/assets/css/meanmenu.css">
+    <link rel="stylesheet" href="~/assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/assets/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/assets/css/magnific-popup.min.css">
+    <link rel="stylesheet" href="~/assets/css/scrollCue.css">
+    <link rel="stylesheet" href="~/assets/css/flaticon.css">
+    <link rel="stylesheet" href="~/assets/css/fontawesome.min.css">
+    <link rel="stylesheet" href="~/assets/css/banner.css">
+    <link rel="stylesheet" href="~/assets/css/shop.css">
+    <link rel="stylesheet" href="~/assets/css/blog.css">
+    <link rel="stylesheet" href="~/assets/css/footer.css">
+    <link rel="stylesheet" href="~/assets/css/style.css?v=1.3">
+    <link rel="stylesheet" href="~/assets/css/responsive.css">
+    <link rel="stylesheet" href="~/assets/css/custom.css?v=1.1">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        @@media only screen and (max-width : 767px) {
+            .top-header-left-content ul li {
+                font-size: 12px !important;
+            }
+        }
+    </style>
+    <script type="text/javascript">
+        function Srchproductnew() {
+            var prodname = $("#myInput1").val();
+            window.location.href = "/CategoryList/CategoryList?CatName=" + prodname + "";
+        }
+
+        $.ajax({
+            type: "POST",
+            url: '/Home/CategoryList',
+            success: function (data) {
+                $("#categorylist").html('').html(data.tblOrder);
+            }
+
+        });
+    </script>
+    <style>
+        /* Full-page overlay */
+        .page-overlay {
+            position: fixed;
+            inset: 0; /* top, right, bottom, left = 0 */
+            background: rgba(255, 255, 255, 0.85);
+            z-index: 1055; /* above modal backdrop */
+            display: none; /* hidden by default */
+            align-items: center;
+            justify-content: center;
+        }
+
+            .page-overlay.show {
+                display: flex;
+            }
+    </style>
 </head>
 <body>
-    <!-- drawer menu -->
-    <div class="mb-menu-col">
-        <div class="clse-btn"><span>&times;</span></div>
-        <div class="mb-menu-lst">
-            <a href="~/Home/Index" class="logo"><img src="@compLogo" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/logo.png")';" alt="@compName"></a>
-        </div>
-        <div class="mb-menu-lst main"></div>
-        <div class="mb-menu-lst buyer">
-            <ul>
-                @if (isLoggedIn)
-                {
-                    <li><a href="~/Home/Myorders">My Orders</a></li>
-                    <li><a href="~/Home/MemberProfile">My Profile</a></li>
-                    <li><a href="~/ViewCart/Wishlist">Wishlist</a></li>
-                    <li><a href="~/Home/WalletDetail">Wallet</a></li>
-                    <li><a href="~/Account/LogOff">Logout</a></li>
-                }
-                else
-                {
-                    <li><a href="~/Account/Login">Login</a></li>
-                    <li><a href="~/Account/SignUp">Register</a></li>
-                    <li><a href="~/ViewCart/ViewCart">Cart</a></li>
-                }
-            </ul>
+    <!-- Page Overlay Loader -->
+    <div id="pageLoader" class="page-overlay">
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+            <div class="mt-3 fw-semibold">Loading, please wait...</div>
         </div>
     </div>
-    <!-- -->
-    <header>
-        <div class="tp-row">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <p><b>Free shipping</b> on order above &#8377; @freeShip</p>
+    <!-- Font Awesome CDN -->
+    <!-- Top Header Area -->
+    <!-- Font Awesome CDN -->
+    <!-- Top Header Area -->
+
+    <div class="top-header-area bg-fa2837">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-lg-9 col-sm-6 col-5">
+                    <div class="top-header-left-content mb-0">
+                        <ul class="d-flex">
+                            <li class="pm-0 d-flex text-small">
+                                <i class="fa fa-phone-square" aria-hidden="true"></i>
+                                <span class="xs-block"><b class="d-lg-block d-sm-block d-none">Customer Care No.: </b></span>
+                                @Convert.ToString(Session["ContactNo"])
+                            </li>
+                            <li class="pm-0 d-lg-block d-sm-block d-none">
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                                <span class="xs-block"><b>Email : </b></span>
+                                @Convert.ToString(Session["CompMail"])
+                            </li>
+                        </ul>
                     </div>
-                    <div class="col-sm-offset-2 col-sm-4">
-                        <div class="srch-row">
-                            <input type="text" placeholder="What are you looking for?" id="search-key" />
-                            <a class="srch-btn" id="search-go"></a>
-                            <div id="srch-result"></div>
-                        </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 col-7">
+                    <div class="top-header-left-content mb-0">
+                        <ul class="flex">
+                            <li class="pm-0">
+                                <span class="text-white text-small" align="right">
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                    <span> <b> Enjoy Entertainment the Smarter Way </b></span>
+                                </span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- -->
-        <div class="logo-row">
+    </div>
+
+    <!-- End Top Header Area -->
+    <!-- Start Navbar Area -->
+
+    <div class="navbar-area">
+
+        <div class="mobile-responsive-nav">
             <div class="container">
-                <div class="row">
-                    <div class="col-xs-6 col-sm-3 col-md-2 col-lg-2">
-                        <a href="~/Home/Index" class="logo dsk"><img src="@compLogo" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/logo.png")';" alt="@compName"></a>
+                <div class="mobile-responsive-menu d-flex gap-5 justify-content-between">
+
+                    <div class="logo">
+                        <a href="/Home/index">  <img src="~/assets/images/logo.png" alt="logo" width="180"> </a>
                     </div>
-                    <div class="hidden-xs hidden-sm col-md-7 col-lg-7">
-                        <div class="tp-menu-row">
-                            <a class="pull-left"></a>
-                            <div class="tp-menu-container">
-                                <nav class="tp-menu">
-                                    <ul class="stge-1">
-                                        <li><a href="~/Home/Index">Home</a></li>
-                                        <li><a href="~/Home/About">About us</a></li>
-                                        <li class="has"><a href="~/CategoryList/CategoryList">Products</a>
-                                            <div class="stge_div stge_div_common">
-                                                @* filled by ajax below - no id, the drawer clones this markup *@
-                                                <ul class="stge-2"></ul>
-                                            </div>
-                                        </li>
-                                        <li><a href="~/Home/Contact">Contact us</a></li>
+
+                    <div class="mobile-cart-option mt-2 me-5">
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@Session["UserName"])))
+                        {
+                            <a href="~/Account/LogOff" class="btn btn-outline-dark bg-dark text-white position-relative">
+
+                                <i class="fa fa-power-off"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="~/Account/Login" class="btn btn-outline-dark bg-dark text-white position-relative">
+                                <i class="fa fa-user"></i>
+                            </a>
+                        }
+
+
+                        <a href="~/ViewCart/ViewCart" class="btn btn-outline-dark bg-dark text-white position-relative">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                @if (Session["CartCount"] != null)
+                                {@Session["CartCount"] }
+                            else
+                            { <text>0</text>}
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="desktop-nav">
+            <div class="container-fluid">
+                <nav class="navbar navbar-expand-md navbar-light">
+                    <a class="navbar-brand" href="/Home/index"> <img src="~/assets/images/logo.png" alt="logo" width="210"> </a>
+                    <div class="collapse navbar-collapse mean-menu" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto">
+                            @if (!string.IsNullOrEmpty(Convert.ToString(@Session["UserName"])))
+                            {
+                                <li class="nav-item dropdown d-md-none">
+                                    <a href="#" class="nav-link dropdown-toggle" id="mensDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <b class="text-success">  Hi, @Session["UserName"] </b>
+                                    </a>
+                                    <ul class="dropdown-menu m-3" aria-labelledby="mensDropdown">
+                                        <li><a class="dropdown-item" href="~/Home/MemberProfile"><i class="fa-solid fa-gauge"></i> Profile</a></li>
+                                        @if (Convert.ToString(Session["MemMode"]) == "D")
+                                        {
+                                            <li><a class="dropdown-item" href="~/Account/RedirectToCPanel"><i class="fa-solid fa-id-card"></i> My Account </a></li>
+                                        }
+                                        <li><a class="dropdown-item" href="~/ViewCart/ViewCart"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+                                        <li><a class="dropdown-item" href="~/Home/Myorders"><i class="fa-solid fa-box"></i> Orders</a></li>
+                                        <li><a class="dropdown-item" href="~/Account/RaiseComplaint"><i class="fa-regular fa-comments"></i> Complaint</a></li>
+                                        <li><a class="dropdown-item" href="~/Account/TicketList"><i class="fa-regular fa-list"></i> Complaint List</a></li>
+                                        @if (Convert.ToString(Session["MemMode"]) == "D")
+                                        {
+                                            @*<li><a class="dropdown-item" href="~/Home/UserKyc"><i class="fa fa-id-card"></i> Update KYC</a></li>*@
+                                            <li><a class="dropdown-item" href="~/Home/WalletDetail"><i class="fa-solid fa-wallet"></i> Wallet</a></li>
+                                            <li><a class="dropdown-item" href="~/Home/ReferalLinkPage"><i class="fa-solid fa-user-group"></i> Refer</a></li>
+                                            <li><a class="dropdown-item" href="~/Account/ChangeTxnPassword"><i class="fa-solid fa-key"></i> Change Txn Password</a></li>
+                                        }
+                                        <li><a class="dropdown-item" href="~/Account/ChangePassword"><i class="fa-solid fa-key"></i> Change Login Password</a></li>
+
                                     </ul>
-                                </nav>
+                                </li>
+                            }
+
+                            <li class="nav-item"> <a href="/Home/index" class="nav-link">  Home</a> </li>
+                            <li class="nav-item"> <a href="/Home/About" class="nav-link">  About Us </a> </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" id="mensDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-shopping-bag" aria-hidden="true"></i> Shop
+                                </a>
+
+                                <ul class="dropdown-menu" aria-labelledby="mensDropdown" id="categorylist">
+                                </ul>
+                            </li>
+                            @*<li class="nav-item"> <a href="#" class="nav-link">  Our Services </a> </li>*@
+                            @*@if (!string.IsNullOrEmpty(Convert.ToString(@Session["UserName"])))
+                            {
+                                <li class="nav-item"> <a href="~/Account/DirectLoginGV" class="nav-link">  <i class="fa fa-gift" aria-hidden="true"></i> <b>Gift Vouchers</b> </a> </li>
+                                <li class="nav-item"> <a href="~/Account/DirectLoginStore" class="nav-link"> <i class="fa fa-shopping-bag" aria-hidden="true"></i> <b>Online Store</b> </a> </li>
+                                <li class="nav-item"> <a href="~/Hubble/Vouchers" class="nav-link" target="_blank"> <i class="fa fa-shopping-bag" aria-hidden="true"></i> <b>Vouchers</b> </a> </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item"> <a href="https://gv.makeandgrowth.com/" class="nav-link">  <i class="fa fa-gift" aria-hidden="true"></i> <b>Gift Vouchers</b> </a> </li>
+                                <li class="nav-item"> <a href="https://store.makeandgrowth.com/" class="nav-link"> <i class="fa fa-shopping-bag" aria-hidden="true"></i> <b>Online Store</b> </a> </li>
+                                <li class="nav-item"> <a href="#" class="nav-link"> <i class="fa fa-shopping-bag" aria-hidden="true"></i> <b>Vouchers</b> </a> </li>
+                            }*@
+                            <li class="nav-item"> <a href="~/Home/Contact" class="nav-link">  Contact Us </a> </li>
+                        </ul>
+                        <div class="others-options d-flex align-items-center">
+
+                            <!-- <div class="option-item heart me-3 ">
+                            <a href="#"  class="text-white position-relative"> <i class="fa fa-heart text-danger"></i></a>
+                            </div> -->
+                            <!-- Search Icon -->
+
+                            <div class="option-item me-3">
+                                <a href="javascript:void(0);" id="searchToggle" class="text-white position-relative">
+                                    <i class="fa fa-search"></i>
+                                </a>
                             </div>
-                            <a class="pull-right"></a>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                        <div class="mb-menu"><span></span><span></span><span></span></div>
-                        <a href="~/Home/Index" class="logo mb"><img src="@compLogo" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/logo.png")';" alt="@compName"></a>
-                        <div class="buyer-crt">
-                            <a href="~/ViewCart/ViewCart"><span class="crt-icon"><span class="crt-qty spncartcount">@cartCount</span></span></a>
-                        </div>
-                        <div class="buyer-fav">
-                            <a href="@(isLoggedIn ? Url.Content("~/ViewCart/Wishlist") : Url.Content("~/Account/Login"))"><span class="fav-icon"><span class="fav-qty">@Convert.ToString(Session["WishCount"] ?? "0")</span></span></a>
-                        </div>
-                        <nav class="byer-nav">
-                            <ul class="stge1">
-                                @if (isLoggedIn)
+
+
+
+                            <!-- Hidden Search Box -->
+                            <div id="searchBox" class="search-box position-absolute top-100 end-0 bg-white p-2 shadow rounded d-none" style="width:525px; z-index:1000;">
+                                <div class="d-flex">
+                                    <input type="text" id="myInput1" name="q" class="form-control form-control-sm me-2" placeholder="Search...">
+                                    <button type="button" onclick="Srchproductnew()" class="btn btn-sm btn-success">Go</button>
+                                </div>
+                            </div>
+
+                            <script>
+                                const searchToggle = document.getElementById('searchToggle');
+                                const searchBox = document.getElementById('searchBox');
+
+                                searchToggle.addEventListener('click', function () {
+                                    searchBox.classList.toggle('d-none'); // show/hide box
+                                });
+
+
+                                document.addEventListener('click', function (e) {
+                                    if (!searchBox.contains(e.target) && !searchToggle.contains(e.target)) {
+                                        searchBox.classList.add('d-none');
+                                    }
+                                });
+                            </script>
+
+
+
+
+                            <div class="option-item me-3">
+                                <a href="~/ViewCart/ViewCart" class="text-white position-relative">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+
+                                        @if (Session["CartCount"] != null)
+                                        {@Session["CartCount"] }
+                                    else
+                                    { <text>0</text>}
+                                    </span>
+                                </a>
+                            </div>
+
+
+
+                            <div class="option-item dropdown">
+                                @if (Session["UserDetail"] != null)
                                 {
-                                    <li>
-                                        <a class="welcme"><img src="~/theme/img/icon-buyer.png" /><span class="nav-lbl">@userName</span><i class="fa fa-angle-down" aria-hidden="true"></i></a>
-                                        @* order matches demo/inc/header.asp; Logout added because the demo never signs in *@
-                                        <ul class="stge2">
-                                            <li><a href="~/Home/MemberProfile">Profile</a></li>
-                                            <li><a href="~/Account/RedirectToCPanel">My Account</a></li>
-                                            <li><a href="~/ViewCart/ViewCart">Cart</a></li>
-                                            <li><a href="~/Home/Myorders">Orders</a></li>
-                                            <li><a href="~/Account/RaiseComplaint">Complaint</a></li>
-                                            <li><a href="~/Account/TicketList">Complaint List</a></li>
-                                            <li><a href="~/Home/WalletDetail">Wallet</a></li>
-                                            <li><a href="~/Account/LogOff">Logout</a></li>
-                                        </ul>
-                                    </li>
+                                    <a class="nav-btn dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                        <i class="fa fa-user" aria-hidden="true"></i>
+                                        <span> Hi, <b>@Session["UserName"]</b> </span>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                                        <li><a class="dropdown-item" href="~/Home/MemberProfile"><i class="fa-solid fa-gauge"></i> Profile</a></li>
+                                        @if (Convert.ToString(Session["MemMode"]) == "D")
+                                        {
+                                            <li><a class="dropdown-item" href="~/Account/RedirectToCPanel"><i class="fa-solid fa-id-card"></i> My Account </a></li>
+                                        }
+
+                                        <li><a class="dropdown-item" href="~/ViewCart/ViewCart"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+                                        <li><a class="dropdown-item" href="~/Home/Myorders"><i class="fa-solid fa-box"></i> Orders</a></li>
+                                        <li><a class="dropdown-item" href="~/Account/RaiseComplaint"><i class="fa-solid fa-comments"></i> Complaint</a></li>
+                                        <li><a class="dropdown-item" href="~/Account/TicketList"><i class="fa-solid fa-list"></i> Complaint List</a></li>
+                                        @if (Convert.ToString(Session["MemMode"]) == "D")
+                                        {
+                                            @*<li><a class="dropdown-item" href="~/Home/UserKyc"><i class="fa fa-id-card"></i> Update KYC</a></li>*@
+                                            <li><a class="dropdown-item" href="~/Home/WalletDetail"><i class="fa-solid fa-wallet"></i> Wallet</a></li>
+                                            <li><a class="dropdown-item" href="~/Home/ReferalLinkPage"><i class="fa-solid fa-user-group"></i> Refer</a></li>
+                                            <li><a class="dropdown-item" href="~/Account/ChangeTxnPassword"><i class="fa-solid fa-key"></i> Change Txn Password</a></li>
+                                        }
+                                        <li><a class="dropdown-item" href="~/Account/ChangePassword"><i class="fa-solid fa-key"></i> Change Login Password</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+
+                                        <li><a class="dropdown-item" href="~/Account/LogOff"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+
+                                    </ul>
                                 }
                                 else
                                 {
-                                    <li>
-                                        <a href="~/Account/Login"><img src="~/theme/img/icon-buyer.png" /><span class="nav-lbl">Login / Register</span><i class="fa fa-angle-down" aria-hidden="true"></i></a>
-                                        <ul class="stge2">
-                                            <li><a href="~/Account/Login">Login</a></li>
-                                            <li><a href="~/Account/SignUp">Register</a></li>
-                                        </ul>
-                                    </li>
+                                    <a class="dropdown-item" href="~/Account/Login" style="color:white"><i class="fa-solid fa-right-to-bracket"></i> Login / Register</a>
                                 }
-                            </ul>
-                        </nav>
+                            </div>
+                        </div>
+
                     </div>
-                </div>
+                </nav>
+
+
+
             </div>
         </div>
-    </header>
+    </div>
+
+    </div>
+    <!-- End Navbar -->
 
     @RenderBody()
 
-    <footer>
-        <div class="ftr-row-top"></div>
-        <div class="ftr-row-middle">
-            <div class="container">
-                <a href="~/Home/Index" class="logo"><img src="@compLogo" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/logo.png")';" alt="@compName"></a>
-                <p>@compAbout</p>
+    <!-- Footer Section Start -->
+    <footer class="footer-area bg-111111 pt-70 pb-40 border-top border-secondary">
+        <div class="container" style="max-width: 1500px;">
+            <div class="row text-white">
+                <div class="col-lg-4 col-sm-6 mb-4">
+                    <div class="single-footer-widget">
+                        <a href="~/Home/Index">
+                            <img src="~/assets/images/logo.png" alt="@Convert.ToString(Session["CompTitle"]) " width="200" class="mb-3">
+                        </a>
 
-                @if (social.Any()) { <h4 class="text-center">Follow us on</h4> }
-                <nav class="social-media">
-                    <ul>
-                        @foreach (var s in social)
-                        {
-                            <li><a href="@s.Url" target="_blank"><i class="fa @s.Icon">&nbsp;</i></a></li>
-                        }
-                    </ul>
-                </nav>
-                <div class="row">
-                    <div class="col-xs-6 col-sm-4 col-md-3">
-                        <h4>Quick Links</h4>
-                        <nav class="ftr-nav">
-                            <ul>
-                                <li><a href="~/Home/About">About Us</a></li>
-                                <li><a href="~/Home/VisionMission">Vision &amp; Mission</a></li>
-                                <li><a href="~/Home/Certificate">Compliance Documents</a></li>
-                                <li><a href="~/Home/BankDetail">Our Bankers</a></li>
-                                <li><a href="~/Home/DirectSellerContrazt">Downloads</a></li>
-                                <li><a href="~/Home/Contact">Contact Us</a></li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <div class="col-xs-6 col-sm-4 col-md-3">
-                        <h4>Other Links</h4>
-                        <nav class="ftr-nav">
-                            <ul>
-                                <li><a href="~/Home/Certificate">Compliance documents</a></li>
-                                <li><a href="~/Home/Selfdeclaration">Self Declaration</a></li>
-                                <li><a href="~/Home/Grievanceredressal">Grievance Redressal</a></li>
-                                <li><a href="~/Home/FranchiseList">Register of Direct Seller</a></li>
-                                <li><a href="~/Home/Disclaimer">Disclaimer</a></li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <div class="col-xs-12 col-sm-4 col-md-3">
-                        <h4>Policies</h4>
-                        <nav class="ftr-nav">
-                            <ul>
-                                <li><a href="~/Home/PrivacyPolicy">Privacy Policy</a></li>
-                                <li><a href="~/Home/ShippingPolicy">Shipping Policy</a></li>
-                                <li><a href="~/Home/Cancellationpolicy">Cancellation Policy</a></li>
-                                <li><a href="~/Home/ReturnPolicy">Return &amp; Exchange Policy</a></li>
-                                <li><a href="~/Home/Termsofuse">Terms &amp; Conditions</a></li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-3">
-                        <h4>Reach us</h4>
-                        <nav class="ftr-cnt-nav">
-                            <ul>
-                                @if (!string.IsNullOrWhiteSpace(compAdd))
-                                {
-                                    <li>
-                                        <i class="fa fa-map-pin">&nbsp;</i>
-                                        <span class="cont-text">@compAdd</span>
-                                    </li>
-                                }
-                                @if (!string.IsNullOrWhiteSpace(compPhone))
-                                {
-                                    <li>
-                                        <a class="call" href="tel:@compPhone"><i class="fa fa-phone">&nbsp;</i> <span class="cont-text">@compPhone</span></a>
-                                    </li>
-                                }
-                                @if (!string.IsNullOrWhiteSpace(compMail))
-                                {
-                                    <li>
-                                        <a class="email" href="mailto:@compMail"><i class="fa fa-envelope">&nbsp;</i> <span class="cont-text">@compMail</span></a>
-                                    </li>
-                                }
-                                <li>
-                                    <i class="fa fa-clock-o">&nbsp;</i>
-                                    <span class="cont-text">@compHours</span>
-                                </li>
-                            </ul>
-                        </nav>
+                        <p>@Convert.ToString(Session["CompTitle"]), we bring you a smart way to shop and save. From convenient online shopping to exclusive digital gift vouchers, we ensure great quality and better value in every purchase. Our goal is to make your everyday experiences more affordable, more enjoyable, and full of rewards.</p>
+                        @*<div class="social-links mt-4">
+                                <span><a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a></span>
+                                <span><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></span>
+                                <span><a href="#" target="_blank"><i class="fab fa-twitter"></i></a></span>
+                                <span><a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a></span>
+                            </div>*@
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="ftr-row-bottom">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <p class="copy-rght"><span class="client-nm">&copy; @compName</span> @DateTime.Now.Year-@(DateTime.Now.Year + 1). All Rights Reserved</p>
+
+                <div class="col-lg-2 col-sm-6 col-6">
+                    <div class="single-footer-widget">
+                        <h3>Useful Links</h3>
+                        <ul class="link-list list-unstyled">
+                            <li><a href="/Home/index">Home</a></li>
+                            <li><a href="/Home/About">About Us</a></li>
+                            <li><a href="/Home/Termsofuse">Terms of Use</a></li>
+                            <li><a href="/Home/ShippingPolicy">Shipping Policy</a></li>
+                            <li><a href="/Home/Certificate">Compliance Documents</a></li>
+                            <li><a href="/Home/DeListedDsd">De-listed Direct Seller</a></li>
+                            <li><a href="/Home/RegisterOfDs">Register of Direct Seller</a></li>
+                        </ul>
                     </div>
-                    <div class="col-sm-6">
-                        <nav class="payment-opt">
-                            <ul>
-                                <li>Pay securely by</li>
-                                <li><img src="~/theme/img/icon-visa-card.jpg" alt="Visa"></li>
-                                <li><img src="~/theme/img/icon-master-card.jpg" alt="Master Card"></li>
-                                <li><img src="~/theme/img/icon-american-express.jpg" alt="American Express"></li>
-                                <li><img src="~/theme/img/icon-rupay-card.jpg" alt="RuPay"></li>
-                            </ul>
-                        </nav>
+                </div>
+
+                <div class="col-lg-2 col-sm-6 col-6">
+                    <div class="single-footer-widget">
+                        <h3>Ethics Links</h3>
+                        <ul class="link-list list-unstyled">
+                            <li><a href="/Home/ReturnPolicy">Return Exchange Policy</a></li>
+                            <li><a href="/Home/PrivacyPolicy">Privacy Policy</a></li>
+                            <li><a href="/Home/GrievanceRRedressal">Grievance Redressal</a></li>
+                            <li><a href="/Home/Disclaimer">Disclaimer</a></li>
+                            <li><a href="/Home/Cancellationpolicy">Cancellation Policy</a></li>
+                            <li><a href="/Home/Selfdeclaration">Self Declaration</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-sm-6">
+                    <div class="single-footer-widget">
+                        <h3>Get In Touch</h3>
+                        <ul class="mb-3" style="list-style:none">
+                            <li> <i class="fa fa-phone me-3"></i> @Convert.ToString(Session["ContactNo"])</li>
+                            <li class="mb-3"><i class="fa fa-envelope me-3"></i> @Convert.ToString(Session["CompMail"])</li>
+                            <li><i class="fa fa-map-marker-alt me-3"></i> @Convert.ToString(Session["CompAdd"])</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- scripts -->
-    <script src="~/theme/js/bootstrap.min.js"></script>
-    <!--Plugins-->
-    <!-- nivo is required: layout.js calls $('#home-slider').nivoSlider() unconditionally,
-         and without it the whole ready-handler throws before the carousels initialise -->
-    <script src="~/theme/plugins/nivo-slider/nivo.js"></script>
-    <script src="~/theme/plugins/animation/js/wow.min.js"></script>
-    <script src="~/theme/plugins/owl-carousel/owl.carousel.js"></script>
-    <!-- custom js -->
-    <script src="~/theme/js/layout.js?ver=@themeVer"></script>
-    <script src="~/theme/js/shop.js?ver=@themeVer"></script>
+    <div class="subscribe-area bg-111111 border-top border-secondary py-3 text-center text-white">
+        <p class="mb-0">Copyright © 2025 <a href="#" class="text-white"><strong>@Convert.ToString(Session["CompTitle"]) </strong></a>, All Rights Reserved.</p>
+    </div>
+    <!-- End Footer -->
+    <!-- Go Top Button -->
+    <div class="go-top style2">
+        <i class="fa fa-arrow-up-long"></i>
+    </div>
 
-    <script type="text/javascript">
-        // ---- header : product categories -------------------------------------
-        // Scope the selector to the header: layout.js clones .stge-1 into the mobile
-        // drawer, and the drawer sits before <header> in the DOM, so an unscoped
-        // lookup would fill the hidden clone and leave the real dropdown empty.
-        $.ajax({
-            type: "POST",
-            url: '@Url.Content("~/Home/CategoryList")',
-            success: function (data) {
-                $('header .tp-menu .stge-2').html(data.tblOrder);
+    <!-- Scripts -->
+    @*<script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var myModal = new bootstrap.Modal(document.getElementById('onloadModal'), {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                myModal.show();
+            });
+        </script>*@
 
-                // rebuild the mobile drawer now that the categories are in place
-                var $main = $('.mb-menu-lst.main');
-                $main.html('<ul>' + $('header .tp-menu .stge-1').html() + '</ul>');
-                var menuStge_2 = $main.find('.stge-2');
-                menuStge_2.unwrap();
-                menuStge_2.removeAttr('class').removeAttr('id');
+
+    @*<script>
+            document.addEventListener("DOMContentLoaded", function () {
+
+                // Check if modal was already shown
+                if (!localStorage.getItem("onloadModalShown")) {
+
+                    var myModal = new bootstrap.Modal(
+                        document.getElementById('onloadModal'),
+                        {
+                            backdrop: 'static',
+                            keyboard: false
+                        }
+                    );
+
+                    myModal.show();
+
+                    // Mark modal as shown
+                    localStorage.setItem("onloadModalShown", "true");
+                }
+            });
+        </script>*@
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // Show modal only once per session
+            if (!sessionStorage.getItem("onloadModalShown")) {
+
+                var myModal = new bootstrap.Modal(
+                    document.getElementById('onloadModal'),
+                    {
+                        backdrop: 'static',
+                        keyboard: false
+                    }
+                );
+
+                myModal.show();
+
+                // Mark modal as shown for this session
+                sessionStorage.setItem("onloadModalShown", "true");
             }
         });
-
-        // ---- header : search -------------------------------------------------
-        function PulastyaSearch() {
-            var key = $.trim($("#search-key").val());
-            if (key === "") { return false; }
-            window.location.href = '@Url.Content("~/CategoryList/CategoryList")?CatName=' + encodeURIComponent(key);
-            return false;
-        }
-        $(document).on('click', '#search-go', function () { PulastyaSearch(); });
-        $(document).on('keypress', '#search-key', function (e) {
-            if (e.which === 13) { e.preventDefault(); PulastyaSearch(); }
-        });
-
-        // ---- shared : numeric only input -------------------------------------
-        function isNumber(evt) {
-            evt = (evt) ? evt : window.event;
-            var charCode = (evt.which) ? evt.which : evt.keyCode;
-            if (charCode > 31 && (charCode < 48 || charCode > 57)) { return false; }
-            return true;
-        }
     </script>
 
-    @RenderSection("scripts", required: false)
+    <!-- Jquery js -->
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/js/jquery.meanmenu.js"></script>
+    <script src="~/assets/js/owl.carousel.min.js"></script>
+    <script src="~/assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="~/assets/js/mixitup.min.js"></script>
+    <script src="~/assets/js/scrollCue.min.js"></script>
+    <script src="~/assets/js/form-validator.min.js"></script>
+    <script src="~/assets/js/contact-form-script.js"></script>
+    <script src="~/assets/js/ajaxchimp.min.js"></script>
+    <script src="~/assets/js/custom.js"></script>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>AOS.init();</script>
+    @Html.Partial("_VoiceAssistant")
 </body>
 </html>

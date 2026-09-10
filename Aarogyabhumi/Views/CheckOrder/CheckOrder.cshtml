@@ -1,77 +1,278 @@
 ﻿@using Shopinv.Entity
 @model Shopinv.Models.M_Category
 @{
-    ViewBag.Title = "Order Confirmed";
+    ViewBag.Title = "CheckOrder";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
-    var Lst = Session["CheckOrderlst"] as List<E_SaveOrderDetail>;
-    var Status = Convert.ToString(Session["Status"]);
-    var hasRows = Lst != null && Lst.Count > 0;
 }
 
-<section class="contents">
-    <div class="content-row">
-        <div class="container">
-            <div class="order-done">
-                <div class="done-icon"><i class="fa fa-check"></i></div>
-                <h2>Your order is received !</h2>
-                <p>We are preparing it for delivery and will ship soon.</p>
+@{
+    var Lst = Session["CheckOrderlst"] as List<E_SaveOrderDetail>;
+    var Status = Convert.ToString(Session["Status"]);
+}
+
+<!-- ================= DARJUV9 THEME — Order Confirmation (page content only) ================= -->
+<!-- NOTE: The old full-screen "offcanvas h-100 show" wrapper was removed. -->
+<!-- That overlay was covering the layout's header + footer. Now this is normal -->
+<!-- page content, so the _Layout's DARJUV9 header/footer show automatically. -->
+
+<style>
+    :root {
+        --dj-navy: #13265c;
+        --dj-navy-dark: #0e1d47;
+        --dj-gold: #f7a01d;
+        --dj-gold-dark: #e08e0b;
+        --dj-light: #f5f7fb;
+    }
+
+    .dj-order-wrap {
+        background: var(--dj-light);
+        padding: 40px 0 60px;
+    }
+
+    .dj-confirm-card {
+        max-width: 940px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(19, 38, 92, .08);
+        overflow: hidden;
+    }
+
+    .dj-confirm-head {
+        background: linear-gradient(135deg, var(--dj-navy), var(--dj-navy-dark));
+        color: #fff;
+        text-align: center;
+        padding: 34px 20px 28px;
+    }
+
+    .dj-check {
+        width: 74px;
+        height: 74px;
+        border-radius: 50%;
+        background: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 14px;
+        box-shadow: 0 6px 18px rgba(0,0,0,.15);
+    }
+
+        .dj-check i {
+            font-size: 38px;
+            color: #28a745;
+        }
+
+    .dj-confirm-head h4 {
+        font-weight: 700;
+        margin: 6px 0 4px;
+    }
+
+    .dj-confirm-head p {
+        margin: 0 auto;
+        max-width: 560px;
+        opacity: .85;
+        font-size: 14px;
+    }
+
+    .dj-order-no {
+        display: inline-block;
+        margin-top: 14px;
+        background: var(--dj-gold);
+        color: var(--dj-navy);
+        font-weight: 700;
+        padding: 7px 18px;
+        border-radius: 40px;
+        font-size: 14px;
+    }
+
+    .dj-table-wrap {
+        padding: 26px;
+    }
+
+    .dj-table {
+        width: 100%;
+        margin: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+        .dj-table thead th {
+            background: var(--dj-navy);
+            color: #fff;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            padding: 12px;
+            border: none;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .dj-table tbody td {
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+            border-bottom: 1px solid #eef1f7;
+        }
+
+        .dj-table tbody tr:hover {
+            background: #fafbfe;
+        }
+
+    .dj-prod-img {
+        width: 58px;
+        height: 58px;
+        object-fit: contain;
+        border: 1px solid #eef1f7;
+        border-radius: 10px;
+        padding: 4px;
+        background: #fff;
+    }
+
+    .dj-mrp {
+        color: #9aa3b2;
+        text-decoration: line-through;
+        font-size: 13px;
+    }
+
+    .dj-price {
+        color: var(--dj-gold-dark);
+        font-weight: 700;
+    }
+
+    .dj-bv {
+        color: var(--dj-navy);
+        font-weight: 600;
+    }
+
+    .dj-badge {
+        background: #e6f7ec;
+        color: #1a8f45;
+        padding: 4px 12px;
+        border-radius: 40px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .dj-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+        padding: 6px 26px 30px;
+    }
+
+    .dj-btn {
+        padding: 11px 28px;
+        border-radius: 40px;
+        font-weight: 700;
+        font-size: 14px;
+        text-decoration: none;
+        transition: .2s;
+        display: inline-block;
+    }
+
+    .dj-btn-gold {
+        background: var(--dj-gold);
+        color: var(--dj-navy);
+    }
+
+        .dj-btn-gold:hover {
+            background: var(--dj-gold-dark);
+            color: #fff;
+        }
+
+    .dj-btn-navy {
+        background: var(--dj-navy);
+        color: #fff;
+    }
+
+        .dj-btn-navy:hover {
+            background: var(--dj-navy-dark);
+            color: #fff;
+        }
+
+    @@media (max-width: 576px) {
+        .dj-table thead th, .dj-table tbody td {
+            font-size: 12px;
+            padding: 8px;
+        }
+
+        .dj-prod-img {
+            width: 46px;
+            height: 46px;
+        }
+    }
+</style>
+
+<div class="dj-order-wrap">
+    <div class="container">
+        <div class="dj-confirm-card">
+
+            <!-- Success header -->
+            <div class="dj-confirm-head">
+                <div class="dj-check"><i class="fa fa-check"></i></div>
+                <h4 class="fw-bold" style="color: #ffffff;">Your Order Is Received! Delivery Soon</h4>
+                <p>Your order has been successfully received. We&rsquo;re preparing it for delivery and will ship soon.</p>
+
+                @* Optional order-no pill. Safe null-guard, no business logic changed. Remove if not needed. *@
+                @if (Lst != null && Lst.Count > 0)
+                {
+                    <div><span class="dj-order-no">Order No : #@Lst[0].OrderId</span></div>
+                }
             </div>
 
-            <div class="cart-row">
-                <h5>Order Summary</h5>
-                <div class="acc-panel">
-                    <div class="table-responsive">
-                        <table class="table mytable" style="white-space:nowrap">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Product Name</th>
-                                    <th>MRP</th>
-                                    <th>Price</th>
-                                    <th>BV</th>
-                                    <th>Order ID</th>
-                                    <th>Status</th>
-                                    <th>Order Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (hasRows)
+            <!-- Order details table -->
+            <div class="dj-table-wrap">
+                <div class="table-responsive">
+                    <table class="dj-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Product Name</th>
+                                <th>MRP</th>
+                                <th>Price</th>
+                                @*<th>Courier Charge</th>*@
+                                <th>SV</th>
+                                <th>Order ID</th>
+                                <th>Status</th>
+                                <th>Order Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Lst != null)
+                            {
+                                foreach (var item in Lst)
                                 {
-                                    foreach (var item in Lst)
-                                    {
-                                        <tr>
-                                            <td>
-                                                <img src="@item.ImagePath" onerror="this.src='@Url.Content("~/theme/img/sample-product.jpg")';" alt="@item.ProdName" width="60">
-                                            </td>
-                                            <td>@item.ProdName</td>
-                                            <td><del>&#8377; @item.MRP</del></td>
-                                            <td><strong>&#8377; @item.finalprice</strong></td>
-                                            <td>@item.BV.ToString("0.##")</td>
-                                            <td>#@item.OrderId</td>
-                                            <td>@(string.IsNullOrEmpty(Status) ? "Pending" : Status)</td>
-                                            <td>@item.OrderDate</td>
-                                        </tr>
-                                    }
+                                    <tr>
+                                        <td>
+                                            <a href="javascript:void(0);">
+                                                <img src="@item.ImagePath" alt="Product" class="dj-prod-img" />
+                                            </a>
+                                        </td>
+                                        <td>@item.ProdName</td>
+                                        <td><span class="dj-mrp"><i class="fa fa-inr"></i> @item.MRP</span></td>
+                                        <td><span class="dj-price"><i class="fa fa-inr"></i> @item.Price</span></td>
+                                        @*<td class="dj-price"><i class="fa fa-inr"></i> @item.CourierCharge</td>*@
+                                        <td><span class="dj-bv">@item.BV</span></td>
+                                        <td>#@item.OrderId</td>
+                                        <td><span class="dj-badge">Pending</span></td>
+                                        <td>@item.OrderDate</td>
+                                    </tr>
                                 }
-                                else
-                                {
-                                    <tr><td colspan="8" class="no-record">No order details to show.</td></tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-xs-6 col-sm-3">
-                        <a href="~/Home/Myorders" class="btn btn-sub" style="display:block">View Orders</a>
-                    </div>
-                    <div class="col-xs-6 col-sm-3">
-                        <a href="~/Home/Index" class="btn btn-brdr" style="display:block">Continue Shopping</a>
-                    </div>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
+
+            <!-- Actions -->
+            <div class="dj-actions">
+                <a href="~/Home/Myorders" class="dj-btn dj-btn-gold">View Order</a>
+                <a href="~/Home/index" class="dj-btn dj-btn-navy">Continue Shopping</a>
+            </div>
+
         </div>
     </div>
-</section>
+</div>

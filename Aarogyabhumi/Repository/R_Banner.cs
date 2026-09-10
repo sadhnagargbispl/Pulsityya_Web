@@ -19,19 +19,9 @@ namespace Shopinv.Repoistory
             dt = blldb.GetDataTable("ShowBanner", CommandType.StoredProcedure, hst);
             IEnumerable<E_Banner> lst = DbOperation.ConvertDataTable<E_Banner>(dt);
             return lst;
-        }
-        public IEnumerable<E_Banner> Showpopup(string BannerCatId)
-        {
-            BLLDBOperations blldb = new BLLDBOperations();
-            Hashtable hst = new Hashtable();
-            DataTable dt;
-            hst.Add("Action", "DisplayBanner");
-            hst.Add("BannerCatId", 1);
-            dt = blldb.GetDataTable("ShowPopupList", CommandType.StoredProcedure, hst);
-            IEnumerable<E_Banner> lst = DbOperation.ConvertDataTable<E_Banner>(dt);
-            return lst;
 
         }
+
         public IEnumerable<E_Banner> NewYearBanner(string BannerCatId)
         {
             BLLDBOperations blldb = new BLLDBOperations();

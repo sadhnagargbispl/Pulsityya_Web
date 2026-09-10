@@ -1,36 +1,66 @@
-@model Shopinv.Models.M_Category
+﻿@model Shopinv.Models.M_Category
 @using Shopinv.Entity;
 @{
-    var categories = Model.DDLCategory;
-    if (categories == null)
-    {
-        categories = Session["DDLCategory"] as IEnumerable<E_Category>;
-    }
-    var activeCat = Convert.ToString(Session["ddlCatName"]);
+    var Category = Session["DDLCategory"] as IEnumerable<E_Category>;
 }
 
-<p class="ct-head">Browse Categories</p>
-<div class="itm-ct-lst">
-    <ul>
-        <li><a href="~/CategoryList/CategoryList" class="@(string.IsNullOrEmpty(activeCat) ? "active" : "")">All Products</a></li>
-        @if (categories != null)
-        {
-            foreach (var cat in categories)
-            {
-                <li>
-                    <a href="~/CategoryList/CategoryList?CatName=@cat.CatName"
-                       class="@(string.Equals(activeCat, cat.CatName, StringComparison.OrdinalIgnoreCase) ? "active" : "")">@cat.CatName</a>
-                    @if (cat.subCategory != null && cat.subCategory.Any())
-                    {
-                        <ul class="@(string.Equals(activeCat, cat.CatName, StringComparison.OrdinalIgnoreCase) ? "active" : "")">
-                            @foreach (var sub in cat.subCategory)
-                            {
-                                <li><a href="~/CategoryList/CategoryList?CatName=@cat.CatName&Subcate=@sub.SubCatName">@sub.SubCatName</a></li>
-                            }
-                        </ul>
-                    }
-                </li>
-            }
-        }
-    </ul>
+
+<!-- Availability -->
+<div class="mb-4 border-1 card" style="display:none;">
+    <div class="bg-white p-3 shadow-sm rounded">
+        <h5 class="fw-6 theme-text-color mb-3">Availability</h5>
+        <div class="form-check mb-2">
+            <input type="checkbox" class="form-check-input" id="inStock">
+            <label class="form-check-label" for="inStock">In Stock</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="outStock">
+            <label class="form-check-label" for="outStock">Out of Stock</label>
+        </div>
+    </div>
 </div>
+
+<!-- Price Filter -->
+<div class="mb-4 border-1 card" style="display:none;">
+    <div class="bg-white p-3 shadow-sm rounded">
+        <h5 class="fw-6 theme-text-color mb-3">Price</h5>
+        <input type="range" class="form-range" min="100" max="10000" step="100" id="priceRange">
+        <div class="d-flex justify-content-between">
+            <small>₹100</small>
+            <small>₹10000</small>
+        </div>
+    </div>
+</div>
+
+<!-- Product Type -->
+<div class="mb-4 border-1 card">
+    <div class="bg-white p-3 shadow-sm rounded">
+        <h5 class="fw-6 theme-text-color mb-3">Categories</h5>
+        @foreach (var Cat in Category)
+        {
+            <div class="form-check mb-2">
+                <a href="~/CategoryList/CategoryList?CatName=@Cat.CatName" style="cursor:pointer;">
+                    <label class="form-check-label" for="bracelet_@Cat.CatId">@Cat.CatName</label>
+                </a>
+                @*<input type="checkbox" class="form-check-input" id="bracelet_@Cat.CatId">*@
+                
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Size -->
+<div class="mb-4 border-1 card" style="display:none;">
+    <div class="bg-white p-3 shadow-sm rounded">
+        <h5 class="fw-6 theme-text-color mb-3">Size</h5>
+        @foreach (var item in Model.GetSizes)
+        {
+            <div class="form-check mb-2">
+                <input type="checkbox" class="form-check-input" id="s_@item.Id">
+                <label class="form-check-label" for="s_@item.Id">@item.Size</label>
+            </div>
+        }
+    </div>
+</div>
+
+

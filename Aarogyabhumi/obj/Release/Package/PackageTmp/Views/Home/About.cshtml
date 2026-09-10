@@ -1,67 +1,42 @@
-@{
-    ViewBag.Title = "About us";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+﻿@{
+    ViewBag.Title = "About";
 }
+<div class="mini-banner bg-success py-3">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 text-center">
 
-<section class="contents">
-    <div class="breadcrmb">
-        <img src="~/theme/img/page-banner.jpg" alt="About us">
-        <div class="breadcrmb-content">
-            <div class="container">
-                <h1>About us</h1>
-                <ul class="breadcrmb-loc">
-                    <li><a href="~/Home/Index">Home</a></li>
-                    <li><a class="active">About us</a></li>
-                </ul>
             </div>
         </div>
     </div>
-    <!--  -->
-    <div class="content-row">
-        <div class="page-abt">
-            <div class="sec-1st">
-                <div class="container">
-                    <h1 class="first-head">Welcome to Pulastya <span class="brdr"></span><span>A Better Tomorrow Together !</span></h1>
+</div>
+<div class="contact-area bg-light pt-5 pb-5">
+    <div class="container">
+        <div class="row align-items-start">
+
+            <div class="col-lg-12">
+                <div class="contact-info bg-white rounded p-4  mb-4">
+
+                    <h4 class="mb-3 ">About us </h4>
+                    <hr>
+                    <p>We are a professionally managed organization backed by 17 years of rich industry experience in leadership and operations. For the past 4 years, we have been successfully operating as a registered company with a strong focus on legal, ethical, and transparent business practices.</p>
+                    <p>Our goal is not just to sell products, but to build long-term trust, customer satisfaction, and sustainable income opportunities for our partners and customers.</p>
                     <p>
-                        Registered under the Companies Act, 2013, the company is committed to building a transparent, ethical and
-                        sustainable direct-selling ecosystem where quality products and meaningful business opportunities come together.
-                        At Pulastya Globals India, we believe that a healthier lifestyle begins with informed choices and access to reliable
-                        products. Our focus is on offering carefully developed health and wellness solutions while continuously working
-                        towards improving product quality, customer experience and distributor support.
+                        We are committed to:
+                        <ul>
+                            <li>Delivering high-quality, value-for-money products</li>
+                            <li>Providing transparent and ethical business opportunities</li>
+                            <li>Offering strong after-sales service and support</li>
+                        </ul>
                     </p>
-                    <p>
-                        With a people-first approach, we aim to build long-term relationships with our customers and business associates
-                        through trust, transparency, integrity and responsible business practices.
-                    </p>
-                    <p>
-                        Our vision is to grow as a respected name in the direct-selling industry by creating value for customers, empowering
-                        our business associates and contributing positively to the communities we serve.
-                    </p>
+                    <p>With a vision to support Make in India, Digital India, and Atmanirbhar Bharat, we aim to empower thousands of individuals through entrepreneurship and skill-based income generation.</p>
+                    <p>We believe in Experience, Ethics & Excellence.</p>
+                    <br />
+                    <p>@Convert.ToString(Session["CompName"])</p>
+                    <p>@Convert.ToString(Session["CompAdd"])</p>
                 </div>
             </div>
-            <div class="container">
-                <div class="sec-2nd">
-                    <div class="sec-inf">
-                        <h2 class="first-head">Our Vision<span class="brdr"></span></h2>
-                        <p>
-                            Transparent business plant and world class products. Pulastya Globals Family is aiming to reach every house hold
-                            create entrepreneur propagating health and wellness rapidly.
-                        </p>
-                    </div>
-                    <div class="sec-inf">
-                        <h2 class="first-head">Our Mission<span class="brdr"></span></h2>
-                        <p>
-                            We inspire for healthy living by promoting natural well-being and enable people to discover their business
-                            potential. Our Topmost goal is to engage people for spreading education of preventive healthcare and lifestyle
-                            thence to achieve their own corporal, mental and financial health.
-                        </p>
-                        <p>
-                            We value high quality of research and develop products that are essential for day to day living. Our in-house team
-                            of research and development follows the ideology of developing the products close to biological rhythm and nature.
-                        </p>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
-</section>
+</div>

@@ -1,26 +1,38 @@
-﻿using Newtonsoft.Json;
+using Antlr.Runtime;
+using Antlr.Runtime.Misc;
+using Newtonsoft.Json;
 using Shopinv.Entity;
 using Shopinv.Interface;
 using Shopinv.Models;
+using Shopinv.Repository;
 using Shopinv.SiteExtension;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Runtime.Remoting.Lifetime;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Web.Services.Description;
+using System.Web.Services.Discovery;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace Shopinv.Controllers
 {
@@ -31,22 +43,22 @@ namespace Shopinv.Controllers
         private readonly I_Product iprod = null;
         private readonly I_Login _ilogin = null;
         private readonly static string Apiurl = ConfigurationManager.AppSettings["ApiUrl"];
-        private readonly static string SiteUrl = ConfigurationManager.AppSettings["SiteUrl"];
-        private readonly static string CpanelUrl = ConfigurationManager.AppSettings["CpanelUrl"];
-        private readonly static string GvPortalUrl = ConfigurationManager.AppSettings["GvPortalUrl"];
-        private readonly static string StorePortalUrl = ConfigurationManager.AppSettings["StorePortalUrl"];
         private readonly static string Sendbox_xapikey = ConfigurationManager.AppSettings["Sendbox_xapikey"];
         private readonly static string Sendbox_xapisecret = ConfigurationManager.AppSettings["Sendbox_xapisecret"];
         private readonly static string Sendbox_authenticate = ConfigurationManager.AppSettings["Sendbox_authenticate"];
         private readonly static string Sendbox_panverify = ConfigurationManager.AppSettings["Sendbox_panverify"];
         private readonly static string Sendbox_accountverify = ConfigurationManager.AppSettings["Sendbox_accountverify"];
+        private readonly static string Sendbox_aadharverify = ConfigurationManager.AppSettings["Sendbox_aadharverify"];
+        private readonly static string Sendbox_aadharverifyotp = ConfigurationManager.AppSettings["Sendbox_aadharverifyotp"];
         CompanyDetail companyDetail;
+        private readonly IHubbleSSORepository _ssoRepo;
         public AccountController(I_Login ilogin, I_Product iprod)
         {
             _ilogin = ilogin;
             this.iprod = iprod;
             companyDetail = new CompanyDetail(this.iprod);
             companyDetail.GetCompanydetail();
+            _ssoRepo = new HubbleSSORepository();
         }
 
         public ActionResult Login()
@@ -62,8 +74,14 @@ namespace Shopinv.Controllers
             {
                 string URL = System.Web.HttpContext.Current.Request.Url.Host.ToUpper().Replace("HTTP://", "").Replace("HTTPS://", "").Replace("WWW.", "").Replace("/", "");// System.Web.HttpContext.Current.Request.UserHostName;
                 var isValidUser = IsValid(Loginobj);
+
                 if (isValidUser != null)
                 {
+                    if (isValidUser.StartsWith("BLOCKED:"))
+                    {
+                        ViewBag.Message = isValidUser.Replace("BLOCKED:", "");
+                        return View(Loginobj);
+                    }
                     FormsAuthentication.SetAuthCookie(Loginobj.UserName, false);
                     var ReturnUrl = Session["RedirectUrl"];
                     var userid = Session["UserId"];
@@ -71,22 +89,33 @@ namespace Shopinv.Controllers
                     Session["Cartdetailsftch"] = CartDetail;
                     Session["cartcount"] = CartDetail.Count();
                     Session["TotPrice"] = CartDetail != null ? CartDetail.Sum(s => s.Price * s.qty).ToString() : "0";
-                    Session["isKycCompleted"] = true;
-                    if (!string.IsNullOrEmpty(Convert.ToString(Session["Isredirect"])) && Convert.ToString(Session["Isredirect"]) == "Y")
+
+                    if (Convert.ToString(Session["MemMode"]) == "D")
                     {
-                        return RedirectToAction("ProductDetail", "ProductDetail", new { ProdId = Convert.ToString(Session["ProdId"]) });
+                        Getkycreq req = new Getkycreq();
+                        req.islogin = "N";
+                        req.reqtype = "getkyc";
+                        req.userid = Convert.ToString(Session["IDNO"]);
+                        req.passwd = Convert.ToString(Session["password"]);
+                        string jsonreq = JsonConvert.SerializeObject(req);
+                        var response = CallPostFunction(jsonreq, Apiurl);
+                        Getkycres kycresponse = JsonConvert.DeserializeObject<Getkycres>(response);
+                        //if (kycresponse.idverf != "Verified")
+                        //{
+                        //    Session["isKycCompleted"] = false;
+                        //    return RedirectToAction("KYCWarning", "Home");
+                        //}
+                        //else
+                        //{
+                            Session["isKycCompleted"] = true;
+                        //}
                     }
-                    else if (!string.IsNullOrEmpty(Convert.ToString(Session["IsCateredirect"])) && Convert.ToString(Session["IsCateredirect"]) == "Y")
-                    {
-                        return RedirectToAction("CategoryList", "CategoryList", new { CatName = Convert.ToString(Session["CatName"]), Subcate= Convert.ToString(Session["Subcate"]) });
-                    }
-                    // string idNo = Convert.ToString(Session["IDNO"]);
-                    // string password = Convert.ToString(Session["password"]);
-                    // var lgnT = "uid=" + idNo + "&pwd=" + password;
-                    // var lgntenc = TextCrypto.Encrypt(lgnT);
-                    // string url = CpanelUrl + "/Default.aspx?lgnT=" + lgntenc;
-                    // // Step 4: Redirect
-                    // return Redirect(url);
+
+
+                    //if (!string.IsNullOrEmpty(Convert.ToString(Session["Isredirect"])) && Convert.ToString(Session["Isredirect"]) == "Y")
+                    //{
+                    //    return RedirectToAction("ProductDetail", "ProductDetail", new { ProdId = Convert.ToString(Session["ProdId"]) });
+                    //}
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -120,8 +149,20 @@ namespace Shopinv.Controllers
                 E_RegisterUser User = new E_RegisterUser();
                 if (ds.Tables[0].Rows.Count > 0)
                 {
+
                     foreach (DataRow row in ds.Tables[0].Rows)
                     {
+                        if (Convert.ToString(row["IsBlock"]).Trim().ToUpper() == "Y")
+                        {
+                            string remark = Convert.ToString(row["BlockRemark"]);
+
+                            if (string.IsNullOrWhiteSpace(remark))
+                                remark = "Admin";
+
+                            return "BLOCKED:Your ID is blocked due to " + remark;
+                        }
+
+
                         User.UserName = Convert.ToString(row["IdNo"]);
                         User.Password = Convert.ToString(row["Passw"]);
                         User.Firstname = Convert.ToString(row["MemFirstName"]);
@@ -184,12 +225,10 @@ namespace Shopinv.Controllers
 
                 }
 
-                if (username == "")
-                    return null;
-                else
-                {
-                    return username;
-                }
+                   if (string.IsNullOrEmpty(username))
+            return null;
+
+        return username;
 
             }
 
@@ -255,6 +294,7 @@ namespace Shopinv.Controllers
         }
         [HttpGet]
         public JsonResult GetSponsorid(string sponsor)
+        
         {
             string msg = "";
             string err = "0";
@@ -287,57 +327,152 @@ namespace Shopinv.Controllers
 
 
         [HttpPost]
-        public ActionResult SignUp(RegisterUser obj)
-        {
-            DataTable UserLogin = new DataTable();
-            BLLDBOperations blldb = new BLLDBOperations();
-            Hashtable hst = new Hashtable();
 
-            string referralid = "", side = "";
-            side = "1";
-            referralid = obj.referralid;
-            obj.fortype = "D";
-            var reqregistration = new
+    
+        public ActionResult SignUp(RegisterUser obj, HttpPostedFileBase FrontImage, HttpPostedFileBase BackImage)
+        {
+            try
             {
-                islogin = "N",
-                reqtype = "joining",
-                fortype = obj.fortype,
-                referralid = referralid,
-                side = side,
-                name = obj.name,
-                email = obj.email,
-                mobl = obj.mobl,
-                dob = string.IsNullOrEmpty(obj.dob) ? "" : obj.dob,
-                panno = string.IsNullOrEmpty(obj.panno) ? "" : obj.panno
-            };
-            //ViewBag.statcode = obj.statecode;
-            var detail = JsonConvert.SerializeObject(reqregistration);
-            var response = CallPostFunction(detail, Apiurl);
-            var output = JsonConvert.DeserializeObject<Signupresponse>(response);
-            if (output != null)
-            {
-                if (output.response == "OK")
+                if (obj == null)
+                    return Json(new { success = false, msg = "Form data missing" });
+
+                string referralid = "", side = "";
+
+                if (obj.fortype == "D")
                 {
-                    ViewBag.msg = output.msg;
-                    ModelState.Clear();
-                    obj = new RegisterUser();
-                    ViewBag.response = "OK";
-                    ViewBag.idno = output.idno;
-                    ViewBag.password = output.password;
+                    referralid = obj.referralid ?? "";
+                    side = obj.side ?? "";
                 }
-                else
+                string uploadPath = Server.MapPath("~/SignUp/Sign/");
+                if (!Directory.Exists(uploadPath))
+                    Directory.CreateDirectory(uploadPath);
+
+                string SaveFile(HttpPostedFileBase file)
                 {
-                    ViewBag.msg = output.msg;
+                    if (file == null) return null;
+                    string filename = Guid.NewGuid() + Path.GetExtension(file.FileName);
+                    string path = Path.Combine(uploadPath, filename);
+                    file.SaveAs(path);
+                    return "/SignUp/Sign/" + filename;
                 }
+
+               
+                string AadharFrontPath = SaveFile(FrontImage);
+                string AadharBackPath = SaveFile(BackImage);
+
+                var reqregistration = new
+                {
+                    islogin = "N",
+                    reqtype = "joining",
+                    fortype = obj.fortype ?? "",
+                    referralid = referralid,
+                    side = side,
+                    name = obj.name ?? "",
+                    email = obj.email ?? "",
+                    mobl = obj.mobl ?? "",
+                    address = obj.Address ?? "",
+                    aadharno = obj.aadharno ?? "",
+                    //frontimg = obj.FrontImage,   // DS logic same — null aaye to bhi safe
+                    //backimg = obj.BackImage
+                    frontimg = "https://d9.bisplindia.in" + AadharFrontPath,
+                    backimg = "https://d9.bisplindia.in" + AadharBackPath,
+                };
+
+                var detail = JsonConvert.SerializeObject(reqregistration);
+                var response = CallPostFunction(detail, Apiurl);
+
+                if (string.IsNullOrEmpty(response))
+                    return Json(new { success = false, msg = "No response from server" });
+
+                var output = JsonConvert.DeserializeObject<Signupresponse>(response);
+
+                if (output != null)
+                {
+                    if (output.response == "OK")
+                        return Json(new { success = true, msg = output.msg, idno = output.idno, password = output.password });
+
+                    return Json(new { success = false, msg = output.msg ?? "Registration failed" });
+                }
+
+                return Json(new { success = false, msg = "Something went wrong" });
             }
-            else
+            catch (Exception ex)
             {
-                ViewBag.msg = "Something went wrong";
+                // Asli error message yahan se dikhega
+                return Json(new { success = false, msg = "Error: " + ex.Message });
             }
-            //List<State> lst = SateList();
-            //obj.states = lst;
-            return View(obj);
         }
+        //public ActionResult SignUp(RegisterUser obj)
+        //{
+        //    DataTable UserLogin = new DataTable();
+        //    BLLDBOperations blldb = new BLLDBOperations();
+        //    Hashtable hst = new Hashtable();
+
+        //    string referralid = "", side = "";
+        //    if (obj.fortype == "D")
+        //    {
+        //        referralid = obj.referralid;
+        //        side = obj.side;
+        //    }
+        //    var reqregistration = new
+        //    {
+        //        islogin = "N",
+        //        reqtype = "joining",
+        //        fortype = obj.fortype,
+        //        referralid = referralid,
+        //        side = side,
+        //        name = obj.name,
+        //        email = obj.email,
+        //        mobl = obj.mobl,
+        //        address=obj.Address,
+        //        aadharno = obj.aadharno,
+        //        frontimg = obj.FrontImage,
+        //        backimg = obj.BackImage
+
+
+        //        //dob = string.IsNullOrEmpty(obj.dob) ? "" : obj.dob,
+        //        //panno = string.IsNullOrEmpty(obj.panno) ? "" : obj.panno
+        //    };
+        //    //ViewBag.statcode = obj.statecode;
+        //    var detail = JsonConvert.SerializeObject(reqregistration);
+        //    var response = CallPostFunction(detail, Apiurl);
+        //    var output = JsonConvert.DeserializeObject<Signupresponse>(response);
+        //    if (output != null)
+        //    {
+        //        if (output.response == "OK")
+        //        {
+
+        //            //               _ilogin.SendWhatsappMessage(
+        //            //    obj.mobl,
+        //            //    obj.name,
+        //            //    output.idno,
+        //            //    output.password
+        //            //);
+        //            //               ViewBag.msg = output.msg;
+        //            //               ModelState.Clear();
+        //            //               obj = new RegisterUser();
+        //            //               ViewBag.response = "OK";
+        //            //               ViewBag.idno = output.idno;
+        //            //               ViewBag.password = output.password;
+        //            ViewBag.msg = output.msg;
+        //            ModelState.Clear();
+        //            obj = new RegisterUser();
+        //            ViewBag.response = "OK";
+        //            ViewBag.idno = output.idno;
+        //            ViewBag.password = output.password;
+        //        }
+        //        else
+        //        {
+        //            ViewBag.msg = output.msg;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        ViewBag.msg = "Something went wrong";
+        //    }
+
+        //    return View(obj);
+        //}
         public List<State> SateList()
         {
             Satarereq req = new Satarereq();
@@ -404,7 +539,7 @@ namespace Shopinv.Controllers
             string password = Convert.ToString(Session["password"]);
             var lgnT = "uid=" + idNo + "&pwd=" + password;
             var lgntenc = TextCrypto.Encrypt(lgnT);
-            string url = CpanelUrl + "/Default.aspx?lgnT=" + lgntenc;
+            string url = "https://d9cpanel.bisplindia.in/Default.aspx?lgnT=" + lgntenc;
             // Step 4: Redirect
             return Redirect(url);
         }
@@ -415,7 +550,91 @@ namespace Shopinv.Controllers
             ViewBag.passw = passw;
             return View();
         }
+        [HttpPost]
+        public async Task<ActionResult> PanCardOCR(HttpPostedFileBase OcrImage)
+        {
+            if (OcrImage == null || OcrImage.ContentLength == 0)
+                return new HttpStatusCodeResult(400, "File not selected");
 
+            using (var client = new HttpClient())
+            {
+                // API Key
+                client.DefaultRequestHeaders.Add("Xkey", "j2fiL4uy9jHTwb9dJdd3ixezOkQpGr10");
+
+                using (var content = new MultipartFormDataContent())
+                {
+                    var fileContent = new StreamContent(OcrImage.InputStream);
+                    fileContent.Headers.ContentType =
+                        new System.Net.Http.Headers.MediaTypeHeaderValue(OcrImage.ContentType);
+
+                    // "Image" should match API parameter name
+                    content.Add(fileContent, "Image", OcrImage.FileName);
+
+                    var response = await client.PostAsync(
+                           "https://dococr.bisplindia.in/api/DocumentOCR/PenDocOcrImage",
+                        content);
+
+                    var result = await response.Content.ReadAsStringAsync();
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return new HttpStatusCodeResult((int)response.StatusCode, result);
+                    }
+
+                    return Content(result, "application/json");
+                }
+            }
+        }
+        [HttpPost]
+        public ActionResult AadharOCR(HttpPostedFileBase FrontImage, HttpPostedFileBase BackImage)
+        {
+            if (FrontImage == null || BackImage == null)
+            {
+                return Json(new
+                {
+                    code = 400,
+                    message = "Both images are required."
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Xkey", "j2fiL4uy9jHTwb9dJdd3ixezOkQpGr10");
+
+                using (var content = new MultipartFormDataContent())
+                {
+                    // Front Image
+                    var frontContent = new StreamContent(FrontImage.InputStream);
+                    frontContent.Headers.ContentType =
+                        new MediaTypeHeaderValue(FrontImage.ContentType);
+
+                    content.Add(frontContent, "FrontImage", FrontImage.FileName);
+
+                    // Back Image
+                    var backContent = new StreamContent(BackImage.InputStream);
+                    backContent.Headers.ContentType =
+                        new MediaTypeHeaderValue(BackImage.ContentType);
+
+                    content.Add(backContent, "BackImage", BackImage.FileName);
+
+                    // API Call (Synchronous)
+                    HttpResponseMessage response = client.PostAsync(
+                        "https://dococr.bisplindia.in/api/DocumentOCR/AadhaarCardOcr",
+                        content).Result;
+
+                    string result = response.Content.ReadAsStringAsync().Result;
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        Response.StatusCode = (int)response.StatusCode;
+                        return Content(result, "application/json");
+                    }
+
+                    return Content(result, "application/json");
+                }
+            }
+        }
+    
         private string Base64Encode(string plainText)
         {
             var plainBytes = Encoding.UTF8.GetBytes(plainText);
@@ -776,11 +995,29 @@ namespace Shopinv.Controllers
                 obj.kycTypeMasters = iprod.kycTypeMasters();
                 string dojFromDb = Convert.ToString(Session["Doj"]);
 
-                DateTime userDoj = DateTime.ParseExact(
-                    dojFromDb,
-                    "dd-MM-yyyy HH:mm:ss",
-                    CultureInfo.InvariantCulture
-                );
+                DateTime userDoj;
+
+                if (DateTime.TryParseExact(
+                        dojFromDb,
+                        "dd-MM-yyyy HH:mm:ss",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None,
+                        out userDoj))
+                {
+                    // success
+                }
+                else
+                {
+                    // fallback parsing (auto detect format)
+                    userDoj = Convert.ToDateTime(dojFromDb);
+                }
+                //string dojFromDb = Convert.ToString(Session["Doj"]);
+
+                //DateTime userDoj = DateTime.ParseExact(
+                //    dojFromDb,
+                //    "dd-MM-yyyy HH:mm:ss",
+                //    CultureInfo.InvariantCulture
+                //);
 
                 DateTime compareDate = DateTime.ParseExact(
                  "23-01-2026",
@@ -900,6 +1137,402 @@ namespace Shopinv.Controllers
 
         }
 
+        [HttpPost]
+        public async Task<ActionResult> AadharOtpVerify(string AadharNo)
+        {
+            string jsonResponse = "";
+            string errorStep = "Start";
+
+            try
+            {
+                // Validation
+                if (string.IsNullOrEmpty(AadharNo))
+                {
+                    return Json(new
+                    {
+                        Status = false,
+                        Message = "Aadhar number required"
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
+                if (!Regex.IsMatch(AadharNo, @"^[0-9]{12}$"))
+                {
+                    return Json(new
+                    {
+                        Status = false,
+                        Message = "Invalid Aadhar number"
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
+                // Prepare request body
+                var requestBody = new AadharOtpRequest
+                {
+                    Entity = "in.co.sandbox.kyc.aadhaar.okyc.otp.request",
+                    AadhaarNumber = AadharNo.Trim(),
+                    Consent = "Y",
+                    Reason = "For KYC"
+                };
+
+                string jsonRequest = JsonConvert.SerializeObject(requestBody);
+
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                string accessToken = await SendboxAuthenticate();
+
+                var client = new HttpClient();
+
+                var request = new HttpRequestMessage(
+                    HttpMethod.Post,
+                    Sendbox_aadharverify
+                );
+
+                // HEADERS (IMPORTANT)
+                request.Headers.Add("Authorization", accessToken);
+
+                request.Headers.Add("x-api-key", Sendbox_xapikey);
+
+                request.Headers.Add("x-api-version", "1.0");
+
+                request.Content = new StringContent(
+                    jsonRequest,
+                    Encoding.UTF8,
+                    "application/json"
+                );
+
+                errorStep = "Sending Request";
+
+                var response = await client.SendAsync(request);
+                jsonResponse = await response.Content.ReadAsStringAsync();
+
+                var resObj =
+                JsonConvert.DeserializeObject<AadhaarOtpApiResponse>(jsonResponse);
+
+                // Handle null response safety
+                if (resObj == null)
+                {
+                    return Json(new
+                    {
+                        Status = false,
+                        Message = "Invalid API response"
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
+
+                // Handle API logical error (422, 400 etc.)
+                if (resObj.Code != 200)
+                {
+                    // Save failure response also (recommended)
+                    _ilogin.SaveAadhaarOtpLog(
+                        AadharNo,
+                        null,
+                        resObj.message,
+                        jsonResponse,
+                        resObj.TransactionId
+                    );
+
+                    return Json(new
+                    {
+                        Status = false,
+                        Message = resObj.message,
+                        TransactionId = resObj.TransactionId
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
+
+                // Handle success response safely
+                if (resObj.Data == null)
+                {
+                    return Json(new
+                    {
+                        Status = false,
+                        Message = "ReferenceId missing in response"
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
+
+                // Save success response
+                _ilogin.SaveAadhaarOtpLog(
+                    AadharNo,
+                    resObj.Data.ReferenceId.ToString(),
+                    resObj.Data.message,
+                    jsonResponse,
+                    resObj.TransactionId
+                );
+
+
+                return Json(new
+                {
+                    Status = true,
+                    Message = resObj.Data.message,
+                    ReferenceId = resObj.Data.ReferenceId
+                }, JsonRequestBehavior.AllowGet);
+                //            jsonResponse = await response.Content.ReadAsStringAsync();
+
+                //            var resObj =
+                //JsonConvert.DeserializeObject<AadhaarOtpApiResponse>(jsonResponse);
+
+                //            // API logical status check
+                //            if (resObj.Code != 200)
+                //            {
+                //                return Json(new
+                //                {
+                //                    Status = false,
+                //                    Message = resObj.Message,
+                //                    TransactionId = resObj.TransactionId
+                //                }, JsonRequestBehavior.AllowGet);
+                //            }
+
+                //            // Save success response in DB
+                //            _ilogin.SaveAadhaarOtpLog(
+                //                AadharNo,
+                //                resObj.Data.ReferenceId.ToString(),
+                //                resObj.Data.Message,
+                //                jsonResponse,
+                //                resObj.TransactionId
+                //            );
+
+                //            return Json(new
+                //            {
+                //                Status = true,
+                //                Message = resObj.Data.Message,
+                //                ReferenceId = resObj.Data.ReferenceId
+                //            }, JsonRequestBehavior.AllowGet);
+                //if (response.IsSuccessStatusCode)
+                //{
+                //    var resObj = JsonConvert.DeserializeObject<AadhaarOtpApiResponse>(jsonResponse);
+                //    _ilogin.SaveAadhaarOtpLog(AadharNo, resObj.Data.ReferenceId.ToString(), resObj.Data.Message, jsonResponse, resObj.TransactionId);
+                //    return Json(new { Status = true, Message = resObj.Data.Message, ReferenceId = resObj.Data.ReferenceId }, JsonRequestBehavior.AllowGet);
+                //}
+                //else
+                //{
+                //    return Json(new
+                //    {
+                //        Status = false,
+                //        Message = jsonResponse
+                //    }, JsonRequestBehavior.AllowGet);
+                //}
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    Status = false,
+                    Message = ex.Message,
+                    Step = errorStep
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpPost]
+        public async Task<ActionResult> VerifyAadhaarOtp(string ReferenceId, string Otp)
+        {
+            string jsonResponse = "";
+
+            try
+            {
+                if (string.IsNullOrEmpty(ReferenceId))
+                {
+                    return Json(new
+                    {
+                        Status = false,
+                        Message = "ReferenceId missing"
+                    });
+                }
+
+                if (string.IsNullOrEmpty(Otp))
+                {
+                    return Json(new
+                    {
+                        Status = false,
+                        Message = "OTP required"
+                    });
+                }
+
+                var requestBody = new AadharOtpVerifyRequest
+                {
+                    Entity = "in.co.sandbox.kyc.aadhaar.okyc.request",
+                    reference_id = ReferenceId,
+                    otp = Otp
+                };
+                string jsonRequest =
+                    JsonConvert.SerializeObject(requestBody);
+
+
+                string accessToken =
+                    await SendboxAuthenticate();
+
+
+                var client = new HttpClient();
+
+
+                var request =
+                    new HttpRequestMessage(
+                        HttpMethod.Post,
+                        Sendbox_aadharverifyotp
+                    );
+
+
+                request.Headers.Add(
+                    "Authorization",
+                    accessToken
+                );
+
+
+                request.Headers.Add(
+                    "x-api-key",
+                    Sendbox_xapikey
+                );
+
+
+                request.Headers.Add(
+                    "x-api-version",
+                    "1.0"
+                );
+
+
+                request.Content =
+                    new StringContent(
+                        jsonRequest,
+                        Encoding.UTF8,
+                        "application/json"
+                    );
+
+
+                var response =
+                    await client.SendAsync(request);
+
+
+                jsonResponse =
+                    await response.Content.ReadAsStringAsync();
+
+
+                var resObj =
+                    JsonConvert.DeserializeObject<
+                        AadhaarOtpVerifyResponse
+                    >(jsonResponse);
+
+
+                if (resObj == null)
+                {
+                    return Json(new
+                    {
+                        Status = false,
+                        Message = "Invalid API response"
+                    });
+                }
+
+
+                // HANDLE OTP EXPIRED / INVALID CASE
+                if (resObj.Data == null ||
+                    resObj.Data.Status != "VALID")
+                {
+                    _ilogin.SaveAadhaarOtpVerifyLog(
+ ReferenceId,
+ Otp,
+ null,
+null,
+null,
+ null,
+ null,
+ null,
+ null,
+ null,
+ null,
+ null,
+ null,
+ null,
+ null,
+ null,
+ null,
+    null,
+ null,
+ null,
+ null,
+ null,
+ null,
+ null,
+ jsonResponse,
+ resObj.TransactionId
+ );
+                    return Json(new
+                    {
+                        Status = false,
+                        Message = resObj.Data?.Message ??
+                                  "OTP verification failed"
+                    });
+                }
+
+
+                // SUCCESS CASE
+                _ilogin.SaveAadhaarOtpVerifyLog(
+ ReferenceId,
+ Otp,
+ resObj.Data.Name,
+ resObj.Data.DateOfBirth,
+ resObj.Data.Gender,
+ resObj.Data.FullAddress,
+ resObj.Data.Status,
+ resObj.Data.Message,
+ resObj.Data.CareOf,
+ resObj.Data.EmailHash,
+ resObj.Data.MobileHash,
+ resObj.Data.YearOfBirth,
+ resObj.Data.ShareCode,
+ resObj.Data.Address.Country,
+ resObj.Data.Address.District,
+ resObj.Data.Address.House,
+ resObj.Data.Address.Landmark,
+ resObj.Data.Address.Pincode,
+ resObj.Data.Address.PostOffice,
+ resObj.Data.Address.State,
+ resObj.Data.Address.Street,
+ resObj.Data.Address.Subdistrict,
+ resObj.Data.Address.Vtc,
+ resObj.Data.Photo,
+ jsonResponse,
+ resObj.TransactionId
+ );
+
+                return Json(new
+                {
+                    Status = true,
+                    Message = "Aadhaar verified successfully",
+                    Name = resObj.Data.Name,
+
+                    DOB = resObj.Data.DateOfBirth,
+
+                    Gender = resObj.Data.Gender,
+
+                    State = resObj.Data.Address.State,
+
+                    District = resObj.Data.Address.District,
+
+                    City = resObj.Data.Address.Vtc,
+
+                    Pincode = resObj.Data.Address.Pincode,
+
+                    FullAddress = resObj.Data.FullAddress
+
+                },
+JsonRequestBehavior.AllowGet);
+                //return Json(new
+                //{
+                //    Status = true,
+                //    Message = "Aadhaar verified successfully",
+                //    Name = resObj.Data.Name,
+                //    DOB = resObj.Data.DateOfBirth,
+                //    Gender = resObj.Data.Gender,
+                //    Address = resObj.Data.FullAddress
+                //});
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    Status = false,
+                    Message = ex.Message
+                });
+            }
+        }
         /// <summary>
         /// Authenticates with the Sendbox API and retrieves an access token for subsequent requests.
         /// </summary>
@@ -1092,8 +1725,8 @@ namespace Shopinv.Controllers
                     idproofid = IdType,
                     idproofno = Aadharno,
 
-                    frontaddressproof = SiteUrl + AadharFrontPath,
-                    backaddressproof = SiteUrl + AadharBackPath,
+                    frontaddressproof = "https://d9.bisplindia.in" + AadharFrontPath,
+                    backaddressproof = "https://d9.bisplindia.in" + AadharBackPath,
                 };
                 var detail = JsonConvert.SerializeObject(requestData);
                 var response = CallPostFunction(detail, Apiurl);
@@ -1150,7 +1783,7 @@ namespace Shopinv.Controllers
                     reqtype = "formupload",
                     userid = Convert.ToString(Session["IDNO"]),
                     passwd = Convert.ToString(Session["password"]),
-                    formupload = SiteUrl + kycdocpatch
+                    formupload = "https://d9.bisplindia.in" + kycdocpatch
                 };
 
                 var detail = JsonConvert.SerializeObject(requestData);
@@ -1321,7 +1954,7 @@ namespace Shopinv.Controllers
             string html = $@"
             <html>
             <body onload='document.forms[0].submit()'>
-                <form method='POST' action='{GvPortalUrl}'>
+                <form method='POST' action='https://gv.d9cpanel.bisplindia.in/members/index.php'>
                     <input type='hidden' name='token' value='1a027ace746dccad5151c31954e39be3' />
                     <input type='hidden' name='mod' value='interLogin' />
                     <input type='hidden' name='userid' value='{Session["IDNO"]}' />
@@ -1332,60 +1965,23 @@ namespace Shopinv.Controllers
             </html>";
 
 
-            //string apiUrl = GvPortalUrl;
-            //string responseText = string.Empty;
-            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            //try
-            //{
-            //    using (HttpClient client = new HttpClient())
-            //    {
-            //        // Optional timeout
-            //        client.Timeout = TimeSpan.FromSeconds(30);
 
-            //        // Create request
-            //        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, apiUrl);
-
-            //        // Add Cookie header
-            //        request.Headers.Add("Cookie", "PHPSESSID=57456045d4f68e65fb1de321c876c94c");
-
-            //        // Multipart form data
-            //        MultipartFormDataContent content = new MultipartFormDataContent();
-            //        content.Add(new StringContent("1a027ace746dccad5151c31954e39be3"), "token");
-            //        content.Add(new StringContent("interLogin"), "mod");
-            //        content.Add(new StringContent(Convert.ToString(Session["IDNO"])), "userid");
-            //        content.Add(new StringContent(Convert.ToString(Session["Password"])), "password");
-
-            //        request.Content = content;
-
-            //        // Synchronous call (NO async/await)
-            //        HttpResponseMessage response = client.SendAsync(request).Result;
-
-            //        if (response.IsSuccessStatusCode)
-            //        {
-            //            responseText = response.Content.ReadAsStringAsync().Result;
-            //        }
-            //        else
-            //        {
-            //            responseText = "Error: " + response.StatusCode;
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    responseText = ex.Message;
-            //}
-            // Pass response to View
-            //ViewBag.ApiResponse = responseText;
-            //return View();
             return Content(html, "text/html");
         }
+        private string GenerateSSOToken(string userId)
+        {
+            string token = Guid.NewGuid().ToString();
+            _ssoRepo.SaveToken(token, userId);  // ✅ DB mein save
+            return token;
+        }
+
 
         public ActionResult DirectLoginStore()
         {
             string html = $@"
     <html>
     <body onload='document.forms[0].submit()'>
-        <form method='POST' action='{StorePortalUrl}'>
+        <form method='POST' action='https://store.d9cpanel.bisplindia.in/members/index.php'>
             <input type='hidden' name='token' value='453ecd0dca082bc94cac8d06406305f1' />
             <input type='hidden' name='mod' value='interLogin' />
             <input type='hidden' name='userid' value='{Session["IDNO"]}' />
@@ -1494,20 +2090,20 @@ namespace Shopinv.Controllers
                     citycode = "0",
                     idproofid = IdType,
                     idproofno = Aadharno,
-                    frontaddressproof = SiteUrl + AadharFrontPath,
-                    backaddressproof = SiteUrl + AadharBackPath,
+                    frontaddressproof = "https://d9.bisplindia.in" + AadharFrontPath,
+                    backaddressproof = "https://d9.bisplindia.in" + AadharBackPath,
                     accounttype = Actype,
                     accountno = Acno,
                     bankcode = Bank,
                     bankname = Bankname,
                     branchname = BranchName,
                     ifsccode = IFSCCode,
-                    bankimage = SiteUrl + BankDocPath,
+                    bankimage = "https://d9.bisplindia.in" + BankDocPath,
                     panno = PanNo,
-                    panimage = SiteUrl + PanDocPath,
+                    panimage = "https://d9.bisplindia.in" + PanDocPath,
                     areaname = "",
                     areacode = "0",
-                    formupload = SiteUrl + kycdocpatch,
+                    formupload = "https://d9.bisplindia.in" + kycdocpatch,
                 };
                 var detail = JsonConvert.SerializeObject(kyc);
                 var response = CallPostFunction(detail, Apiurl);

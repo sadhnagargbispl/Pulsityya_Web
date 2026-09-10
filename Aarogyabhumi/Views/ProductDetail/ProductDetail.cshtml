@@ -1,86 +1,335 @@
-﻿@{
-    // pulled from m_companymaster; blank column keeps the built-in default
-    Func<string, string, string> comp = (key, fallback) =>
-    {
-        var v = Convert.ToString(Session[key]);
-        return string.IsNullOrWhiteSpace(v) ? fallback : v.Trim();
-    };
-    var freeShip = comp("FreeShipAmount", "2500");
-}
-@model Shopinv.Models.M_Category
+﻿@model Shopinv.Models.M_Category
 @{
+    ViewBag.Title = "ProductDetail";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
-    var item = Model.ProductDetail != null ? Model.ProductDetail.FirstOrDefault() : null;
-    ViewBag.Title = item != null ? item.ProductName : "Product Details";
-
-    var Refid = Session["RefId"] != null ? Convert.ToString(Session["RefId"]) : "";
-
-    var images = new List<string>();
-    if (item != null)
+    var Refid = "";
+    if (Session["RefId"] != null)
     {
-        foreach (var p in new[] { item.ImagePath, item.ImagePath1, item.ImagePath2, item.ImagePath3, item.ImagePath4, item.ImagePath5 })
-        {
-            if (!string.IsNullOrEmpty(p) && !p.EndsWith("DefaultProduct.jpg", StringComparison.OrdinalIgnoreCase))
-            {
-                images.Add(p);
+        Refid = Session["RefId"].ToString();
+    }
+    else
+    {
+        Refid = null;
+    }
+}
+<script type="text/javascript">
+    function CheckLoginPopUp(ProductAddFrom) {
+        debugger;
+
+    var ProductCode = $('#hdnprodCode').val();
+    var Qty = $("#Qty").val();
+    if (Qty == 0) {
+            alert("Please enter quantity greater than 0!");
+            return false;
+        }
+        var prodname = jQuery('#hdnprodname').val();
+        var image = jQuery('#hdnimage').val();
+        var price = jQuery('#hdnprice').val();
+        var bv = jQuery('#hdnBv').val();
+        var BunchQty = jQuery('#hdnBunchQty').val();
+        var PV = jQuery('#hdnPv').val();
+        var Weight = jQuery('#hdnWeight').val();
+        var string = Math.floor(Math.random() * 1000) + Date.now();
+
+        // Only SIZE logic remains
+        var SIZE = "";
+        //var SIZE = $("input[name='size']:checked").val();
+        //if (SIZE == "" || SIZE == undefined || SIZE == null) {
+        //    alert("Please select size!");
+        //    return false;
+        //}
+
+        $.ajax({
+            url: '/ProductDetail/CheckLogin',
+            type: 'GET',
+            async: false,
+            data: {}
+        }).done(function (result) {
+            if (result == 'Yes') {
+                var memmode = $("#memmode").val();
+                var kycstatus = $("#kycstatus").val();
+                //if (memmode == "D" && kycstatus != "Verified") {
+                //    alert("Please update your KYC.");
+                //    return false;
+                //}
+                AddProductInCart(ProductCode, Qty, prodname, image, price, bv, string, ProductAddFrom, PV, Weight, SIZE);
             }
-        }
+            else {
+                if ("@Refid" != null && "@Refid" != "") {
+                    AddProductInCartOuter(ProductCode, Qty, prodname, image, price, bv, string, ProductAddFrom, PV, Weight);
+                }
+                else {
+                    window.location.href = "/Account/Login";
+                }
+            }
+        }).fail(function (error) {
+            alert(error.statusText);
+            $(".preloader").hide();
+        });
+        return false;
     }
-    if (images.Count == 0)
-    {
-        images.Add(Url.Content("~/theme/img/sample-product.jpg"));
+    function Imagebycolorid() {
+        var dd = $("#colorselect").val();
+        var Colorname = $('#colorselect option:selected').text();
+        $.ajax({
+            type: "POST",
+            url: '/ProductDetail/GetImageBycolor',
+            async: false,
+            dataType: "Json",
+            data: { colorId: dd, Colorname: Colorname },
+            success: function (data) {
+                $("#sizeopt").empty().append('<option selected="selected" value="">Select Size</option>');
+                $.each(data.e_SizeMasters, function () {
+                    debugger
+                    $("#sizeopt").append($("<option/>").val(this.id).text(this.Size));
+                });
+                if (data.count > 0) {
+                    $("#hdnimage").val(data.firstimg);
+                    $("#prdarea").html(data.tblOrder);
+                    setTimeout(() => {
+                        $('.product-small-thumb-3').slick({
+                            infinite: true,
+                            slidesToShow: 9,
+                            slidesToScroll: 1,
+                            arrows: true,
+                            dots: false,
+                            focusOnSelect: true,
+                            vertical: true,
+                            speed: 500,
+                            draggable: true,
+                            swipe: false,
+                            asNavFor: '.product-large-thumbnail-3',
+                            responsive: [{
+                                breakpoint: 992,
+                                settings: {
+                                    vertical: false,
+                                    horizontal: true
+                                }
+                            }]
+
+                        });
+
+                        $('.product-large-thumbnail-3').slick({
+                            infinite: true,
+                            slidesToShow: 1,
+                            slidesToScroll: 1,
+                            arrows: true,
+                            dots: false,
+                            speed: 500,
+                            draggable: false,
+                            swipe: false,
+                            asNavFor: '.product-small-thumb-3'
+                        });
+
+
+                        if ($('.zoom-gallery').length) {
+                            $('.zoom-gallery').each(function () {
+                                $(this).magnificPopup({
+                                    delegate: 'a.popup-zoom',
+                                    type: 'image',
+                                    gallery: {
+                                        enabled: true
+                                    }
+                                });
+                            });
+                        }
+                    }, 100);
+                }
+
+            }
+        });
     }
 
-    var discount = 0;
-    if (item != null && item.MRP > 0 && item.MRP > item.Price)
-    {
-        discount = Convert.ToInt32(Math.Round(((item.MRP - item.Price) * 100) / item.MRP));
+    function AddProductInCart(ProductCode, Quantity, prodname, image, price, bv, string, AddProductInCart, PV, Weight, SIZE) {
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: '/ProductDetail/AddProductInToCart',
+            async: false,
+            dataType: "Json",
+            data: { ProductCode: ProductCode, Qty: Quantity, ProdName: prodname, Image: image, Price: price, Bv: bv, UniqId: string, PV: PV, Weight: Weight, Color: "", SIZE: SIZE },
+            success: function (data) {
+                debugger;
+                if (data.save == 'S') {
+                    //$('#modalId').modal('show');
+                     alert("Item added in Your cart Sucessfully!");
+                }
+                // $('#getCartUpdate').html(data.tblOrder);
+                //$("#cartCount").html(data.cartCount);
+                //$('#getCartUpdate').load('/Home/GetCartDetails');
+                window.location.href = "/ViewCart/ViewCart";
+
+            }
+
+        });
+
+        return false;
     }
-    var inStock = item != null && item.StockQTY > 0;
-}
 
-@section styles {
-    <link rel="stylesheet" href="~/theme/plugins/accordion/css/woco-accordion.min.css">
-    <link rel="stylesheet" href="~/theme/plugins/spotlight-master/css/spotlight.min.css">
-    <style>
-        .breadcrmb-loc li a {
-            color: #0000008c !important;
+    function SaveReview() {
+        debugger;
+        var reviewMessage = $("#reviewMessage").val();
+        var reviewRating = $("#reviewRating").val();
+        var reviewName = $("#reviewName").val();
+        if (reviewName == "") {
+            $("#reviewName").focus();
+            return false;
         }
-
-        .breadcrmb-loc li a:after {
-            color: #0000008c;
+        if (reviewMessage == "") {
+            $("#reviewMessage").focus();
+            return false;
         }
-    </style>
-}
+        var hdnpcode = $("#hdnpcode").val();
+        $.ajax({
+            type: "GET",
+            url: '/ProductDetail/CheckLogin',
+            async: false,
+            dataType: "Json",
+            data: {},
+            success: function (result) {
+                if (result == 'Yes') {
+                    debugger;
+                    $.ajax({
+                        type: "POST",
+                        url: '/ProductDetail/SaveReview',
+                        async: false,
+                        dataType: "Json",
+                        data: { ReviewMessage: reviewMessage, ReviewRating: reviewRating, ReviewName: reviewName, Productcode: hdnpcode },
+                        success: function (data) {
+                            if (data.status == "1") {
+                                $("#reviewdiv").html(data.tblOrder);
+                                $("#reviewMessage").val('')
+                            }
+                            alert(data.msg);
+                        }
+                    });
+                }
+                else {
+                    window.location.href = "/Account/Login";
+                }
+            }
+        });
+    }
 
-<section class="contents">
-    <div class="breadcrmb">
-        <div class="breadcrmb-content">
-            <div class="container">
-                <ul class="breadcrmb-loc">
-                    <li><a href="~/Home/Index">Home</a></li>
-                    <li><a href="~/CategoryList/CategoryList">Product</a></li>
-                    <li><a class="active">@(item != null ? item.ProductName : "Product")</a></li>
-                </ul>
+    function SaveToWishlist() {
+        var hdnpcode = $("#hdnpcode").val();
+        $.ajax({
+            type: "GET",
+            url: '/ProductDetail/CheckLogin',
+            async: false,
+            dataType: "Json",
+            data: {},
+            success: function (result) {
+                if (result == 'Yes') {
+                    debugger;
+                    $.ajax({
+                        type: "POST",
+                        url: '/ProductDetail/SaveToWishlist',
+                        async: false,
+                        dataType: "Json",
+                        data: { ProductID: hdnpcode },
+                        success: function (data) {
+                            if (data.status == "1") {
+                                $("#wislistbtn").html('<i class="fa fa-heart me-1"></i> Remove from Wishlist');
+                            }
+                            else if (data.status == "2") {
+
+                                $("#wislistbtn").html('<i class="fa-regular fa-heart me-1"></i> Add to Wishlist');
+                            }
+
+                            alert(data.msg);
+                        }
+                    });
+                }
+                else {
+                    window.location.href = "/Account/Login";
+                }
+            }
+        });
+    }
+</script>
+<div class="mini-banner bg-success py-3">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 text-center">
             </div>
         </div>
     </div>
+</div>
 
-    <div class="content-row">
-        <div class="itm-dtls-row">
-            <div class="item-container">
-                <div class="container">
-                    @if (item == null)
+<div class="products-details-area bg-white">
+    <div class="container my-4">
+        <div class="card shadow-lg border-0 p-1">
+
+            <div class="row g-0 mt-3">
+                <div class="col-lg-5 p-3 text-center">
+                    <!-- Main Product Image -->
+
+
+                    @foreach (var item in Model.ProductDetail)
                     {
-                        <div class="no-product">
-                            <p>
-                                Product not available
-                                <span>The product you are looking for is no longer listed.</span>
-                            </p>
+                        <div class="product-image-container position-relative">
+                            <img id="mainImage" src="@item.ImagePath"
+                                 onerror="this.src='https://d9franchise.bisplindia.in/ProductImages/DefaultProduct.jpg';"
+                                 alt="Product Image" class="img-fluid rounded shadow main-product-image" style="cursor: zoom-in; max-height:400px;">
+                        </div>
+
+
+
+                        <div class="d-flex justify-content-center mt-3 overflow-auto" style="white-space: nowrap;">
+                            @if (item.ImagePath != null && item.ImagePath != "https://d9franchise.bisplindia.in/ProductImages/DefaultProduct.jpg")
+                            {
+                                <img src="@item.ImagePath" onerror="this.src='https://d9franchise.bisplindia.in/ProductImages/DefaultProduct.jpg';" class="img-thumbnail mx-1 thumbnail-image" width="70" style="cursor:pointer;">
+                            }
+                            @if (item.ImagePath1 != null && item.ImagePath1 != "https://d9franchise.bisplindia.in/ProductImages/DefaultProduct.jpg")
+                            {
+                                <img src="@item.ImagePath1" onerror="this.src='https://d9franchise.bisplindia.in/ProductImages/DefaultProduct.jpg';" class="img-thumbnail mx-1 thumbnail-image" width="70" style="cursor:pointer;">
+                            }
+                            @if (item.ImagePath2 != null && item.ImagePath2 != "https://d9franchise.bisplindia.in/ProductImages/DefaultProduct.jpg")
+                            {
+                                <img src="@item.ImagePath2" onerror="this.src='https://d9franchise.bisplindia.in/ProductImages/DefaultProduct.jpg';" class="img-thumbnail mx-1 thumbnail-image" width="70" style="cursor:pointer;">
+                            }
+                            @if (item.ImagePath3 != null && item.ImagePath3 != "https://d9franchise.bisplindia.in/ProductImages/DefaultProduct.jpg")
+                            {
+                                <img src="@item.ImagePath3" onerror="this.src='https://d9franchise.bisplindia.in/ProductImages/DefaultProduct.jpg';" class="img-thumbnail mx-1 thumbnail-image" width="70" style="cursor:pointer;">
+                            }
                         </div>
                     }
-                    else
+
+                    <hr>
+
+
+                    <div class="shareicon">
+                        <span class="fw-bold me-2">Share :</span>
+                        <a href="#" target="_blank" class="me-2 text-decoration-none p-2 rounded" style="color:#3b5998;"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" target="_blank" class="me-2 text-decoration-none p-2 rounded" style="color:#1da1f2;"><i class="fab fa-twitter"></i></a>
+                        <a href="#" target="_blank" class="me-2 text-decoration-none p-2 rounded" style="color:#e4405f;"><i class="fab fa-instagram"></i></a>
+                        <a href="#" target="_blank" class="me-2 text-decoration-none p-2 rounded" style="color:#25d366;"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" target="_blank" class="me-2 text-decoration-none p-2 rounded" style="color:#0077b5;"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" target="_blank" class="me-2 text-decoration-none p-2 rounded" style="color:#bd081c;"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+
+
+
+                </div>
+
+
+                <script>
+                    // Thumbnail click -> change main image
+                    const thumbnails = document.querySelectorAll(".thumbnail-image");
+                    const mainImage = document.getElementById("mainImage");
+
+                    thumbnails.forEach(img => {
+                        img.addEventListener("click", () => {
+                            mainImage.src = img.src;
+                        });
+                    });
+                </script>
+
+                <!-- Product Content -->
+
+                <div class="col-lg-7 p-1">
+                    @foreach (var item in Model.ProductDetail)
                     {
                         <input type="hidden" id="hdnprodname" value="@item.ProductName" />
                         <input type="hidden" id="hdnimage" value="@item.ImagePath" />
@@ -93,227 +342,348 @@
                         <input type="hidden" id="hdnGst" value="@item.Gst" />
                         <input type="hidden" id="hdnpcode" value="@item.ProdId" />
                         <input type="hidden" id="hdnstockqty" value="@item.StockQTY" />
+
+                        <h4 class="fw-bold mb-3"> @item.ProductName</h4>
+
+                        <!-- Price -->
+                        <div class="mb-3">
+                            <span class="h4 text-success fw-bold"> ₹ @item.Price</span>
+                            <del class="text-muted ms-2">₹ @item.MRP </del>
+                            <span class="ms-2 text-danger">Save ₹ @(item.MRP- item.Price)</span>
+                        </div>
+
+                        <!-- Stock -->
+                        <p>
+                            @*<span style="font-size:11px; font-weight:600;">
+                                    Inclusive Of All Texas
+                                </span>*@
+                        <p class="text-muted small mb-3">
+                            <i class="fa fa-info-circle me-1 text-secondary"></i>Inclusive of all Texas.
+                        </p>
+                        @*<br />*@
+                        <span class='badge @(item.StockQTY==0? "bg-danger" : "bg-success")'>
+                            @(item.StockQTY==0? "Out Of Stock" : "In Stock")
+                        </span>
+                        | Product Code : @item.ProdId
+                        </p>
+
+
+                        <script>
+                            // Select all size radio buttons
+                            const sizeRadios = document.querySelectorAll('input[name="size"]');
+                            const sizeLabel = document.getElementById('selectedSizeLabel');
+
+                            sizeRadios.forEach(radio => {
+                                radio.addEventListener('change', function () {
+                                    sizeLabel.textContent = "Size: " + this.value + " INCH";
+                                });
+                            });
+                        </script>
+
+
+
+                        <!-- Wishlist & Delivery Row -->
+                        @*<div class="d-flex align-items-center mb-3" style="display:none;">
+                                <a href="#" class="me-4 text-decoration-none text-dark">
+                                    <i class="fa-regular fa-heart me-1"></i> Add to Wishlist
+                                </a>
+                                <a href="#" class="text-decoration-none text-dark">
+                                    <i class="fa fa-paper-plane me-1"></i> Delivery &amp; Returns
+                                </a>
+                            </div>*@
+                        <style>
+                            .product-desc {
+                                font-size: 14.5px;
+                                line-height: 1.75;
+                                color: #4a5568;
+                                margin: 8px 0 20px;
+                            }
+
+                                /* Har paragraph ke beech saaf spacing */
+                                .product-desc p {
+                                    margin: 0 0 14px;
+                                }
+
+                                /* Headings (Key Ingredients, Benefits, Storage etc.) */
+                                .product-desc h1,
+                                .product-desc h2,
+                                .product-desc h3,
+                                .product-desc h4,
+                                .product-desc h5,
+                                .product-desc h6,
+                                .product-desc strong,
+                                .product-desc b {
+                                    color: #1a202c;
+                                    font-weight: 700;
+                                }
+
+                                .product-desc h3,
+                                .product-desc h4,
+                                .product-desc h5 {
+                                    font-size: 15.5px;
+                                    margin: 20px 0 10px;
+                                    padding-bottom: 6px;
+                                    border-bottom: 1px solid #eef1f6;
+                                }
+
+                                /* Bullet / numbered lists ko proper indent aur spacing */
+                                .product-desc ul,
+                                .product-desc ol {
+                                    margin: 0 0 16px;
+                                    padding-left: 22px;
+                                }
+
+                                    .product-desc ul li,
+                                    .product-desc ol li {
+                                        margin-bottom: 8px;
+                                        padding-left: 4px;
+                                    }
+
+                                /* Bullet list ke liye custom marker (green tick jaisa) */
+                                .product-desc ul {
+                                    list-style: none;
+                                    padding-left: 6px;
+                                }
+
+                                    .product-desc ul li {
+                                        position: relative;
+                                        padding-left: 24px;
+                                    }
+
+                                        .product-desc ul li::before {
+                                            content: "\f00c"; /* FontAwesome check */
+                                            font-family: "Font Awesome 5 Free", "FontAwesome";
+                                            font-weight: 900;
+                                            color: #28a745;
+                                            position: absolute;
+                                            left: 0;
+                                            top: 1px;
+                                            font-size: 12px;
+                                        }
+
+                                /* Extra top/bottom gaps hatao (bikhra look fix) */
+                                .product-desc p:empty,
+                                .product-desc br + br {
+                                    display: none;
+                                }
+
+                                .product-desc img {
+                                    max-width: 100%;
+                                    height: auto;
+                                    border-radius: 8px;
+                                }
+                            .product-desc {
+                                font-size: 14.5px;
+                                line-height: 1.75;
+                                color: #4a5568;
+                                margin: 8px 0 20px;
+                                padding-right: 30px; /* right side gap */
+                            }
+                        </style>
+                        @*<p>
+                                @Html.Raw(Model.ProductDetail.FirstOrDefault().ProductDesc)
+                            </p>*@
+                        <div class="product-desc">
+                            @Html.Raw(Model.ProductDetail.FirstOrDefault().ProductDesc)
+                        </div>
+                        if (item.StockQTY != 0)
+                        {
+                            <div class="d-flex flex-wrap align-items-center mb-3 justify-content-start">
+                                <!-- <label for="quantity" class="fw-bold me-2">Quantity:</label> -->
+                                <div class="input-group me-3 mb-2 mb-md-0" style="width:150px;">
+                                    <button class="btn btn-outline-secondary" type="button" id="decrease">-</button>
+                                    <input type="number" id="Qty" value="1" min="1" class="form-control text-center" readonly>
+                                    <button class="btn btn-outline-secondary" type="button" id="increase">+</button>
+                                </div>
+                                <a href="javascript:CheckLoginPopUp('DetailBuy');" class="btn btn-warning btn-lg me-2 mb-2 mb-md-0"><i class="fa fa-shopping-cart me-1"></i> Add to Cart </a>
+                                @*<a href="#" class="btn btn-dark btn-lg"><i class="fa fa-bolt me-1"></i> Buy It Now </a>*@
+                            </div>
+                        }
                         <input type="hidden" id="memmode" value="@Convert.ToString(Session["MemMode"])" />
                         <input type="hidden" id="kycstatus" value="@ViewBag.kycstatus" />
 
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-5">
-                                <div class="owl-carousel itm-dtls-carousel">
-                                    @foreach (var img in images)
-                                    {
-                                        <a class="spotlight" href="@img"><img src="@img" onerror="this.src='@Url.Content("~/theme/img/sample-product.jpg")';" alt="@item.ProductName" /></a>
-                                    }
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-7">
-                                <h2 class="pr_name">
-                                    @item.ProductName
-                                    <span class="pr_sku">Product Code : @item.ProdId</span>
-                                </h2>
-
-                                <h3 class="pr_rate">
-                                    @if (item.MRP > item.Price)
-                                    {
-                                        <span class="pr_mrp">&#8377; @item.MRP</span>
-                                    }
-                                    <span class="pr_offerprice">&#8377; @item.Price</span>
-                                    @if (discount > 0)
-                                    {
-                                        <span class="pr_discount">@discount% Off</span>
-                                    }
-                                    <span class="pr_note">Inclusive all taxes</span>
-                                </h3>
-
-                                <p class="pr_stock">
-                                    <strong>Availability :</strong>
-                                    @if (inStock)
-                                    {
-                                        <text>In Stock</text>
-                                    }
-                                    else
-                                    {
-                                        <span class="out">Out Of Stock</span>
-                                    }
-                                </p>
-
-                                @if (inStock)
-                                {
-                                    <div class="row">
-                                        <div class="col-xs-3 col-md-3 col-lg-2 no-padding-right">
-                                            <div class="num-incr-decr">
-                                                <span class="decrMent" dt-min="1"></span>
-                                                <input step="1" value="1" type="text" name="quantity" id="Qty">
-                                                <span class="incrMent" dt-max="@item.StockQTY"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-6 col-md-4 col-lg-4">
-                                            <div class="cart-btn-col">
-                                                <a class="btn-sub pr_add_cart" onclick="CheckLoginPopUp('DetailBuy');">
-                                                    <span class="icon-add-cart"></span><span class="txt-add-cart">Add to cart</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-3 col-md-3 col-lg-2 no-padding-left">
-                                            <a class="pr-shre" onclick="shareItem('@Html.Raw(HttpUtility.JavaScriptStringEncode(item.ProductName))', window.location.href)"><i class="fa fa-share-alt"></i> Share</a>
-                                        </div>
-                                    </div>
+                        <script>
+                            // Quantity Increase/Decrease
+                            const qtyInput = document.getElementById("Qty");
+                            const stock = parseInt(document.getElementById("hdnstockqty").value);
+                            document.getElementById("decrease").addEventListener("click", function () {
+                                let value = parseInt(qtyInput.value);
+                                if (value > 1) {
+                                    qtyInput.value = value - 1;
                                 }
-                                else
-                                {
-                                    <div class="row">
-                                        <div class="col-xs-6 col-md-4 col-lg-4">
-                                            <div class="cart-btn-col">
-                                                <a class="btn btn-brdr">Currently unavailable</a>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-3 col-md-3 col-lg-2 no-padding-left">
-                                            <a class="pr-shre" onclick="shareItem('@Html.Raw(HttpUtility.JavaScriptStringEncode(item.ProductName))', window.location.href)"><i class="fa fa-share-alt"></i> Share</a>
-                                        </div>
-                                    </div>
+                            });
+                            document.getElementById("increase").addEventListener("click", function () {
+                                let value = parseInt(qtyInput.value);
+                                /* qtyInput.value = value + 1;*/
+                                if (value < stock) {
+                                    qtyInput.value = value + 1;
+                                } else {
+                                    alert("Maximum available stock reached!");
                                 }
+                            });
+                        </script>
 
-                                <div class="pr_desc">
-                                    <h1>Product Description</h1>
-                                    <div>
-                                        <div class="desc-inf">
-                                            @if (string.IsNullOrWhiteSpace(item.ProductDesc))
-                                            {
-                                                <p>Description will be updated shortly.</p>
-                                            }
-                                            else
-                                            {
-                                                @Html.Raw(item.ProductDesc)
-                                            }
-                                        </div>
-                                    </div>
-                                    <h1>Usage Instruction</h1>
-                                    <div>
-                                        <div class="desc-inf">
-                                            @if (!string.IsNullOrWhiteSpace(item.Liner))
-                                            {
-                                                @Html.Raw(item.Liner)
-                                            }
-                                            else
-                                            {
-                                                <p>Please follow the usage directions printed on the pack.</p>
-                                            }
-                                        </div>
-                                    </div>
-                                    <h1>Key Features</h1>
-                                    <div>
-                                        <div class="desc-inf">
-                                            <ul>
-                                                <li>BV : @item.BV.ToString("0.##")</li>
-                                                <li>Free shipping on orders above &#8377; @freeShip.</li>
-                                                <li>Tax included. Shipping calculated at checkout.</li>
-                                                <li>Covered by our Return &amp; Exchange Policy.</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
+
+
+                        @*<div class="d-flex align-items-center mt-3">
+                                <i class="fa fa-eye me-2" aria-hidden="true" m=""></i>
+                                <span id="peopleLooking" class="text-dark"><b>11</b> People looking for this product</span>
                             </div>
+
+                            <script>
+                                function updatePeopleCount() {
+                                    const count = Math.floor(Math.random() * 25) + 1;
+                                    document.getElementById("peopleLooking").innerHTML =
+                                        "<b>" + count + "</b> People looking for this product";
+                                }
+                                setInterval(updatePeopleCount, Math.floor(Math.random() * 4000) + 3000);
+                            </script>*@
+
+                        <!-- <h5 class="mt-3"> <i class="fa fa-info-circle text-success me-2"></i> Product Details </h5> -->
+                        <!-- <p> This <b>Gold Plated Nawabi Chain</b> is crafted with premium finish and modern design. <br> A perfect fit for men who love style with elegance. </p> -->
+
+
+                        <div class="d-flex flex-wrap align-items-center">
+                            <img src="assets/images/secure_payments.png?=v1.6" width="550" alt="" class="img-fluid">
                         </div>
                     }
+
                 </div>
+
+
+
+
+
+            </div>
+
+            <!-- Product Tabs -->
+            <div class="row mt-7 p-2 mt-4" style="display:none;">
+                <ul class="nav nav-tabs d-flex justify-content-center" id="productTabs" role="tablist">
+                    <li class="nav-item " role="presentation">
+                        <button class="nav-link" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="false" tabindex="-1"><b>Product Details</b></button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false" tabindex="-1"><b>Reviews</b></button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab" aria-controls="shipping" aria-selected="false" tabindex="-1"><b>Shipping &amp; Replacement</b></button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#Care" type="button" role="tab" aria-controls="shipping" aria-selected="true"><b>Care</b></button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#Warranty" type="button" role="tab" aria-controls="shipping" aria-selected="false" tabindex="-1"><b>Warranty</b></button>
+                    </li>
+                </ul>
+                <div class="tab-content mt-3" id="productTabsContent">
+
+                    <div class="tab-pane fade p-4" id="details" role="tabpanel" aria-labelledby="details-tab">
+                        @if (Model.ProductDetail != null && Model.ProductDetail.Count() > 0)
+                        {
+                            @Html.Raw(Model.ProductDetail.FirstOrDefault().ProductDesc)
+                        }
+
+                    </div>
+
+                    <div class="tab-pane fade p-4" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                        <div class="review-section">
+                            <h5 class="fw-bold">Customer Reviews</h5>
+                            <div class="review-item border-bottom pb-3 mb-3">
+                                <p class="mb-1"><strong>John Doe</strong> <span class="text-muted">- 5 Stars</span></p>
+                                <p>"Absolutely loved the product! The quality is amazing and it looks even better in person."</p>
+                            </div>
+                            <div class="review-item border-bottom pb-3 mb-3">
+                                <p class="mb-1"><strong>Jane Smith</strong> <span class="text-muted">- 4 Stars</span></p>
+                                <p>"Great product, but the delivery took a bit longer than expected."</p>
+                            </div>
+                            <div class="review-form mt-4">
+                                <h6 class="fw-bold">Write a Review</h6>
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="reviewName" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="reviewName" placeholder="Enter your name">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="reviewRating" class="form-label">Rating</label>
+                                        <select class="form-select" id="reviewRating">
+                                            <option value="5">5 Stars</option>
+                                            <option value="4">4 Stars</option>
+                                            <option value="3">3 Stars</option>
+                                            <option value="2">2 Stars</option>
+                                            <option value="1">1 Star</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="reviewMessage" class="form-label">Review</label>
+                                        <textarea class="form-control" id="reviewMessage" rows="3" placeholder="Write your review here"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade p-4" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
+                        <p> ..... </p>
+                    </div>
+
+                    <div class="tab-pane fade p-4 active show" id="Care" role="tabpanel" aria-labelledby="shipping-tab">
+                        <p> Care ..... </p>
+                    </div>
+
+                    <div class="tab-pane fade p-4" id="Warranty" role="tabpanel" aria-labelledby="shipping-tab">
+                        <p> Warranty ..... </p>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            <div class="row align-items-center p-4">
+                <h5 class="text-black"> Related Products </h5>
+                <hr>
+
+                @if (Model.RelatedProduct != null && Model.RelatedProduct.Count() > 0)
+                {
+                    foreach (var itm in Model.RelatedProduct)
+                    {
+                        <div class="col-lg-3 p-0 m-0 text-center">
+
+                            <div class="item">
+                                <div class="card border-1 shadow-sm pb-0 p-1 m-1">
+                                    <div class="shop-image text-center">
+                                        <a href="~/ProductDetail/ProductDetail?ProdID=@itm.ProdId">  <img src="@itm.ImagePath" alt="Swastika Chain" class="img-fluid rounded"> </a>
+                                    </div>
+                                    <div class="content text-center mt-3">
+                                        <h6 class="fw-bold">@itm.ProductName</h6>
+                                        <div class="price mb-2">
+                                            <span class="text-muted text-decoration-line-through me-2">₹@itm.MRP</span>
+                                            <span class="fw-bold text-success">₹@itm.Price</span>
+                                        </div>
+                                        <div class="rating mt-0 pb-2" style="font-size: 0.5rem;">
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                }
+
+
+
+
             </div>
         </div>
     </div>
+</div>
 
-    @if (Model.RelatedProduct != null && Model.RelatedProduct.Count() > 0)
-    {
-        // the owl carousel is right-to-left and only looks right once it is full;
-        // with a handful of products a plain grid reads better
-        var useCarousel = Model.RelatedProduct.Count() > 4;
-        <div class="pr-related-row">
-            <div class="container">
-                <h2 class="first-head">Related Product</h2>
-                <div class="@(useCarousel ? "product-carousel owl-carousel" : "row")">
-                    @foreach (var itm in Model.RelatedProduct)
-                    {
-                        if (useCarousel)
-                        {
-                            @Html.Partial("_ProductCard", itm)
-                        }
-                        else
-                        {
-                            <div class="col-xs-6 col-sm-3">@Html.Partial("_ProductCard", itm)</div>
-                        }
-                    }
-                </div>
-            </div>
-        </div>
-    }
-</section>
 
-@section scripts {
-    <script src="~/theme/plugins/accordion/js/woco.accordion.min.js"></script>
-    <script src="~/theme/plugins/spotlight-master/js/spotlight.min.js"></script>
-    <script type="text/javascript">
-        $(function () { $('.pr_desc').accordion(); });
 
-        function CheckLoginPopUp(ProductAddFrom) {
-            var ProductCode = $('#hdnprodCode').val();
-            var Qty = $("#Qty").val();
-            if (parseInt(Qty, 10) <= 0 || isNaN(parseInt(Qty, 10))) {
-                alert("Please enter quantity greater than 0!");
-                return false;
-            }
 
-            var payload = {
-                ProductCode: ProductCode,
-                Qty: Qty,
-                ProdName: $('#hdnprodname').val(),
-                Image: $('#hdnimage').val(),
-                Price: $('#hdnprice').val(),
-                Bv: $('#hdnBv').val(),
-                UniqId: Math.floor(Math.random() * 1000) + Date.now(),
-                PV: $('#hdnPv').val(),
-                Weight: $('#hdnWeight').val(),
-                Color: "",
-                SIZE: ""
-            };
-
-            $.ajax({
-                url: '@Url.Content("~/ProductDetail/CheckLogin")',
-                type: 'GET'
-            }).done(function (result) {
-                if (result === 'Yes') {
-                    AddProductInCart('@Url.Content("~/ProductDetail/AddProductInToCart")', payload);
-                }
-                else if ("@Refid" !== "") {
-                    AddProductInCart('@Url.Content("~/ProductDetail/AddProductInCartOuter")', payload);
-                }
-                else {
-                    window.location.href = '@Url.Content("~/Account/Login")';
-                }
-            }).fail(function (error) {
-                alert(error.statusText);
-            });
-
-            return false;
-        }
-
-        function AddProductInCart(url, payload) {
-            $('.pr_add_cart').addClass('pr_added_cart').find('.txt-add-cart').text('Please wait . . .');
-            $.ajax({
-                type: "POST",
-                url: url,
-                dataType: "json",
-                data: payload
-            }).done(function (data) {
-                if (data.save === 'S') {
-                    $('.spncartcount').text(data.cartCount);
-                    window.location.href = '@Url.Content("~/ViewCart/ViewCart")';
-                } else {
-                    $('.pr_add_cart').removeClass('pr_added_cart').find('.txt-add-cart').text('Add to cart');
-                    alert("Sorry, the product could not be added to your cart.");
-                }
-            }).fail(function (error) {
-                $('.pr_add_cart').removeClass('pr_added_cart').find('.txt-add-cart').text('Add to cart');
-                alert(error.statusText);
-            });
-            return false;
-        }
-
-    </script>
-}

@@ -20,6 +20,7 @@ namespace Aarogyabhumi
             container.RegisterType<I_Category, R_Category>();
             container.RegisterType<I_Login, R_Login>();
             container.RegisterType<I_OrderReport, R_OrderReport>();
+            container.RegisterType<I_DelistedDirectSeller, R_DelistedDirectSeller>();
             container.RegisterType<I_PayMode, R_PayMode>();
             container.RegisterType<I_Product, R_Product>();
             container.RegisterType<I_register, R_register>();

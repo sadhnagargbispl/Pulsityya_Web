@@ -181,9 +181,10 @@
 
         let allowed = [".jpg", ".jpeg", ".png"];
         let files = ["#Aadharfront", "#Aadharback"];
-
+        let maxSizeimg = 2 * 1024 * 1024; // 2 MB
         for (let file of files) {
             let name = $(file).val();
+            let input = $(file)[0];
             if (name) {
                 let ext = name.substring(name.lastIndexOf('.')).toLowerCase();
                 if (!allowed.includes(ext)) {
@@ -191,6 +192,15 @@
                     $(file).focus();
                     $("#addresskyc").show();
                     $("#adrsloader").hide();
+                    return false;
+                }
+
+                // Size check (2 MB)
+                let fileObj = input.files[0];
+                if (fileObj && fileObj.size > maxSizeimg) {
+                    alert("File size must not exceed 2 MB.");
+                    $(file).val("");   // clear selected file
+                    $(file).focus();
                     return false;
                 }
             }
@@ -260,8 +270,10 @@
         $("#formloader").show();
         let kycallowed = [".pdf"];
         let kycfiles = ["#kycdoc"];
+        let maxSize = 5 * 1024 * 1024; // 5MB
         for (let file of kycfiles) {
             let name = $(file).val();
+            let input = $(file)[0];
             if (name) {
                 let ext = name.substring(name.lastIndexOf('.')).toLowerCase();
                 if (!kycallowed.includes(ext)) {
@@ -269,6 +281,15 @@
                     $(file).focus();
                     $("#formbtn").show();
                     $("#formloader").hide();
+                    return false;
+                }
+
+                // Size check
+                let fileObj = input.files[0];
+                if (fileObj && fileObj.size > maxSize) {
+                    alert("The PDF file size must not exceed 5 MB.");
+                    $(file).val("");   // clear selected file
+                    $(file).focus();
                     return false;
                 }
             }
@@ -325,21 +346,14 @@
 </script>
 
 
-<section class="contents">
-    <div class="breadcrmb">
-        <img src="~/theme/img/page-banner.jpg" alt="KYC Verification">
-        <div class="breadcrmb-content">
-            <div class="container">
-                <h1>KYC Verification</h1>
-                <ul class="breadcrmb-loc">
-                    <li><a href="~/Home/Index">Home</a></li>
-                    <li><a class="active">KYC Verification</a></li>
-                </ul>
+<div class="mini-banner bg-success py-3">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 text-center">
             </div>
         </div>
     </div>
-    <div class="content-row">
-
+</div>
 
 <div class="container">
     <form class="p-4 bg-white rounded shadow-sm">
@@ -350,13 +364,13 @@
             <input type="hidden" id="isbankverify" value="@Model.Userkycres.isBankverified" />
             <input type="hidden" id="isaddrsverf" value="@Model.Userkycres.addrsverf" />
             <input type="hidden" id="isidproofverf" value="@Model.Userkycres.addressdetail.idproof" />
-            <input type="hidden" id="Isformupload" value="@Model.Userkycres.Isformupload" />
-            <input type="hidden" id="isformuploadvalue" value="@Model.Userkycres.formuploaddetail.formupload" />
+            @*<input type="hidden" id="Isformupload" value="@Model.Userkycres.Isformupload" />
+                <input type="hidden" id="isformuploadvalue" value="@Model.Userkycres.formuploaddetail.formupload" />*@
             <span id="s1" class="step-pending">1</span>
             <span id="s2" class="step-active">2</span>
             <span id="s3" class="step-pending">3</span>
+            @*<span id="s4" class="step-pending">4</span>*@
             <span id="s4" class="step-pending">4</span>
-            <span id="s5" class="step-pending">5</span>
         </div>
 
 
@@ -381,53 +395,121 @@
             <div class="card-header"><strong>2. Bank Information</strong></div>
 
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Account Type</label>
-                        <select class="form-select" id="Actype">
-                            <option value="0">CHOOSE ACCOUNT TYPE</option>
-                            <option value="SAVING ACCOUNT">SAVING ACCOUNT</option>
-                            <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>
-                        </select>
-                    </div>
+                @if (@Model.Userkycres.isBankverified == "P" || @Model.Userkycres.isBankverified == "R")
+                {
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Account Type</label>
+                            <select class="form-select" id="Actype" name="@Model.Userkycres.bankdetail.accounttype">
+                                <option value="0">CHOOSE ACCOUNT TYPE</option>
+                                <option value="SAVING ACCOUNT">SAVING ACCOUNT</option>
+                                <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>
+                            </select>
+                        </div>
 
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Account No.</label>
-                        <input type="text" id="Acno" value="@Model.Userkycres.bankdetail.acno" class="form-control" />
-                    </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Account No.</label>
+                            <input type="text" id="Acno" value="@Model.Userkycres.bankdetail.acno" class="form-control" />
+                        </div>
 
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Bank</label>
-                        <select class="form-select" id="Bank">
-                            @foreach (var item in Model.BankLists)
-                            {
-                                if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.bankdetail.bankid)) && Convert.ToString(Model.Userkycres.bankdetail.bankid) == Convert.ToString(item.BankCode))
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Bank</label>
+                            <select class="form-select" id="Bank">
+                                @foreach (var item in Model.BankLists)
                                 {
-                                    <option value="@item.BankCode" selected>@item.BankName</option>
+                                    if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.bankdetail.bankid)) && Convert.ToString(Model.Userkycres.bankdetail.bankid) == Convert.ToString(item.BankCode))
+                                    {
+                                        <option value="@item.BankCode" selected>@item.BankName</option>
+                                    }
+                                    <option value="@item.BankCode">@item.BankName</option>
                                 }
-                                <option value="@item.BankCode">@item.BankName</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Branch Name</label>
+                            <input type="text" id="BranchName" value="@Model.Userkycres.bankdetail.branchname" class="form-control" />
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">IFSC Code</label>
+                            <input type="text" id="IFSCCode" value="@Model.Userkycres.bankdetail.ifscode" class="form-control" />
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Previous</button>
+                    @*<button type="button" class="btn btn-success float-end"  onclick="nextStep(2)">Next</button>*@
+                    <button type="button" class="btn btn-success float-end" id="bankbtn" onclick="BankKyc()">Next</button>
+                    <button class="btn btn-success float-end" type="button" id="bankloader" style="display:none;" disabled>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Loading...
+                    </button>
+                }
+                else
+                {
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Account Type</label>
+                            @if (!string.IsNullOrEmpty(Model.Userkycres.bankdetail.accounttype))
+                            {
+                                <select class="form-select" id="Actype" name="@Model.Userkycres.bankdetail.accounttype" disabled>
+                                    <option value="0">CHOOSE ACCOUNT TYPE</option>
+                                    <option value="SAVING ACCOUNT" selected>SAVING ACCOUNT</option>
+                                    <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>
+
+
+                                </select>
                             }
-                        </select>
+                            else
+                            {
+                                <select class="form-select" id="Actype" name="@Model.Userkycres.bankdetail.accounttype" disabled>
+                                    <option value="0">CHOOSE ACCOUNT TYPE</option>
+                                    <option value="SAVING ACCOUNT">SAVING ACCOUNT</option>
+                                    <option value="CURRENT ACCOUNT">CURRENT ACCOUNT</option>
+                                </select>
+                            }
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Account No.</label>
+                            <input type="text" id="Acno" value="@Model.Userkycres.bankdetail.acno" class="form-control" readonly />
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Bank</label>
+                            <select class="form-select" id="Bank" disabled>
+                                @foreach (var item in Model.BankLists)
+                                {
+                                    if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.bankdetail.bankid)) && Convert.ToString(Model.Userkycres.bankdetail.bankid) == Convert.ToString(item.BankCode))
+                                    {
+                                        <option value="@item.BankCode" selected>@item.BankName</option>
+                                    }
+                                    <option value="@item.BankCode">@item.BankName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Branch Name</label>
+                            <input type="text" id="BranchName" value="@Model.Userkycres.bankdetail.branchname" class="form-control" readonly />
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">IFSC Code</label>
+                            <input type="text" id="IFSCCode" value="@Model.Userkycres.bankdetail.ifscode" class="form-control" readonly />
+                        </div>
                     </div>
 
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Branch Name</label>
-                        <input type="text" id="BranchName" value="@Model.Userkycres.bankdetail.branchname" class="form-control" />
-                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Previous</button>
+                    <button type="button" class="btn btn-success float-end" onclick="nextStep(2)">Next</button>
+                    @*<button type="button" class="btn btn-success float-end" id="bankbtn" onclick="BankKyc()">Next</button>*@
+                    <button class="btn btn-success float-end" type="button" id="bankloader" style="display:none;" disabled>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Loading...
+                    </button>
+                }
 
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">IFSC Code</label>
-                        <input type="text" id="IFSCCode" value="@Model.Userkycres.bankdetail.ifscode" class="form-control" />
-                    </div>
-                </div>
-
-                <button type="button" class="btn btn-secondary" disabled onclick="prevStep(2)">Previous</button>
-                @*<button type="button" class="btn btn-success float-end"  onclick="nextStep(2)">Next</button>*@
-                <button type="button" class="btn btn-success float-end" id="bankbtn" onclick="BankKyc()">Next</button>
-                <button class="btn btn-success float-end" type="button" id="bankloader" style="display:none;" disabled>
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    Loading...
-                </button>
 
             </div>
         </div>
@@ -436,225 +518,348 @@
 
         <!-- ================= STEP 3 ================= -->
         <div class="card step-card" id="step3">
-            <div class="card-header"><strong>3. Address Details</strong></div>
+
+            <div class="card-header">
+                <strong>3. Aadhaar Details</strong>
+            </div>
 
             <div class="card-body">
 
-                @if (@Model.Userkycres.addrsverf == "P" || @Model.Userkycres.addrsverf == "R")
+                @if (Model.Userkycres.addrsverf == "P" || Model.Userkycres.addrsverf == "R")
                 {
-                    if (@Model.Userkycres.addrsverf == "R")
+
+                    if (Model.Userkycres.addrsverf == "R")
                     {
                         <div class="mb-3">
-                            <label class="form-label">Reject Reason :  @Model.Userkycres.rejectreason</label>
-                            <br />
-                            <label>Reject Remark :  @Model.Userkycres.rejectremark</label>
+                            <label>Reject Reason : @Model.Userkycres.rejectreason</label><br />
+                            <label>Reject Remark : @Model.Userkycres.rejectremark</label>
                         </div>
                     }
-                    <div class="mb-3">
-                        <label class="form-label">Address</label>
-                        <input type="text" id="address" value="@Model.Userkycres.addressdetail.address" class="form-control" />
-                    </div>
 
+                    <!-- Aadhaar default hidden selection -->
+                    <input type="hidden" id="IdType" name="IdType" value="1" />
+
+                    <!-- Aadhaar verification section -->
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Pincode</label>
-                            <input type="text" id="Pincode" value="@Model.Userkycres.addressdetail.pincode" class="form-control" />
+
+                        <div class="col-lg-10 col-8">
+
+                            <div class="mb-3">
+
+                                <label class="form-label">Aadhaar No.</label>
+
+                                <input type="text"
+                                       id="aadhar"
+                                       name="aadhar"
+                                       maxlength="12"
+                                       value="@Model.Userkycres.addressdetail.idproof"
+                                       class="form-control" />
+
+                                <input type="hidden"
+                                       id="isaadharverify"
+                                       value="@(ViewBag.isaadharverify ?? "false")" />
+
+                                <input type="hidden"
+                                       id="ReferenceIdHidden" />
+
+                                <span class="text-danger small"
+                                      id="aadharwait"
+                                      style="display:none;">
+                                    Sending OTP...
+                                </span>
+
+                            </div>
+
                         </div>
 
+
+                        <div class="col-lg-2 col-4">
+
+                            <button type="button"
+                                    id="aadharverifybtn"
+                                    onclick="AadharVerification()"
+                                    class="btn btn-dark w-100 mt-4">
+
+                                Send OTP
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- OTP section -->
+                    <div class="row mt-2"
+                         id="otpsection"
+                         style="display:none;">
+
+                        <div class="col-lg-8">
+
+                            <input type="text"
+                                   id="aadharotp"
+                                   class="form-control"
+                                   maxlength="6"
+                                   placeholder="Enter OTP" />
+
+                        </div>
+
+
+                        <div class="col-lg-4">
+
+                            <button type="button"
+                                    onclick="VerifyAadharOtp()"
+                                    class="btn btn-success w-100">
+
+                                Submit OTP
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Address Fields -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">Address</label>
+
+                        <input type="text"
+                               id="address"
+                               value="@Model.Userkycres.addressdetail.address"
+                               class="form-control" />
+
+                    </div>
+
+
+                    <div class="row">
+
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">State</label>
-                            <select class="form-select" name="statecode" id="statecode">
+
+                            <label>Pincode</label>
+
+                            <input type="text"
+                                   id="Pincode"
+                                   value="@Model.Userkycres.addressdetail.pincode"
+                                   class="form-control" />
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>State</label>
+
+                            <select id="statecode"
+                                    class="form-select">
+
                                 @foreach (var item in Model.states)
                                 {
-                                    if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.addressdetail.statecode)) && Convert.ToString(Model.Userkycres.addressdetail.statecode) == item.statecode)
-                                    {
-                                        <option value="@item.statecode" selected>@item.statename</option>
-                                    }
-                                    <option value="@item.statecode">@item.statename</option>
+                                    <option value="@item.statecode"
+                                            @(item.statecode == Model.Userkycres.addressdetail.statecode ? "selected" : "")>
+
+                                        @item.statename
+
+                                    </option>
                                 }
+
                             </select>
+
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">District</label>
-                            <input type="text" id="District" value="@Model.Userkycres.addressdetail.district" class="form-control" />
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">City / Town</label>
-                            <input type="text" id="City" value="@Model.Userkycres.addressdetail.city" class="form-control" />
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Address Proof Type</label>
-                            <select class="form-select" id="IdType">
-                                @foreach (var item in Model.kycTypeMasters)
-                                {
-                                    @*if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.addressdetail.idtype)) && Convert.ToString(Model.Userkycres.addressdetail.idtype) == item.IdType)
-                            {
-                                <option value="@item.Id" selected>@item.IdType</option>
-                            }*@
-                                    <option value="@item.Id">@item.IdType</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">ID Proof No.</label>
-                            <input type="text" id="Aadharno" value="@Model.Userkycres.addressdetail.idproof" class="form-control" />
-                        </div>
-                    </div>
 
 
-                    <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label mb-1 ">Front Address Proof (allow only jpg,jpeg,png)</label>
-                            <input type="file" id="Aadharfront" class="form-control" />
+
+                            <label>District</label>
+
+                            <input type="text"
+                                   id="District"
+                                   value="@Model.Userkycres.addressdetail.district"
+                                   class="form-control" />
+
                         </div>
 
+
                         <div class="col-md-6 mb-3">
-                            <label class="form-label mb-1 ">Back Address Proof (allow only jpg,jpeg,png)</label>
-                            <input type="file" id="Aadharback" class="form-control" />
+
+                            <label>City / Town</label>
+
+                            <input type="text"
+                                   id="City"
+                                   value="@Model.Userkycres.addressdetail.city"
+                                   class="form-control" />
+
                         </div>
 
                     </div>
 
-                    <button type="button" class="btn btn-secondary" onclick="prevStep(3)" disabled>Previous</button>
-                    @*<button type="button" class="btn btn-success float-end" onclick="nextStep(3)">Next</button>*@
-                    <button class="btn btn-success float-end" type="button" id="adrsloader" style="display:none;" disabled>
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        Loading...
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            onclick="prevStep(3)">
+
+                        Previous
+
                     </button>
-                    <button type="button" class="btn btn-success float-end" id="addresskyc" onclick="AddressVerify()">Next</button>
+
+
+                    <button type="button"
+                            class="btn btn-success float-end"
+                            id="addresskyc"
+                            onclick="AddressVerify()">
+
+                        Next
+
+                    </button>
+
+
+                    <button class="btn btn-success float-end"
+                            id="adrsloader"
+                            style="display:none;"
+                            disabled>
+
+                        Loading...
+
+                    </button>
+
                 }
                 else
                 {
 
+                    <!-- READ ONLY MODE AFTER VERIFY -->
+
+                    <input type="hidden" id="IdType" value="1" />
 
                     <div class="mb-3">
-                        <label class="form-label">Address</label>
-                        <input type="text" id="address" value="@Model.Userkycres.addressdetail.address" class="form-control" readonly />
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Pincode</label>
-                            <input type="text" id="Pincode" value="@Model.Userkycres.addressdetail.pincode" class="form-control" readonly />
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">State</label>
-                            <select class="form-select" name="statecode" id="statecode" disabled>
-                                @foreach (var item in Model.states)
-                                {
-                                    if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.addressdetail.statecode)) && Convert.ToString(Model.Userkycres.addressdetail.statecode) == item.statecode)
-                                    {
-                                        <option value="@item.statecode" selected>@item.statename</option>
-                                    }
-                                    <option value="@item.statecode">@item.statename</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">District</label>
-                            <input type="text" id="District" value="@Model.Userkycres.addressdetail.district" class="form-control" readonly />
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">City / Town</label>
-                            <input type="text" id="City" value="@Model.Userkycres.addressdetail.city" class="form-control" readonly />
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Address Proof Type</label>
-                            <select class="form-select" id="IdType" disabled>
-                                @foreach (var item in Model.kycTypeMasters)
-                                {
-                                    @*if (!string.IsNullOrEmpty(Convert.ToString(Model.Userkycres.addressdetail.idtype)) && Convert.ToString(Model.Userkycres.addressdetail.idtype) == item.IdType)
-                            {
-                                <option value="@item.Id" selected>@item.IdType</option>
-                            }*@
-                                    <option value="@item.Id">@item.IdType</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">ID Proof No.</label>
-                            <input type="text" id="Aadharno" value="@Model.Userkycres.addressdetail.idproof" class="form-control" readonly />
-                        </div>
+                        <label>Address</label>
+                        <input class="form-control"
+                               readonly
+                               value="@Model.Userkycres.addressdetail.address" />
                     </div>
 
 
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label mb-1 ">Front Address Proof (allow only jpg,jpeg,png)</label>
-                            <input type="file" id="Aadharfront" class="form-control" disabled />
-                        </div>
 
                         <div class="col-md-6 mb-3">
-                            <label class="form-label mb-1 ">Back Address Proof (allow only jpg,jpeg,png)</label>
-                            <input type="file" id="Aadharback" class="form-control" disabled />
+
+                            <label>Pincode</label>
+
+                            <input readonly
+                                   class="form-control"
+                                   value="@Model.Userkycres.addressdetail.pincode" />
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>State</label>
+
+                            <input readonly
+                                   class="form-control"
+                                   value="@Model.Userkycres.addressdetail.statename" />
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>District</label>
+
+                            <input readonly
+                                   class="form-control"
+                                   value="@Model.Userkycres.addressdetail.district" />
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>City</label>
+
+                            <input readonly
+                                   class="form-control"
+                                   value="@Model.Userkycres.addressdetail.city" />
+
                         </div>
 
                     </div>
 
-                    <button type="button" class="btn btn-secondary" onclick="prevStep(3)">Previous</button>
-                    <button type="button" class="btn btn-success float-end" onclick="nextStep(3)">Next</button>
-                    @*<button class="btn btn-success float-end" type="button" id="adrsloader" style="display:none;" disabled>
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                Loading...
-            </button>
-            <button type="button" class="btn btn-success float-end" id="addresskyc" onclick="AddressVerify()">Next</button>*@
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            onclick="prevStep(3)">
+
+                        Previous
+
+                    </button>
+
+
+                    <button type="button"
+                            class="btn btn-success float-end"
+                            onclick="nextStep(3)">
+
+                        Next
+
+                    </button>
+
                 }
 
             </div>
+
         </div>
-
-
 
         <!-- ================= STEP 4 ================= -->
-        <div class="card step-card" id="step4">
-            <div class="card-header"><strong>4. Direct Seller PDF</strong></div>
+        @*<div class="card step-card" id="step4">
+                <div class="card-header"><strong>4. Direct Seller PDF</strong></div>
 
-            <div class="card-body">
-                <a href="~/Account/Downloadpdf" class="btn btn-sm btn-outline-primary mb-2">Download PDF</a>
-                <div class="form-text"> कृपया ऊपर दी गई PDF फ़ाइल डाउनलोड करें, आवश्यक विवरण भरें और फिर यहाँ दोबारा Upload करें। </div>
-                (allow only pdf)
+                <div class="card-body">
+                    <a href="~/Account/Downloadpdf" class="btn btn-sm btn-outline-primary mb-2">Download PDF</a>
+                    <div class="form-text"> कृपया ऊपर दी गई PDF फ़ाइल डाउनलोड करें, आवश्यक विवरण भरें और फिर यहाँ दोबारा Upload करें। </div>
+                    (allow only pdf)
 
-                @if (@Model.Userkycres.Isformupload == "R" || @Model.Userkycres.Isformupload == "P")
-                {
-                    <input class="form-control" type="file" id="kycdoc">
-
-                    <button type="button" class="btn btn-secondary mt-2" onclick="prevStep(4)">Previous</button>
-                    <button class="btn btn-success float-end" type="button" id="formloader" style="display:none;" disabled>
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        Loading...
-                    </button>
-                    <button type="button" class="btn btn-success mt-2 float-end" id="formbtn" onclick="FormUpload()">Submit</button>
-                }
-                else
-                {
-                    if (@Model.Userkycres.Isformupload == "R")
+                    @if (@Model.Userkycres.Isformupload == "R" || @Model.Userkycres.Isformupload == "P")
                     {
-                        <div class="mb-3">
-                            <label class="form-label">Reject Reason :  @Model.Userkycres.rejectreason</label>
-                            <br />
-                            <label>Reject Remark :  @Model.Userkycres.rejectremark</label>
-                            <br />
-                        </div>
+                        <input class="form-control" type="file" id="kycdoc">
+
+                        <button type="button" class="btn btn-secondary mt-2" onclick="prevStep(4)">Previous</button>
+                        <button class="btn btn-success float-end" type="button" id="formloader" style="display:none;" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Loading...
+                        </button>
+                        <button type="button" class="btn btn-success mt-2 float-end" id="formbtn" onclick="FormUpload()">Submit</button>
+                    }
+                    else
+                    {
+                        if (@Model.Userkycres.Isformupload == "R")
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Reject Reason :  @Model.Userkycres.rejectreason</label>
+                                <br />
+                                <label>Reject Remark :  @Model.Userkycres.rejectremark</label>
+                                <br />
+                            </div>
+                        }
+
+                        <input class="form-control" type="file" id="kycdoc">
+
+                        <button type="button" class="btn btn-secondary mt-2" onclick="prevStep(4)">Previous</button>
+                        <button class="btn btn-success float-end" type="button" id="formloader" style="display:none;" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Loading...
+                        </button>
+                        <button type="button" class="btn btn-success mt-2 float-end" id="formbtn" onclick="FormUpload()">Submit</button>
                     }
 
-                    <input class="form-control" type="file" id="kycdoc">
-
-                    <button type="button" class="btn btn-secondary mt-2" onclick="prevStep(4)">Previous</button>
-                    <button class="btn btn-success float-end" type="button" id="formloader" style="display:none;" disabled>
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        Loading...
-                    </button>
-                    <button type="button" class="btn btn-success mt-2 float-end" id="formbtn" onclick="FormUpload()">Submit</button>
-                }
 
 
+                </div>
+            </div>*@
 
-            </div>
-        </div>
-
-        <div class="card step-card" id="step5">
-            <div class="card-header"><strong>5. Status</strong></div>
+        <div class="card step-card" id="step4">
+            <div class="card-header"><strong>4. Status</strong></div>
             <div class="card-body">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">@Model.Userkycres.idverf</label>
@@ -664,10 +869,174 @@
     </form>
 </div>
 <script>
+    $(document).ready(function () {
+
+        $("#kycbtn").click(function () {
+            debugger;
+            if (!validateForm()) return;
+
+            var IdType = $("#IdType").val();
+            if (IdType == "0") {
+                alert("Please select id proof type");
+                return false;
+            }
+            var Actype = $("#Actype").val();
+            if (Actype == "0") {
+                alert("Please select account type");
+                return false;
+            }
+            var Bank = $("#Bank").val();
+            if (Bank == "0") {
+                alert("Please select bank");
+                return false;
+            }
+            var formData = new FormData();
+            formData.append("Address", $("#address").val());
+            formData.append("Pincode", $("#Pincode").val());
+            formData.append("StateCode", $("#statecode").val());
+            formData.append("District", $("#District").val());
+            formData.append("City", $("#City").val());
+            formData.append("IdType", $("#IdType").val());
+            formData.append("Aadharno", $("#Aadharno").val());
+            formData.append("Aadharfront", $("#Aadharfront")[0].files[0]);
+            formData.append("Aadharback", $("#Aadharback")[0].files[0]);
+            formData.append("Actype", $("#Actype").val());
+            formData.append("Acno", $("#Acno").val());
+            formData.append("Bank", $("#Bank").val());
+            formData.append("Bankname", $("#Bank :selected").text());
+            formData.append("BranchName", $("#BranchName").val());
+            formData.append("IFSCCode", $("#IFSCCode").val());
+            formData.append("Bankdoc", $("#Bankdoc")[0].files[0]);
+            formData.append("PanNo", $("#PanNo").val());
+            formData.append("Pandoc", $("#Pandoc")[0].files[0]);
+            formData.append("kycdoc", $("#kycdoc")[0].files[0]);
+
+            $.ajax({
+                url: '/Account/SaveKyc',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    $("#kycbtn").prop("disabled", true).text("Saving...");
+                },
+                success: function (response) {
+                    if (response.success) {
+
+                        location.reload();
+                    }
+                    alert("" + response.message);
+                },
+                error: function (xhr, status, error) {
+                    debugger;
+                    let errorMessage = "Something went wrong";
+
+                    // Try to get meaningful message from server
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        // Sometimes server sends plain text or HTML
+                        errorMessage = xhr.responseText.substring(0, 300); // prevent too long alert
+                    } else if (xhr.status === 0) {
+                        errorMessage = "Connection failed (server offline / blocked by CORS / timeout)";
+                    } else if (xhr.status === 413) {
+                        errorMessage = "File too large (413 Payload Too Large)";
+                    } else if (xhr.status >= 400 && xhr.status < 500) {
+                        errorMessage = `Client error (${xhr.status}): ${xhr.statusText}`;
+                    } else if (xhr.status >= 500) {
+                        errorMessage = `Server error (${xhr.status})`;
+                    }
+
+                    alert("Error: " + errorMessage);
+                    /*alert("Error:" + error);*/
+                },
+                complete: function () {
+                    $("#kycbtn").prop("disabled", false).text("Save KYC");
+                }
+            });
+        });
+
+        function validateForm() {
+            let required = [
+                "#address", "#Pincode", "#statecode", "#District", "#City",
+                "#Aadharno", "#Aadharfront", "#Aadharback", "#Actype", "#Acno",
+                "#Bank", "#BranchName", "#IFSCCode", "#Bankdoc", "#PanNo", "#Pandoc", "#IdType"
+            ];
+
+            for (let f of required) {
+                if ($(f).val() === "" || $(f).val() == null) {
+                    alert("Please fill all mandatory fields!");
+                    $(f).focus();
+                    return false;
+                }
+            }
+
+            if (!/^\d{6}$/.test($("#Pincode").val())) {
+                alert("Invalid Pincode (6 digits only)");
+                $("#Pincode").focus(); return false;
+            }
+
+            if ($("#Aadharno").val().length > 16) {
+                alert("Max 16 digits character");
+                $("#Aadharno").focus(); return false;
+            }
+
+            //if (!/^\d{16}$/.test($("#Aadharno").val())) {
+            //    alert("Max 16 digits character");
+            //    $("#Aadharno").focus(); return false;
+            //}
+
+            //if (!/^[A-Z]{4}0[A-Z0-9]{6}$/i.test($("#IFSCCode").val())) {
+            //    alert("Invalid IFSC Code format");
+            //    $("#IFSCCode").focus(); return false;
+            //}
+
+            if (!/^\d{8,20}$/.test($("#Acno").val())) {
+                alert("Invalid Account Number");
+                $("#Acno").focus(); return false;
+            }
+
+            if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i.test($("#PanNo").val())) {
+                alert("Invalid PAN Number format");
+                $("#PanNo").focus(); return false;
+            }
+
+            let allowed = [".jpg", ".jpeg", ".png", ".pdf"];
+            let files = ["#Aadharfront", "#Aadharback", "#Bankdoc", "#Pandoc"];
+
+            for (let file of files) {
+                let name = $(file).val();
+                if (name) {
+                    let ext = name.substring(name.lastIndexOf('.')).toLowerCase();
+                    if (!allowed.includes(ext)) {
+                        alert("Invalid file type: " + name);
+                        $(file).focus(); return false;
+                    }
+                }
+            }
+
+            let kycallowed = [".pdf"];
+            let kycfiles = ["#kycdoc"];
+            for (let file of kycfiles) {
+                let name = $(file).val();
+                if (name) {
+                    let ext = name.substring(name.lastIndexOf('.')).toLowerCase();
+                    if (!kycallowed.includes(ext)) {
+                        alert("Invalid file type: " + name);
+                        $(file).focus(); return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+    });
+</script>
+<script>
     function setStep(step) {
 
         // hide all steps
-        for (let i = 1; i <= 4; i++) {
+        for (let i = 1; i <= 3; i++) {
             document.getElementById("step" + i).classList.remove("active");
             document.getElementById("s" + i).classList.remove("step-active");
             document.getElementById("s" + i).classList.add("step-pending");
@@ -693,8 +1062,8 @@
     var isbankverify = $("#isbankverify").val();
     var isaddrsverf = $("#isaddrsverf").val();
     var isidproofverf = $("#isidproofverf").val();
-    var Isformupload = $("#Isformupload").val();
-    var isformuploadvalue = $("#isformuploadvalue").val();
+    //var Isformupload = $("#Isformupload").val();
+    //var isformuploadvalue = $("#isformuploadvalue").val();
     debugger;
     // default open step 1
     if (ispanverify != "Y") {
@@ -702,6 +1071,9 @@
     }
     else if (isbankverify != "Y") {
         setStep(2);
+    }
+    else if (isaddrsverf != "Y") {
+        setStep(3);
     }
     else {
         if (isaddrsverf == "P") {
@@ -713,28 +1085,366 @@
         else if (isidproofverf == "") {
             setStep(3);
         }
-        else {
-            if (Isformupload == "P") {
-                setStep(4);
-            }
-            else if (Isformupload == "R") {
-                setStep(4);
-            }
-            if (isformuploadvalue == "") {
-                setStep(4);
-            }
+        //else {
+        //    if (Isformupload == "P")
+        //    {
+        //        setStep(4);
+        //    }
+        //    else if (Isformupload == "R")
+        //    {
+        //        setStep(4);
+        //    }
+        //    if (isformuploadvalue == "")
+        //    {
+        //        setStep(4);
+        //    }
+        //}
+
+        if (ispanverify == "Y" && isbankverify == "Y" && isaddrsverf == "N") {
+            setStep(4);
+        }
+        else if (ispanverify == "Y" && isbankverify == "Y" && isaddrsverf == "N") {
+            setStep(4);
+        }
+        else if (ispanverify == "Y" && isbankverify == "Y" && isaddrsverf == "Y") {
+            setStep(4);
+        }
+        else if (ispanverify == "Y" && isbankverify == "Y" && isaddrsverf == "Y") {
+            setStep(4);
         }
 
-        if (ispanverify == "Y" && isbankverify == "Y" && isaddrsverf == "N" && Isformupload == "Y") {
-            setStep(5);
-        }
-        else if (ispanverify == "Y" && isbankverify == "Y" && isaddrsverf == "Y" && Isformupload == "Y") {
-            setStep(5);
-        }
-        
-        
     }
 
+
+
 </script>
-    </div>
-</section>
+<script>
+
+    /* ============================================================
+       OTP TIMER CONFIG
+    ============================================================ */
+
+    var _otpTimer = null;
+
+
+    /* ============================================================
+       TIMER FORMAT HELPER
+    ============================================================ */
+
+    function formatTimer(s) {
+
+        var m = Math.floor(s / 60);
+        var sec = s % 60;
+
+        return (m < 10 ? '0' : '') + m + ':' +
+            (sec < 10 ? '0' : '') + sec;
+    }
+
+
+    /* ============================================================
+       START OTP TIMER (5 MIN)
+    ============================================================ */
+
+    function startOtpTimer() {
+
+        if (_otpTimer) clearInterval(_otpTimer);
+
+        var seconds = 300;
+
+        $('#aadharverifybtn')
+            .prop('disabled', true)
+            .text('Resend OTP (' + formatTimer(seconds) + ')');
+
+        _otpTimer = setInterval(function () {
+
+            seconds--;
+
+            if ($('#isaadharverify').val() !== 'true') {
+
+                $('#aadharverifybtn')
+                    .text('Resend OTP (' + formatTimer(seconds) + ')');
+
+            }
+
+            if (seconds <= 0) {
+
+                clearInterval(_otpTimer);
+                _otpTimer = null;
+
+                if ($('#isaadharverify').val() !== 'true') {
+
+                    $('#otpsection').hide();
+
+                    $('#aadharotp').val('');
+
+                    $('#aadharverifybtn')
+                        .prop('disabled', false)
+                        .text('Resend OTP');
+
+                }
+
+            }
+
+        }, 1000);
+
+    }
+
+
+    /* ============================================================
+       SEND OTP
+    ============================================================ */
+
+    function AadharVerification() {
+
+        if ($('#isaadharverify').val() === 'true') {
+
+            $('#aadharverifybtn')
+                .prop('disabled', true)
+                .text('Verified');
+
+            return;
+
+        }
+
+        var aadhar = $('#aadhar').val().trim();
+
+        if (!aadhar) {
+
+            alert('Please enter Aadhaar number.');
+            return;
+
+        }
+
+        if (aadhar.length !== 12 || isNaN(aadhar)) {
+
+            alert('Please enter valid 12 digit Aadhaar number.');
+            return;
+
+        }
+
+        $('#aadharverifybtn').prop('disabled', true);
+
+        $('#aadharwait').show();
+
+
+        $.ajax({
+
+            type: "POST",
+
+            url: "/Account/AadharOtpVerify",
+
+            data: { AadharNo: aadhar },
+
+
+            success: function (data) {
+
+                $('#aadharwait').hide();
+
+                alert(data.Message);
+
+
+                if (data.Status === true) {
+
+                    $('#ReferenceIdHidden').val(data.ReferenceId);
+
+                    $('#isaadharverify').val('otp_sent');
+
+                    $('#otpsection').show();
+
+                    startOtpTimer();
+
+                }
+                else {
+
+                    $('#aadharverifybtn')
+                        .prop('disabled', false)
+                        .text('Send OTP');
+
+                }
+
+            },
+
+
+            error: function () {
+
+                $('#aadharwait').hide();
+
+                alert("OTP sending failed.");
+
+                $('#aadharverifybtn')
+                    .prop('disabled', false)
+                    .text('Send OTP');
+
+            }
+
+        });
+
+    }
+
+
+    /* ============================================================
+       VERIFY OTP
+    ============================================================ */
+
+    function VerifyAadharOtp() {
+
+        var otp = $('#aadharotp').val().trim();
+
+        var referenceId = $('#ReferenceIdHidden').val();
+
+
+        if (!otp) {
+
+            alert('Enter OTP first');
+
+            return;
+
+        }
+
+
+        $.ajax({
+
+            type: "POST",
+
+            url: "/Account/VerifyAadhaarOtp",
+
+            data: {
+
+                ReferenceId: referenceId,
+
+                Otp: otp
+
+            },
+
+
+            success: function (res) {
+
+
+                if (res.Status === true) {
+
+                    $('#isaadharverify').val('true');
+
+
+                    if (_otpTimer) {
+
+                        clearInterval(_otpTimer);
+
+                        _otpTimer = null;
+
+                    }
+
+
+                    $('#aadharverifybtn')
+
+                        .prop('disabled', true)
+
+                        .text('Verified');
+
+
+                    /* ===============================
+                       AUTO ADDRESS FILL
+                    =============================== */
+
+                    if (res.FullAddress)
+                        $('#address').val(res.FullAddress);
+
+                    if (res.Pincode)
+                        $('#Pincode').val(res.Pincode);
+
+                    if (res.State) {
+
+                        var apiState = res.State.trim().toLowerCase();
+
+                        $("#statecode option").each(function () {
+
+                            var optionText = $(this).text().trim().toLowerCase();
+
+                            if (optionText.includes(apiState) || apiState.includes(optionText)) {
+
+                                $(this).prop("selected", true);
+
+                                return false;
+
+                            }
+                        });
+                    }
+
+                    if (res.District)
+                        $('#District').val(res.District);
+
+                    if (res.City)
+                        $('#City').val(res.City);
+
+
+                    /* ===============================
+                       LOCK ADDRESS FIELDS
+                    =============================== */
+
+                    $('#aadhar,#address,#Pincode,#District,#City')
+
+                        .prop('readonly', true);
+
+
+                    $('#statecode').prop('disabled', true);
+
+
+                    /* ===============================
+                       HIDE OTP BOX
+                    =============================== */
+
+                    $('#otpsection').hide();
+
+
+                    alert('Aadhaar verified successfully');
+
+                }
+
+                else {
+
+                    alert(res.Message || "Invalid OTP");
+
+                    $('#aadharotp').val('').focus();
+
+                }
+
+            },
+
+
+            error: function () {
+
+                alert("OTP verification failed");
+
+            }
+
+        });
+
+    }
+
+
+    /* ============================================================
+       PAGE LOAD STATE RESTORE
+    ============================================================ */
+
+    $(document).ready(function () {
+
+        if ($('#isaadharverify').val() === 'true') {
+
+            $('#aadharverifybtn')
+
+                .prop('disabled', true)
+
+                .text('Verified');
+
+
+            $('#aadhar,#address,#Pincode,#District,#City')
+
+                .prop('readonly', true);
+
+
+            $('#statecode').prop('disabled', true);
+
+        }
+
+    });
+
+</script>

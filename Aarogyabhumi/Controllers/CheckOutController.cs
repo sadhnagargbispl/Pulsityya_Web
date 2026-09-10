@@ -6,15 +6,12 @@ using Shopinv.Models;
 using Shopinv.SiteExtension;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
-using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -24,21 +21,15 @@ using System.Xml;
 
 namespace Shopinv.Controllers
 {
-    //[KycRequired]
+    [KycRequired]
     public class CheckOutController : Controller
     {
-        private readonly static string SiteUrl = System.Configuration.ConfigurationManager.AppSettings["SiteUrl"];
-        private readonly static string CpanelUrl = System.Configuration.ConfigurationManager.AppSettings["CpanelUrl"];
-        //hemalika
         private readonly I_Category icateogry = null;
         private readonly I_Product iprod = null;
         private readonly I_Login _ilogin = null;
         private readonly I_PayMode ipaymode = null;
         CompanyDetail companyDetail;
         private readonly string IsTest = "True";
-        private string MID = "SIJLlaW2LFLAI3";
-        private string keyId = "rzp_live_SJtlM7erBu56ng";
-        private string keySecret = "LiT6yq45f6Rjs6U3yFKZw214";
         public CheckOutController(I_Category icateogry, I_Product iprod, I_Login _ilogin, I_PayMode ipaymode)
         {
             this.icateogry = icateogry;
@@ -52,31 +43,31 @@ namespace Shopinv.Controllers
         {
             var UserName = Convert.ToString(Session["IDNO"]);
             var Password = Convert.ToString(Session["password"]);
+
+            if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(Password))
+            {
+                return RedirectToAction("Index", "Home");
+            }
             var Id = Convert.ToString(Session["UserId"]);
             objg.RegisterUserDetails = _ilogin.GetUserLoginDetail(UserName, Password, Id);
             objg.userOtherDetail = _ilogin.GetUserotherLoginDetail(UserName, Password, Id);
             Session["Registeruser"] = objg.RegisterUserDetails;
             objg.DDLState = _ilogin.GetDDLState();
             objg.CartDetail = (IEnumerable<E_CartDetails>)Session["Cartdetailsftch"];
-            //if (Convert.ToDecimal(Session["couponamount"]) == 0)
-            //{
-            //    Session["couponamount"] = 0;
-            //    Session["coupon"] = "";
-            //    Session["totalamount"] = objg.CartDetail.Sum(s => s.Price * s.qty).ToString();
-            //    Session["totalbv"] = objg.CartDetail.Sum(s => s.bv * s.qty).ToString();
-            //}
-            objg.CartDetail = FinalCalualte();
-            Session["couponamount"] = 0;
-            Session["coupon"] = "";
-            Session["totalamount"] = objg.CartDetail.Sum(s => s.Netamount).ToString();
-            Session["totalbv"] = objg.CartDetail.Sum(s => s.bv * s.qty).ToString();
-            Session["totalpv"] = objg.CartDetail.Sum(s => s.PV * s.qty).ToString();
-
+            if (Convert.ToDecimal(Session["couponamount"]) == 0)
+            {
+                Session["couponamount"] = 0;
+                Session["coupon"] = "";
+                Session["totalamount"] = objg.CartDetail.Sum(s => s.Price * s.qty).ToString();
+                Session["totalbv"] = objg.CartDetail.Sum(s => s.Price * s.qty).ToString();
+                Session["totalpv"] = objg.CartDetail.Sum(s => s.PV * s.qty).ToString();
+            }
 
             decimal CourierCharge = 0;
-            if (Convert.ToDecimal(Session["totalpv"]) <= 99)
+            if (Convert.ToDecimal(Session["totalamount"]) < 5000)
             {
-                CourierCharge = 100;
+                int totalqty = Convert.ToInt32(objg.CartDetail.Sum(s => s.qty));
+                CourierCharge = 65 * totalqty;
             }
 
             Session["CourierCharge"] = CourierCharge;
@@ -131,77 +122,48 @@ namespace Shopinv.Controllers
             Session["IsSelfpickup"] = "N";
             return View(objg);
         }
-        public IEnumerable<E_CartDetails> FinalCalualte()
-        {
-            M_Category objg = new M_Category();
-            objg.CartDetail = (IEnumerable<E_CartDetails>)Session["Cartdetailsftch"];
-            try
-            {
-                var Totalpv = objg.CartDetail.Sum(s => s.PV * s.qty).ToString();
-                DataSet dsrange = iprod.GetWholeIncomeRange(Convert.ToInt32(Session["FormNo"]), Convert.ToDecimal(Totalpv));
-                if (dsrange != null && dsrange.Tables.Count > 0 && dsrange.Tables[0].Rows.Count > 0)
-                {
-                    decimal discount = Convert.ToDecimal(dsrange.Tables[0].Rows[0]["Discount"]);
-                    Session["Discount"] = discount;
-                    foreach (var item in objg.CartDetail)
-                    {
-                        item.Dp = item.Price;
-                        item.Totalvp = item.qty * item.PV;
-                        //totalbv = qty * item.bv;
-                        item.Earnbase = item.ProdCommssn;
-                        item.Lesseb = (item.Earnbase * discount) / 100;
-                        item.finalprice = item.Price - item.Lesseb;
-                        item.amount = item.qty * item.finalprice;
-                        item.Gst = (item.amount * item.Gst) / 100;
-                        item.Netamount = item.amount + item.Gst;
-                        item.Discount = discount;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
 
-            }
-            return objg.CartDetail;
-        }
         [HttpPost]
         public ActionResult SaveAddressDetail(M_Category obj, string Action, string FirstName, string Lastname, string Mobile,
             string StateCode, string District, string City, string Address, string PinCode, string PartyCode, string Email,
             string AlternateMobileno, string BillingAddress, string BillingCity,
-            string BillingPinCode, string BillingStateCodebState, string Kitbilltype, string Statename)
+            string BillingPinCode, string BillingStateCodebState, string Kitbilltype)
         {
             var UserName = Convert.ToString(Session["IDNO"]);
             var Password = Convert.ToString(Session["password"]);
             var Id = Convert.ToString(Session["UserId"]);
             var FormNo = Convert.ToString(Session["FormNo"]);
             Session["PartyCode"] = PartyCode;
-            string fulladdress = Address;// + " " + Statename + " " + City + " " + PinCode;
             obj.RegisterUserDetails = _ilogin.SaveAddressDetail(Action, Id, UserName, Password, Email, FirstName,
-                Lastname, Mobile, FormNo, StateCode, District, City, fulladdress, PinCode,
+                Lastname, Mobile, FormNo, StateCode, District, City, Address, PinCode,
                  AlternateMobileno, BillingAddress, BillingCity,
               BillingPinCode, BillingStateCodebState);
             var cartCount = obj.RegisterUserDetails != null ? obj.RegisterUserDetails.Count() : 0;
             //DataSet ds = pack.getPackage(FormNo);
             var msg = "NotExist";
             Session["Kitbilltype"] = Kitbilltype;
-            //if (Convert.ToString(Session["MemMode"]) == "D")
-            //{
-            //    obj.CartDetail = (IEnumerable<E_CartDetails>)Session["Cartdetailsftch"];
-            //    decimal totalbv = obj.CartDetail.Sum(s => (s.Price * s.qty));
-            //    DataSet dscount = iprod.UpdateKitOnPurchaseUpdate(Convert.ToInt32(Session["FormNo"]), totalbv, Kitbilltype);
-            //    if (dscount.Tables[0].Rows.Count > 0)
-            //    {
-            //        if (Convert.ToString(dscount.Tables[0].Rows[0]["Status"]) == "FAILED")
-            //        {
-            //            msg = Convert.ToString(dscount.Tables[0].Rows[0]["msg"]);
-            //        }
-            //        if (Convert.ToString(dscount.Tables[0].Rows[0]["Status"]) == "SUCCESS")
-            //        {
-            //            Session["Newkitid"] = Convert.ToString(dscount.Tables[0].Rows[0]["NewKitID"]);
-            //        }
-            //    }
-            //}
-            return Json(new { cartCount, msg });
+            if (Convert.ToString(Session["MemMode"]) == "D")
+            {
+                obj.CartDetail = (IEnumerable<E_CartDetails>)Session["Cartdetailsftch"];
+                decimal totalbv = obj.CartDetail.Sum(s => (s.Price * s.qty));
+                DataSet dscount = iprod.UpdateKitOnPurchaseUpdate(Convert.ToInt32(Session["FormNo"]), totalbv, Kitbilltype);
+                if (dscount.Tables[0].Rows.Count > 0)
+                {
+                    if (Convert.ToString(dscount.Tables[0].Rows[0]["Status"]) == "FAILED")
+                    {
+                        msg = Convert.ToString(dscount.Tables[0].Rows[0]["msg"]);
+                    }
+                    if (Convert.ToString(dscount.Tables[0].Rows[0]["Status"]) == "SUCCESS")
+                    {
+                        Session["Newkitid"] = Convert.ToString(dscount.Tables[0].Rows[0]["NewKitID"]);
+                    }
+                }
+            }
+else
+            {
+                Session["Newkitid"] = "0";
+            }
+                return Json(new { cartCount, msg });
         }
         public ActionResult PaymentProceed(M_Category obj)
         {
@@ -281,7 +243,7 @@ namespace Shopinv.Controllers
                             decimal CourierCharge = 0;
                             var ShopType = "";
 
-                            var PartyCode = Session["PartyCode"].ToString();
+                            var PartyCode = string.Empty;
                             var Deliveryid = string.Empty; /*Session["DeliveryAddressID"].ToString()*/;
 
                             if (Deliveryid == "2")
@@ -402,11 +364,11 @@ namespace Shopinv.Controllers
                 //{
                 TotPrice = TotPrice + 0;
                 // }
-                //if (Convert.ToDecimal(Session["couponamount"]) == 0)
-                //{
-                //    Session["totalamount"] = TotPrice;
+                if (Convert.ToDecimal(Session["couponamount"]) == 0)
+                {
+                    Session["totalamount"] = TotPrice;
 
-                //}
+                }
                 var FormNo = Session["FormNo"];
                 obj.GetWalletBalence = ipaymode.GetBalence(WalletType, Convert.ToString(FormNo));
                 Balance = Convert.ToDecimal(obj.GetWalletBalence.ToList()[0].Balance);
@@ -423,14 +385,14 @@ namespace Shopinv.Controllers
             }
             else
             {
-                //if (Convert.ToString(Session["MemMode"]) == "P")
-                //{
-                //    return RedirectToAction("PaymentWalletProceedCustomer", "CheckOut", new
-                //    {
-                //        // pass properties of obj (not the whole object)
-                //        Amount = Amount
-                //    });
-                //}
+                if (Convert.ToString(Session["MemMode"]) == "P")
+                {
+                    return RedirectToAction("PaymentWalletProceedCustomer", "CheckOut", new
+                    {
+                        // pass properties of obj (not the whole object)
+                        Amount = Amount
+                    });
+                }
 
                 bool sta = false;
                 var randomordernumber = Convert.ToInt32(Session["Randomordernumber"]);
@@ -467,17 +429,12 @@ namespace Shopinv.Controllers
                     //req.Password = Convert.ToString(Session["password"]);
                     //req.TxnData = Billno + ";" + Amount + ";BVCredit";
                     //req.Amount = Amount;
-                    IEnumerable<E_CartDetails> CheckOutDetail = null;
-                    CheckOutDetail = (IEnumerable<E_CartDetails>)Session["Cartdetailsftch"];
-                    CheckOutDetail = FinalCalualte();
-                    decimal totalgst = CheckOutDetail.Sum(s => (s.Gst * s.qty));
-                    decimal ToTpayAmount = CheckOutDetail.Sum(s => (s.Netamount));
-                    decimal Totalamount = CheckOutDetail.Sum(s => (s.amount));
-                    string apiurl = CpanelUrl + "/CheckLogin?token=abUnMar5489pidlAewUF4875brlE8a4i5n61112&UserName=" + Convert.ToString(Session["IDNO"]) + "&Password=" + Convert.ToString(Session["password"]) + "&action=addbv&amount=" + Convert.ToString(Totalamount) + "&billtype=R&kitid=0&totalpv=" + Convert.ToString(Session["totalpv"]) + "&gst=" + totalgst + "&netamount=" + ToTpayAmount + "&TxnData=" + randomordernumber + ";" + Convert.ToString(Session["totalbv"]) + ";BVCredit";
+                    Session["Newkitid"] = "2";
+                    string apiurl = "https://d9cpanel.bisplindia.in/CheckLogin?token=abUnMar5489pidlAewUF4875brlE8a4i5n61108&UserName=" + Convert.ToString(Session["IDNO"]) + "&Password=" + Convert.ToString(Session["password"]) + "&action=addbv&amount=" + Convert.ToString(Session["totalamount"]) + "&totalpv=" + Convert.ToString(Session["totalpv"]) + "&billtype=" + Convert.ToString(Session["Kitbilltype"]) + "&kitid=" + Convert.ToString(Session["Newkitid"]) + "&TxnData=" + randomordernumber + ";" + Convert.ToString(Session["totalbv"]) + ";BVCredit";
                     var detail = JsonConvert.SerializeObject(req);
                     var response = Callgetfunction(apiurl);
                     var output = JsonConvert.DeserializeObject<Bsnaddbresponse>(response);
-                    iprod.SaveAarogyaidactivationLog(req.UserName, apiurl, response);
+                    iprod.SaveAarogyaidactivationLog(Convert.ToString(Session["IDNO"]), apiurl, response);
                     if (output.status == "SUCCESS")
                     {
                         Billno = output.voucherno;
@@ -487,13 +444,14 @@ namespace Shopinv.Controllers
                         DataTable Stock = new DataTable();
                         dynamic sav = "N";
                         var Sessionid = Session["CurrentUserSessionID"];
-
+                        IEnumerable<E_CartDetails> CheckOutDetail = null;
+                        CheckOutDetail = (IEnumerable<E_CartDetails>)Session["Cartdetailsftch"];
                         var userid = Session["UserId"];
                         var uniqueId = Session["UniqueId"];
                         var idNo = Session["IDNO"];
                         var FormNo = Session["FormNo"];
                         var ShopType = "";/*Session["ShopTye"];*/
-                        var PartyCode = Session["PartyCode"].ToString();
+                        var PartyCode = Session["PartyCode"];
                         //PartyCode = Session["PartyCode"].ToString();
 
                         decimal CourierCharge = 0;
@@ -533,7 +491,7 @@ namespace Shopinv.Controllers
                                 sb.AppendLine(("<ProdId>" + item.ProdId + "</ProdId>"));
                                 sb.AppendLine(("<ProdName>" + item.ProdName.Replace("&", "").ToString() + "</ProdName>"));
                                 sb.AppendLine(("<Qty>" + qty + "</Qty>"));
-                                sb.AppendLine(("<Price>" + (item.Netamount) + "</Price>"));
+                                sb.AppendLine(("<Price>" + (item.qty * item.Price) + "</Price>"));
                                 sb.AppendLine(("<BV>" + (item.qty * item.bv) + "</BV>"));
                                 sb.AppendLine(("<PV>" + (item.qty * item.PV) + "</PV>"));
                                 sb.AppendLine(("<myIP>" + myIP + "</myIP>"));
@@ -554,11 +512,9 @@ namespace Shopinv.Controllers
                                 sb.AppendLine(("<paidbv>" + Convert.ToString(Session["remainbv"]) + "</paidbv>"));
                                 sb.AppendLine(("<Shoppingwallet>" + Convert.ToString("0") + "</Shoppingwallet>"));
                                 sb.AppendLine(("<Repurchasewallet>" + Convert.ToString("0") + "</Repurchasewallet>"));
-                                sb.AppendLine(("<Earnbase>" + Convert.ToString(item.Earnbase) + "</Earnbase>"));
-                                sb.AppendLine(("<LessEB>" + Convert.ToString(item.Lesseb) + "</LessEB>"));
-                                sb.AppendLine(("<Gst>" + Convert.ToString(item.Gst) + "</Gst>"));
-                                sb.AppendLine(("<finalprice>" + Convert.ToString(item.finalprice) + "</finalprice>"));
                                 sb.AppendLine(("<IsSelfpickup>" + Convert.ToString(Session["IsSelfpickup"]) + "</IsSelfpickup>"));
+                                sb.AppendLine(("<Batchcode>" + Convert.ToString(item.BatchNo) + "</Batchcode>"));
+                             
                                 sb.AppendLine("</OrderData>");
                                 sb.AppendLine("</orders>");
                             }
@@ -625,13 +581,9 @@ namespace Shopinv.Controllers
                                         qty = Convert.ToDecimal(qty1),//Convert.ToDecimal(dr["qty"]),
                                         Mode = Convert.ToString(dr["Mode"]),
                                         OrderDate = Convert.ToString(dr["OrderDate"]),
-                                        ImagePath = SiteExtension.MediaUrl.Rehost(Convert.ToString(dr["ImagePath"])),
+                                        ImagePath = Convert.ToString(dr["ImagePath"]),
                                         MRP = Convert.ToDecimal(dr["MRP"]),
                                         BV = Convert.ToDecimal(dr["BV"]),
-                                        PV = Convert.ToDecimal(dr["PV"]),
-                                        LessEB = Convert.ToDecimal(dr["LessEB"]),
-                                        DP = Convert.ToDecimal(dr["DP"]),
-                                        finalprice = Convert.ToDecimal(dr["finalprice"]),
                                         //CourierCharge = Convert.ToDecimal(dr["CourierCharge"])
                                         //Imagepath = Convert.ToString(dr["ImagePath"]),
                                     });
@@ -756,7 +708,7 @@ namespace Shopinv.Controllers
                     var idNo = Session["IDNO"];
                     var FormNo = Session["FormNo"];
                     var ShopType = "";/*Session["ShopTye"];*/
-                    var PartyCode = Session["PartyCode"].ToString();
+                    var PartyCode = Session["PartyCode"];
                     //PartyCode = Session["PartyCode"].ToString();
 
                     decimal CourierCharge = 0;
@@ -883,7 +835,7 @@ namespace Shopinv.Controllers
                                     qty = Convert.ToDecimal(qty1),//Convert.ToDecimal(dr["qty"]),
                                     Mode = Convert.ToString(dr["Mode"]),
                                     OrderDate = Convert.ToString(dr["OrderDate"]),
-                                    ImagePath = SiteExtension.MediaUrl.Rehost(Convert.ToString(dr["ImagePath"])),
+                                    ImagePath = Convert.ToString(dr["ImagePath"]),
                                     MRP = Convert.ToDecimal(dr["MRP"]),
                                     BV = Convert.ToDecimal(dr["BV"]),
                                     //CourierCharge = Convert.ToDecimal(dr["CourierCharge"])
@@ -1034,7 +986,7 @@ namespace Shopinv.Controllers
                             x_client_id = "11649217141cb3d4d36a36ffa9c1294611";
                             x_client_secret = "cfsk_ma_prod_4f8ad5a28de217d91cb53ad6176d96ef_d9f03137";
                             Url = "https://api.cashfree.com/pg/orders";
-                            returnurl = SiteUrl + "/CheckOut/PaymentSuccessCashFree?order_id={order_id}";
+                            returnurl = "https://d9cpanel.bisplindia.in/CheckOut/PaymentSuccessCashFree?order_id={order_id}";
                             // Mode = "PROD";
                         }
                         else
@@ -1043,7 +995,7 @@ namespace Shopinv.Controllers
                             x_client_secret = "TESTaf195616268bd6202eeb3bf8dc458956e7192a85";
                             Url = "https://sandbox.cashfree.com/pg/orders";
                             returnurl = "https://localhost:44316/CheckOut/PaymentSuccessCashFree?order_id={order_id}";
-                            //returnurl = SiteUrl + "/CheckOut/PaymentSuccessCashFree?order_id={order_id}";
+                            //returnurl = "https://d9cpanel.bisplindia.in/CheckOut/PaymentSuccessCashFree?order_id={order_id}";
                             //Mode = "TEST";
                         }
                         cash.order_amount = (float)Convert.ToDouble(PGAmount);
@@ -1073,7 +1025,7 @@ namespace Shopinv.Controllers
                         DataSet dsss = convertJsonStringToDataSet(strresponse);
                         if (dsss.Tables[0].Rows[0]["order_status"].ToString().ToUpper() == "ACTIVE")
                         {
-                            string Bvapiurl = CpanelUrl + "/CheckLogin?token=abUnMar5489pidlAewUF4875brlE8a4i5n61102&UserName=" + Convert.ToString(Session["IDNO"]) + "&Password=" + Convert.ToString(Session["password"]) + "&action=addbv&amount=" + Convert.ToString(Session["totalamount"]) + "&billtype=" + Convert.ToString(Session["Kitbilltype"]) + "&kitid=" + Convert.ToString(Session["Newkitid"]) + "&TxnData=" + randomordernumber + ";" + Convert.ToString(Session["totalbv"]) + ";BVCredit";
+                            string Bvapiurl = "https://d9cpanel.bisplindia.in/CheckLogin?token=abUnMar5489pidlAewUF4875brlE8a4i5n61102&UserName=" + Convert.ToString(Session["IDNO"]) + "&Password=" + Convert.ToString(Session["password"]) + "&action=addbv&amount=" + Convert.ToString(Session["totalamount"]) + "&billtype=" + Convert.ToString(Session["Kitbilltype"]) + "&kitid=" + Convert.ToString(Session["Newkitid"]) + "&TxnData=" + randomordernumber + ";" + Convert.ToString(Session["totalbv"]) + ";BVCredit";
                             paymentid = dsss.Tables[0].Rows[0]["payment_session_id"].ToString();
                             //save order in temp table
                             string hostName = Dns.GetHostName();
@@ -1093,7 +1045,7 @@ namespace Shopinv.Controllers
                             decimal CourierCharge = 0;
                             var ShopType = "";
 
-                            var PartyCode = Session["PartyCode"].ToString();
+                            string PartyCode = Session["PartyCode"].ToString();
                             var Deliveryid = string.Empty; /*Session["DeliveryAddressID"].ToString()*/;
                             CourierCharge = Convert.ToDecimal(Session["CourierCharge"]);
                             //if (Deliveryid == "2")
@@ -1351,7 +1303,7 @@ namespace Shopinv.Controllers
                                 qty = Convert.ToDecimal(qty1),//Convert.ToDecimal(dr["qty"]),
                                 Mode = Convert.ToString(dr["Mode"]),
                                 OrderDate = Convert.ToString(dr["OrderDate"]),
-                                ImagePath = SiteExtension.MediaUrl.Rehost(Convert.ToString(dr["ImagePath"])),
+                                ImagePath = Convert.ToString(dr["ImagePath"]),
                                 MRP = Convert.ToDecimal(dr["MRP"]),
                                 BV = Convert.ToDecimal(dr["BV"])
                                 //CourierCharge = Convert.ToDecimal(dr["CourierCharge"])
@@ -1395,461 +1347,6 @@ namespace Shopinv.Controllers
             DataSet ds = new DataSet();
             ds.ReadXml(new XmlNodeReader(xd));
             return ds;
-        }
-
-        [HttpPost]
-        public JsonResult CreateOrder(decimal amount)
-        {
-            string status = "false";
-            try
-            {
-                LogHelper.ErrorLog(System.Web.HttpContext.Current.Server.MapPath("~/Logs/ErrorLog"), "CreateOrder start for " + Convert.ToString(Session["IDNO"]));
-                M_Category obj = new M_Category();
-                bool sta = false;
-                decimal CourierCharge = 0;
-                CourierCharge = Convert.ToDecimal(Session["CourierCharge"]);
-                var randomordernumber = Convert.ToInt32(Session["Randomordernumber"]);
-                sta = iprod.SaveTransactionOrder(randomordernumber);
-                if (sta)
-                {
-                    //amount = 1;
-                    string Amount = Convert.ToString(Session["totalamount"]);
-                    decimal Amountpg = Convert.ToDecimal(Session["totalamount"]) + CourierCharge;
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                    string url = "https://api.razorpay.com/v1/orders";
-
-                    string auth = Convert.ToBase64String(
-                        Encoding.UTF8.GetBytes(keyId + ":" + keySecret));
-
-                    var postData = new
-                    {
-                        amount = (int)(Amountpg * 100), // paise
-                        currency = "INR",
-                        receipt = "rcpt_" + randomordernumber
-                    };
-                    string json = JsonConvert.SerializeObject(postData);
-                    LogHelper.ErrorLog(System.Web.HttpContext.Current.Server.MapPath("~/Logs/ErrorLog"), "CreateOrder request " + json);
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                    request.Method = "POST";
-                    request.ContentType = "application/json";
-                    request.Headers["Authorization"] = "Basic " + auth;
-                    using (var streamWriter = new StreamWriter(request.GetRequestStream()))
-                    {
-                        streamWriter.Write(json);
-                    }
-                    string responseText;
-                    using (var response = (HttpWebResponse)request.GetResponse())
-                    using (var streamReader = new StreamReader(response.GetResponseStream()))
-                    {
-                        responseText = streamReader.ReadToEnd();
-                    }
-                    LogHelper.ErrorLog(System.Web.HttpContext.Current.Server.MapPath("~/Logs/ErrorLog"), "CreateOrder response " + responseText);
-
-                    dynamic order = JsonConvert.DeserializeObject(responseText);
-                    //save order in table------------------------------------------------------------------- 
-                    string hostName = Dns.GetHostName();
-                    string myIP = Dns.GetHostEntry(hostName).AddressList[0].ToString();
-                    DataTable Stock = new DataTable();
-                    dynamic sav = "N";
-                    IEnumerable<E_CartDetails> CheckOutDetail = null;
-                    CheckOutDetail = (IEnumerable<E_CartDetails>)Session["Cartdetailsftch"];
-                    Session["Cartdetailsftchpg"] = CheckOutDetail;
-                    Session["Cartdetailsftch"] = obj.CartDetail;
-                    var Sessionid = Session["CurrentUserSessionID"];
-                    var userid = Session["UserId"];
-                    var uniqueId = Session["UniqueId"];
-                    var UserName = Session["UserName"];
-                    var idNo = Session["IDNO"];
-                    var FormNo = Session["FormNo"];
-                    var OrderType = "";
-
-                    var ShopType = "";
-
-                    var PartyCode = Session["PartyCode"].ToString();
-                    var Deliveryid = string.Empty; /*Session["DeliveryAddressID"].ToString()*/;
-
-                    //if (Deliveryid == "2")
-                    //{
-                    //    CourierCharge = Convert.ToDecimal(Session["CourierCharge"]);
-                    //}
-                    //else
-                    //{
-                    //    CourierCharge = 0;
-                    //}
-
-                    if (ShopType.ToString() == "1")
-                    {
-                        OrderType = "T";
-                    }
-                    else
-                    {
-                        OrderType = "O";
-                    }
-                    StringBuilder sb = new StringBuilder();
-                    foreach (var item in CheckOutDetail)
-                    {
-                        decimal qty = 0;
-                        if (item.BunchQty > 0)
-                        {
-                            qty = item.qty * item.BunchQty;
-                        }
-                        else
-                        {
-                            qty = item.qty;
-                        }
-                        sb.AppendLine("<Cart>");
-                        sb.AppendLine("<CartData>");
-                        sb.AppendLine(("<ProdId>" + item.ProdId + "</ProdId>"));
-                        sb.AppendLine(("<ProdName>" + item.ProdName.Replace("&", "").ToString() + "</ProdName>"));
-                        sb.AppendLine(("<Qty>" + (item.qty) + "</Qty>"));
-                        sb.AppendLine(("<Price>" + (item.Price) + "</Price>"));
-                        sb.AppendLine(("<BV>" + (item.bv) + "</BV>"));
-                        sb.AppendLine(("<PV>" + (item.PV) + "</PV>"));
-                        sb.AppendLine(("<myIP>" + myIP + "</myIP>"));
-                        sb.AppendLine(("<BunchQty>" + (item.BunchQty) + "</BunchQty>"));
-                        sb.AppendLine(("<Sessionid>" + Convert.ToString(Sessionid) + "</Sessionid>"));
-                        sb.AppendLine(("<userid>" + Convert.ToString(userid) + "</userid>"));
-                        sb.AppendLine(("<Color>" + Convert.ToString(item.Color) + "</Color>"));
-                        sb.AppendLine(("<Size>" + Convert.ToString(item.Size) + "</Size>"));
-                        sb.AppendLine("</CartData>");
-                        sb.AppendLine("</Cart>");
-                    }
-                    string Pgorderid = order.id;
-
-
-                    // save order in database
-                    DataSet ds = iprod.SaveRazarpayTemp(idNo.ToString(), FormNo.ToString(), Convert.ToString(randomordernumber),
-                        "", "0", userid.ToString(), sb.ToString(),
-                        Convert.ToDecimal(Amount), "", "", "", "C", "", Deliveryid, CourierCharge.ToString(),
-                        PartyCode, "", Pgorderid);
-
-                    //if (ds != null && ds.Tables.Count > 0)
-                    //{
-                    //    status = "true";
-                    //    message = "Your order request has been successfully submitted.";
-                    //    id = Convert.ToInt32(ds.Tables[0].Rows[0]["id"]);
-                    //}
-                    //--------------------------------------------------------------------------------------
-                    status = "true";
-
-                    return Json(new
-                    {
-                        orderId = order.id,
-                        amount = Math.Ceiling(Amountpg),
-                        key = keyId,
-                        status = status,
-                        Pgorderid = Pgorderid
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.ErrorLog(System.Web.HttpContext.Current.Server.MapPath("~/Logs/ErrorLog"), "CreateOrder error " + ex.Message);
-            }
-            return Json(new
-            {
-                orderId = "",
-                amount = "",
-                key = "",
-                status = status
-            });
-        }
-
-        [HttpPost]
-        public JsonResult VerifyPayment(string razorpay_payment_id, string razorpay_order_id)
-        {
-            string message = "";
-            try
-            {
-                LogHelper.ErrorLog(System.Web.HttpContext.Current.Server.MapPath("~/Logs/ErrorLog"), "VerifyPayment start for " + Convert.ToString(Session["IDNO"]));
-                LogHelper.ErrorLog(System.Web.HttpContext.Current.Server.MapPath("~/Logs/ErrorLog"), "VerifyPayment razorpay_payment_id " + razorpay_payment_id);
-                var Sessionid = Session["CurrentUserSessionID"];
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-                string url = "https://api.razorpay.com/v1/payments/" + razorpay_payment_id;
-
-                string auth = Convert.ToBase64String(
-                    Encoding.UTF8.GetBytes(keyId + ":" + keySecret));
-
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.Method = "GET";
-                request.Headers["Authorization"] = "Basic " + auth;
-                request.ContentType = "application/json";
-
-                string responseText;
-                using (var response = (HttpWebResponse)request.GetResponse())
-                using (var reader = new StreamReader(response.GetResponseStream()))
-                {
-                    responseText = reader.ReadToEnd();
-                }
-                LogHelper.ErrorLog(System.Web.HttpContext.Current.Server.MapPath("~/Logs/ErrorLog"), "VerifyPayment payment response  " + responseText);
-                dynamic payment = JsonConvert.DeserializeObject(responseText);
-                var amount = payment.amount / 100; // paise → INR
-                DataSet Ds = iprod.GetOrderbyPgTxnid(razorpay_order_id);
-                if (payment.status == "authorized" || payment.status == "captured")
-                {
-                    //payment success
-                    decimal CourierCharge = 0;
-                    var idNo = Ds.Tables[0].Rows[0]["idNo"].ToString();
-                    IEnumerable<E_CartDetails> CheckOutDetail = null;
-                    CheckOutDetail = (IEnumerable<E_CartDetails>)Session["Cartdetailsftchpg"];
-                    CheckOutDetail = FinalCalualtePg();
-                    decimal totalgst = CheckOutDetail.Sum(s => (s.Gst * s.qty));
-                    decimal ToTpayAmount = CheckOutDetail.Sum(s => (s.Netamount));
-                    decimal Totalamount = CheckOutDetail.Sum(s => (s.amount));
-                    string apiurl = CpanelUrl + "/CheckLogin?token=abUnMar5489pidlAewUF4875brlE8a4i5n61106&UserName=" + Convert.ToString(idNo) + "&Password=" + Convert.ToString(Ds.Tables[0].Rows[0]["Passw"]) + "&action=addbv&amount=" + Convert.ToString(Totalamount) + "&billtype=R&kitid=0&totalpv=" + Convert.ToString(Session["totalpv"]) + "&gst=" + totalgst + "&netamount=" + ToTpayAmount + "&TxnData=" + Convert.ToString(Ds.Tables[0].Rows[0]["txnid"]) + ";" + Convert.ToString(Session["totalbv"]) + ";BVCredit";
-                    LogHelper.ErrorLog(System.Web.HttpContext.Current.Server.MapPath("~/Logs/ErrorLog"), "VerifyPayment bv api url  " + apiurl);
-                    var response = Callgetfunction(apiurl);
-                    var output = JsonConvert.DeserializeObject<Bsnaddbresponse>(response);
-                    iprod.SaveAarogyaidactivationLog(idNo, apiurl, response);
-                    if (output.status == "SUCCESS")
-                    {
-                        DataSet dsproduct = iprod.GetTransId(Convert.ToString(Ds.Tables[0].Rows[0]["txnid"]));
-                        // status = payment.status,          // created | authorized | captured | failed
-                        var ShopType = Ds.Tables[0].Rows[0]["ShopType"].ToString();
-                        var userid = Ds.Tables[0].Rows[0]["userid"].ToString();
-
-                        var FormNo = Ds.Tables[0].Rows[0]["FormNo"].ToString();
-                        var PartyCode = Ds.Tables[0].Rows[0]["PartyCode"].ToString();
-                        var CourierCharge1 = Convert.ToDecimal(Ds.Tables[0].Rows[0]["CourierCharge"]);
-                        var Deliveryid = Ds.Tables[0].Rows[0]["DecliveryId"].ToString();
-                        CourierCharge = Convert.ToDecimal(Session["CourierCharge"]);
-                        //if (Deliveryid == "2")
-                        //{
-                        //    CourierCharge = CourierCharge1;
-                        //}
-                        //else
-                        //{
-                        //    CourierCharge = 0;
-                        //}
-                        var Amount = Convert.ToDouble(Ds.Tables[0].Rows[0]["Amount"]);
-                        var OrderType = string.Empty;
-                        string myIP = "";
-                        if (ShopType.ToString() == "1")
-                        {
-                            OrderType = "T";
-                        }
-                        else
-                        {
-                            OrderType = "O";
-                        }
-                        decimal qty = 0;
-                        StringBuilder sb = new StringBuilder();
-                        if (CheckOutDetail.Count() > 0)
-                        {
-                            foreach (var item in CheckOutDetail)
-                            {
-                                if (item.BunchQty > 0)
-                                {
-                                    qty = item.qty * item.BunchQty;
-                                }
-                                else
-                                {
-                                    qty = item.qty;
-                                }
-                                if (Convert.ToDecimal(Session["remainbv"]) == 0)
-                                {
-                                    Session["remainbv"] = (item.qty * item.bv);
-                                }
-                                sb.AppendLine("<orders>");
-                                sb.AppendLine("<OrderData>");
-                                sb.AppendLine(("<ProdId>" + item.ProdId + "</ProdId>"));
-                                sb.AppendLine(("<ProdName>" + item.ProdName.Replace("&", "").ToString() + "</ProdName>"));
-                                sb.AppendLine(("<Qty>" + qty + "</Qty>"));
-                                sb.AppendLine(("<Price>" + (item.Netamount) + "</Price>"));
-                                sb.AppendLine(("<BV>" + (item.qty * item.bv) + "</BV>"));
-                                sb.AppendLine(("<PV>" + (item.qty * item.PV) + "</PV>"));
-                                sb.AppendLine(("<myIP>" + myIP + "</myIP>"));
-                                sb.AppendLine(("<Sessionid>" + Convert.ToString(Sessionid) + "</Sessionid>"));
-                                sb.AppendLine(("<userid>" + Convert.ToString(userid) + "</userid>"));
-                                sb.AppendLine(("<idNo>" + Convert.ToString(idNo) + "</idNo>"));
-                                sb.AppendLine(("<FormNo>" + Convert.ToString(FormNo) + "</FormNo>"));
-                                sb.AppendLine(("<ShopingBillType>" + Convert.ToString(ShopType) + "</ShopingBillType>"));
-                                sb.AppendLine(("<OrderType>" + Convert.ToString(OrderType) + "</OrderType>"));
-                                sb.AppendLine(("<PartyCode>" + Convert.ToString(PartyCode) + "</PartyCode>"));
-                                sb.AppendLine(("<Mode>" + "PaymentGateway" + "</Mode>"));
-                                sb.AppendLine(("<CourierCharge>" + Convert.ToString(CourierCharge) + "</CourierCharge>"));
-                                sb.AppendLine(("<Color>" + Convert.ToString(item.Color) + "</Color>"));
-                                sb.AppendLine(("<Size>" + Convert.ToString(item.Size) + "</Size>"));
-                                sb.AppendLine(("<TRNCharge>" + Convert.ToString("0.00") + "</TRNCharge>"));
-                                sb.AppendLine(("<coupon>" + Convert.ToString(Session["coupon"]) + "</coupon>"));
-                                sb.AppendLine(("<couponamount>" + Convert.ToString(Session["couponamount"]) + "</couponamount>"));
-                                sb.AppendLine(("<paidbv>" + Convert.ToString(Session["remainbv"]) + "</paidbv>"));
-                                sb.AppendLine(("<Shoppingwallet>" + Convert.ToString("0") + "</Shoppingwallet>"));
-                                sb.AppendLine(("<Repurchasewallet>" + Convert.ToString("0") + "</Repurchasewallet>"));
-                                sb.AppendLine(("<Earnbase>" + Convert.ToString(item.Earnbase) + "</Earnbase>"));
-                                sb.AppendLine(("<LessEB>" + Convert.ToString(item.Lesseb) + "</LessEB>"));
-                                sb.AppendLine(("<Gst>" + Convert.ToString(item.Gst) + "</Gst>"));
-                                sb.AppendLine(("<finalprice>" + Convert.ToString(item.finalprice) + "</finalprice>"));
-                                sb.AppendLine(("<IsSelfpickup>" + Convert.ToString(Session["IsSelfpickup"]) + "</IsSelfpickup>"));
-                                sb.AppendLine("</OrderData>");
-                                sb.AppendLine("</orders>");
-                            }
-                        }
-                        var ordertransId = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-                        DataSet ds = iprod.InserttblTrnOrderWeb(sb.ToString(), Convert.ToDecimal(FormNo), Convert.ToDecimal(Amount), Convert.ToDecimal(ordertransId), "P", idNo.ToString(), "", output.voucherno);
-                        if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-                        {
-                            var id = ds.Tables[0].Rows[0][0];
-                            DataSet Order = iprod.UpdatePaymentOrderId(id.ToString(), Convert.ToString(Ds.Tables[0].Rows[0]["txnid"]));
-                            DataSet Status = iprod.UpdateStatus("Paid", Convert.ToString(Ds.Tables[0].Rows[0]["txnid"]), "", razorpay_payment_id);
-                            message = "Order save successfully";
-
-                            Session["coupon"] = "";
-                            Session["couponamount"] = "0";
-                            Session["remainbv"] = "0";
-                            E_SaveOrderDetail obg = new E_SaveOrderDetail();
-                            List<E_SaveOrderDetail> lst = new List<E_SaveOrderDetail>();
-
-                            foreach (DataRow dr in ds.Tables[0].Rows)
-                            {
-                                int qty1 = 0;
-                                if (Convert.ToInt32(dr["BunchQty"]) > 0)
-                                {
-                                    qty1 = Convert.ToInt32(dr["qty"]) / Convert.ToInt32(dr["BunchQty"]);
-                                }
-                                else
-                                {
-                                    qty1 = Convert.ToInt32(dr["qty"]);
-                                }
-
-                                lst.Add(new E_SaveOrderDetail
-                                {
-                                    OrderId = Convert.ToInt32(dr["OrderId"]),
-                                    ProdName = Convert.ToString(dr["ProdName"]),
-                                    Price = Convert.ToDecimal(dr["Price"]),
-                                    qty = Convert.ToDecimal(qty1),//Convert.ToDecimal(dr["qty"]),
-                                    Mode = Convert.ToString(dr["Mode"]),
-                                    OrderDate = Convert.ToString(dr["OrderDate"]),
-                                    ImagePath = SiteExtension.MediaUrl.Rehost(Convert.ToString(dr["ImagePath"])),
-                                    MRP = Convert.ToDecimal(dr["MRP"]),
-                                    BV = Convert.ToDecimal(dr["BV"]),
-                                    PV = Convert.ToDecimal(dr["PV"]),
-                                    LessEB = Convert.ToDecimal(dr["LessEB"]),
-                                    DP = Convert.ToDecimal(dr["DP"]),
-                                    finalprice = Convert.ToDecimal(dr["finalprice"]),
-                                    //CourierCharge = Convert.ToDecimal(dr["CourierCharge"])
-                                    //Imagepath = Convert.ToString(dr["ImagePath"]),
-                                });
-                            }
-                            DataTable dtidstatus = iprod.GetIDStatus(Convert.ToString(Session["IDNO"]));
-                            Session["OrderId"] = lst[0].OrderId;
-                            Session["BillNo"] = output.voucherno;
-                            Session["ActiveStatus"] = Convert.ToString(dtidstatus.Rows[0]["ActiveStatus"]);
-                            Session["CheckOrderlst"] = lst;
-                            Session["Status"] = "PAID";
-                            var CartDetail = iprod.Cartdetailsftch(Convert.ToString(userid));//Convert.ToString(Sessionid),
-                            Session["Cartdetailsftch"] = CartDetail;
-                        }
-                    }
-                    return Json(new
-                    {
-                        success = true,
-                        message = message
-                    }, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    message = "Your order could not be complete due to a payment failure.";
-                    DataSet fail = iprod.RejectPGOrder(Convert.ToString(Ds.Tables[0].Rows[0]["txnid"]), "");
-                    return Json(new
-                    {
-                        success = false,
-                        message = message
-                    }, JsonRequestBehavior.AllowGet);
-                }
-            }
-            catch (WebException ex)
-            {
-                LogHelper.ErrorLog(System.Web.HttpContext.Current.Server.MapPath("~/Logs/ErrorLog"), "VerifyPayment error " + ex.Message);
-                return Json(new
-                {
-                    success = false,
-                    message = "Unable to fetch payment status",
-                    error = ex.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-
-        }
-        [HttpPost]
-        public void SaveLog(string logmsg)
-        {
-            try
-            {
-                LogHelper.ErrorLog(
-                    System.Web.HttpContext.Current.Server.MapPath("~/Logs/ErrorLog"),
-                    "JS Log : " + logmsg
-                );
-            }
-            catch
-            {
-                // ignore
-            }
-        }
-        [HttpPost]
-        public JsonResult UpdateCart()
-        {
-            try
-            {
-                string userId = Session["UserId"].ToString();
-                string query = "UPDATE AddToCart SET Posted = 1 WHERE UserId=@userId";
-                SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlMLMConn"].ToString());
-                SqlCommand cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@userId", userId);
-                con.Open();
-                cmd.ExecuteNonQuery();
-                con.Close();
-                return Json(new { success = true });
-            }
-            catch
-            {
-                return Json(new { success = false });
-            }
-        }
-        private string GenerateSignature(string payload, string secret)
-        {
-            var keyBytes = Encoding.UTF8.GetBytes(secret);
-            var payloadBytes = Encoding.UTF8.GetBytes(payload);
-
-            using (var hmac = new System.Security.Cryptography.HMACSHA256(keyBytes))
-            {
-                byte[] hash = hmac.ComputeHash(payloadBytes);
-                return BitConverter.ToString(hash).Replace("-", "").ToLower();
-            }
-        }
-
-        public IEnumerable<E_CartDetails> FinalCalualtePg()
-        {
-            M_Category objg = new M_Category();
-            objg.CartDetail = (IEnumerable<E_CartDetails>)Session["Cartdetailsftchpg"];
-            try
-            {
-                var Totalpv = objg.CartDetail.Sum(s => s.PV * s.qty).ToString();
-                DataSet dsrange = iprod.GetWholeIncomeRange(Convert.ToInt32(Session["FormNo"]), Convert.ToDecimal(Totalpv));
-                if (dsrange != null && dsrange.Tables.Count > 0 && dsrange.Tables[0].Rows.Count > 0)
-                {
-                    decimal discount = Convert.ToDecimal(dsrange.Tables[0].Rows[0]["Discount"]);
-                    Session["Discount"] = discount;
-                    foreach (var item in objg.CartDetail)
-                    {
-                        item.Dp = item.Price;
-                        item.Totalvp = item.qty * item.PV;
-                        //totalbv = qty * item.bv;
-                        item.Earnbase = item.ProdCommssn;
-                        item.Lesseb = (item.Earnbase * discount) / 100;
-                        item.finalprice = item.Price - item.Lesseb;
-                        item.amount = item.qty * item.finalprice;
-                        item.Gst = (item.amount * item.Gst) / 100;
-                        item.Netamount = item.amount + item.Gst;
-                        item.Discount = discount;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return objg.CartDetail;
         }
         [HttpPost]
         public ActionResult ProductWiseStock(string SpecialInstruction, string partycode)
@@ -1902,11 +1399,12 @@ namespace Shopinv.Controllers
             if (!string.IsNullOrEmpty(msg))
             {
                 msg = msg.TrimEnd(',', ' ');
-                msg = "Stock issue: " + msg;
+                msg = "Stock issue: " + msg + " for selected Franchise (Delivery Center)";
             }
 
             return Json(new { msg });
         }
+        //[HttpPost]
         //public ActionResult ProductWiseStock(string SpecialInstruction, string partycode)
         //{
         //    M_Category objg = new M_Category();
@@ -2012,7 +1510,7 @@ namespace Shopinv.Controllers
             return Json(list);
         }
         [HttpPost]
-        public JsonResult UpdateCourierCharge(decimal charge, string Pickuptype)
+        public JsonResult UpdateCourierCharge(decimal charge,string Pickuptype)
         {
             Session["CourierCharge"] = charge;
             if (Pickuptype == "Self PickUP")

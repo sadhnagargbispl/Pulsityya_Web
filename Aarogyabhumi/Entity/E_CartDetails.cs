@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Shopinv.Entity
+namespace Shopinv.Entity 
 {
     public class E_CartDetails
     {
@@ -15,7 +15,7 @@ namespace Shopinv.Entity
         public decimal Price { get; set; }
         public decimal BunchQty { get; set; }
         public decimal bv { get; set; }
-        public decimal PV { get; set; }
+        public Int32 PV { get; set; }
         public decimal qty { get; set; }
         public string PartyCode { get; set; }
         public decimal Weight { get; set; }
@@ -27,18 +27,7 @@ namespace Shopinv.Entity
         public int WishlistID { get; set; }
         public decimal Stockqty { get; set; }
         public decimal MRP { get; set; }
-        public decimal ProdCommssn { get; set; }
-
-
-        public decimal Totalvp { get; set; }
-
-        public decimal Earnbase { get; set; }
-        public decimal Lesseb { get; set; }
-        public decimal finalprice { get; set; }
-        public decimal amount { get; set; }
-
-        public decimal Netamount { get; set; }
-        public decimal Dp { get; set; }
-        public decimal Discount { get; set; }
+        public string BatchNo { get; set; }
+     
     }
 }

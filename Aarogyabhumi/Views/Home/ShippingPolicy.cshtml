@@ -1,35 +1,29 @@
-﻿@{
-    // company identity comes from companymaster via CompanyDetail.GetCompanydetail()
-    var cmpName = Convert.ToString(Session["CompName"]);
-    var cmpMail = Convert.ToString(Session["CompMail"]);
-    var cmpPhone = Convert.ToString(Session["ContactNo"]);
-    var cmpAdd = Convert.ToString(Session["CompAdd"]);
-    var cmpSite = Convert.ToString(Session["WebSite"]);
-}
+﻿
 @{
-    ViewBag.Title = "Shipping Policy";
+    ViewBag.Title = "ShippingPolicy";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<section class="contents">
-    <div class="breadcrmb">
-        <img src="~/theme/img/page-banner.jpg" alt="Shipping Policy">
-        <div class="breadcrmb-content">
-            <div class="container">
-                <h1>Shipping Policy</h1>
-                <ul class="breadcrmb-loc">
-                    <li><a href="~/Home/Index">Home</a></li>
-                    <li><a class="active">Shipping Policy</a></li>
-                </ul>
+<div class="mini-banner bg-success py-3">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 text-center">
             </div>
         </div>
     </div>
+</div>
 
-    <div class="content-row">
-        <div class="container">
-            <div class="txt-page">
-                <h2 class="first-head">Shipping Policy <span class="brdr"></span></h2>
-<p>Orders may be placed online on the website of M/s <strong>@(cmpName)</strong> (hereinafter “@(cmpName) ”) at <a href="@(cmpSite)" target="_blank" rel="noopener">@Convert.ToString(Session["WebPortal"])</a> or picked up from @(cmpName) ’s office and/or any franchisee outlet. Details are given below:</p>
+<div class="contact-area bg-light pt-5 pb-5">
+    <div class="container">
+        <div class="row align-items-start">
+
+            <div class="col-lg-12">
+                <div class="contact-info bg-white rounded p-4  mb-4">
+
+                    <h4 class="mb-3">Shipping Policy</h4>
+                    <hr>
+
+                    <p>Orders may be placed online on the website of M/s <strong>@Convert.ToString(Session["CompTitle"]) Consultancy India Private Limited</strong> (hereinafter “@Convert.ToString(Session["CompTitle"]) Consultancy”) at <a href="https://www.d9cpanel.bisplindia.in" target="_blank" rel="noopener">www.d9cpanel.bisplindia.in</a> or picked up from @Convert.ToString(Session["CompTitle"]) Consultancy’s office and/or any franchisee outlet. Details are given below:</p>
 
                     <h5 class="mt-3">Pickup from Office or Franchisee Outlet</h5>
                     <p>Pickup orders can be placed at any outlet. Payment options for pickup orders: Cash, Demand Draft, Credit Card and Debit Card.</p>
@@ -67,18 +61,21 @@
 
                     <h5 class="mt-3">Delivery of the Product</h5>
                     <ul>
-                        <li>@(cmpName) may use various delivery models. Risk of damage, loss, or deterioration during transit is on @(cmpName) until delivery.</li>
-                        <li>@(cmpName) warrants products are as listed and meet descriptions and specifications on the website.</li>
+                        <li>@Convert.ToString(Session["CompTitle"]) Consultancy may use various delivery models. Risk of damage, loss, or deterioration during transit is on @Convert.ToString(Session["CompTitle"]) Consultancy until delivery.</li>
+                        <li>@Convert.ToString(Session["CompTitle"]) Consultancy warrants products are as listed and meet descriptions and specifications on the website.</li>
                         <li>Shipping address and PIN code will be verified before payment. If an address is not serviceable, an alternate address may be provided by the customer.</li>
                         <li>Dispatch times are not guaranteed and should not be relied upon as such. Delivery will not occur unless full payment has been made.</li>
-                        <li>If a customer refuses or neglects to accept delivery, they may be liable for non-acceptance. @(cmpName) may evaluate reasons for non-acceptance and decide whether to redeliver or process a refund per the refund policy.</li>
+                        <li>If a customer refuses or neglects to accept delivery, they may be liable for non-acceptance. @Convert.ToString(Session["CompTitle"]) Consultancy may evaluate reasons for non-acceptance and decide whether to redeliver or process a refund per the refund policy.</li>
                         <li>Title and other rights in products pass to the customer upon delivery and full payment. Upon delivery, products are deemed accepted by the customer and risk of loss passes to the customer.</li>
                         <li>Before accepting delivery, customers should ensure packaging is not damaged or tampered with.</li>
                     </ul>
 
                     <h5 class="mt-3">Governing Law</h5>
-                    <p>Any dispute between the customer and @(cmpName) arising from this policy shall be referred to a sole arbitrator appointed by @(cmpName) and adjudicated as per the Arbitration and Conciliation Act, 1996. Proceedings shall be within the jurisdiction of District Courts in Bhilwara (Rajashthan, India). Arbitration proceedings shall be held in Pune. The arbitrator's decision shall be final and binding. Breach of this covenant may make the customer liable for damages and legal costs.</p>
+                    <p>Any dispute between the customer and @Convert.ToString(Session["CompTitle"]) Consultancy arising from this policy shall be referred to a sole arbitrator appointed by @Convert.ToString(Session["CompTitle"]) Consultancy and adjudicated as per the Arbitration and Conciliation Act, 1996. Proceedings shall be within the jurisdiction of @Convert.ToString(Session["CompAdd"]). Arbitration proceedings shall be held in Pune. The arbitrator's decision shall be final and binding. Breach of this covenant may make the customer liable for damages and legal costs.</p>
+
+                </div>
             </div>
+
         </div>
     </div>
-</section>
+</div>

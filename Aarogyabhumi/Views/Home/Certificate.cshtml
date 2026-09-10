@@ -1,71 +1,169 @@
-﻿@{
-    ViewBag.Title = "Compliance Documents";
+﻿
+@{
+    ViewBag.Title = "Legal";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
-    // certificate images / documents host - configured in Web.config (CertificateUrl)
-    var certBase = System.Configuration.ConfigurationManager.AppSettings["CertificateUrl"];
-    var certs = new[] {
-        new { File = "1.jpg", Caption = "Certificate of Incorporation" },
-        new { File = "2.jpg", Caption = "Registration Certificate" },
-        new { File = "3.jpg", Caption = "Food Safety License" },
-        new { File = "4.jpg", Caption = "Trademark Certificate" }
-    };
-    var docs = new[] {
-        new { File = "e_articles_of_association.pdf", Caption = "e Articles of Association" },
-        new { File = "e_memorandum_of_association.pdf", Caption = "e Memorandum of Association" }
-    };
 }
+<div class="mini-banner bg-success py-3">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 text-center">
 
-@section styles {
-    <link rel="stylesheet" href="~/theme/plugins/spotlight-master/css/spotlight.min.css">
-}
-
-<section class="contents">
-    <div class="breadcrmb">
-        <img src="~/theme/img/page-banner.jpg" alt="Compliance Documents">
-        <div class="breadcrmb-content">
-            <div class="container">
-                <h1>Compliance Documents</h1>
-                <ul class="breadcrmb-loc">
-                    <li><a href="~/Home/Index">Home</a></li>
-                    <li><a class="active">Compliance Documents</a></li>
-                </ul>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="content-row">
-        <div class="container">
-            <h2 class="first-head">Certificates <span class="brdr"></span></h2>
-            <div class="row">
-                @foreach (var c in certs)
-                {
-                    <div class="col-xs-6 col-sm-4 col-md-3">
-                        <a class="spotlight doc-tile" href="@(certBase + c.File)" data-title="@c.Caption">
-                            <img src="@(certBase + c.File)" onerror="this.onerror=null;this.style.display='none';" alt="@c.Caption" />
-                        </a>
-                        <span class="doc-cap">@c.Caption</span>
-                    </div>
-                }
+<div class="contact-area bg-light pt-5 pb-5">
+    <div class="container">
+        <div class="row align-items-start">
+
+
+
+            <div class="contact-info bg-white rounded p-4  mb-4 row">
+
+                <h4 class="mb-3 ">Compliance Documents </h4>
+                <hr>
+
+                <!-- Modal HTML -->
+                <div id="cert-modal" aria-hidden="true" role="dialog">
+                    <button class="cert-close" aria-label="Close">×</button>
+                    <img class="cert-modal-img" alt="Certificate preview">
+                </div>
+                @*<a href="~/assets/images/Demo.avif">*@
+
+            <div class="col-lg-3">
+
+
+                @*<a href="#" class="cert-zoom" data-src="https://d9.bisplindia.in/demo/assets/images/certificate/1.jpg">
+            <img src="https://d9.bisplindia.in/demo/assets/images/certificate/1.jpg" class="card-img-top" alt="Certificate of Incorporation">
+        </a>*@
+
+                <a href="#" class="cert-zoom" data-src=" https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg">
+                    <img src=" https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" class="card-img-top" alt="Certificate of Incorporation">
+                </a>
+                <div class="text-center mt-2">
+                    <p class="card-text"> Certificate of Incorporation </p>
+                </div>
             </div>
 
-            <h2 class="first-head">Documents <span class="brdr"></span></h2>
-            <div class="row">
-                @foreach (var d in docs)
-                {
-                    <div class="col-xs-6 col-sm-4 col-md-3">
-                        <a class="doc-tile" href="@(certBase + d.File)" target="_blank">
-                            <img src="@(certBase + "pdf.jpg")" onerror="this.onerror=null;this.style.display='none';" alt="@d.Caption" />
-                        </a>
-                        <span class="doc-cap">@d.Caption</span>
+
+                <div class="col-lg-3">
+                    @*<a href="#" class="cert-zoom" data-src="https://d9.bisplindia.in/demo/assets/images/certificate/2.jpg">
+                        <img src="https://d9.bisplindia.in/demo/assets/images/certificate/2.jpg" class="card-img-top" alt="...">
+                    </a>*@
+
+                     <a href="#" class="cert-zoom" data-src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg">
+     <img src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" class="card-img-top" alt="...">
+ </a>
+                    <div class="text-center mt-2">
+                        <p class="card-text"> Registration Certificate </p>
                     </div>
-                }
+                </div>
+
+                <div class="col-lg-3">
+                    @*<a href="#" class="cert-zoom" data-src="https://d9.bisplindia.in/demo/assets/images/certificate/3.jpg">
+            <img src="https://d9.bisplindia.in/demo/assets/images/certificate/3.jpg" class="card-img-top" alt="...">
+        </a>*@
+
+                    <a href="#" class="cert-zoom" data-src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg">
+                        <img src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" class="card-img-top" alt="...">
+                    </a>
+                    <div class="text-center mt-2">
+                        <p class="card-text"> Food Sefety License </p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    @*<a href="#" class="cert-zoom" data-src="https://d9.bisplindia.in/demo/assets/images/certificate/4.jpg">
+            <img src="https://d9.bisplindia.in/demo/assets/images/certificate/4.jpg" class="card-img-top" alt="...">
+        </a>*@
+                    <a href="#" class="cert-zoom" data-src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg">
+                        <img src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" class="card-img-top" alt="...">
+                    </a>
+                    <div class="text-center mt-2">
+                        <p class="card-text">Trademark Certificate </p>
+                    </div>
+                </div>
+
+
+                <div class="clearfix"></div>
+                <hr class="mt-4 mb-4">
+
+                <div class="col-lg-3">
+                    @*<a href="https://d9.bisplindia.in/demo/assets/images/certificate/e_articles_of_association.pdf" target="_blank">
+        <img src="https://d9.bisplindia.in/demo/assets/images/certificate/pdf.jpg" class="card-img-top card" alt="..."></a>*@
+
+                    <a href="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" target="_blank">
+                        <img src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" class="card-img-top card" alt="...">
+                    </a>
+
+                    <div class="text-center mt-2">
+                        <p class="card-text"> e Articles of Association  </p>
+                    </div>
+                </div>
+
+
+
+                <div class="col-lg-3">
+                    @*<a href="https://d9.bisplindia.in/demo/assets/images/certificate/e_memorandum_of_association.pdf" target="_blank">
+        <img src="https://d9.bisplindia.in/demo/assets/images/certificate/pdf.jpg" class="card-img-top card" alt="..."></a>*@
+
+                    <a href="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" target="_blank">
+                        <img src="https://certfusion.com/storage/E3pGOYC8reCrQVCWq1n9uNnhNpe8TVx31tVySJzT.jpg" class="card-img-top card" alt="...">
+                    </a>
+
+                    <div class="text-center mt-2">
+                        <p class="card-text"> e Memorandum of Association  </p>
+                    </div>
+                </div>
+
             </div>
+
         </div>
     </div>
-</section>
+</div>
 
-@section scripts {
-    <!-- the theme's own lightbox replaces the hand-rolled cert modal -->
-    <script src="~/theme/plugins/spotlight-master/js/spotlight.min.js"></script>
-}
+<script>
+    (function () {
+        var links = document.querySelectorAll('.cert-zoom');
+        var modal = document.getElementById('cert-modal');
+        var modalImg = modal.querySelector('.cert-modal-img');
+        var closeBtn = modal.querySelector('.cert-close');
+
+        function openModal(src, alt) {
+            modalImg.src = src;
+            modalImg.alt = alt || '';
+            modal.classList.add('open');
+            modal.setAttribute('aria-hidden', 'false');
+            // focus for accessibility
+            closeBtn.focus();
+        }
+
+        function closeModal() {
+            modal.classList.remove('open');
+            modal.setAttribute('aria-hidden', 'true');
+            // remove src to free memory
+            setTimeout(function () { modalImg.src = ''; }, 300);
+        }
+
+        links.forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                var src = link.getAttribute('data-src') || link.querySelector('img')?.src;
+                var alt = link.querySelector('img')?.alt || '';
+                if (src) openModal(src, alt);
+            });
+        });
+
+        // Close handlers
+        closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) closeModal();
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && modal.classList.contains('open')) {
+                closeModal();
+            }
+        });
+    })();
+</script>

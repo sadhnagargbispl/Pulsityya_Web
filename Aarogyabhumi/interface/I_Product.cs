@@ -5,7 +5,7 @@ using System.Data;
 using System.Security.Policy;
 
 namespace Shopinv.Interface
-{
+{ 
     public interface I_Product
     {
         IEnumerable<E_Product> DDLProductList();
@@ -44,7 +44,7 @@ namespace Shopinv.Interface
         DataSet SavePGCashFreeTemp(string idNo, string FormNo, string TxnId, string Email,
               string MobileNo, string userid, string XML, decimal Amountdec, string output,
               string Url, string response, string Flag, string Api, string DeliveryID,
-              string CourierChatge, string PartyCode, string Paymentimg, string Specialremark);
+              string CourierChatge, string PartyCode, string Paymentimg,string Specialremark);
         DataSet SavePGCashFreeTempApi(string idNo, string FormNo, string TxnId, string Email, string MobileNo, string userid, string XML, decimal Amountdec, string output, string Url, string response, string Flag, string Api, string DeliveryID, string CourierChatge);
         DataSet GetTransIdApi(string Orderid);
         DataSet getCourierCharge();
@@ -70,8 +70,8 @@ namespace Shopinv.Interface
         DataSet sp_GetLevelDetail(string MLevel, string Legno, string ActiveStatus, string @FormNo, int PageIndex, int PageSize);
         DataSet GetLevelIncome(int FormNo);
         IEnumerable<E_ProductReview> GetProductReview(int Productcode);
-        DataSet SaveReview(string ReviewMessage, string ReviewRating, string ReviewName, string Productcode, int Formno);
-        DataSet SaveShoppingWishlist(int UserID, int ProductID);
+        DataSet SaveReview(string ReviewMessage, string ReviewRating, string ReviewName, string Productcode,int Formno);
+        DataSet SaveShoppingWishlist(int UserID,int ProductID);
         DataSet CheckProductwiseWishlist(int UserID, int ProductID);
         IEnumerable<E_CartDetails> CheckUserwiseWishlist(int UserID);
         DataSet CheckTxno(string Txno);
@@ -81,21 +81,14 @@ namespace Shopinv.Interface
         List<BankList> GetbankLists();
         List<KycTypeMaster> kycTypeMasters();
         DataSet Checkordercount(int Formno);
-        DataSet CheckKitOnPurchase(int Formno, decimal TotalAmount);
+        DataSet CheckKitOnPurchase(int Formno,decimal TotalAmount);
         DataSet SaveRazarpayTemp(string idNo, string FormNo, string TxnId, string Email,
         string MobileNo, string userid, string XML, decimal Amountdec, string output,
         string Url, string response, string Flag, string Api, string DeliveryID,
-        string CourierChatge, string PartyCode, string Paymentimg, string PgTxnid, string Bvapiurl, string Mememode);
+        string CourierChatge, string PartyCode, string Paymentimg, string PgTxnid,string Bvapiurl,string Mememode);
         DataSet GetOrderbyPgTxnid(string PgTxnid);
         DataSet RejectPGOrder(string OrderNo, string RejectReason);
-        DataSet UpdateKitOnPurchaseUpdate(int Formno, decimal TotalAmount, string BillType);
-        DataSet GetWholeIncomeRange(int Formno, decimal PV);
-        DataSet SaveRazarpayTemp(string idNo, string FormNo, string TxnId, string Email,
-       string MobileNo, string userid, string XML, decimal Amountdec, string output,
-       string Url, string response, string Flag, string Api, string DeliveryID,
-       string CourierChatge, string PartyCode, string Paymentimg, string PgTxnid);
-        DataSet UpdateStatus(string Status, string Orderid, string transid, string razorpay_payment_id);
-        IEnumerable<E_CartDetails> GetTempAddtocart(string TempOrderDataPGID);
+        DataSet UpdateKitOnPurchaseUpdate(int Formno, decimal TotalAmount,string BillType);
 
     }
 }

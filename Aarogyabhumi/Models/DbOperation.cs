@@ -32,17 +32,7 @@ namespace Shopinv.Models
                     if (pro.Name == column.ColumnName)
                         try
                         {
-                            object value = dr[column.ColumnName];
-
-                            // image URLs are stored against the old franchise host -
-                            // re-host them from Web.config on the way out
-                            string text = value as string;
-                            if (text != null && SiteExtension.MediaUrl.IsMediaProperty(pro.Name))
-                            {
-                                value = SiteExtension.MediaUrl.Rehost(text);
-                            }
-
-                            pro.SetValue(obj, value, null);
+                            pro.SetValue(obj, dr[column.ColumnName], null);
                         }
                         catch (Exception ex)
                         {

@@ -52,7 +52,6 @@ namespace Shopinv.Models
         public IEnumerable <E_CouponDetail> GetCouponDetailNew { get; set; }
         public IEnumerable<E_ProductReview> ProductReview { get; set; }
         public IEnumerable<E_OrderReport> OfflineOrderReport { get; set; }
-        public IEnumerable<E_Banner> PopupBannerList { get; set; }
     }
 
    

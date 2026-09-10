@@ -13,7 +13,7 @@ using System.Web.Mvc;
 
 namespace Shopinv.Controllers
 {
-    //[KycRequired]
+    [KycRequired]
     public class CheckOrderController : Controller
     {
         private readonly I_OrderReport iorderrept = null;

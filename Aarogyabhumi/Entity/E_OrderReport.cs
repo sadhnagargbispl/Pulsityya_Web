@@ -57,7 +57,6 @@ namespace Shopinv.Entity
         public string paymentimg { get; set; }
         public string Ordertype { get; set; }
         public DateTime orderdate1 { get; set; } 
-        public decimal PV { get; set; }
 
     }
 }

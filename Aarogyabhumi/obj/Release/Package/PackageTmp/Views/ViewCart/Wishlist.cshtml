@@ -1,102 +1,113 @@
-@model Shopinv.Models.M_Category
+﻿@model Shopinv.Models.M_Category
 @{
     ViewBag.Title = "Wishlist";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var hasItems = Model.CartDetail != null && Model.CartDetail.Count() > 0;
 }
+<script type="text/javascript">
+    function SaveToWishlist(pcode) {
+        var r = confirm("Are you sure?")
+        if (r == true) {
+            $.ajax({
+                type: "POST",
+                url: '/ProductDetail/SaveToWishlist',
+                async: false,
+                dataType: "Json",
+                data: { ProductID: pcode },
+                success: function (data) {
+                    alert(data.msg);
+                    window.location.reload();
+                }
+            });
+        }
+    }
+</script>
+
 
 @{ Html.RenderAction("OfferBanner", "Home");}
 
-<section class="contents">
-    <div class="breadcrmb">
-        <img src="~/theme/img/page-banner.jpg" alt="Wishlist">
-        <div class="breadcrmb-content">
-            <div class="container">
-                <h1>Wishlist</h1>
-                <ul class="breadcrmb-loc">
-                    <li><a href="~/Home/Index">Home</a></li>
-                    <li><a class="active">Wishlist</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
 
-    <div class="content-row">
-        <div class="container">
-            <div class="cart-row">
-                @if (!hasItems)
-                {
-                    <div class="empty-cart-msg">
-                        <p>
-                            Your wishlist is empty
-                            <span>Tap the heart on any product to save it for later.</span>
-                        </p>
-                        <a href="~/CategoryList/CategoryList" class="btn btn-sub btn-shop">Browse Products</a>
-                    </div>
-                }
-                else
-                {
-                    <h5>Saved Items (@Model.CartDetail.Count())</h5>
-                    foreach (var item in Model.CartDetail)
-                    {
-                        <div class="crt-lst">
-                            <p class="pr_remove">
-                                <a onclick="RemoveFromWishlist('@item.ProdId')" title="Remove"></a>
-                            </p>
-                            <div class="crt-pic">
-                                <a href="~/ProductDetail/ProductDetail?ProdId=@item.ProdId">
-                                    <img src="@item.imagePath" onerror="this.src='@Url.Content("~/theme/img/sample-product.jpg")';" alt="@item.ProdName" />
-                                </a>
-                            </div>
-                            <div class="crt-inf">
-                                <p class="pr_name">
-                                    <span>Product ID @item.ProdId</span>
-                                    <a href="~/ProductDetail/ProductDetail?ProdId=@item.ProdId">@item.ProdName</a>
-                                </p>
-                                <p class="pr_rate">
-                                    @if (item.MRP > item.prodprice)
+
+
+<div class="products-details-area bg-white ">
+    <div class="container my-4">
+        <div class="shop-details-content pl-0">
+
+            <div class="card shadow-lg border-0 rounded-3 p-2">
+                <div class="row g-0">
+                    <div class="col-12 p-3">
+
+                        <h5 class="fw-bold mb-3">Wishlist Details</h5>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered shadow-sm align-middle mb-0" id="cartTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Details</th>
+                                        <th>Price</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <!-- Product Row 1 -->
+                                    @if (Model.CartDetail != null && Model.CartDetail.Count() > 0)
                                     {
-                                        <span class="pr_mrp">&#8377; @item.MRP</span>
+                                        foreach (var item in Model.CartDetail)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <img src="@item.imagePath"
+                                                         alt="@item.ProdName"
+                                                         class="img-fluid rounded"
+                                                         style="max-width: 90px;">
+                                                </td>
+                                                <td>
+                                                    <h6 class="fw-bold mb-1">@item.ProdName</h6>
+                                                    <p class="mb-0">
+                                                        @if (item.Stockqty != 0)
+                                                        {
+                                                            <span class="badge bg-success">In Stock</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge bg-danger">Sold Out</span>
+                                                        }
+                                                        |
+                                                        <span class="text-muted">SKU: @item.ProdId</span>
+                                                    </p>
+                                                    @*<small><b>Size:</b> 22 INC</small>*@
+                                                </td>
+                                                <td>
+                                                    <span class="h6 text-success fw-bold">₹ @item.prodprice</span><br>
+                                                    <del class="text-muted small">₹@item.MRP</del><br>
+                                                    @*<span class="text-danger small">Save ₹</span>*@
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-danger btn-sm btn-remove" onclick="SaveToWishlist(@item.ProdId)">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
                                     }
-                                    <span class="pr_offerprice">&#8377; @item.prodprice</span>
-                                    @if (item.Stockqty != 0)
-                                    {
-                                        <span class="pr_discount">In Stock</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="pr_discount">Sold Out</span>
-                                    }
-                                </p>
-                                <p class="pr_size_color">
-                                    <a href="~/ProductDetail/ProductDetail?ProdId=@item.ProdId" class="btn btn-sub btn-sm">View product</a>
-                                </p>
-                            </div>
+
+
+
+                                </tbody>
+                            </table>
                         </div>
-                    }
 
-                    <a href="~/CategoryList/CategoryList" class="btn btn-sub btn-shop">Continue Shopping</a>
-                }
+                    </div>
+
+
+
+                </div>
+
+
             </div>
+
+
         </div>
     </div>
-</section>
-
-@section scripts {
-    <script type="text/javascript">
-        function RemoveFromWishlist(pcode) {
-            if (!confirm("Remove this item from your wishlist ?")) { return false; }
-            $.ajax({
-                type: "POST",
-                url: '@Url.Content("~/ProductDetail/SaveToWishlist")',
-                dataType: "json",
-                data: { ProductID: pcode }
-            }).done(function (data) {
-                alert(data.msg);
-                window.location.reload();
-            }).fail(function (error) {
-                alert(error.statusText);
-            });
-        }
-    </script>
-}
+</div>

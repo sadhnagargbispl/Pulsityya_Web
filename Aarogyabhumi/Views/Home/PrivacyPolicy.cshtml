@@ -1,40 +1,34 @@
-﻿@{
-    // company identity comes from companymaster via CompanyDetail.GetCompanydetail()
-    var cmpName = Convert.ToString(Session["CompName"]);
-    var cmpMail = Convert.ToString(Session["CompMail"]);
-    var cmpPhone = Convert.ToString(Session["ContactNo"]);
-    var cmpAdd = Convert.ToString(Session["CompAdd"]);
-    var cmpSite = Convert.ToString(Session["WebSite"]);
-}
+﻿
 @{
-    ViewBag.Title = "Privacy Policy";
+    ViewBag.Title = "PrivacyPolicy";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<section class="contents">
-    <div class="breadcrmb">
-        <img src="~/theme/img/page-banner.jpg" alt="Privacy Policy">
-        <div class="breadcrmb-content">
-            <div class="container">
-                <h1>Privacy Policy</h1>
-                <ul class="breadcrmb-loc">
-                    <li><a href="~/Home/Index">Home</a></li>
-                    <li><a class="active">Privacy Policy</a></li>
-                </ul>
+<div class="mini-banner bg-success py-3">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 text-center">
             </div>
         </div>
     </div>
+</div>
 
-    <div class="content-row">
-        <div class="container">
-            <div class="txt-page">
-                <h2 class="first-head">Privacy Policy <span class="brdr"></span></h2>
-<p>
+<div class="contact-area bg-light pt-5 pb-5">
+    <div class="container">
+        <div class="row align-items-start">
+
+            <div class="col-lg-12">
+                <div class="contact-info bg-white rounded p-4 mb-4">
+
+                    <h4 class="mb-3">Privacy Policy</h4>
+                    <hr>
+
+                    <p>
                         This privacy policy is an electronic record in the form of electronic contract formed under the Information Technology Act 2000 and the rules made there under and the amended provisions pertaining to electronic documents / records in various statutes as amended by the Information Technology Act, 2000. This privacy policy does not require any physical, electronic, or digital signature.
                     </p>
 
                     <p>
-                        This privacy policy is a legally binding document between you and the @(cmpName) . The terms of this privacy policy will be effective upon your acceptance of the same (directly or indirectly in electronic form) and will govern the relationship between you and M/s @(cmpName) (Hereinafter referred to as “@(cmpName) ”) for your use of website:@Convert.ToString(Session["WebPortal"]).
+                        This privacy policy is a legally binding document between you and the @Convert.ToString(Session["CompTitle"]) Consultancy. The terms of this privacy policy will be effective upon your acceptance of the same (directly or indirectly in electronic form) and will govern the relationship between you and M/s @Convert.ToString(Session["CompTitle"]) Consultancy India Private Limited (Hereinafter referred to as “@Convert.ToString(Session["CompTitle"]) Consultancy”) for your use of website: www.d9cpanel.bisplindia.in.
                     </p>
 
                     <p>
@@ -42,15 +36,15 @@
                     </p>
 
                     <p>
-                        Please read this privacy policy carefully. By using the website, you indicate that you understand, agree and consent to this privacy policy. If you do not agree with the terms of this privacy policy, please do not use this website. You hereby provide your unconditional consent or agreements to the @(cmpName) as provided under section 43A and section 72A of Information Technology Act, 2000.
+                        Please read this privacy policy carefully. By using the website, you indicate that you understand, agree and consent to this privacy policy. If you do not agree with the terms of this privacy policy, please do not use this website. You hereby provide your unconditional consent or agreements to the @Convert.ToString(Session["CompTitle"]) Consultancy as provided under section 43A and section 72A of Information Technology Act, 2000.
                     </p>
 
                     <p>
-                        Thank you for visiting@Convert.ToString(Session["WebPortal"]). As used in this privacy statement, the terms “our,” “we” and “us” refer to both M/s @(cmpName) and the Customers / Direct Sellers unless the context provides otherwise.
+                        Thank you for visiting www.d9cpanel.bisplindia.in. As used in this privacy statement, the terms “our,” “we” and “us” refer to both M/s @Convert.ToString(Session["CompTitle"]) Consultancy India Private Limited and the Customers / Direct Sellers unless the context provides otherwise.
                     </p>
 
                     <p>
-                        This privacy policy sets out how @(cmpName) uses and protects any information that you give us when you use this website. @(cmpName) is committed to ensuring that your privacy is always protected. Should we ask you to provide certain information by which you can be identified when using this website, and then you can be assured that it will only be used in accordance with this privacy statement.
+                        This privacy policy sets out how @Convert.ToString(Session["CompTitle"]) Consultancy uses and protects any information that you give us when you use this website. @Convert.ToString(Session["CompTitle"]) Consultancy is committed to ensuring that your privacy is always protected. Should we ask you to provide certain information by which you can be identified when using this website, and then you can be assured that it will only be used in accordance with this privacy statement.
                     </p>
 
                     <h5 class="mt-3">What Information We Collect and How We Use It</h5>
@@ -81,7 +75,7 @@
 
                     <h5 class="mt-3">Cookies</h5>
                     <p>
-                        @(cmpName) through this website uses “cookies” to enable you to sign in into our services and to help personalize your online experience. As you browse, we may install cookies (tiny text files stored on your hard disk by a web page server) in your browser. Cookies cannot harm your computer and they do not contain any personally identifiable information. One of the primary purposes of cookies is to store your preferences and other information on your computer in order to save your time by eliminating the need to repeatedly enter the same information and to display your personalized content on your later visits to website. Cookies also help us to improve our website and to deliver a better and more personalized service. Among other things, they enable us:
+                        @Convert.ToString(Session["CompTitle"]) Consultancy through this website uses “cookies” to enable you to sign in into our services and to help personalize your online experience. As you browse, we may install cookies (tiny text files stored on your hard disk by a web page server) in your browser. Cookies cannot harm your computer and they do not contain any personally identifiable information. One of the primary purposes of cookies is to store your preferences and other information on your computer in order to save your time by eliminating the need to repeatedly enter the same information and to display your personalized content on your later visits to website. Cookies also help us to improve our website and to deliver a better and more personalized service. Among other things, they enable us:
                     </p>
                     <ul>
                         <li>To estimate our audience size and usage pattern.</li>
@@ -92,7 +86,7 @@
 
                     <h5 class="mt-3">Security</h5>
                     <p>
-                        We are committed to ensuring that your information is secure. In order to prevent unauthorized access or disclosure, we have put in place suitable physical, electronic, and managerial procedures to safeguard and secure the information we collect online. It is your sole responsibility to safeguard the password created for your online account. In case you suspect that your password has been compromised, contact @(cmpName) via email at @(cmpMail) as soon as possible. Since your Customer / Direct Seller account and password are specific to you, you take full responsibility for any and all activity conducted on our site with your ID and password.
+                        We are committed to ensuring that your information is secure. In order to prevent unauthorized access or disclosure, we have put in place suitable physical, electronic, and managerial procedures to safeguard and secure the information we collect online. It is your sole responsibility to safeguard the password created for your online account. In case you suspect that your password has been compromised, contact @Convert.ToString(Session["CompTitle"]) Consultancy via email at @Convert.ToString(Session["CompMail"])  as soon as possible. Since your Customer / Direct Seller account and password are specific to you, you take full responsibility for any and all activity conducted on our site with your ID and password.
                     </p>
 
                     <h5 class="mt-3">Linking to this Website</h5>
@@ -102,7 +96,7 @@
 
                     <h5 class="mt-3">Children’s Privacy Protection</h5>
                     <p>
-                        The @(cmpName) website,@Convert.ToString(Session["WebPortal"]), is not intended for or directed towards children under the age of 18 years. We do not intentionally collect Personally Identifiable Information from children, and if we come across any such data on our site, we will promptly delete it. Our website is designed for use by individuals who are 18 years of age or older.
+                        The @Convert.ToString(Session["CompTitle"]) Consultancy website, www.d9cpanel.bisplindia.in, is not intended for or directed towards children under the age of 18 years. We do not intentionally collect Personally Identifiable Information from children, and if we come across any such data on our site, we will promptly delete it. Our website is designed for use by individuals who are 18 years of age or older.
                     </p>
 
                     <h5 class="mt-3">Changes to this Statement</h5>
@@ -112,18 +106,21 @@
 
                     <h5 class="mt-3">Intellectual Property and Use of content on the Website</h5>
                     <p>
-                        @(cmpName) website@Convert.ToString(Session["WebPortal"]) and the content on the same are protected by intellectual property rights, including copyrights, trade names and trademarks, including the Name, logo, are owned by @(cmpName) or used by @(cmpName) under a license or with permission from the owner of such rights. The content protected by such intellectual property rights includes the design, layout, look, appearance, visuals, photographs; images, articles, stories, and other content on @(cmpName) website@Convert.ToString(Session["WebPortal"]).
+                        @Convert.ToString(Session["CompTitle"]) Consultancy website www.d9cpanel.bisplindia.in and the content on the same are protected by intellectual property rights, including copyrights, trade names and trademarks, including the Name, logo, are owned by @Convert.ToString(Session["CompTitle"]) Consultancy or used by @Convert.ToString(Session["CompTitle"]) Consultancy under a license or with permission from the owner of such rights. The content protected by such intellectual property rights includes the design, layout, look, appearance, visuals, photographs; images, articles, stories, and other content on @Convert.ToString(Session["CompTitle"]) Consultancy website www.d9cpanel.bisplindia.in.
                     </p>
 
                     <p>
-                        The content on @(cmpName) website@Convert.ToString(Session["WebPortal"]) may only be reproduced, distributed, published, or otherwise used only after prior written consent from the authorized signatory of @(cmpName) .
+                        The content on @Convert.ToString(Session["CompTitle"]) Consultancy website www.d9cpanel.bisplindia.in may only be reproduced, distributed, published, or otherwise used only after prior written consent from the authorized signatory of @Convert.ToString(Session["CompTitle"]) Consultancy.
                     </p>
 
                     <h5 class="mt-3">How to Contact Us</h5>
                     <p>
-                        In accordance with Information Technology Act 2000 and rules made there under, if you have any comments or inquiries about this Privacy Policy, if you would like to update information we have about you, or to exercise your rights, you may contact our Grievance Officer by emailing @(cmpMail).
+                        In accordance with Information Technology Act 2000 and rules made there under, if you have any comments or inquiries about this Privacy Policy, if you would like to update information we have about you, or to exercise your rights, you may contact our Grievance Officer by emailing @Convert.ToString(Session["CompMail"]).
                     </p>
+
+                </div>
             </div>
+
         </div>
     </div>
-</section>
+</div>

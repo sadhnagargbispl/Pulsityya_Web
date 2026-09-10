@@ -65,7 +65,7 @@ Banner Style
 }
 .banner-slider-item .banner-content .content .top-title {
   font-weight: 600;
-  color: #12b76a;
+  color: #F99E02;
   display: inline-block;
   margin-bottom: 10px;
   font-family: var(--headingFont);
@@ -328,7 +328,7 @@ Banner Style
   position: relative;
 }
 .banner-three-content .sub-title {
-  color: #ffa736;
+  color: #F99E02;
   letter-spacing: 1.5px;
   font-weight: 700;
   font-family: var(--headingFont);

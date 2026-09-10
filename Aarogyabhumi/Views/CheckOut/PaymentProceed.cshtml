@@ -6,14 +6,12 @@
     var totalamount = Convert.ToDecimal(Session["totalamount"]);
     var totalnetpay = totalamount + CourierCharge;
 }
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script type="text/javascript">
     var activeStatus = "@HttpContext.Current.Session["ActiveStatus"]";
     $(document).ready(function () {
         debugger;
         ShoppingWallet('R');
-        $("#pgamount").val("@totalnetpay");
     });
     function ShoppingWallet(WalletType) {
         debugger;
@@ -365,368 +363,130 @@
         });
     }
 </script>
-<script>
 
-    function SaveLog(message) {
-
-        $.ajax({
-            url: '/CheckOut/SaveLog',
-            type: 'POST',
-            data: { logmsg: message },
-            error: function () {
-                // ignore logging error
-            }
-        });
-
-    }
-    function update() {
-
-        $.ajax({
-            url: '/CheckOut/UpdateCart',
-            type: 'POST',
-            success: function () {
-                // ignore logging error
-            }
-        });
-
-    }
-
-    $(document).ready(function () {
-
-        $("#pgpayBtn").click(function () {
-
-            SaveLog("Pay button clicked");
-
-            $('#pageLoader').addClass('show');
-
-            var pgamount = parseFloat($("#pgamount").val());
-
-            SaveLog("Entered Amount: " + pgamount);
-
-            if (isNaN(pgamount) || pgamount <= 0) {
-
-                SaveLog("Invalid Amount");
-
-                alert("Please enter a valid payment amount.");
-                $('#pageLoader').removeClass('show');
-                return false;
-            }
-
-            SaveLog("Calling CreateOrder API");
-
-            $.ajax({
-                url: '/CheckOut/CreateOrder',
-                type: 'POST',
-                data: { amount: pgamount },
-
-                success: function (data) {
-
-                    SaveLog("CreateOrder Response: " + JSON.stringify(data));
-
-                    $("#pgorderid").val(data.Pgorderid);
-
-                    if (!data.orderId) {
-
-                        SaveLog("OrderId not generated");
-
-                        alert("We are unable to start your payment right now. Please try again.");
-                        $('#pageLoader').removeClass('show');
-                        update();
-                        window.location.href = "/Home/Index";
-                        return;
-                    }
-
-                    SaveLog("OrderId Generated: " + data.Pgorderid);
-                    SaveLog("Razorpay Options -> Key: " + data.key +
-                        " | Amount: " + data.amount * 100 +
-                        " | OrderId: " + data.Pgorderid);
-                    var options = {
-
-                        key: data.key,
-                        amount: data.amount * 100,
-                        currency: "INR",
-                        name: "My Company",
-                        description: "Order Payment",
-                        order_id: data.Pgorderid,
-                        /*order_id: data.orderId,*/
-
-                        handler: function (response) {
-
-                            SaveLog("Payment Success: " + JSON.stringify(response));
-
-                            $.ajax({
-
-                                url: '/CheckOut/VerifyPayment',
-                                type: 'POST',
-
-                                data: {
-                                    razorpay_payment_id: response.razorpay_payment_id,
-                                    razorpay_order_id: $("#pgorderid").val()
-                                },
-
-                                success: function (res) {
-
-                                    SaveLog("VerifyPayment Response: " + JSON.stringify(res));
-
-                                    if (res.success == true) {
-
-                                        SaveLog("Payment Verified Successfully");
-
-                                        alert("Payment successful! Your order has been confirmed.");
-
-                                        $("#pgorderid").val('');
-                                        window.location.href = "/CheckOrder/CheckOrder";
-
-                                    }
-                                    else {
-
-                                        SaveLog("Payment Verification Failed");
-
-                                        alert("Payment received but verification failed. Please contact support.");
-
-                                        window.location.href = "/Home/Index";
-                                    }
-
-                                },
-
-                                error: function () {
-
-                                    SaveLog("VerifyPayment Error");
-                                    update();
-                                    alert("We could not verify your payment right now. Please contact support.");
-                                    window.location.href = "/Home/Index";
-                                }
-
-                            });
-
-                        },
-
-                        modal: {
-
-                            ondismiss: function () {
-
-                                SaveLog("User closed Razorpay popup");
-
-                                $('#pageLoader').removeClass('show');
-                                update();
-                                alert("Payment was cancelled. You can try again anytime.");
-                                window.location.href = "/Home/Index";
-
-                            }
-
-                        }
-
-                    };
-
-                    SaveLog("Opening Razorpay");
-                   
-                    var rzp = new Razorpay(options);
-
-                    rzp.on('payment.failed', function (response) {
-
-                        SaveLog("Payment Failed: " + JSON.stringify(response));
-
-                        $('#pageLoader').removeClass('show');
-                        update();
-                        alert("Payment failed. Please try again or use another payment method.");
-                        window.location.href = "/Home/Index";
-
-                    });
-
-                    rzp.open();
-
-                },
-
-                error: function () {
-
-                    SaveLog("CreateOrder Error");
-
-                    $('#pageLoader').removeClass('show');
-
-                    alert("Unable to initiate payment right now. Please try again later.");
-                    window.location.href = "/Home/Index";
-                }
-
-            });
-
-        });
-
-    });
-
-</script>
-@*<script>
-        $(document).ready(function () {
-
-            $("#pgpayBtn").click(function () {
-                debugger;
-                $('#pageLoader').addClass('show');
-                var pgamount = parseFloat($("#pgamount").val());
-
-                if (isNaN(pgamount) || pgamount <= 0) {
-                    alert("Amount should be greater than 0");
-                    $('#pageLoader').removeClass('show');
-                    return false;
-                }
-
-                $.ajax({
-                    url: '/CheckOut/CreateOrder',
-                    type: 'POST',
-                    data: { amount: pgamount },
-                    success: function (data) {
-                        debugger;
-                        //console.log("OrderId:", data.orderId); //  DEBUG
-                        $("#pgorderid").val(data.Pgorderid);
-                        if (!data.orderId) {
-                            alert("OrderId not generated");
-                            $('#pageLoader').removeClass('show');
-                            return;
-                        }
-
-                        var options = {
-                            key: data.key,
-                            amount: data.amount * 100,
-                            currency: "INR",
-                            name: "My Company",
-                            description: "Order Payment",
-                            order_id: data.orderId, //  MUST EXIST
-
-                            handler: function (response) {
-                                debugger
-                                //console.log(response); //  DEBUG
-                                $.ajax({
-                                    url: '/CheckOut/VerifyPayment',
-                                    type: 'POST',
-                                    data: {
-                                        razorpay_payment_id: response.razorpay_payment_id,
-                                        razorpay_order_id: $("#pgorderid").val()
-                                    },
-                                    success: function (res) {
-                                        debugger;
-                                        if (res.success == true) {
-                                            $("#pgorderid").val('');
-                                            window.location.href = "/CheckOrder/CheckOrder"
-                                        }
-                                        else {
-                                            window.location.href = "/Home/Index"
-                                        }
-                                        alert(res.message);
-                                    }
-                                });
-                            }
-                        };
-
-                        var rzp = new Razorpay(options);
-                        rzp.open();
-                    },
-                    error: function () {
-                        alert("Unable to create order");
-                    }
-                });
-            });
-        });
-    </script>*@
-
-<section class="contents">
-    <div class="breadcrmb">
-        <img src="~/theme/img/page-banner.jpg" alt="Payment">
-        <div class="breadcrmb-content">
-            <div class="container">
-                <h1>Payment</h1>
-                <ul class="breadcrmb-loc">
-                    <li><a href="~/Home/Index">Home</a></li>
-                    <li><a href="~/ViewCart/ViewCart">Cart</a></li>
-                    <li><a class="active">Payment</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <div class="content-row">
-        <div class="container">
-            <div class="cart-row">
-                <h5>Select Payment Method</h5>
-
-                <div class="row">
-                    <!-- payment method list -->
-                    <div class="col-xs-12 col-sm-4">
-                        <div class="pay-methods" id="v-pills-tab" role="tablist">
-                            <button class="pay-method active" id="v-pills-my-address-tab" data-toggle="pill" data-target="#v-pills-my-address" type="button">
-                                <i class="fa fa-money"></i> Shopping Wallet
-                            </button>
-                            <button class="pay-method" id="v-pills-my-order-tab" data-toggle="pill" data-target="#v-pills-my-order" type="button" role="tab">
-                                <i class="fa fa-credit-card"></i> Payment Gateway
-                            </button>
-                        </div>
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow border-0 rounded-4">
+                    <!-- Header with new color -->
+                    <div class="card-header text-white rounded-top-4 py-3" style="background-color:#212529;">
+                        <h5 class="mb-0 text-center" style="color:white !important">
+                            <i class="fa fa-credit-card"></i> &nbsp; Select Payment Method
+                        </h5>
                     </div>
 
-                    <!-- panes -->
-                    <div class="col-xs-12 col-sm-8">
-                        <div class="tab-content" id="v-pills-tabContent">
+                    <div class="card-body bg-light">
+                        <div class="row">
+                            <!-- LEFT SIDE NAV -->
+                            <div class="col-md-4 border-end">
+                                <div class="nav flex-column my-account-pills " id="v-pills-tab" role="tablist" aria-orientation="vertical">
 
-                            <div class="tab-pane fade in active" id="v-pills-my-address" role="tabpanel">
-                                <div class="price-lst-smry">
-                                    <ul>
-                                        <li>
-                                            <span class="lft">Shopping Wallet Fund</span>
-                                            <span class="rght"><b id="spnShoppingFund">Rs. 0.00/-</b></span>
-                                        </li>
-                                        <li id="divrepurchase" style="display:none">
-                                            <span class="lft">Repurchase Wallet Fund</span>
-                                            <span class="rght"><b id="spnRepurchaseFund">Rs. 0.00/-</b></span>
-                                        </li>
-                                    </ul>
+                                    <button class="nav-link border-bottom active" id="v-pills-my-address-tab" data-bs-toggle="pill" data-bs-target="#v-pills-my-address" type="button">
+                                        <i class="fa fa-qrcode"></i> &nbsp; Shopping Wallet
+                                    </button>
+                                    @*<button class="nav-link border-bottom" id="v-pills-my-order-tab" data-bs-toggle="pill" data-bs-target="#v-pills-my-order" type="button">
+                                        <i class="fa fa-qrcode"></i> &nbsp; Payment Gateway
+                                    </button>*@
 
-                                    <div class="form-group">
-                                        <label>Total Amount</label>
-                                        <input readonly type="text" id="Amount" class="form-control" placeholder="Amount" value="@Session["totalamount"]">
-                                    </div>
 
-                                    <button type="button" onclick="SaveProceed()" class="btn btn-sub btn-order" id="walletpaybtn">Pay Now</button>
-                                </div>
-                            </div>
-
-                            <div class="tab-pane fade" id="v-pills-my-order" role="tabpanel">
-                                <div class="price-lst-smry">
-                                    <div class="form-group">
-                                        <label>Amount payable</label>
-                                        <input type="text" name="pgamount" id="pgamount" readonly class="form-control" placeholder="Amount">
-                                        <input type="hidden" id="pgorderid" />
-                                    </div>
-                                    <button type="button" id="pgpayBtn" class="btn btn-sub btn-order">Pay Now</button>
-                                </div>
-                            </div>
-
-                            <!-- offline / cashfree pane - its tab trigger is disabled, kept for reference -->
-                            <div class="tab-pane fade" id="v-pills-my-offlineorder" role="tabpanel">
-                                <div class="price-lst-smry">
-                                    <div class="form-group">
-                                        <label>Total Amount</label>
-                                        <input type="text" readonly value="@String.Format("{0:N2}", totalnetpay)" name="pgamount" class="form-control">
-                                    </div>
-                                    <button type="button" class="btn btn-sub btn-order" onclick="CashfreeInitiate()">
-                                        <i class="fa fa-paper-plane"></i>&nbsp; Submit Payment
+                                    <!-- Only Offline Active -->
+                                    <button class="nav-link border-bottom" id="v-pills-my-offlineorder-tab" data-bs-toggle="pill" data-bs-target="#v-pills-my-offlineorder" type="button" style="display:none;">
+                                        <i class="fa fa-qrcode"></i> &nbsp; Payment Gateway
                                     </button>
                                 </div>
                             </div>
 
-                        </div>
-                    </div>
-                </div>
+                            <!-- RIGHT SIDE CONTENT -->
+                            <div class="col-md-8">
+                                <div class="tab-content" id="v-pills-tabContent">
+                                    <div class="p-4 tab-pane fade show active" id="v-pills-my-address" role="tabpanel" tabindex="0" aria-labelledby="#v-pills-my-address-tab">
+                                        <div class="row row-cols-xl-1 row-cols-lg-1 row-cols-md-1 row-cols-1 g-3">
+                                            <div class="col">
+                                                <div class="form-check osahan-radio-box osahan-netbanking w-100 bg-white border p-3 rounded-4">
+                                                    <div class="d-flex align-items-center justify-content-between w-100 mb-1 ">
+                                                        <h6 class="m-0">Shopping Wallet Fund : <span class="text-success"><b id="spnShoppingFund">Rs. 0.00/-</b></span></h6>
+                                                    </div>
+                                                    @*@if(@HttpContext.Current.Session["ActiveStatus"].ToString()=="Y")
+                                                        {
+                                                            <div class="d-flex align-items-center justify-content-between w-100 mb-1" id="divrepurchase">
+                                                            <h6 class="m-0">Repurchase Wallet Fund : <span class="text-success"><b id="spnRepurchaseFund">Rs. 0.00/-</b></span></h6>
+                                                        </div>
+                                                        }*@
+                                                    <div class="osahan-radio-box-inner mt-3">
+                                                        <div class="form-group mt-3">
+                                                            <h6 class="m-0">
+                                                                Total Amount:
+                                                            </h6>
+                                                            <input readonly type="text" name="" id="Amount" class="form-control fs-small rounded-0 p-2" placeholder="Enter Amount Here..." aria-describedby="helpId" value="@Session["totalamount"]">
+                                                        </div>
+                                                        @*<div class="form-group mt-3">
+                                                                <h6 class="m-0">
+                                                                    Shopping Wallet:
+                                                                </h6>
+                                                                <input type="text" name="" id="ShoppingWallet" class="form-control fs-small rounded-0 p-2" placeholder="Enter Amount Here..." aria-describedby="helpId" onchange="checkWAmt();">
+                                                            </div>*@
 
-                <ul class="smry-nte">
-                    <li>Your payment is processed over a secure connection.</li>
-                    <li>Do not refresh or close this page while the payment is in progress.</li>
-                </ul>
+                                                        @*<div class="form-group mt-3" id="divrepurchasewallet">
+                                                                <h6 class="m-0">
+                                                                    Repurchase Wallet:
+                                                                </h6>
+                                                                <input type="text" name="" id="RepurchaseWallet" class="form-control fs-small rounded-0 p-2" placeholder="Enter Amount Here..." aria-describedby="helpId" onchange="checkRamt();">
+                                                            </div>*@
+                                                        @*<a href="javascript:void(0);" onclick="SaveProceed()" class="btn btn-danger btn-sm rounded-2 mt-3" data-bs-toggle="offcanvas" data-bs-target="#orderconfirm" aria-controls="orderconfirm" id="walletpaybtn">Pay Now</a>*@
+
+                                                        <button type="button" onclick="SaveProceed()" class="btn btn-danger btn-sm rounded-2 mt-3" id="walletpaybtn">Pay</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @*<div class="p-4 tab-pane fade " id="v-pills-my-order" role="tabpanel" tabindex="0" aria-labelledby="#v-pills-my-order-tab">
+                                        <div class="row row-cols-xl-1 row-cols-lg-1 row-cols-md-1 row-cols-1 g-3">
+                                            <div class="col">
+                                                <div class="form-check osahan-radio-box osahan-netbanking w-100 bg-white border p-3 rounded-4">
+
+                                                    <div class="osahan-radio-box-inner mt-3">
+                                                        <div class="form-group mt-3">
+                                                            <h6 class="m-0">
+                                                                Total Amount:
+                                                            </h6>
+                                                            <input readonly type="text" name="" id="Amount" class="form-control fs-small rounded-0 p-2" placeholder="Enter Amount Here..." aria-describedby="helpId" value="@Session["totalamount"]">
+                                                        </div>
+                                                        <button type="button" onclick="SaveProceed()" class="btn btn-danger btn-sm rounded-2 mt-3" id="walletpaybtn">Pay</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+                                    <!-- OFFLINE PAYMENT ACTIVE -->
+                                    <div class="tab-pane fade" id="v-pills-my-offlineorder" role="tabpanel">
+                                        <div class="bg-white rounded-4 shadow-sm p-4">
+                                          
+                                            <div class="form-group mb-4">
+                                                <label class="form-label fw-semibold">Total Amount</label>
+                                                <input type="text" readonly value="@totalnetpay" id="pgamount" name="pgamount" class="form-control">
+                                            </div>
+
+                                            <div class="text-center">
+                                                <button id="pgpayBtn" type="button"
+                                                        class="btn btn-lg px-5 rounded-pill text-white"
+                                                        style="background-color:#212529;"
+                                                        onclick="CashfreeInitiate()">
+                                                    <i class="fa fa-paper-plane"></i> &nbsp; Submit Payment
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- END OFFLINE -->
+                                </div>
+                            </div>
+                        </div> <!-- row end -->
+                    </div>
+                </div> <!-- card end -->
             </div>
         </div>
     </div>
 </section>
-
-<script type="text/javascript">
-    // Bootstrap 3's tab plugin moves .active onto the parent <li>; these triggers
-    // are plain buttons, so highlight the selected method ourselves.
-    $(document).on('click', '.pay-methods .pay-method', function () {
-        $('.pay-methods .pay-method').removeClass('active');
-        $(this).addClass('active');
-    });
-</script>

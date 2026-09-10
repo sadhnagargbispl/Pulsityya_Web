@@ -1,12 +1,11 @@
-﻿using Shopinv.Entity;
+﻿using Shopinv.Models;
+using Shopinv.Entity;
 using Shopinv.Interface;
-using Shopinv.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-using System.Data.SqlClient;
 using System.Drawing;
 using System.Drawing.Printing;
 
@@ -133,7 +132,7 @@ namespace Shopinv.Repoistory
             hst.Add("PV", PV);
             hst.Add("Color", Color);
             hst.Add("SIZE", SIZE);
-            dt = blldb.GetDataTable("sp_AddtoCartnew", CommandType.StoredProcedure, hst);
+            dt = blldb.GetDataTable("sp_AddtoCart", CommandType.StoredProcedure, hst);
             //dt = blldb.GetDataTable("sp_AddtoCartnewColor", CommandType.StoredProcedure, hst);
             return dt.Rows[0][0].ToString();
 
@@ -1207,7 +1206,7 @@ namespace Shopinv.Repoistory
         public DataSet SaveRazarpayTemp(string idNo, string FormNo, string TxnId,
           string Email, string MobileNo, string userid, string regXML, decimal Amountdec,
           string request, string Url, string response, string Flag, string Api, string DecliveryId,
-          string CourierCharge, string partyCode, string Paymentimg, string PgTxnid, string Bvapiurl, string Mememode)
+          string CourierCharge, string partyCode, string Paymentimg, string PgTxnid,string Bvapiurl,string Mememode)
         {
             DataSet dsReturn = new DataSet();
             try
@@ -1233,8 +1232,8 @@ namespace Shopinv.Repoistory
                 hst.Add("DecliveryId", DecliveryId);
                 hst.Add("PartyCode", partyCode);
                 hst.Add("CourierCharge", CourierCharge);
-                hst.Add("Bvapiurl", Bvapiurl);
-                hst.Add("Mememode", Mememode);
+                hst.Add("Bvapiurl", Bvapiurl); 
+                hst.Add("Mememode", Mememode); 
                 dsReturn = blldb.GetDataSet("Sp_SaveRazarpayTemp", CommandType.StoredProcedure, hst);
             }
             catch (Exception ex)
@@ -1244,7 +1243,7 @@ namespace Shopinv.Repoistory
             return dsReturn;
         }
 
-        public DataSet GetOrderbyPgTxnid(string PgTxnid)
+        public  DataSet GetOrderbyPgTxnid(string PgTxnid)
         {
             BLLDBOperations blldb = new BLLDBOperations();
             Hashtable hst = new Hashtable();
@@ -1272,86 +1271,5 @@ namespace Shopinv.Repoistory
             DataSet dt = blldb.GetDataSet("sp_UpdateKitOnPurchaseUpdate", CommandType.StoredProcedure, hst);
             return dt;
         }
-        public DataSet GetWholeIncomeRange(int Formno,decimal PV)
-        {
-            BLLDBOperations blldb = new BLLDBOperations(MLMSql);
-            Hashtable hst = new Hashtable();
-            hst.Add("formno", Formno);
-            hst.Add("PV", PV);
-            DataSet dt = blldb.GetDataSet("Sp_GetWholeIncomeRange_", CommandType.StoredProcedure, hst);
-            return dt;
-        }
-
-        public DataSet SaveRazarpayTemp(string idNo, string FormNo, string TxnId,
-          string Email, string MobileNo, string userid, string regXML, decimal Amountdec,
-          string request, string Url, string response, string Flag, string Api, string DecliveryId,
-          string CourierCharge, string partyCode, string Paymentimg, string PgTxnid)
-        {
-            DataSet dsReturn = new DataSet();
-            try
-            {
-
-                BLLDBOperations blldb = new BLLDBOperations();
-                Hashtable hst = new Hashtable();
-                DataTable dt;
-                hst.Add("Action", "SavePGCashFreeTemp");
-                hst.Add("idNo", idNo);
-                hst.Add("FormNo", FormNo);
-                hst.Add("Txnid", TxnId);
-                hst.Add("email", Email);
-                hst.Add("phone", MobileNo);
-                hst.Add("userid", userid);
-                hst.Add("regXML", regXML);
-                hst.Add("Amount", Amountdec);
-                hst.Add("request", request);
-                hst.Add("Url", Url);
-                hst.Add("response", response);
-                hst.Add("Flag", Flag);
-                hst.Add("Api", Api);
-                hst.Add("DecliveryId", DecliveryId);
-                hst.Add("PartyCode", partyCode);
-                hst.Add("CourierCharge", CourierCharge);
-                hst.Add("Paymentimg", Paymentimg);
-                hst.Add("PgTxnid", PgTxnid);
-                dsReturn = blldb.GetDataSet("Sp_SaveRazarpayTemp", CommandType.StoredProcedure, hst);
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return dsReturn;
-        }
-
-        public DataSet UpdateStatus(string Status, string Orderid, string transid, string razorpay_payment_id)
-        {
-            DataSet ds = new DataSet();
-            try
-            {
-                BLLDBOperations blldb = new BLLDBOperations();
-                Hashtable hst = new Hashtable();
-                DataTable dt;
-                hst.Add("@Status", Status);
-                hst.Add("@OrderID", Orderid);
-                hst.Add("@razorpay_payment_id", razorpay_payment_id);
-                ds = blldb.GetDataSet("Sp_SavepaymentgetwayStatus", CommandType.StoredProcedure, hst);
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return ds;
-        }
-
-        public IEnumerable<E_CartDetails> GetTempAddtocart(string TempOrderDataPGID)
-        {
-            BLLDBOperations blldb = new BLLDBOperations();
-            Hashtable hst = new Hashtable();
-            DataTable dt;
-            hst.Add("TempOrderDataPGID", TempOrderDataPGID);
-            dt = blldb.GetDataTable("sp_GetTempAddToCart", CommandType.StoredProcedure, hst);
-            IEnumerable<E_CartDetails> lst = DbOperation.ConvertDataTable<E_CartDetails>(dt);
-            return lst;
-        }
-      
     }
 }

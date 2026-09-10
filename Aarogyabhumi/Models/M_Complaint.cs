@@ -43,11 +43,26 @@ namespace Shopinv.Models
         public string subject { get; set; }
         public string description { get; set; }
     }
+    public class Compaintmemberdatareq
+    {
+        public string islogin { get; set; }
+        public string reqtype { get; set; }
+        public string memberid { get; set; }
+    }
+    public class Compaintmemberdatares
+    {
+        public string response { get; set; }
+        public string msg { get; set; }
+        public string name { get; set; }
+        public string mobile { get; set; }
+        public string email { get; set; }
+    }
     public class Compaintres
     {
         public string response { get; set; }
         public string msg { get; set; }
     }
+
     public class ComplaintDetailsreq
     {
         public string islogin { get; set; }

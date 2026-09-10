@@ -1,9 +1,12 @@
-@model Shopinv.Models.M_Category
+﻿@model Shopinv.Models.M_Category
 
 @if (Model.DDLCategory != null && Model.DDLCategory.Count() > 0)
 {
     foreach (var cat in Model.DDLCategory)
     {
-        <li><a href="~/CategoryList/CategoryList?CatName=@cat.CatName">@cat.CatName</a></li>
+        <li><a class="dropdown-item" href="~/CategoryList/CategoryList?CatName=@cat.CatName">@cat.CatName</a></li>
     }
 }
+
+
+

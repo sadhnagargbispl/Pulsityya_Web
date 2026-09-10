@@ -10,7 +10,7 @@ using System.Web.Mvc;
 
 namespace Shopinv.Controllers
 {
-    //[KycRequired]
+    [KycRequired]
     public class CategoryListController : Controller
     {
         private readonly I_Category _icateogry = null;
@@ -28,70 +28,31 @@ namespace Shopinv.Controllers
         // GET: CategoryList
         public ActionResult CategoryList(string CatName, string Subcate)
         {
-            Session["IsCateredirect"] = null;
             M_Category objg = new M_Category();
-            Session["CatName"] = CatName;
-            Session["Subcate"] = Subcate;
             TempData["CatName"] = CatName;
             TempData.Keep("CatName");
             TempData["Subcate"] = Subcate;
             TempData.Keep("Subcate");
-            IEnumerable<E_Product> ProductList = new List<E_Product>();
-            //objg.ProductList
             if (string.IsNullOrEmpty(CatName))
             {
-                ProductList = _iprod.DDLProductList();
+                objg.ProductList = _iprod.DDLProductList();
                 // Session["ProductList"] = objg.ProductList;
             }
             else
             {
                 ViewBag.CatName = CatName;
-                ProductList = _icateogry.SrchProduct(CatName);
+                objg.ProductList = _icateogry.SrchProduct(CatName);
             }
             if (!string.IsNullOrEmpty(Subcate))
             {
-                var filterdata = ProductList.Where(p => Subcate.Contains(p.SubcatName));
-                ProductList = filterdata;
-            }
-            //else
-            //{
-            //    objg.ProductList = objg.ProductList;
-            //}
-            Session["ddlCatName"] = CatName;
-            if (Session["UserId"] != null && Session["Refid"] == null)
-            {
-                var CartDetail = (IEnumerable<E_CartDetails>)Session["Cartdetailsftch"];
-                // create lookup from cart
-                var cartLookup = CartDetail
-                        .GroupBy(x => x.ProdId)
-                         .ToDictionary(
-                                       g => g.Key,
-                                       g => g.Sum(x => x.qty)   // sum in case same product added multiple times
-                                      );
-                // update product list
-
-                var updateProductList = ProductList
-                             .Select(p =>
-                                        {
-                                            if (cartLookup.TryGetValue(p.ProdId, out var qty))
-                                            {
-                                                p.isCart = true;
-                                                p.CartQty = qty;
-                                            }
-                                            else
-                                            {
-                                                p.isCart = false;
-                                                p.CartQty = 0;
-                                            }
-                                            return p;
-                                        }).ToList();
-
-                objg.ProductList = updateProductList;
+                var filterdata = objg.ProductList.Where(p => Subcate.Contains(p.SubcatName));
+                objg.ProductList = filterdata;
             }
             else
             {
-                objg.ProductList = ProductList;
+                objg.ProductList = objg.ProductList;
             }
+            Session["ddlCatName"] = CatName;
             Session["DDLProductList"] = objg.ProductList;
             var Unqid = Session["UniqueId"];
             var Sessionid = Session["CurrentUserSessionID"];
@@ -166,10 +127,7 @@ namespace Shopinv.Controllers
                     Liner = item.Liner,
                     ProductDiscription = item.ProductDiscription,
                     BunchQty = item.BunchQty,
-                    Weight = item.Weight,
-                    PV = item.PV,
-                    Gst = item.Gst,
-                    StockQTY=item.StockQTY
+                    Weight = item.Weight
                 };
                 FilterProductList.Add(prod);
             }
@@ -177,58 +135,20 @@ namespace Shopinv.Controllers
             string Subcate = Convert.ToString(TempData["Subcate"]);
             TempData["Subcate"] = Subcate;
             TempData.Keep("Subcate");
-            IEnumerable<E_Product> Tempproductlist = new List<E_Product>();
             if (!string.IsNullOrEmpty(Subcate))
             {
                 var filterdata = FilterProductList.Where(p => Subcate.Contains(p.SubcatName));
                 var orderByDescendingResult = from s in filterdata
                                               orderby s.Price descending
                                               select s;
-                Tempproductlist = orderByDescendingResult.ToList();
+                obj.SrchFilterProductList = orderByDescendingResult.ToList();
             }
             else
             {
                 var orderByDescendingResult = from s in FilterProductList
                                               orderby s.Price descending
                                               select s;
-                Tempproductlist = orderByDescendingResult.ToList();
-            }
-
-            //obj.SrchFilterProductList
-            if (Session["UserId"] != null && Session["Refid"] == null)
-            {
-                var CartDetail = (IEnumerable<E_CartDetails>)Session["Cartdetailsftch"];
-                // create lookup from cart
-                var cartLookup = CartDetail
-                        .GroupBy(x => x.ProdId)
-                         .ToDictionary(
-                                       g => g.Key,
-                                       g => g.Sum(x => x.qty)   // sum in case same product added multiple times
-                                      );
-                // update product list
-
-                var updateProductList = Tempproductlist
-             .Select(p =>
-             {
-                 if (cartLookup.TryGetValue(p.ProdId, out var qty))
-                 {
-                     p.isCart = true;
-                     p.CartQty = qty;
-                 }
-                 else
-                 {
-                     p.isCart = false;
-                     p.CartQty = 0;
-                 }
-                 return p;
-             }).ToList();
-
-                obj.SrchFilterProductList = updateProductList;
-
-            }
-            else
-            {
-                obj.SrchFilterProductList = Tempproductlist;
+                obj.SrchFilterProductList = orderByDescendingResult.ToList();
             }
 
             //var orderByDescendingResult = from s in FilterProductList
@@ -290,8 +210,6 @@ namespace Shopinv.Controllers
                     ProductDiscription = item.ProductDiscription,
                     BunchQty = item.BunchQty,
                     Weight = item.Weight,
-                    PV = item.PV,
-                    Gst = item.Gst,
                     StockQTY = item.StockQTY
 
                 };
@@ -300,14 +218,12 @@ namespace Shopinv.Controllers
             string Subcate = Convert.ToString(TempData["Subcate"]);
             TempData["Subcate"] = Subcate;
             TempData.Keep("Subcate");
-            IEnumerable<E_Product> Tempproductlist = new List<E_Product>();
             if (!string.IsNullOrEmpty(Subcate))
             {
                 var filterdata = FilterProductList.Where(p => Subcate.Contains(p.SubcatName));
                 var ProductsInAscOrder = from s in filterdata
                                          orderby s.Price
                                          select s;
-                Tempproductlist = ProductsInAscOrder.ToList();
                 obj.SrchFilterProductList = ProductsInAscOrder.ToList();
             }
             else
@@ -315,71 +231,12 @@ namespace Shopinv.Controllers
                 var ProductsInAscOrder = from s in FilterProductList
                                          orderby s.Price
                                          select s;
-                Tempproductlist = ProductsInAscOrder.ToList();
+                obj.SrchFilterProductList = ProductsInAscOrder.ToList();
             }
-
-            if (Session["UserId"] != null && Session["Refid"] == null)
-            {
-                var CartDetail = (IEnumerable<E_CartDetails>)Session["Cartdetailsftch"];
-                // create lookup from cart
-                var cartLookup = CartDetail
-                        .GroupBy(x => x.ProdId)
-                         .ToDictionary(
-                                       g => g.Key,
-                                       g => g.Sum(x => x.qty)   // sum in case same product added multiple times
-                                      );
-                // update product list
-
-                var updateProductList = Tempproductlist
-             .Select(p =>
-             {
-                 if (cartLookup.TryGetValue(p.ProdId, out var qty))
-                 {
-                     p.isCart = true;
-                     p.CartQty = qty;
-                 }
-                 else
-                 {
-                     p.isCart = false;
-                     p.CartQty = 0;
-                 }
-                 return p;
-             }).ToList();
-
-                obj.SrchFilterProductList = updateProductList;
-            }
-            else
-            {
-                obj.SrchFilterProductList = Tempproductlist;
-            }
-
+            
             var tblOrder = Extension.RenderRazorViewToString(this.ControllerContext, "_FilterProductRangeWise", obj);
             // obj.FeaturedProduct = iprod.GetFeaturedProduct();
             return PartialView("_FilterProductRangeWise", obj);
-        }
-
-        public ActionResult CheckLogin()
-        {
-            try
-            {
-                Session["IsCateredirect"] = "Y";
-                string IsLoggedIn = string.Empty;
-                IsLoggedIn = "No";
-                if (Session["UserId"] != null && Session["Refid"] == null)
-                {
-                    IsLoggedIn = "Yes";
-                }
-                else if (Session["UserId"] == null && Session["Refid"] != null)
-                {
-                    IsLoggedIn = "No";
-                }
-                return Json(IsLoggedIn, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-                return RedirectToAction("Index", "Home");
-            }
         }
     }
 }

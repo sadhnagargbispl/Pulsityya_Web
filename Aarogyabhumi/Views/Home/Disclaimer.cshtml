@@ -1,40 +1,33 @@
-﻿@{
-    // company identity comes from companymaster via CompanyDetail.GetCompanydetail()
-    var cmpName = Convert.ToString(Session["CompName"]);
-    var cmpMail = Convert.ToString(Session["CompMail"]);
-    var cmpPhone = Convert.ToString(Session["ContactNo"]);
-    var cmpAdd = Convert.ToString(Session["CompAdd"]);
-    var cmpSite = Convert.ToString(Session["WebSite"]);
-}
+﻿
 @{
     ViewBag.Title = "Disclaimer";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<section class="contents">
-    <div class="breadcrmb">
-        <img src="~/theme/img/page-banner.jpg" alt="Disclaimer">
-        <div class="breadcrmb-content">
-            <div class="container">
-                <h1>Disclaimer</h1>
-                <ul class="breadcrmb-loc">
-                    <li><a href="~/Home/Index">Home</a></li>
-                    <li><a class="active">Disclaimer</a></li>
-                </ul>
+<div class="mini-banner bg-success py-3">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 text-center">
             </div>
         </div>
     </div>
+</div>
 
-    <div class="content-row">
-        <div class="container">
-            <div class="txt-page">
-                <h2 class="first-head">Disclaimer <span class="brdr"></span></h2>
-<p>Welcome to @(cmpName) (hereafter “@(cmpName) ” or “we”), a Direct Selling Company committed to providing quality products and offering product selling business opportunities to Direct Sellers. Please read the following information carefully:</p>
+<div class="contact-area bg-light pt-5 pb-5">
+    <div class="container">
+        <div class="row align-items-start">
+
+            <div class="col-lg-12">
+                <div class="contact-info bg-white rounded p-4 mb-4">
+                    <h4 class="mb-3">Disclaimer</h4>
+                    <hr>
+
+                    <p>Welcome to @Convert.ToString(Session["CompTitle"]) Consultancy India Private Limited (hereafter “@Convert.ToString(Session["CompTitle"]) Consultancy” or “we”), a Direct Selling Company committed to providing quality products and offering product selling business opportunities to Direct Sellers. Please read the following information carefully:</p>
 
                     <ul>
-                        <li><strong>No Investment Activity:</strong> When you purchase products from @(cmpName) , you are solely purchasing products. There are no investment activities involved.</li>
+                        <li><strong>No Investment Activity:</strong> When you purchase products from @Convert.ToString(Session["CompTitle"]) Consultancy, you are solely purchasing products. There are no investment activities involved.</li>
 
-                        <li><strong>Compliance and Integrity:</strong> @(cmpName) operates in full compliance with the rules notified by the Government of India regarding Direct Selling.</li>
+                        <li><strong>Compliance and Integrity:</strong> @Convert.ToString(Session["CompTitle"]) Consultancy operates in full compliance with the rules notified by the Government of India regarding Direct Selling.</li>
 
                         <li><strong>Not a Get‑Rich‑Quick Scheme:</strong> We do not promote or offer any get‑rich‑quick schemes. Our focus is on selling quality products and providing genuine business opportunities.</li>
 
@@ -44,17 +37,17 @@
 
                         <li><strong>Sales‑Based Income:</strong> There are no agent roles, salaried jobs, or employment opportunities for Direct Sellers. All incomes are based on product sales.</li>
 
-                        <li><strong>No Compulsion:</strong> There is no compulsion for anyone to become a Direct Seller or to purchase @(cmpName) products.</li>
+                        <li><strong>No Compulsion:</strong> There is no compulsion for anyone to become a Direct Seller or to purchase @Convert.ToString(Session["CompTitle"]) Consultancy products.</li>
 
-                        <li><strong>Unique ID Provision:</strong> @(cmpName) provides Direct Sellers with a unique ID number and password free of charge upon fulfilling company terms and conditions. Eligibility for income is based on business volume as per company terms and the Remuneration System, which may change without prior notice.</li>
+                        <li><strong>Unique ID Provision:</strong> @Convert.ToString(Session["CompTitle"]) Consultancy provides Direct Sellers with a unique ID number and password free of charge upon fulfilling company terms and conditions. Eligibility for income is based on business volume as per company terms and the Remuneration System, which may change without prior notice.</li>
 
                         <li><strong>Medical Advice Disclaimer:</strong> Information on our website, social media, or other mediums is not a substitute for professional medical advice. Always consult a physician or qualified health professional for medical concerns.</li>
 
-                        <li><strong>Intellectual Property Rights:</strong> Content on the @(cmpName) website and associated platforms is protected by intellectual property rights owned by @(cmpName) or used under license. Unauthorized listing, promotion, or sale of our products on external platforms is strictly prohibited. We do not guarantee authenticity, safety, or quality of products purchased through unauthorized channels and are not liable for refunds, returns, or claims arising from such purchases.</li>
+                        <li><strong>Intellectual Property Rights:</strong> Content on the @Convert.ToString(Session["CompTitle"]) Consultancy website and associated platforms is protected by intellectual property rights owned by @Convert.ToString(Session["CompTitle"]) Consultancy or used under license. Unauthorized listing, promotion, or sale of our products on external platforms is strictly prohibited. We do not guarantee authenticity, safety, or quality of products purchased through unauthorized channels and are not liable for refunds, returns, or claims arising from such purchases.</li>
 
-                        <li><strong>Termination Policy:</strong> @(cmpName) reserves the right to terminate Direct Sellers who do not adhere to company policies, code of conduct, or terms and conditions without prior notice.</li>
+                        <li><strong>Termination Policy:</strong> @Convert.ToString(Session["CompTitle"]) Consultancy reserves the right to terminate Direct Sellers who do not adhere to company policies, code of conduct, or terms and conditions without prior notice.</li>
 
-                        <li><strong>General Information Disclaimer:</strong> While we strive for accuracy, @(cmpName) is not responsible for false promises, representations, or commitments made by Direct Sellers. We are not liable for any loss or damage arising from use of our website or products.</li>
+                        <li><strong>General Information Disclaimer:</strong> While we strive for accuracy, @Convert.ToString(Session["CompTitle"]) Consultancy is not responsible for false promises, representations, or commitments made by Direct Sellers. We are not liable for any loss or damage arising from use of our website or products.</li>
                     </ul>
 
                     <h5 class="mt-3">Product Disclaimer</h5>
@@ -68,8 +61,10 @@
                         <li><strong>Excessive Use:</strong> Excessive use of any product can cause health problems. Follow recommended dosage guidelines and use our supplements responsibly.</li>
                     </ul>
 
-                    <p>Thank you for choosing @(cmpName) . For further inquiries, please contact us.</p>
+                    <p>Thank you for choosing @Convert.ToString(Session["CompTitle"]) Consultancy. For further inquiries, please contact us.</p>
+                </div>
             </div>
+
         </div>
     </div>
-</section>
+</div>

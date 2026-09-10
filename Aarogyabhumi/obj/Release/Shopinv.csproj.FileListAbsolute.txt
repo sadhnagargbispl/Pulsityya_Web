@@ -129,274 +129,541 @@ D:\GithubWork\makeandgrowth_shop\Aarogyabhumi\bin\Antlr3.Runtime.pdb
 D:\GithubWork\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 D:\GithubWork\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.AssemblyReference.cache
 D:\GithubWork\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.CoreCompileInputs.cache
+D:\GithubWork\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.Up2Date
 D:\GithubWork\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.dll
 D:\GithubWork\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.pdb
-D:\GithubWork\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.Up2Date
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\Shopinv.dll.config
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\Shopinv.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\Shopinv.pdb
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\csc.exe
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\csc.exe.config
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\csc.rsp
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\csi.exe
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\csi.rsp
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.CSharp.Core.targets
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.VisualBasic.Core.targets
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\System.AppContext.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\System.Collections.Immutable.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\System.Diagnostics.StackTrace.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.Primitives.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\System.Reflection.Metadata.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\vbc.exe
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\vbc.exe.config
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\vbc.rsp
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe.config
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\Antlr3.Runtime.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\Microsoft.Web.Infrastructure.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\Newtonsoft.Json.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\PagedList.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\PagedList.Mvc.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Web.Helpers.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Web.Mvc.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Web.Optimization.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Web.Razor.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Web.WebPages.Deployment.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Web.WebPages.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Web.WebPages.Razor.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\Unity.Abstractions.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\Unity.Container.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\Unity.Mvc5.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\WebGrease.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\PagedList.xml
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\PagedList.Mvc.xml
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.xml
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Web.Helpers.xml
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Web.Mvc.xml
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Web.Optimization.xml
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Web.Razor.xml
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Web.WebPages.xml
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Web.WebPages.Deployment.xml
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\System.Web.WebPages.Razor.xml
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\Newtonsoft.Json.xml
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\Unity.Abstractions.pdb
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\Unity.Container.pdb
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\Antlr3.Runtime.pdb
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\obj\Release\Shopinv.csproj.AssemblyReference.cache
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\obj\Release\Shopinv.csproj.CoreCompileInputs.cache
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\obj\Release\Shopinv.csproj.Up2Date
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\obj\Release\Shopinv.dll
-E:\Sadhna Garg\GithhubFranchise\hemalika_web\Aarogyabhumi\obj\Release\Shopinv.pdb
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\Shopinv.dll.config
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\Shopinv.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\Shopinv.pdb
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\csc.exe
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\csc.exe.config
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\csc.rsp
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\csi.exe
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\csi.rsp
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.CSharp.Core.targets
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\Microsoft.VisualBasic.Core.targets
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\System.AppContext.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\System.Collections.Immutable.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\System.Diagnostics.StackTrace.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.Primitives.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\System.Reflection.Metadata.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\vbc.exe
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\vbc.exe.config
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\vbc.rsp
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe.config
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\Antlr3.Runtime.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\Microsoft.Web.Infrastructure.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\Newtonsoft.Json.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\PagedList.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\PagedList.Mvc.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Web.Helpers.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Web.Mvc.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Web.Optimization.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Web.Razor.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Web.WebPages.Deployment.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Web.WebPages.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Web.WebPages.Razor.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\Unity.Abstractions.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\Unity.Container.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\Unity.Mvc5.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\WebGrease.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\PagedList.xml
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\PagedList.Mvc.xml
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.xml
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Web.Helpers.xml
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Web.Mvc.xml
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Web.Optimization.xml
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Web.Razor.xml
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Web.WebPages.xml
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Web.WebPages.Deployment.xml
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\System.Web.WebPages.Razor.xml
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\Newtonsoft.Json.xml
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\Unity.Abstractions.pdb
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\Unity.Container.pdb
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\Antlr3.Runtime.pdb
-D:\GitHubC#\hemalika_web\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-D:\GitHubC#\hemalika_web\Aarogyabhumi\obj\Release\Shopinv.csproj.AssemblyReference.cache
-D:\GitHubC#\hemalika_web\Aarogyabhumi\obj\Release\Shopinv.csproj.CoreCompileInputs.cache
-D:\GitHubC#\hemalika_web\Aarogyabhumi\obj\Release\Shopinv.csproj.Up2Date
-D:\GitHubC#\hemalika_web\Aarogyabhumi\obj\Release\Shopinv.dll
-D:\GitHubC#\hemalika_web\Aarogyabhumi\obj\Release\Shopinv.pdb
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\Shopinv.dll.config
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\Shopinv.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\Shopinv.pdb
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\csc.exe
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\csc.exe.config
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\csc.rsp
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\csi.exe
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\csi.rsp
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\Microsoft.CSharp.Core.targets
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\Microsoft.VisualBasic.Core.targets
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\System.AppContext.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\System.Collections.Immutable.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\System.Diagnostics.StackTrace.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.Primitives.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\System.Reflection.Metadata.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\vbc.exe
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\vbc.exe.config
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\vbc.rsp
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe.config
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\Antlr3.Runtime.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\Microsoft.Web.Infrastructure.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\Newtonsoft.Json.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\PagedList.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\PagedList.Mvc.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Web.Helpers.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Web.Mvc.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Web.Optimization.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Web.Razor.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Web.WebPages.Deployment.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Web.WebPages.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Web.WebPages.Razor.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\Unity.Abstractions.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\Unity.Container.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\Unity.Mvc5.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\WebGrease.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\PagedList.xml
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\PagedList.Mvc.xml
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.xml
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Web.Helpers.xml
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Web.Mvc.xml
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Web.Optimization.xml
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Web.Razor.xml
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Web.WebPages.xml
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Web.WebPages.Deployment.xml
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\System.Web.WebPages.Razor.xml
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\Newtonsoft.Json.xml
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\Unity.Abstractions.pdb
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\Unity.Container.pdb
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\Antlr3.Runtime.pdb
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\obj\Release\Shopinv.csproj.AssemblyReference.cache
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\obj\Release\Shopinv.csproj.CoreCompileInputs.cache
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\obj\Release\Shopinv.csproj.Up2Date
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\obj\Release\Shopinv.dll
-D:\Sadhna\New Github\Puslstiya_web\Aarogyabhumi\obj\Release\Shopinv.pdb
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\Shopinv.dll.config
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\Shopinv.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\Shopinv.pdb
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\csc.exe
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\csc.exe.config
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\csc.rsp
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\csi.exe
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\csi.rsp
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\Microsoft.CSharp.Core.targets
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\Microsoft.VisualBasic.Core.targets
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\System.AppContext.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\System.Collections.Immutable.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\System.Diagnostics.StackTrace.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.Primitives.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\System.Reflection.Metadata.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\vbc.exe
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\vbc.exe.config
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\vbc.rsp
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe.config
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\Antlr3.Runtime.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\Microsoft.Web.Infrastructure.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\Newtonsoft.Json.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\PagedList.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\PagedList.Mvc.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Web.Helpers.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Web.Mvc.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Web.Optimization.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Web.Razor.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Web.WebPages.Deployment.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Web.WebPages.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Web.WebPages.Razor.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\Unity.Abstractions.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\Unity.Container.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\Unity.Mvc5.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\WebGrease.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\PagedList.xml
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\PagedList.Mvc.xml
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.xml
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Web.Helpers.xml
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Web.Mvc.xml
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Web.Optimization.xml
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Web.Razor.xml
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Web.WebPages.xml
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Web.WebPages.Deployment.xml
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\System.Web.WebPages.Razor.xml
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\Newtonsoft.Json.xml
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\Unity.Abstractions.pdb
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\Unity.Container.pdb
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\Antlr3.Runtime.pdb
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\obj\Release\Shopinv.csproj.AssemblyReference.cache
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\obj\Release\Shopinv.csproj.CoreCompileInputs.cache
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\obj\Release\Shopinv.csproj.Up2Date
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\obj\Release\Shopinv.dll
-E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\Aarogyabhumi\obj\Release\Shopinv.pdb
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\Shopinv.dll.config
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\Shopinv.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\Shopinv.pdb
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csc.exe
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csc.exe.config
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csc.rsp
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csi.exe
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csi.rsp
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CSharp.Core.targets
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.VisualBasic.Core.targets
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.AppContext.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.Collections.Immutable.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.Diagnostics.StackTrace.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.Primitives.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.Reflection.Metadata.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\vbc.exe
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\vbc.exe.config
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\vbc.rsp
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe.config
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\Antlr3.Runtime.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.Web.Infrastructure.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.Mvc.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Helpers.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Mvc.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Optimization.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Razor.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Deployment.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Razor.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Abstractions.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Container.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Mvc5.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\WebGrease.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.xml
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.Mvc.xml
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.xml
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Helpers.xml
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Mvc.xml
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Optimization.xml
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Razor.xml
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.xml
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Deployment.xml
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Razor.xml
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.xml
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Abstractions.pdb
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Container.pdb
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\Antlr3.Runtime.pdb
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.AssemblyReference.cache
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.CoreCompileInputs.cache
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.Up2Date
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.dll
+E:\Sadhna Garg\GithhubFranchise\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.pdb
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Shopinv.dll.config
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Shopinv.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Shopinv.pdb
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csc.exe
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csc.exe.config
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csc.rsp
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csi.exe
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csi.rsp
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CSharp.Core.targets
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.VisualBasic.Core.targets
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.AppContext.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.Collections.Immutable.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.Diagnostics.StackTrace.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.Primitives.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.Reflection.Metadata.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\vbc.exe
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\vbc.exe.config
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\vbc.rsp
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe.config
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Antlr3.Runtime.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.Web.Infrastructure.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.Mvc.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Helpers.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Mvc.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Optimization.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Razor.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Deployment.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Razor.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Abstractions.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Container.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Mvc5.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\WebGrease.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.Mvc.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Helpers.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Mvc.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Optimization.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Razor.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Deployment.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Razor.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Abstractions.pdb
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Container.pdb
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Antlr3.Runtime.pdb
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.AssemblyReference.cache
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.CoreCompileInputs.cache
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.Up2Date
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.pdb
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.Bson.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Buffers.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Memory.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Net.Http.Formatting.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Threading.Tasks.Extensions.dll
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.Bson.pdb
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.Bson.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Buffers.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Memory.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Net.Http.Formatting.xml
+F:\Newproject_Demo\makeandgrowth_shop\Aarogyabhumi\bin\System.Threading.Tasks.Extensions.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Shopinv.dll.config
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Shopinv.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Shopinv.pdb
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csc.exe
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csc.exe.config
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csc.rsp
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csi.exe
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csi.rsp
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CSharp.Core.targets
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.VisualBasic.Core.targets
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.AppContext.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.Collections.Immutable.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.Diagnostics.StackTrace.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.Primitives.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.Reflection.Metadata.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\vbc.exe
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\vbc.exe.config
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\vbc.rsp
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe.config
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Antlr3.Runtime.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.Web.Infrastructure.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.Bson.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.Mvc.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Buffers.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Memory.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Net.Http.Formatting.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Threading.Tasks.Extensions.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Helpers.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Mvc.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Optimization.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Razor.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Deployment.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Razor.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Abstractions.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Container.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Mvc5.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\WebGrease.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.Bson.pdb
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.Bson.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.Mvc.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Buffers.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Memory.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Net.Http.Formatting.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Threading.Tasks.Extensions.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Helpers.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Mvc.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Optimization.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Razor.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Deployment.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Razor.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Abstractions.pdb
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Container.pdb
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Antlr3.Runtime.pdb
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.AssemblyReference.cache
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.CoreCompileInputs.cache
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.Up2Date
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.dll
+F:\Newproject_Demo\voice\24-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.pdb
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Shopinv.dll.config
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Shopinv.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Shopinv.pdb
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csc.exe
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csc.exe.config
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csc.rsp
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csi.exe
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csi.rsp
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CSharp.Core.targets
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.VisualBasic.Core.targets
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.AppContext.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.Collections.Immutable.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.Diagnostics.StackTrace.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.Primitives.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.Reflection.Metadata.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\vbc.exe
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\vbc.exe.config
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\vbc.rsp
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe.config
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Antlr3.Runtime.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.Web.Infrastructure.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.Bson.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.Mvc.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Buffers.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Memory.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Net.Http.Formatting.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Threading.Tasks.Extensions.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Helpers.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Mvc.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Optimization.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Razor.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Deployment.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Razor.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Abstractions.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Container.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Mvc5.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\WebGrease.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.Bson.pdb
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.Bson.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.Mvc.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Buffers.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Memory.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Net.Http.Formatting.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Threading.Tasks.Extensions.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Helpers.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Mvc.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Optimization.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Razor.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Deployment.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Razor.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Abstractions.pdb
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Container.pdb
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Antlr3.Runtime.pdb
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.AssemblyReference.cache
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.CoreCompileInputs.cache
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.Up2Date
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.dll
+F:\Newproject_Demo\voice\25-06-2026\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.pdb
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Shopinv.dll.config
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Shopinv.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Shopinv.pdb
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csc.exe
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csc.exe.config
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csc.rsp
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csi.exe
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\csi.rsp
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.CSharp.Core.targets
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\Microsoft.VisualBasic.Core.targets
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.AppContext.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.Collections.Immutable.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.Diagnostics.StackTrace.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.Primitives.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\System.Reflection.Metadata.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\vbc.exe
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\vbc.exe.config
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\vbc.rsp
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe.config
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Antlr3.Runtime.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.Web.Infrastructure.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.Bson.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.Mvc.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Buffers.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Memory.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Net.Http.Formatting.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Threading.Tasks.Extensions.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Helpers.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Mvc.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Optimization.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Razor.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Deployment.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Razor.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Abstractions.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Container.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Mvc5.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\WebGrease.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.Bson.pdb
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.Bson.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\PagedList.Mvc.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Buffers.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Memory.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Net.Http.Formatting.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Threading.Tasks.Extensions.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Helpers.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Mvc.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Optimization.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.Razor.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Deployment.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\System.Web.WebPages.Razor.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Newtonsoft.Json.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Abstractions.pdb
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Unity.Container.pdb
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Antlr3.Runtime.pdb
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.AssemblyReference.cache
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.CoreCompileInputs.cache
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.csproj.Up2Date
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.dll
+F:\Newproject_Demo\voice\latestUpdate\makeandgrowth_shop_voice\makeandgrowth_shop\Aarogyabhumi\obj\Release\Shopinv.pdb
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Shopinv.dll.config
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Shopinv.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Shopinv.pdb
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\csc.exe
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\csc.exe.config
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\csc.rsp
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\csi.exe
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\csi.rsp
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.CSharp.Core.targets
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.VisualBasic.Core.targets
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\System.AppContext.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\System.Collections.Immutable.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\System.Diagnostics.StackTrace.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.Primitives.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\System.Reflection.Metadata.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\vbc.exe
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\vbc.exe.config
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\vbc.rsp
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe.config
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Antlr3.Runtime.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Microsoft.Web.Infrastructure.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Newtonsoft.Json.Bson.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Newtonsoft.Json.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\PagedList.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\PagedList.Mvc.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Buffers.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Memory.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Net.Http.Formatting.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Threading.Tasks.Extensions.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Web.Helpers.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Web.Mvc.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Web.Optimization.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Web.Razor.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Web.WebPages.Deployment.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Web.WebPages.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Web.WebPages.Razor.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Unity.Abstractions.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Unity.Container.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Unity.Mvc5.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\WebGrease.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Newtonsoft.Json.Bson.pdb
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Newtonsoft.Json.Bson.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\PagedList.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\PagedList.Mvc.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Buffers.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Memory.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Net.Http.Formatting.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Threading.Tasks.Extensions.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Web.Helpers.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Web.Mvc.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Web.Optimization.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Web.Razor.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Web.WebPages.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Web.WebPages.Deployment.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\System.Web.WebPages.Razor.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Newtonsoft.Json.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Unity.Abstractions.pdb
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Unity.Container.pdb
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Antlr3.Runtime.pdb
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\obj\Release\Shopinv.csproj.AssemblyReference.cache
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\obj\Release\Shopinv.csproj.CoreCompileInputs.cache
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\obj\Release\Shopinv.csproj.Up2Date
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\obj\Release\Shopinv.dll
+F:\Demo_GitHub\MShoppingDemo\Aarogyabhumi\obj\Release\Shopinv.pdb
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Shopinv.dll.config
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Shopinv.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Shopinv.pdb
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\csc.exe
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\csc.exe.config
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\csc.rsp
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\csi.exe
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\csi.rsp
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.CSharp.Core.targets
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\Microsoft.VisualBasic.Core.targets
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\System.AppContext.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\System.Collections.Immutable.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\System.Diagnostics.StackTrace.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\System.IO.FileSystem.Primitives.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\System.Reflection.Metadata.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\vbc.exe
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\vbc.exe.config
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\vbc.rsp
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\roslyn\VBCSCompiler.exe.config
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Antlr3.Runtime.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Microsoft.Web.Infrastructure.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Newtonsoft.Json.Bson.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Newtonsoft.Json.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\PagedList.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\PagedList.Mvc.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Buffers.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Memory.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Net.Http.Formatting.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Threading.Tasks.Extensions.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Web.Helpers.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Web.Mvc.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Web.Optimization.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Web.Razor.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Web.WebPages.Deployment.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Web.WebPages.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Web.WebPages.Razor.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Unity.Abstractions.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Unity.Container.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Unity.Mvc5.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\WebGrease.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Newtonsoft.Json.Bson.pdb
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Newtonsoft.Json.Bson.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\PagedList.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\PagedList.Mvc.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Buffers.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Memory.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Net.Http.Formatting.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Runtime.CompilerServices.Unsafe.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Threading.Tasks.Extensions.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Web.Helpers.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Web.Mvc.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Web.Optimization.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Web.Razor.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Web.WebPages.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Web.WebPages.Deployment.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\System.Web.WebPages.Razor.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Newtonsoft.Json.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Unity.Abstractions.pdb
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Unity.Container.pdb
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Antlr3.Runtime.pdb
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\obj\Release\Shopinv.csproj.AssemblyReference.cache
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\obj\Release\Shopinv.csproj.CoreCompileInputs.cache
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\obj\Release\Shopinv.csproj.Up2Date
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\obj\Release\Shopinv.dll
+E:\Sadhna Garg\Demo_Github\MShoppingDemo\Aarogyabhumi\obj\Release\Shopinv.pdb

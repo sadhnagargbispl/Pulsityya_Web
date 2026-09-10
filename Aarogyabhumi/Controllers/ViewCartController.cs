@@ -10,7 +10,7 @@ using System.Web.Mvc;
 
 namespace Shopinv.Controllers
 {
-    //[KycRequired]
+    [KycRequired]
     public class ViewCartController : Controller
     {
         private readonly I_Category icateogry = null;
@@ -19,7 +19,6 @@ namespace Shopinv.Controllers
         CompanyDetail companyDetail;
         public ViewCartController(I_Category icateogry, I_Product iprod)
         {
-            this.icateogry = icateogry;
             this.iprod = iprod;
             companyDetail = new CompanyDetail(this.iprod);
             companyDetail.GetCompanydetail();
@@ -49,6 +48,7 @@ namespace Shopinv.Controllers
                 var userid = Session["UserId"];
                 var idno = Session["IDNO"];
                 var Sessionid = Session["CurrentUserSessionID"];
+
                 DataSet ds1 = iprod.UpdateCartDetail(Convert.ToString(userid), idno.ToString());
                 obj.CartDetail = iprod.Cartdetailsftch(Convert.ToString(userid)); //Convert.ToString(Sessionid),
                 Session["Cartdetailsftch"] = obj.CartDetail;
@@ -213,7 +213,6 @@ namespace Shopinv.Controllers
             var TotPrice = "";
             var Totbv = "";
             var TotPv = "";
-            var cartprodCount = 0;
             try
             {
                 var userid = Session["UserId"];
@@ -234,7 +233,6 @@ namespace Shopinv.Controllers
                     Session["totalamount"] = TotPrice;
                     Session["Cartdetailsftch"] = objm.CartDetail;
                     decimal CourierCharge = 0;
-                     cartprodCount = objm.CartDetail != null ? objm.CartDetail.Where(p => p.ProdId == ProdId).Count() : 0;
                     //var totbv = objm.CartDetail.Sum(s => (s.bv * s.qty));
                     //if (totbv >= 1000)
                     //{
@@ -274,7 +272,7 @@ namespace Shopinv.Controllers
             var ParentParty = Session["ParentPartyList"] as List<SelectListItem>;
             ViewBag.ParentPartyList = ParentParty;
             var tblOrder = Extension.RenderRazorViewToString(this.ControllerContext, "CartProducts", objm);
-            return Json(new { tblOrder, TotPrice, Totbv, TotPv, cartprodCount });
+            return Json(new { tblOrder, TotPrice, Totbv, TotPv });
         }
         [HttpPost]
         public ActionResult ClearCoupon(decimal totalamount, decimal totalbv)
@@ -413,15 +411,6 @@ namespace Shopinv.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-        }
-        public ActionResult DeliveryCenterAddress(string PartyCode)
-        {
-            DataSet ds = iprod.GetDeliveryCenterAddress(Convert.ToString(PartyCode));
-
-            var Address = ds.Tables[0].Rows[0]["Address1"].ToString();
-            var City = ds.Tables[0].Rows[0]["CityName"].ToString();
-            var State = ds.Tables[0].Rows[0]["StateName"].ToString();
-            return Json(new { Address });
         }
     }
 }

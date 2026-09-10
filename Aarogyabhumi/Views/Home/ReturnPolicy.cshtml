@@ -1,35 +1,29 @@
-﻿@{
-    // company identity comes from companymaster via CompanyDetail.GetCompanydetail()
-    var cmpName = Convert.ToString(Session["CompName"]);
-    var cmpMail = Convert.ToString(Session["CompMail"]);
-    var cmpPhone = Convert.ToString(Session["ContactNo"]);
-    var cmpAdd = Convert.ToString(Session["CompAdd"]);
-    var cmpSite = Convert.ToString(Session["WebSite"]);
-}
+﻿
 @{
-    ViewBag.Title = "RETURN / EXCHANGE POLICY";
+    ViewBag.Title = "ReturnPolicy";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<section class="contents">
-    <div class="breadcrmb">
-        <img src="~/theme/img/page-banner.jpg" alt="RETURN / EXCHANGE POLICY">
-        <div class="breadcrmb-content">
-            <div class="container">
-                <h1>RETURN / EXCHANGE POLICY</h1>
-                <ul class="breadcrmb-loc">
-                    <li><a href="~/Home/Index">Home</a></li>
-                    <li><a class="active">RETURN / EXCHANGE POLICY</a></li>
-                </ul>
+<div class="mini-banner bg-success py-3">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 text-center">
             </div>
         </div>
     </div>
+</div>
 
-    <div class="content-row">
-        <div class="container">
-            <div class="txt-page">
-                <h2 class="first-head">RETURN / EXCHANGE POLICY <span class="brdr"></span></h2>
-<p>This Return / Exchange Policy outlines the procedures and terms for returns and exchanges of products purchased from @(cmpName). By engaging with our products and services, you agree to the terms outlined herein.</p>
+<div class="contact-area bg-light pt-5 pb-5">
+    <div class="container">
+        <div class="row align-items-start">
+
+            <div class="col-lg-12">
+                <div class="contact-info bg-white rounded p-4 mb-4">
+
+                    <h4 class="mb-3">RETURN / EXCHANGE POLICY</h4>
+                    <hr>
+
+                    <p>This Return / Exchange Policy outlines the procedures and terms for returns and exchanges of products purchased from @Convert.ToString(Session["CompTitle"]) Consultancy India Private Limited. By engaging with our products and services, you agree to the terms outlined herein.</p>
 
                     <h5 class="mt-3">Eligibility for Return / Exchanges</h5>
                     <ul>
@@ -45,7 +39,8 @@
 
                     <h5 class="mt-3">Return / Exchange Process</h5>
                     <ol>
-                        <li>Contact customer support at <a href="mailto:@(cmpMail)">@(cmpMail)</a> or <a href="tel:@(cmpPhone)">@(cmpPhone)</a>.</li>
+
+                        <li>Contact customer support at <a href="mailto:@Convert.ToString(Session["CompMail"])"> @Convert.ToString(Session["CompMail"])</a> or <a href="mailto:@Convert.ToString(Session["MobileNo"])"> @Convert.ToString(Session["MobileNo"])</a> .</li>
                         <li>Provide your order number, product details, and reason for return/exchange.</li>
                         <li>Our customer support team will guide you through instructions for returning the item.</li>
                     </ol>
@@ -70,16 +65,20 @@
                     <p>Once a returned product is received and inspected, we will process the return or exchange. Refunds are issued to the original payment method. Please allow up to 20 days for the refund to reflect in your account.</p>
 
                     <h5 class="mt-3">Cooling Off Policy</h5>
-                    <p>Direct Sellers who resign within 7 days of registration may return Make and Growth products that are in good, unopened, resalable condition. The Company will provide a full refund after deducting any bonuses paid and reversing BV (if applicable).</p>
+                    <p>Direct Sellers who resign within 7 days of registration may return @Convert.ToString(Session["CompTitle"]) products that are in good, unopened, resalable condition. The Company will provide a full refund after deducting any bonuses paid and reversing BV (if applicable).</p>
 
                     <h5 class="mt-3">Policy Updates</h5>
                     <p>We reserve the right to update this policy as needed. Changes will be posted on our website and the revised date will indicate the last update.</p>
 
                     <h5 class="mt-3">Contact Information</h5>
-                    <p>For questions or requests related to returns or exchanges, contact customer support: <a href="mailto:@(cmpMail)">@(cmpMail)</a> | <a href="tel:@(cmpPhone)">@(cmpPhone)</a></p>
+                    @*<p>For questions or requests related to returns or exchanges, contact customer support: <a href="mailto:makeandgrowthcustomercare@gmail.com">makeandgrowthcustomercare@gmail.com</a> | <a href="tel:7387728652">7387728652</a></p>*@
 
-                    <p class="mt-3 mb-0"><strong>@(cmpName)</strong></p>
+                    <p>For questions or requests related to returns or exchanges, contact customer support: <a href="mailto:@Convert.ToString(Session["CompMail"])"> @Convert.ToString(Session["CompMail"])</a> or <a href="mailto:@Convert.ToString(Session["MobileNo"])"> @Convert.ToString(Session["MobileNo"])</a> .</P>
+                    <p class="mt-3 mb-0"><strong>@Convert.ToString(Session["CompTitle"]) Consultancy India Private Limited</strong></p>
+
+                </div>
             </div>
+
         </div>
     </div>
-</section>
+</div>

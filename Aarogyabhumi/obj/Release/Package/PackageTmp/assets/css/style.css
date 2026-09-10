@@ -43,9 +43,9 @@ This files table contents are outlined below>>>>>
     --bodyFont: "Roboto", sans-serif;
     /* Colors */
     --headingColor: #000000; /* Black */
-    --mainColor: #333333; /* Gold */
-    --mainColor2: #00754b; /* Black */
-    --mainColor3: #333333; /* Gold */
+    --mainColor: #F99E02; /* Orange */
+    --mainColor2: #094479; /* Blue */
+    --mainColor3: #F99E02; /* Orange */
     --paragraphColor: #000000; /* Dark Gray for readability */
     --whiteColor: #ffffff;
     /* Font & Transition */
@@ -204,7 +204,7 @@ textarea {
 }
 
 .bg-111111 {
-    background-color: #032d1e;
+    background-color: #052A4D;
 }
 
 .bg-f3f3f3 {
@@ -621,7 +621,7 @@ textarea {
 Top Header Style
 ======================================================*/
 .top-header-area {
-    background-color: #1a1a1a;
+    background-color: #094479;
     padding-bottom: 12px;
     padding-top: 12px;
 }
@@ -1861,7 +1861,7 @@ Feature Style
             height: 40px;
             width: 40px;
             border-radius: 100%;
-            background-color: #12b76a;
+            background-color: #F99E02;
             opacity: 0.12;
             right: -10px;
             bottom: 0;
@@ -4377,11 +4377,11 @@ Go To Top Style
 /*# sourceMappingURL=style.css.map */
 
 .themetext {
-    color: #4FA694;
+    color: #F99E02;
 }
 
 .greenclr {
-    color: #00c452;
+    color: #094479;
 }
 
 
@@ -4486,6 +4486,7 @@ Go To Top Style
 
 .text-white {
     color: white !important;
+    padding: 5px;
 }
 
 
@@ -4586,18 +4587,3 @@ Go To Top Style
         color: #212529;
         font-weight: 500;
     }
-
-
-
-
-.qty-box {
-    display: flex;
-}
-
-.qty-input {
-    width: 50px;
-    height: 30px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-}

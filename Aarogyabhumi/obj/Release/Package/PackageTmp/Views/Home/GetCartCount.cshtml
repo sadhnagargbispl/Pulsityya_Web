@@ -1,5 +1,8 @@
-<div class="buyer-crt">
-    <a href="~/ViewCart/ViewCart">
-        <span class="crt-icon"><span class="crt-qty spncartcount">@Convert.ToString(Session["cartcount"])</span></span>
+﻿
+
+<div class="option-item me-3">
+    <a href="~/ViewCart/ViewCart" class="text-white position-relative">
+        <i class="fa fa-shopping-cart"></i>
+        <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">@Convert.ToString(Session["cartcount"])</span>
     </a>
 </div>

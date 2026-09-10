@@ -1,51 +1,59 @@
-﻿@{
-    ViewBag.Title = "Bank Detail";
-    var cmpName = Convert.ToString(Session["CompName"]);
-    var cmpLogo = Convert.ToString(Session["CompLogo"]);
+﻿
+@{
+    ViewBag.Title = "BankDetail";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<section class="contents">
-    <div class="breadcrmb">
-        <img src="~/theme/img/page-banner.jpg" alt="Bank Detail">
-        <div class="breadcrmb-content">
-            <div class="container">
-                <h1>Bank Detail</h1>
-                <ul class="breadcrmb-loc">
-                    <li><a href="~/Home/Index">Home</a></li>
-                    <li><a class="active">Bank Detail</a></li>
-                </ul>
+<!-- Breadcrumb Start -->
+<section class="pt-5 bg-success">
+    <div class="container py-5 px-5 text-center">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="text-white display-5 mb-2 fw-bold">Bank Detail</h1>
+
             </div>
         </div>
     </div>
-
-    <div class="content-row">
-        <div class="container">
-            <div class="txt-page">
-                <h2 class="first-head">Our Bankers <span class="brdr"></span></h2>
-                <div class="table-responsive">
-                    <table class="table mytable">
-                        <thead>
-                            <tr>
-                                <th>Bank</th>
-                                <th>A/c Holder Name</th>
-                                <th>A/c No</th>
-                                <th>IFS Code</th>
-                                <th>Branch</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><img src="@(string.IsNullOrWhiteSpace(cmpLogo) ? Url.Content("~/theme/img/logo.png") : cmpLogo)" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/logo.png")';" alt="@(cmpName)" style="width:160px;" /></td>
-                                <td>@(cmpName)</td>
-                                <td>192605001473</td>
-                                <td>ICIC0001926</td>
-                                <td>Asansol - APCAR</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+    <div class="svg-border-rounded text-light">
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 144.54 17.34" preserveaspectratio="none" fill="currentColor">
+            <path d="M144.54,17.34H0V0H144.54ZM0,0S32.36,17.34,72.27,17.34,144.54,0,144.54,0"></path>
+        </svg>
     </div>
 </section>
+<!-- Breadcrumb End -->
+<!-- Contact Information -->
+<div class="py-5">
+    <div class="container">
+        <div class="data">
+            <h6><b>Bank Detail</b></h6>
+           
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Bank</th>
+                            <th>A/c Holder Name </th>
+                            <th>A/c No</th>
+                            <th>IFS Code</th>
+                            <th>Branch </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>
+                                <img src="~/img/logo.png" style="width:200px;" />
+                            </th>
+                            <th>Aarogyambhumi India Pvt. Ltd. </th>
+                            <th>192605001473</th>
+                            <th>ICIC0001926</th>
+                            <th>Asansol - APCAR</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Contact Information -->
+

@@ -52,4 +52,52 @@ namespace Shopinv.Entity
         public string Address9 { get; set; }
         public string Address10 { get; set; }
     }
+    public class E_AadhaarOtpLog
+    {
+        public string AadhaarNo { get; set; }
+
+        public string ReferenceId { get; set; }
+
+        public string Status { get; set; }
+
+        public string ApiResponse { get; set; }
+    }
+    public class E_AadhaarOtpVerifyLog
+    {
+        public string ReferenceId { get; set; }
+        public string OTP { get; set; }
+
+        public string Name { get; set; }
+        public string DOB { get; set; }
+        public string Gender { get; set; }
+
+        public string Address { get; set; }
+
+        public string Status { get; set; }
+        public string Message { get; set; }
+        public string CareOf { get; set; }
+
+        public string EmailHash { get; set; }
+        public string MobileHash { get; set; }
+
+        public string YearOfBirth { get; set; }
+        public string ShareCode { get; set; }
+
+        public string Country { get; set; }
+        public string District { get; set; }
+        public string House { get; set; }
+        public string Landmark { get; set; }
+        public string Pincode { get; set; }
+        public string PostOffice { get; set; }
+        public string State { get; set; }
+        public string Street { get; set; }
+        public string Subdistrict { get; set; }
+        public string VTC { get; set; }
+
+        public string Photo { get; set; }
+
+        public string ApiResponse { get; set; }
+
+        public string TransactionId { get; set; }
+    }
 }
