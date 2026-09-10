@@ -1,15 +1,13 @@
-﻿@model Shopinv.Models.M_Category
+@model Shopinv.Models.M_Category
 @{
-    string imageUrl = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["ImageUrl"]);
-    if (imageUrl.EndsWith("/"))
-    {
-        imageUrl = imageUrl.Substring(0, imageUrl.LastIndexOf("/"));
-    }
+    // banner ImagePath (tblBannerDetail) may be:
+    //   a full URL, a site path starting with ~/ (e.g. ~/theme/img/hero-banner-01.jpg),
+    //   or a path on the ImageUrl upload server (Web.config)
+    string imageUrl = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["ImageUrl"]).TrimEnd('/');
 }
 @*
     Demo slider (demo/inc/slider.asp). theme/js/layout.js initialises .slide-carousel.
-    No static fallback: the demo hero-banner-0x.jpg images carry another brand's logo,
-    so nothing is rendered when there are no banners in the DB.
+    Banners come only from the banner tables; nothing is rendered when there are none.
 *@
 @if (Model != null && Model.ShowBanner != null && Model.ShowBanner.Count() > 0)
 {
@@ -17,7 +15,10 @@
         <div class="owl-carousel slide-carousel">
             @foreach (var item in Model.ShowBanner)
             {
-                var src = imageUrl + "/" + (item.ImagePath ?? "").TrimStart('/');
+                var path = (item.ImagePath ?? "").Trim();
+                var src = path.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? path
+                        : path.StartsWith("~/") ? Url.Content(path)
+                        : imageUrl + "/" + path.TrimStart('/');
                 <div class="slide"><img src="@src" alt="@item.BannerName" /></div>
             }
         </div>

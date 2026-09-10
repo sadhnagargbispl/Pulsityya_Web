@@ -1,83 +1,89 @@
 /* ============================================================================
-   Drive all company details on the website from m_companymaster
-   Run against the database in Web.config (currently: darju9inv)
-   Safe to re-run: every step checks before it changes anything.
-   Name, address, email, phone and the LOGO (existing column logourl) come from
-   columns that already exist; this script only adds the optional extra details.
-   STEP 1 + STEP 2 were run on darju9inv on 2026-09-10.
+   Pulastya Globals website - company details, logo and home banners
+   Database: pulstyainv  (Web.config sqlConn, login usrpulstya)
+   Prepared 2026-09-10. Safe to re-run.
+
+   Already in place on pulstyainv (no action needed):
+     - optional columns CompLogo, CompTagline, CompAboutUs, CompWorkingHours,
+       FreeShipAmount, FacebookUrl, InstagramUrl, TwitterUrl, YoutubeUrl,
+       LinkedInUrl, CompGSTNo
+     - Sp_GetCompanydetail uses SELECT *, so logourl and the new columns reach
+       the website (the site strips '?' from ContactNo itself)
+   The website reads: the logo from logourl, home banners from
+   tblBannerMaster (IsActive = 1) + TblBannerDetail (ImagePath, SeqNo).
+   ImagePath / logourl may be a full URL, a site path starting with ~/ , or a
+   path on the ImageUrl upload server (Web.config).
    ============================================================================ */
 
-/* ---------------------------------------------------------------------------
-   STEP 1 - add the optional columns the site reads (skipped if they exist).
-   Column names must match exactly; the app reads them by these names.
-   The logo does NOT need a new column: the site uses the existing logourl.
-   --------------------------------------------------------------------------- */
-IF COL_LENGTH('m_companymaster','CompTagline')      IS NULL ALTER TABLE m_companymaster ADD CompTagline      varchar(200) NULL;
-IF COL_LENGTH('m_companymaster','CompAboutUs')      IS NULL ALTER TABLE m_companymaster ADD CompAboutUs      varchar(1000) NULL;
-IF COL_LENGTH('m_companymaster','CompWorkingHours') IS NULL ALTER TABLE m_companymaster ADD CompWorkingHours varchar(200) NULL;
-IF COL_LENGTH('m_companymaster','FreeShipAmount')   IS NULL ALTER TABLE m_companymaster ADD FreeShipAmount   varchar(20)  NULL;
-IF COL_LENGTH('m_companymaster','FacebookUrl')      IS NULL ALTER TABLE m_companymaster ADD FacebookUrl      varchar(255) NULL;
-IF COL_LENGTH('m_companymaster','InstagramUrl')     IS NULL ALTER TABLE m_companymaster ADD InstagramUrl     varchar(255) NULL;
-IF COL_LENGTH('m_companymaster','TwitterUrl')       IS NULL ALTER TABLE m_companymaster ADD TwitterUrl       varchar(255) NULL;
-IF COL_LENGTH('m_companymaster','YoutubeUrl')       IS NULL ALTER TABLE m_companymaster ADD YoutubeUrl       varchar(255) NULL;
-IF COL_LENGTH('m_companymaster','LinkedInUrl')      IS NULL ALTER TABLE m_companymaster ADD LinkedInUrl      varchar(255) NULL;
-IF COL_LENGTH('m_companymaster','CompGSTNo')        IS NULL ALTER TABLE m_companymaster ADD CompGSTNo        varchar(50)  NULL;
+USE pulstyainv;
 GO
 
 /* ---------------------------------------------------------------------------
-   STEP 2 - make Sp_GetCompanydetail return logourl and the new columns.
-   The original column list is kept exactly (ContactNo stays cleaned of '?'
-   through the alias); the new columns are appended at the end.
-   (SELECT * is NOT used: it would bring back the raw ContactNo with '?'.)
+   STEP 1 - demo banners, demo logo, and the blank / dummy company details
+   (values from the Pulastya demo footer). One transaction.
+   Name, address, website, CompTitle and MobileNo are NOT touched.
    --------------------------------------------------------------------------- */
-ALTER PROCEDURE Sp_GetCompanydetail
-AS
-BEGIN
-select CId,CompId,CompName,CompAdd,CompState,CompTinNo,CompSTaxNo,
-CompPrefix,REPLACE(ContactNo, '?', '') AS ContactNo,MobileNo,WebSite,ActiveStatus,RecTimeStamp,
-LastModified,UserCode,UserId,smsSenderId,smsUserNm,smPass,CompMail,
-CompTitle,CompCSTNo,CompPANNo,MailHost,MailPass,CompRegOffAdd,CompTerm,CompanyIDNo,
-MsgOnInvoice,WebPortal,IsSendSMS,FTPUserNm,FTPPassw,CompCity,
-logourl,CompTagline,CompAboutUs,CompWorkingHours,FreeShipAmount,
-FacebookUrl,InstagramUrl,TwitterUrl,YoutubeUrl,LinkedInUrl,CompGSTNo
-from M_CompanyMaster
-END
+SET XACT_ABORT ON;
+BEGIN TRAN;
+
+-- demo hero banners (files are part of the site under ~/theme/img),
+-- attached to the active banner master 3 (it had no images)
+INSERT INTO TblBannerDetail (BannerId, ImagePath, CreatedOn, SeqNo, Url)
+SELECT 3, v.ImagePath, CAST(GETDATE() AS date), v.SeqNo, NULL
+FROM (VALUES ('~/theme/img/hero-banner-01.jpg', 1),
+             ('~/theme/img/hero-banner-02.jpg', 2),
+             ('~/theme/img/hero-banner-03.jpg', 3)) v(ImagePath, SeqNo)
+WHERE NOT EXISTS (SELECT 1 FROM TblBannerDetail d WHERE d.ImagePath = v.ImagePath);
+
+UPDATE M_CompanyMaster SET
+    logourl          = '~/theme/img/logo.png',
+    ContactNo        = CASE WHEN ISNULL(ContactNo,'') IN ('', '1234567890') THEN '+91 76686 23064' ELSE ContactNo END,
+    CompMail         = CASE WHEN ISNULL(CompMail,'') = '' THEN 'info@pulastyaglobals.com' ELSE CompMail END,
+    CompCity         = CASE WHEN ISNULL(CompCity,'') IN ('', 'West Punjabi Bagh') THEN 'New Delhi' ELSE CompCity END,
+    CompTagline      = CASE WHEN ISNULL(CompTagline,'') = '' THEN 'A Better Tomorrow Together' ELSE CompTagline END,
+    CompAboutUs      = CASE WHEN ISNULL(CompAboutUs,'') = '' THEN 'At Pulastya Globals India, we believe that a healthier lifestyle begins with informed choices and access to reliable products. Our focus is on offering carefully developed health and wellness solutions while continuously working towards improving product quality, customer experience and distributor support.' ELSE CompAboutUs END,
+    CompWorkingHours = CASE WHEN ISNULL(CompWorkingHours,'') = '' THEN 'Mon-Sat : 09:00AM to 08:00PM, Sunday : Close' ELSE CompWorkingHours END,
+    FreeShipAmount   = CASE WHEN ISNULL(FreeShipAmount,'') = '' THEN '2500' ELSE FreeShipAmount END,
+    FacebookUrl      = CASE WHEN ISNULL(FacebookUrl,'') = '' THEN 'https://www.facebook.com/profile.php?id=61554688337187' ELSE FacebookUrl END,
+    InstagramUrl     = CASE WHEN ISNULL(InstagramUrl,'') = '' THEN 'https://www.instagram.com/pulastyaglobals_india' ELSE InstagramUrl END,
+    TwitterUrl       = CASE WHEN ISNULL(TwitterUrl,'') = '' THEN 'https://x.com/pulastya4614321' ELSE TwitterUrl END,
+    YoutubeUrl       = CASE WHEN ISNULL(YoutubeUrl,'') = '' THEN 'https://www.youtube.com/@PulastyaGlobalsIndiaPrivateLtd' ELSE YoutubeUrl END;
+
+COMMIT;
 GO
 
 /* ---------------------------------------------------------------------------
-   STEP 3 - TEMPLATE (commented out so it never runs by accident).
-   Put THIS company's real values in place of NULL, then run only this UPDATE.
-   Running it with NULLs would clear values that were already filled in.
-   A column left NULL / blank simply hides that item on the website.
-
-UPDATE m_companymaster
-SET
-    CompTagline      = NULL,   -- shown in the page title / about page
-    CompAboutUs      = NULL,   -- short about text: footer, home page, about page
-    CompWorkingHours = NULL,   -- e.g. 'Mon-Sat : 09:00AM to 08:00PM, Sunday : Close'
-    FreeShipAmount   = NULL,   -- e.g. '2500' -> header shows "Free shipping on order above Rs 2500"
-    FacebookUrl      = NULL,
-    InstagramUrl     = NULL,
-    TwitterUrl       = NULL,
-    YoutubeUrl       = NULL,
-    LinkedInUrl      = NULL,
-    CompGSTNo        = NULL;
-
--- LOGO (header, footer, favicon, share image): full URL, /path, or a file name
--- on the ImageUrl server (Web.config). Empty = company name shown as text.
-UPDATE m_companymaster SET logourl = 'your-logo.png';
+   STEP 2 - check what the website will receive
    --------------------------------------------------------------------------- */
-
-/* ---------------------------------------------------------------------------
-   STEP 4 - check what the website receives
-   --------------------------------------------------------------------------- */
-EXEC Sp_GetCompanydetail;
+EXEC ShowBanner @Action = 'DisplayBanner', @BannerCatId = 1;
+SELECT CompName, CompTitle, CompAdd, CompCity, ContactNo, CompMail, WebSite, logourl,
+       CompTagline, CompWorkingHours, FreeShipAmount, FacebookUrl, InstagramUrl, TwitterUrl, YoutubeUrl
+FROM   M_CompanyMaster;
 GO
 
 /* ---------------------------------------------------------------------------
-   Original procedure before STEP 2 (to restore, run it as ALTER PROCEDURE):
+   UNDO for STEP 1 (values before it: ContactNo '1234567890', CompMail empty,
+   CompCity 'West Punjabi Bagh', logourl 'https://mlm.bisplindia.in/images/Logo.png',
+   all other columns empty):
 
-CREATE procedure  Sp_GetCompanydetail
+DELETE FROM TblBannerDetail WHERE ImagePath LIKE '~/theme/img/hero-banner-0%';
+UPDATE M_CompanyMaster SET
+    logourl = 'https://mlm.bisplindia.in/images/Logo.png', ContactNo = '1234567890', CompMail = '',
+    CompCity = 'West Punjabi Bagh', CompTagline = NULL, CompAboutUs = NULL, CompWorkingHours = NULL,
+    FreeShipAmount = NULL, FacebookUrl = NULL, InstagramUrl = NULL, TwitterUrl = NULL, YoutubeUrl = NULL;
+   --------------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------------
+   NOTE - darju9inv is Darju's database, NOT this site. It was changed by
+   mistake on 2026-09-10 while Web.config still pointed there:
+     - 10 empty columns added to M_CompanyMaster (CompTagline ... CompGSTNo)
+     - Sp_GetCompanydetail: logourl and those columns appended to its SELECT list
+       (all original columns unchanged, same order)
+   To put Darju's original procedure back, run this on darju9inv:
+
+USE darju9inv;
+GO
+ALTER procedure Sp_GetCompanydetail
 AS
 BEGIN
 select CId,CompId,CompName,CompAdd,CompState,CompTinNo,CompSTaxNo,
@@ -86,4 +92,5 @@ LastModified,UserCode,UserId,smsSenderId,smsUserNm,smPass,CompMail,
 CompTitle,CompCSTNo,CompPANNo,MailHost,MailPass,CompRegOffAdd,CompTerm,CompanyIDNo,
 MsgOnInvoice,WebPortal,IsSendSMS,FTPUserNm,FTPPassw,CompCity from M_CompanyMaster
 END
+GO
    --------------------------------------------------------------------------- */
