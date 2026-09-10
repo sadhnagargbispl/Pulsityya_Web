@@ -378,6 +378,8 @@
     <!--Plugins-->
     <script src="~/theme/plugins/animation/js/wow.min.js"></script>
     <script src="~/theme/plugins/owl-carousel/owl.carousel.js"></script>
+    <!-- layout.js calls .nivoSlider() on every page; without the plugin it throws and the carousels never start -->
+    <script src="~/theme/plugins/nivo-slider/nivo.js"></script>
     @RenderSection("scripts", required: false)
     <!-- custom js -->
     <script src="~/theme/js/layout.js"></script>
