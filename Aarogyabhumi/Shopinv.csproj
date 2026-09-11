@@ -555,6 +555,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_IndexLayout.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\_ProductCard.cshtml" />
     <Content Include="Views\Shared\_VoiceAssistant.cshtml" />
     <Content Include="Views\ViewCart\CartProducts.cshtml" />
     <Content Include="Views\ViewCart\ViewCart.cshtml" />
