@@ -1,37 +1,12 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|e:\\sadhna garg\\githhubfranchise\\pulsityya_web\\aarogyabhumi\\views\\account\\signup.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{B8A4A11B-21C6-4837-808C-06B614B74BED}|Aarogyabhumi\\Shopinv.csproj|solutionrelative:aarogyabhumi\\views\\account\\signup.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    }
-  ],
+  "WorkspaceRootPath": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\",
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "SignUp.cshtml",
-              "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\Aarogyabhumi\\Views\\Account\\SignUp.cshtml",
-              "RelativeDocumentMoniker": "Aarogyabhumi\\Views\\Account\\SignUp.cshtml",
-              "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\Aarogyabhumi\\Views\\Account\\SignUp.cshtml",
-              "RelativeToolTip": "Aarogyabhumi\\Views\\Account\\SignUp.cshtml",
-              "ViewState": "AgIAAOQAAAAAAAAAAAAAABkAAABQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-09-04T07:19:06.346Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }

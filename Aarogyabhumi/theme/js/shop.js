@@ -12,6 +12,29 @@ Every card carries its id on the .item-container element: data-prodid
     var LOGIN_URL = '/Account/Login';
     var CHECK_LOGIN_URL = '/ProductDetail/CheckLogin';
     var WISHLIST_URL = '/ProductDetail/SaveToWishlist';
+    var WISHLIST_IDS_URL = '/ProductDetail/WishlistIds';
+
+    // every card of a product - the same product can sit in several sections,
+    // and the carousel clones cards
+    function hearts(prodid) {
+        return $('.item-container[data-prodid="' + prodid + '"] .item_wshlst');
+    }
+
+    // on page load, fill the hearts of products already in the member's wishlist
+    // (the server answers [] when nobody is logged in)
+    $(function () {
+        if (!$('.item-container[data-prodid]').length) { return; }
+        $.ajax({
+            url: WISHLIST_IDS_URL,
+            type: 'GET',
+            dataType: 'json',
+            cache: false
+        }).done(function (ids) {
+            $.each(ids || [], function (i, id) {
+                hearts(id).addClass('wshlsted');
+            });
+        });
+    });
 
     $(document).on('click', '.item_wshlst', function (e) {
         e.preventDefault();
@@ -37,9 +60,9 @@ Every card carries its id on the .item-container element: data-prodid
                 data: { ProductID: prodid }
             }).done(function (data) {
                 if (data.status === '1') {
-                    $btn.addClass('wshlsted');
+                    hearts(prodid).addClass('wshlsted');
                 } else if (data.status === '2') {
-                    $btn.removeClass('wshlsted');
+                    hearts(prodid).removeClass('wshlsted');
                 }
                 alert(data.msg);
             }).fail(function (error) {

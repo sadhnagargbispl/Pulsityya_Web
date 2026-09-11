@@ -353,6 +353,26 @@ namespace Shopinv.Controllers
             return Json(new { msg, status });
         }
 
+        // ProdIds in the logged-in member's wishlist, so shop.js can fill those hearts on page load
+        public ActionResult WishlistIds()
+        {
+            List<string> ids = new List<string>();
+            try
+            {
+                if (Session["UserId"] != null && Session["RefId"] == null)
+                {
+                    ids = iprod.CheckUserwiseWishlist(Convert.ToInt32(Session["FormNo"]))
+                               .Select(x => x.ProdId)
+                               .ToList();
+                }
+            }
+            catch
+            {
+
+            }
+            return Json(ids, JsonRequestBehavior.AllowGet);
+        }
+
         public string CallPostFunction(string detail, string url)
         {
             try

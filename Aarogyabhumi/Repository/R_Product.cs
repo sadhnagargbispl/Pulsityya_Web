@@ -1128,8 +1128,29 @@ namespace Shopinv.Repoistory
             hst.Add("UserID", UserID);
             hst.Add("ProductID", 0);
             DataTable dt = blldb.GetDataTable("Sp_SaveShoppingWishlist", CommandType.StoredProcedure, hst);
-            IEnumerable<E_CartDetails> lst = DbOperation.ConvertDataTable<E_CartDetails>(dt);
+            List<E_CartDetails> lst = DbOperation.ConvertDataTable<E_CartDetails>(dt);
+            foreach (E_CartDetails item in lst)
+            {
+                item.imagePath = ProductImageUrl(item.imagePath);
+            }
             return lst;
+        }
+
+        // The SP returns M_ProductMaster.ImagePath as stored, e.g. "17689839390.png,,,,".
+        // Build the full URL from Web.config so no image host lives in code or SQL.
+        private static string ProductImageUrl(string imagePath)
+        {
+            string[] parts = (imagePath ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string file = parts.Length > 0 ? parts[0].Trim() : string.Empty;
+            if (file.Length == 0 || file.StartsWith("/"))
+            {
+                return ConfigurationManager.AppSettings["DefaultProductImageUrl"];
+            }
+            if (file.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || file.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+            {
+                return file;
+            }
+            return Convert.ToString(ConfigurationManager.AppSettings["ProductImageUrl"]).TrimEnd('/') + "/" + file.Replace(" ", "%20");
         }
         public DataSet CheckTxno(string Txno)
         {
