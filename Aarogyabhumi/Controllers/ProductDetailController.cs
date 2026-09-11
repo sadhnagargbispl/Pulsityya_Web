@@ -328,6 +328,7 @@ namespace Shopinv.Controllers
         {
             string msg = "Something went wrong";
             string status = "0";
+            int count = -1;   // new wishlist size for the navbar badge; -1 = unknown
             try
             {
                 int FormNo = Convert.ToInt32(Session["FormNo"]);
@@ -344,13 +345,14 @@ namespace Shopinv.Controllers
                         msg = "Product Remove To Wishlist";
                         status = "2";
                     }
+                    count = iprod.CheckUserwiseWishlist(FormNo).Count();
                 }
             }
             catch
             {
 
             }
-            return Json(new { msg, status });
+            return Json(new { msg, status, count });
         }
 
         // ProdIds in the logged-in member's wishlist, so shop.js can fill those hearts on page load

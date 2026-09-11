@@ -20,19 +20,28 @@ Every card carries its id on the .item-container element: data-prodid
         return $('.item-container[data-prodid="' + prodid + '"] .item_wshlst');
     }
 
-    // on page load, fill the hearts of products already in the member's wishlist
-    // (the server answers [] when nobody is logged in)
+    // navbar heart badge - _Layout renders it only for a logged-in member
+    function setWishlistCount(count) {
+        if (count >= 0) {
+            $('#wishlistCount').text(count).prop('hidden', false);
+        }
+    }
+
+    // on page load, show the navbar count and fill the hearts of products
+    // already in the member's wishlist
     $(function () {
-        if (!$('.item-container[data-prodid]').length) { return; }
+        if (!$('#wishlistCount').length) { return; }
         $.ajax({
             url: WISHLIST_IDS_URL,
             type: 'GET',
             dataType: 'json',
             cache: false
         }).done(function (ids) {
-            $.each(ids || [], function (i, id) {
+            ids = ids || [];
+            $.each(ids, function (i, id) {
                 hearts(id).addClass('wshlsted');
             });
+            setWishlistCount(ids.length);
         });
     });
 
@@ -64,7 +73,9 @@ Every card carries its id on the .item-container element: data-prodid
                 } else if (data.status === '2') {
                     hearts(prodid).removeClass('wshlsted');
                 }
-                alert(data.msg);
+                setWishlistCount(data.count);
+                // let the heart and the navbar count repaint before the alert blocks the page
+                setTimeout(function () { alert(data.msg); }, 50);
             }).fail(function (error) {
                 alert(error.statusText);
             });

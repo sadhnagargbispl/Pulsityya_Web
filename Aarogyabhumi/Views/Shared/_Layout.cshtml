@@ -200,7 +200,7 @@
                         <div class="mb-menu"><span></span><span></span><span></span></div>
                         <a href="~/Home/Index" class="logo mb">@logoHtml</a>
                         <div class="buyer-crt"><a href="~/ViewCart/ViewCart"><span class="crt-icon"><span class="crt-qty cart-count" id="cartCount">@cartCount</span></span></a></div>
-                        <div class="buyer-fav"><a href="@(loggedIn ? Url.Content("~/ViewCart/Wishlist") : Url.Content("~/Account/Login"))"><span class="fav-icon"></span></a></div>
+                        <div class="buyer-fav"><a href="@(loggedIn ? Url.Content("~/ViewCart/Wishlist") : Url.Content("~/Account/Login"))"><span class="fav-icon">@if (loggedIn) {<span class="fav-qty" id="wishlistCount" hidden></span>}</span></a></div>
                         <nav class="byer-nav">
                             <ul class="stge1">
                                 @if (loggedIn)
@@ -383,7 +383,7 @@
     @RenderSection("scripts", required: false)
     <!-- custom js -->
     <script src="~/theme/js/layout.js"></script>
-    <script src="~/theme/js/shop.js?v=20260911"></script>
+    <script src="~/theme/js/shop.js?v=20260911-2"></script>
     <script>
         $(function () {
             // header search -> product listing
