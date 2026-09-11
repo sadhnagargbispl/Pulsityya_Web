@@ -206,7 +206,7 @@
                                 @if (loggedIn)
                                 {
                                     <li>
-                                        <a href="~/Home/MemberProfile"><img src="~/theme/img/icon-buyer.png" alt="" /><span class="nav-lbl">Hi, @Convert.ToString(Session["UserName"])</span><i class="fa fa-angle-down" aria-hidden="true"></i></a>
+                                        <a href="~/Home/MemberProfile" class="welcme"><img src="~/theme/img/icon-buyer.png" alt="" /><span class="nav-lbl">Hi, @Convert.ToString(Session["UserName"])</span><i class="fa fa-angle-down" aria-hidden="true"></i></a>
                                         <ul class="stge2">
                                             <li><a href="~/Home/MemberProfile">Profile</a></li>
                                             @if (isDistributor)
