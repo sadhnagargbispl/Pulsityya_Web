@@ -1,0 +1,58 @@
+.drawer {
+	width:100%;
+	border-bottom:1px solid #ddd; 
+}
+.drawer:last-child {
+	border-bottom:0px; 
+}
+.accordion-item {
+ 
+}
+.accordion-item-active .accordion-header {
+	padding-bottom: 10px;
+}
+.accordion-item-active .accordion-header-icon {
+ background: #f7f7f7;
+}
+.accordion-item-active .accordion-header h1 { 
+	 
+}
+.accordion-header {
+    clear: both;
+    background: #fff;
+    height: auto;
+    padding: 15px 0;
+    overflow: hidden;
+    cursor: pointer;
+    transition: .25s; 
+}
+.accordion-header h1 {
+	float:left;
+	font-size:1em!important; 
+	margin:0!important; 
+	width: calc(100% - 30px); 
+	text-transform: uppercase;
+} 
+.accordion-content { 
+	display:none;  padding: 0 ;  
+}
+.accordion-header-icon { 
+    float: right; 
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #ddd;
+    border-radius: 100%;
+    text-align: center;
+	margin: 5px 0;
+}
+.accordion-header-icon:after {
+    content: url(../../../img/icon-plus.png); 
+}
+.accordion-header-icon.accordion-header-icon-active:after {
+	content: url(../../../img/icon-minus.png); 
+}
+
+@media only screen and (min-width:320px) and (max-width:767px)  
+ 
+}

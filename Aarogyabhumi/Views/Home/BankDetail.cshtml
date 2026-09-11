@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "BankDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Breadcrumb Start -->
+<section class="pt-5 bg-success">
+    <div class="container py-5 px-5 text-center">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="text-white display-5 mb-2 fw-bold">Bank Detail</h1>
+
+            </div>
+        </div>
+    </div>
+    <div class="svg-border-rounded text-light">
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 144.54 17.34" preserveaspectratio="none" fill="currentColor">
+            <path d="M144.54,17.34H0V0H144.54ZM0,0S32.36,17.34,72.27,17.34,144.54,0,144.54,0"></path>
+        </svg>
+    </div>
+</section>
+<!-- Breadcrumb End -->
+<!-- Contact Information -->
+<div class="py-5">
+    <div class="container">
+        <div class="data">
+            <h6><b>Bank Detail</b></h6>
+           
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Bank</th>
+                            <th>A/c Holder Name </th>
+                            <th>A/c No</th>
+                            <th>IFS Code</th>
+                            <th>Branch </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>
+                                @if (!string.IsNullOrEmpty(Convert.ToString(Session["CompLogoUrl"])))
+                                {
+                                    <img src="@Convert.ToString(Session["CompLogoUrl"])" style="width:200px;" alt="@Convert.ToString(Session["CompName"])" />
+                                }
+                            </th>
+                            <th>@Convert.ToString(Session["CompName"])</th>
+                            <th>192605001473</th>
+                            <th>ICIC0001926</th>
+                            <th>Asansol - APCAR</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Contact Information -->
+

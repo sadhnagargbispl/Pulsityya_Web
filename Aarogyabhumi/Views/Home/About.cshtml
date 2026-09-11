@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "About us";
+
+    var compTitle = Convert.ToString(Session["CompTitle"]);
+    var compName = Convert.ToString(Session["CompName"]);
+    var compAdd = Convert.ToString(Session["CompAdd"]);
+    var compTagline = Convert.ToString(Session["CompTagline"]);
+    var compAbout = Convert.ToString(Session["CompAboutUs"]);
+    var aboutParas = string.IsNullOrWhiteSpace(compAbout)
+        ? new string[0]
+        : compAbout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+}
+<div class="breadcrmb">
+    <img src="~/theme/img/page-banner.jpg" alt="About us">
+    <div class="breadcrmb-content">
+        <div class="container">
+            <h1>About us</h1>
+            <ul class="breadcrmb-loc">
+                <li><a href="~/Home/Index">Home</a></li>
+                <li><a class="active">About us</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!--  -->
+<div class="content-row">
+    <div class="page-abt">
+        <div class="sec-1st">
+            <div class="container">
+                <h1 class="first-head">Welcome to @compTitle <span class="brdr"></span>@if (!string.IsNullOrEmpty(compTagline)) { <span>@compTagline</span> }</h1>
+                @foreach (var para in aboutParas)
+                {
+                    <p>@para</p>
+                }
+                <p>We are a professionally managed organization backed by 17 years of rich industry experience in leadership and operations. For the past 4 years, we have been successfully operating as a registered company with a strong focus on legal, ethical, and transparent business practices.</p>
+                <p>Our goal is not just to sell products, but to build long-term trust, customer satisfaction, and sustainable income opportunities for our partners and customers.</p>
+                @if (!string.IsNullOrEmpty(compName) || !string.IsNullOrEmpty(compAdd))
+                {
+                    <p class="abt-sign">
+                        @if (!string.IsNullOrEmpty(compName))
+                        {
+                            <strong>@compName</strong>
+                        }
+                        @if (!string.IsNullOrEmpty(compAdd))
+                        {
+                            <span>@compAdd</span>
+                        }
+                    </p>
+                }
+            </div>
+        </div>
+        <div class="container">
+            <div class="sec-2nd">
+                <div class="sec-inf">
+                    <h2 class="first-head">Our Commitment<span class="brdr"></span></h2>
+                    <p>We are committed to:</p>
+                    <ul>
+                        <li>Delivering high-quality, value-for-money products</li>
+                        <li>Providing transparent and ethical business opportunities</li>
+                        <li>Offering strong after-sales service and support</li>
+                    </ul>
+                </div>
+                <div class="sec-inf">
+                    <h2 class="first-head">Our Vision<span class="brdr"></span></h2>
+                    <p>With a vision to support Make in India, Digital India, and Atmanirbhar Bharat, we aim to empower thousands of individuals through entrepreneurship and skill-based income generation.</p>
+                    <p>We believe in Experience, Ethics &amp; Excellence.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <style>
+        /* layout.css strips margins / bullets - restore them for long-form copy */
+        .page-abt p {
+            margin-bottom: 12px !important;
+        }
+        .page-abt .sec-inf ul {
+            margin: 0 0 12px 20px !important;
+        }
+        .page-abt .sec-inf ul li {
+            list-style: disc;
+            margin-bottom: 6px !important;
+        }
+        .page-abt .abt-sign strong,
+        .page-abt .abt-sign span {
+            display: block;
+        }
+        /* equal-width boxes on desktop only - below 992px layout-responsive.css wraps them */
+        @@media (min-width: 992px) {
+            .page-abt .sec-2nd .sec-inf {
+                flex: 1 1 0;
+            }
+        }
+    </style>
+}

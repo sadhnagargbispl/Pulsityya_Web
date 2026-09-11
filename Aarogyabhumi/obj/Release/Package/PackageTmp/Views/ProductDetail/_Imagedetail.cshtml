@@ -1,0 +1,58 @@
+@model Shopinv.Models.M_Category
+@*
+    Product image gallery - demo/product-detail.asp (.itm-dtls-carousel + spotlight zoom)
+    plus a thumbnail strip (the live page had one).
+
+    Rendered inline by ProductDetail.cshtml inside #prdarea, and re-rendered by
+    ProductDetailController.GetImageBycolor (injected into #prdarea by Imagebycolorid()),
+    so it must stay self-contained: no @section here. The carousel / thumbnail
+    behaviour lives in ProductDetail.cshtml (initDetailGallery).
+*@
+@{
+    // the image server returns this URL when a product has no picture (Web.config: DefaultProductImageUrl)
+    var serverDefaultImg = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["DefaultProductImageUrl"]);
+    var fallbackImg = Url.Content("~/theme/img/sample-product.jpg");
+    var images = new System.Collections.Generic.List<string>();
+    var altText = "";
+
+    if (Model != null && Model.ProductDetail != null)
+    {
+        var prod = Model.ProductDetail.FirstOrDefault();
+        if (prod != null)
+        {
+            altText = prod.ProductName;
+            foreach (var path in new[] { prod.ImagePath, prod.ImagePath1, prod.ImagePath2, prod.ImagePath3, prod.ImagePath4, prod.ImagePath5 })
+            {
+                if (!string.IsNullOrWhiteSpace(path)
+                    && !string.Equals(path.Trim(), serverDefaultImg, StringComparison.OrdinalIgnoreCase)
+                    && !images.Contains(path))
+                {
+                    images.Add(path);
+                }
+            }
+        }
+    }
+    if (images.Count == 0)
+    {
+        images.Add(fallbackImg);
+    }
+}
+<div class="spotlight-group">
+    <div class="owl-carousel itm-dtls-carousel">
+        @foreach (var img in images)
+        {
+            <a class="spotlight" href="@img"><img src="@img" onerror="this.onerror=null;this.src='@fallbackImg';this.parentNode.href='@fallbackImg';" alt="@altText" /></a>
+        }
+    </div>
+</div>
+@if (images.Count > 1)
+{
+    <ul class="pr-thumbs">
+        @for (var i = 0; i < images.Count; i++)
+        {
+            <li class="@(i == 0 ? "active" : "")">
+                <a href="javascript:void(0)" data-index="@i"><img src="@images[i]" onerror="this.onerror=null;this.src='@fallbackImg';" alt="@altText" /></a>
+            </li>
+        }
+    </ul>
+}

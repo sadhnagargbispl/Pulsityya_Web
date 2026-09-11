@@ -1,0 +1,180 @@
+﻿@model Shopinv.Models.GroupDirectReport
+@{
+    ViewBag.Title = "Levelwisereport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    function ChangeLevel() {
+        debugger;
+        var levelwise = $("#levelwise").val();
+        if (levelwise != "0") {
+            $("#leveltypediv").hide();
+            $("#leveltype").val('0');
+        }
+        else {
+            $("#leveltypediv").show();
+            $("#leveltype").val('0');
+        }
+    }
+
+    function GetDetail() {
+        debugger;
+        var MLevel = $("#levelwise").val();
+        var leveltype = $("#leveltype").val(); 
+        var Legno = "0";
+        if (leveltype != "0") {
+            MLevel = leveltype;
+        }
+        else {
+            if (MLevel != 0) {
+                MLevel = $("#levelwise").val();
+            } 
+        }
+       
+        //var ActiveStatus = $("#status").val();
+        var ActiveStatus = "";
+        $.ajax({
+            type: "Post",
+            url: '/Home/GetLevelReport',
+            dataType: "Json",
+            data: { MLevel: MLevel, Legno: Legno, ActiveStatus: ActiveStatus },
+            success: function (data) {
+                $('#Grdwallet').html(data.tblOrder);
+            }
+        });
+    }
+</script>
+<section class="osahan-listingmy-account-main-page mt-3 mb-3">
+    <div class="container">
+        <div class="row m-0">
+            <div class="col-lg-2 col-6">
+                <select id="levelwise" onchange="ChangeLevel()" class="form-control mb-3">
+                    <option value="0">Level Wise</option>
+                    <option value="2">Indirect</option>
+                    <option value="1">Direct</option>
+                </select>
+            </div>
+            <div class="col-lg-2 col-6" id="leveltypediv">
+                <select id="leveltype" class="form-control mb-3">
+                    @foreach (var item in Model.m_Levels)
+                    {
+                        <option value="@item.MLevel">@item.LevelName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-lg-2 col-6" style="display:none;">
+                <select id="status" class="form-control mb-3">
+                    <option value="">All</option>
+                    <option value="Y">Active</option>
+                    <option value="N">Deactive</option>
+                </select>
+            </div>
+            <div class="col-lg-2 col-3 mb-3">
+                <a href="javascript:void(0);" onclick="GetDetail()" class="py-2 px-4 rounded-pill btn btn-danger">
+                    <span>Seacrh</span>
+                </a>
+            </div>
+        </div>
+        <div class="row m-0">
+            <div class="col-lg-12 py-2">
+                <div class="table-responsive bg-white">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Direct</th>
+                                <th>Indirect</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.referalDownlineins != null && Model.referalDownlineins.Count() > 0)
+                            {
+                                foreach (var item in Model.referalDownlineins)
+                                {
+                                    <tr>
+                                        <td>Total Direct</td>
+                                        <td>@item.RegisterLeft</td>
+                                        <td>@item.RegisterRight</td>
+                                        <td>@(item.RegisterLeft+ item.RegisterRight)</td>
+                                    </tr>
+                                    <tr style="display:none;">
+                                        <td>Active Direct</td>
+                                        <td>@item.ConfirmLeft</td>
+                                        <td>@item.ConfirmRight</td>
+                                        <td>@(item.ConfirmLeft + item.ConfirmRight)</td>
+                                    </tr>
+                                    <tr style="display:none;">
+                                        <td>Direct BV</td>
+                                        <td>@item.LeftBv</td>
+                                        <td>@item.RightBv</td>
+                                        <td>@(item.LeftBv + item.RightBv)</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <div class="row m-0">
+            <div class="col-lg-12">
+                <div class="row row-cols-xl-1 row-cols-lg-1 row-cols-md-1 row-cols-1 g-3 osahan-my-orders" id="Grdwallet">
+                    <div class="table-responsive bg-white" >
+                        <table class="table table-bordered text-center mb-0 nowrap">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">SNo</th>
+                                    <th scope="col">Level</th>
+                                    <th scope="col">ID No</th>
+                                    <th scope="col">Member Name</th>
+                                    <th scope="col">Sponsor ID</th>
+                                    <th scope="col">Sponsor Name</th>
+                                    @*<th scope="col">BV</th>
+                                    <th scope="col">Package Name</th>*@
+                                    @*<th scope="col">Active Status</th>*@
+                                    <th scope="col">Joining Date</th>
+                                    @*<th scope="col">Activation Date</th>*@
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.m_LevelDetails != null && Model.m_LevelDetails.Count() > 0)
+                                {
+                                    foreach (var item in Model.m_LevelDetails)
+                                    {
+                                        <tr class="">
+                                            <td>@item.SNo </td>
+                                            <td> @item.Mlevel</td>
+                                            <td>@item.Idno</td>
+                                            <td>@item.MemName</td>
+                                            <td>@item.Sponsorid</td>
+                                            <td>@item.MemberName</td>
+                                            @*<td>@item.BV</td>
+                                            <td>@item.Packagename</td>*@
+                                            @*<td>@item.Status</td>*@
+                                            <td>@item.Doj</td>
+                                            @*<td>@item.UpgradeDate</td>*@
+                                        </tr>
+
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="8">
+                                            No Record Found
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+

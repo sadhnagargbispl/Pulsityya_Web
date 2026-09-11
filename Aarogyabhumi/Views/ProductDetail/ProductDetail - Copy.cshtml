@@ -1,0 +1,289 @@
+﻿@model Shopinv.Models.M_Category
+@{
+    ViewBag.Title = "ProductDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Refid = "";
+    if (Session["RefId"] != null)
+    {
+        Refid = Session["RefId"].ToString();
+    }
+    else
+    {
+        Refid = null;
+    }
+}
+<script type="text/javascript">
+    function CheckLoginPopUp(ProductAddFrom) {
+        debugger;
+        var ProductCode = $('#hdnprodCode').val();
+        var Qty = $("#Qty").val();
+        if (Qty == 0) {
+            alert("Please enter quantity greater than 0!");
+            return false;
+        }
+        var prodname = jQuery('#hdnprodname').val();
+        var image = jQuery('#hdnimage').val();
+        var price = jQuery('#hdnprice').val();
+        var bv = jQuery('#hdnBv').val();
+        var BunchQty = jQuery('#hdnBunchQty').val();
+        var PV = jQuery('#hdnPv').val();
+        var Weight = jQuery('#hdnWeight').val();
+        var string = Math.floor(Math.random() * 1000) + Date.now();
+
+        // ✅ Only SIZE logic remains
+        var SIZE = $("input[name='size']:checked").val();
+        if (SIZE == "" || SIZE == undefined || SIZE == null) {
+            alert("Please select size!");
+            return false;
+        }
+
+        $.ajax({
+            url: '/ProductDetail/CheckLogin',
+            type: 'GET',
+            async: false,
+            data: {}
+        }).done(function (result) {
+            if (result == 'Yes') {
+                AddProductInCart(ProductCode, Qty, prodname, image, price, bv, string, ProductAddFrom, PV, Weight, SIZE);
+            }
+            else {
+                if ("@Refid" != null && "@Refid" != "") {
+                    AddProductInCartOuter(ProductCode, Qty, prodname, image, price, bv, string, ProductAddFrom, PV, Weight);
+                }
+                else {
+                    window.location.href = "/Account/Login";
+                }
+            }
+        }).fail(function (error) {
+            alert(error.statusText);
+            $(".preloader").hide();
+        });
+        return false;
+    }
+
+    function AddProductInCart(ProductCode, Quantity, prodname, image, price, bv, string, AddProductInCart, PV, Weight, SIZE) {
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: '/ProductDetail/AddProductInToCart',
+            async: false,
+            dataType: "Json",
+            data: {
+                ProductCode: ProductCode,
+                Qty: Quantity,
+                ProdName: prodname,
+                Image: image,
+                Price: price,
+                Bv: bv,
+                UniqId: string,
+                PV: PV,
+                Weight: Weight,
+                SIZE: SIZE
+            },
+            success: function (data) {
+                if (data.save == 'S') {
+                    alert("Item added to your cart successfully!");
+                }
+                window.location.href = "/ViewCart/ViewCart";
+            }
+        });
+        return false;
+    }
+
+    function SaveReview() {
+        var reviewMessage = $("#reviewMessage").val();
+        var reviewRating = $("#reviewRating").val();
+        var reviewName = $("#reviewName").val();
+        if (reviewName == "") {
+            $("#reviewName").focus();
+            return false;
+        }
+        if (reviewMessage == "") {
+            $("#reviewMessage").focus();
+            return false;
+        }
+        var hdnpcode = $("#hdnpcode").val();
+        $.ajax({
+            type: "GET",
+            url: '/ProductDetail/CheckLogin',
+            async: false,
+            dataType: "Json",
+            data: {},
+            success: function (result) {
+                if (result == 'Yes') {
+                    $.ajax({
+                        type: "POST",
+                        url: '/ProductDetail/SaveReview',
+                        async: false,
+                        dataType: "Json",
+                        data: { ReviewMessage: reviewMessage, ReviewRating: reviewRating, ReviewName: reviewName, Productcode: hdnpcode },
+                        success: function (data) {
+                            if (data.status == "1") {
+                                $("#reviewdiv").html(data.tblOrder);
+                                $("#reviewMessage").val('')
+                            }
+                            alert(data.msg);
+                        }
+                    });
+                }
+                else {
+                    window.location.href = "/Account/Login";
+                }
+            }
+        });
+    }
+
+    function SaveToWishlist() {
+        var hdnpcode = $("#hdnpcode").val();
+        $.ajax({
+            type: "GET",
+            url: '/ProductDetail/CheckLogin',
+            async: false,
+            dataType: "Json",
+            data: {},
+            success: function (result) {
+                if (result == 'Yes') {
+                    $.ajax({
+                        type: "POST",
+                        url: '/ProductDetail/SaveToWishlist',
+                        async: false,
+                        dataType: "Json",
+                        data: { ProductID: hdnpcode },
+                        success: function (data) {
+                            if (data.status == "1") {
+                                $("#wislistbtn").html('<i class="fa fa-heart me-1"></i> Remove from Wishlist');
+                            }
+                            else if (data.status == "2") {
+                                $("#wislistbtn").html('<i class="fa-regular fa-heart me-1"></i> Add to Wishlist');
+                            }
+                            alert(data.msg);
+                        }
+                    });
+                }
+                else {
+                    window.location.href = "/Account/Login";
+                }
+            }
+        });
+    }
+</script>
+
+@{ Html.RenderAction("OfferBanner", "Home"); }
+
+<!-- Product Detail Section Start -->
+<div class="products-details-area bg-white">
+    <div class="container my-4">
+        <div class="card shadow-lg border-0 p-1">
+            <div class="row g-0 mt-3">
+                @foreach (var item in Model.ProductDetail)
+                {
+                    <div class="col-lg-5 p-3 text-center">
+                        <div class="product-image-container position-relative">
+                            <img id="mainImage" src="@item.ImagePath" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/sample-product.jpg")';" alt="Product Image" class="img-fluid rounded shadow main-product-image" style="cursor: zoom-in; max-height:400px;">
+                        </div>
+
+                        <div class="d-flex justify-content-center mt-3 overflow-auto" style="white-space: nowrap;">
+                            @if (!string.IsNullOrEmpty(item.ImagePath))
+                            {
+                                <img src="@item.ImagePath" class="img-thumbnail mx-1 thumbnail-image" width="70" style="cursor:pointer;">
+                            }
+                            @if (!string.IsNullOrEmpty(item.ImagePath1))
+                            {
+                                <img src="@item.ImagePath1" class="img-thumbnail mx-1 thumbnail-image" width="70" style="cursor:pointer;">
+                            }
+                            @if (!string.IsNullOrEmpty(item.ImagePath2))
+                            {
+                                <img src="@item.ImagePath2" class="img-thumbnail mx-1 thumbnail-image" width="70" style="cursor:pointer;">
+                            }
+                            @if (!string.IsNullOrEmpty(item.ImagePath3))
+                            {
+                                <img src="@item.ImagePath3" class="img-thumbnail mx-1 thumbnail-image" width="70" style="cursor:pointer;">
+                            }
+                        </div>
+                        <hr>
+
+                        <div class="shareicon">
+                            <span class="fw-bold me-2">Share :</span>
+                            <a href="#" class="me-2 text-decoration-none p-2 rounded" style="color:#3b5998;"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="me-2 text-decoration-none p-2 rounded" style="color:#1da1f2;"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="me-2 text-decoration-none p-2 rounded" style="color:#e4405f;"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="me-2 text-decoration-none p-2 rounded" style="color:#25d366;"><i class="fab fa-whatsapp"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-7 p-1">
+                        <input type="hidden" id="hdnprodname" value="@item.ProductName" />
+                        <input type="hidden" id="hdnimage" value="@item.ImagePath" />
+                        <input type="hidden" id="hdnBunchQty" value="@item.BunchQty" />
+                        <input type="hidden" id="hdnprice" value="@item.Price" />
+                        <input type="hidden" id="hdnBv" value="@item.BV" />
+                        <input type="hidden" id="hdnPv" value="@item.PV" />
+                        <input type="hidden" id="hdnprodCode" value="@item.ProdId" />
+                        <input type="hidden" id="hdnWeight" value="@item.Weight" />
+                        <input type="hidden" id="hdnpcode" value="@item.ProdId" />
+
+                        <h4 class="fw-bold mb-3">@item.ProductName</h4>
+                        <div class="mb-3">
+                            <span class="h4 text-success fw-bold">₹@item.Price</span>
+                            <del class="text-muted ms-2">₹@item.MRP</del>
+                            <span class="ms-2 text-danger">Save ₹@(item.MRP - item.Price)</span>
+                        </div>
+                        <p><span class='badge @(item.StockQTY==0 ? "bg-danger" : "bg-success")'>@(item.StockQTY==0 ? "Out Of Stock" : "In Stock")</span> | SKU : @item.ProdId</p>
+
+                        @if (Model.GetSizes.Count() > 0)
+                        {
+                            <div class="mb-4 mt-2">
+                                <label id="selectedSizeLabel" class="fw-bold d-block mb-2">Size:</label>
+                                @foreach (var ss in Model.GetSizes)
+                                {
+                                    <input type="radio" class="btn-check" name="size" id="size_@ss.Id" value="@ss.Size" autocomplete="off">
+                                    <label class="btn btn-sm btn-outline-success me-2 mb-2" for="size_@ss.Id">@ss.Size</label>
+                                }
+                            </div>
+                        }
+
+                        <div class="d-flex align-items-center mb-3">
+                            @if (string.IsNullOrEmpty(item.IsWishlist))
+                            {
+                                <a href="javascript:void(0);" onclick="SaveToWishlist()" id="wislistbtn" class="me-4 text-decoration-none text-dark">
+                                    <i class="fa-regular fa-heart me-1"></i> Add to Wishlist
+                                </a>
+                            }
+                            else if (item.IsWishlist == "Y")
+                            {
+                                <a href="javascript:void(0);" onclick="SaveToWishlist()" id="wislistbtn" class="me-4 text-decoration-none text-dark">
+                                    <i class="fa fa-heart me-1"></i> Remove from Wishlist
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="javascript:void(0);" onclick="SaveToWishlist()" id="wislistbtn" class="me-4 text-decoration-none text-dark">
+                                    <i class="fa-regular fa-heart me-1"></i> Add to Wishlist
+                                </a>
+                            }
+                        </div>
+
+                        @if (item.StockQTY != 0)
+                        {
+                            <div class="d-flex flex-wrap align-items-center mb-3 justify-content-start">
+                                <div class="input-group me-3 mb-2 mb-md-0" style="width:150px;">
+                                    <button class="btn btn-outline-secondary" type="button" id="decrease">-</button>
+                                    <input type="number" id="Qty" value="1" min="1" class="form-control text-center">
+                                    <button class="btn btn-outline-secondary" type="button" id="increase">+</button>
+                                </div>
+
+                                <a href="javascript:CheckLoginPopUp('DetailBuy');" class="btn btn-warning btn-lg me-2 mb-2 mb-md-0"><i class="fa fa-shopping-cart me-1"></i> Add to Cart</a>
+                                <a href="#" class="btn btn-dark btn-lg"><i class="fa fa-bolt me-1"></i> Buy It Now</a>
+                            </div>
+                        }
+
+                        <div class="d-flex align-items-center mt-3">
+                            <i class="fa fa-eye me-2"></i>
+                            <span id="peopleLooking" class="text-dark"><b>2</b> People looking for this product</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

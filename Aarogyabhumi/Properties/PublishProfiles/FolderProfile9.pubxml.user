@@ -1,0 +1,974 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- https://go.microsoft.com/fwlink/?LinkID=208121. -->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>F:\publish\makeandgrowh_Shop</_PublishTargetUrl>
+    <History>True|2026-06-25T11:56:34.6560421Z||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="assets/css/banner.css">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/css/blog.css">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/css/bootstrap.min.css">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/css/custom.css">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/css/flaticon.css">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/css/fontawesome.min.css">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/css/footer.css">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/css/magnific-popup.min.css">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/css/meanmenu.css">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/css/owl.carousel.min.css">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/css/owl.theme.default.min.css">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/css/responsive.css">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/css/scrollCue.css">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/css/shop.css">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/css/style.css">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/fonts/flaticon_mycollection.eot">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/fonts/flaticon_mycollection.svg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/fonts/flaticon_mycollection.ttf">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/fonts/flaticon_mycollection.woff">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/fonts/flaticon_mycollection.woff2">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/01.avif">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/02.avif">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/04.avif">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/3.avif">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/all_men_jewellery.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/background.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/background_1.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/bg_1.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/bns-services/bsn_project_1.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/bns-services/bsn_project_2.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/bns-services/bsn_project_3.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/bns-services/bsn_project_4.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/bns-services/bsn_project_5.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/bns-services/bsn_project_6.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/favicon.ico">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/favicon.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/BCH-14_1_1024x1024 %281%29.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/BCH-14_1_1024x1024 %282%29.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/BCH-14_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-03_2_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-06_2_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-07_2_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-09_2_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-10_2_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-11_2_1024x1024 %281%29.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-11_2_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-13_2_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-15_2_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-43_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-44_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-45_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-46_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-48_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-50_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/CH-52_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-BCH-08_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-BCH-12_1_1024x1024 %281%29.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-BCH-12_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-BCH-15_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-BCH-16_1_1024x1024.jpg.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-BCH-16_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-17_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-18_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-20_1_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-31_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-33_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-40_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-58_1_1024x1024 %281%29.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-58_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-59_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-62_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-63_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-65_1_c50f7957-1eba-474c-9852-3f4eea4574ce_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-76_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-77_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-78_1_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/FJ-CH-81_1_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/chain_photo/IMG_20231031_102112_1024x1024.webp">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/gold_chain_1.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/gold_chain_10.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/gold_chain_11.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/gold_chain_12.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/gold_chain_13.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/gold_chain_14.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/gold_chain_15.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/gold_chain_2.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/gold_chain_3.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/gold_chain_4.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/gold_chain_5.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/gold_chain_6.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/gold_chain_7.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/gold_chain_8.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/gold-chain/gold_chain_9.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/home-img.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/homeimg.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/home_img.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/logo.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/logo/11.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/logo/12.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/logo1.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/logo2.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/menbracelets.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/menchains.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/menpendants.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/menrings.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/products_1.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/products_2.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/products_3.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/products_4.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/product_cat/bracelet.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/product_cat/chain.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/product_cat/kada.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/product_cat/pendent.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/product_cat/ring.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/product_cat/rings.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/product_cat/rudraksha.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/secure_payments.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/secure_payments1.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/services/brandedproducts.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/services/food.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/services/gv.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/services/holiday.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/services/movie.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/services/onlinestore.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/services/petrocard.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/services/utility.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/slider/1.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/slider/2.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/slider/3.png">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/slider/slider-0.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/slider/slider-1.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/slider/slider-2.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/slider/slider-3.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/slider/slider-4.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/tatkim/all_men_jewellery.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/tatkim/menbracelets.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/tatkim/menchains.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/tatkim/menpendants.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/tatkim/menrings.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/users/user_1.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/users/user_2.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/users/user_3.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/images/users/user_4.jpg">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/js/ajaxchimp.min.js">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/js/bootstrap.bundle.min.js">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/js/contact-form-script.js">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/js/custom.js">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/js/form-validator.min.js">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/js/jquery.magnific-popup.min.js">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/js/jquery.meanmenu.js">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/js/jquery.min.js">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/js/mixitup.min.js">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/js/owl.carousel.min.js">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/js/scrollCue.min.js">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/js/voice-assistant.js">
+      <publishTime>06/25/2026 05:09:22</publishTime>
+    </File>
+    <File Include="assets/webfonts/fa-brands-400.ttf">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/webfonts/fa-brands-400.woff2">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/webfonts/fa-regular-400.ttf">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/webfonts/fa-regular-400.woff2">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/webfonts/fa-solid-900.ttf">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/webfonts/fa-solid-900.woff2">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/webfonts/fa-v4compatibility.ttf">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="assets/webfonts/fa-v4compatibility.woff2">
+      <publishTime>06/24/2026 13:32:20</publishTime>
+    </File>
+    <File Include="bin/Antlr3.Runtime.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/Antlr3.Runtime.pdb">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.Bson.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.Bson.pdb">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/PagedList.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/PagedList.Mvc.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/csc.exe">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/csc.exe.config">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/csc.rsp">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/csi.exe">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/csi.rsp">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.Build.Tasks.CodeAnalysis.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.CSharp.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.CSharp.Scripting.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.Scripting.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.VisualBasic.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CSharp.Core.targets">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.DiaSymReader.Native.amd64.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.DiaSymReader.Native.x86.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.VisualBasic.Core.targets">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.AppContext.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Collections.Immutable.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Diagnostics.StackTrace.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.IO.FileSystem.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.IO.FileSystem.Primitives.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Reflection.Metadata.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/vbc.exe">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/vbc.exe.config">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/vbc.rsp">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/VBCSCompiler.exe">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/roslyn/VBCSCompiler.exe.config">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/Shopinv.dll">
+      <publishTime>06/25/2026 17:26:32</publishTime>
+    </File>
+    <File Include="bin/Shopinv.pdb">
+      <publishTime>06/25/2026 17:26:32</publishTime>
+    </File>
+    <File Include="bin/System.Buffers.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/System.Memory.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/System.Runtime.CompilerServices.Unsafe.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/System.Threading.Tasks.Extensions.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/System.Web.Optimization.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Deployment.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Razor.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/Unity.Abstractions.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/Unity.Abstractions.pdb">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/Unity.Container.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/Unity.Container.pdb">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/Unity.Mvc5.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="bin/WebGrease.dll">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Content/PagedList.css">
+      <publishTime>06/24/2026 13:32:22</publishTime>
+    </File>
+    <File Include="favicon.ico">
+      <publishTime>06/24/2026 13:32:22</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>06/24/2026 13:32:22</publishTime>
+    </File>
+    <File Include="img/Qr/3fdf3c96-47a2-4f73-a72c-deb1ce05cc8e.jpg">
+      <publishTime>06/24/2026 13:32:22</publishTime>
+    </File>
+    <File Include="SiteDoc/DIRECTSELLERCONTRACT.pdf">
+      <publishTime>06/24/2026 13:32:22</publishTime>
+    </File>
+    <File Include="UploadedPaymentImages/3fdf3c96-47a2-4f73-a72c-deb1ce05cc8e.jpg">
+      <publishTime>06/24/2026 13:32:22</publishTime>
+    </File>
+    <File Include="UploadedPaymentImages/Adharback.png">
+      <publishTime>06/24/2026 13:32:22</publishTime>
+    </File>
+    <File Include="UploadedPaymentImages/Adharfront.png">
+      <publishTime>06/24/2026 13:32:22</publishTime>
+    </File>
+    <File Include="Uploads/KYC/5e8da6c4-0839-4671-b7e8-2a38a83331f1.jpg">
+      <publishTime>06/24/2026 13:32:22</publishTime>
+    </File>
+    <File Include="Uploads/KYC/8bd5bc2c-25b4-40dd-a144-dadf9dd14099.jpg">
+      <publishTime>06/24/2026 13:32:22</publishTime>
+    </File>
+    <File Include="Uploads/KYC/a4806b9c-1573-4a70-b267-b8e830db94df.jpg">
+      <publishTime>06/24/2026 13:32:22</publishTime>
+    </File>
+    <File Include="Uploads/KYC/bd77c0b0-5426-480d-9e99-ae80ac63e459.jpg">
+      <publishTime>06/24/2026 13:32:22</publishTime>
+    </File>
+    <File Include="Uploads/KYC/ecf794d1-1934-456e-abe0-22006bda94cd.jpg">
+      <publishTime>06/24/2026 13:32:22</publishTime>
+    </File>
+    <File Include="vender/bootstrap/css/bootstrap.min.css">
+      <publishTime>06/24/2026 13:32:22</publishTime>
+    </File>
+    <File Include="vender/bootstrap/js/bootstrap.bundle.min.js">
+      <publishTime>06/24/2026 13:32:22</publishTime>
+    </File>
+    <File Include="vender/icofont/fonts/icofont.woff">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="vender/icofont/fonts/icofont.woff2">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="vender/icofont/icofont.min.css">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="vender/jquery/jquery.min.js">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="vender/slick/slick/ajax-loader.gif">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="vender/slick/slick/fonts/slick-1.eot">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="vender/slick/slick/fonts/slick.eot">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="vender/slick/slick/fonts/slick.svg">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="vender/slick/slick/fonts/slick.ttf">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="vender/slick/slick/fonts/slick.woff">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="vender/slick/slick/slick-theme.css">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="vender/slick/slick/slick.css">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="vender/slick/slick/slick.min.js">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Account/ChangePassword.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Account/ChangeTxnPassword.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Account/Complaintdetail_partail.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Account/Forgotpass.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Account/Login.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Account/RaiseComplaint.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Account/ResiterUserdetail.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Account/SignUp.cshtml">
+      <publishTime>06/25/2026 17:21:01</publishTime>
+    </File>
+    <File Include="Views/Account/TicketList.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/CategoryList/CategoryList.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/CategoryList/_CategorySideBar.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/CategoryList/_FilterProductRangeWise.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/CheckOrder/Checkofflineorder.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/CheckOrder/CheckOrder.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/CheckOut/CashFreeApi.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/CheckOut/CheckOut.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/CheckOut/PaymentProceed.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/About.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/BankDetail.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/BrandPortalDirectlogin.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/Cancellationpolicy.cshtml">
+      <publishTime>06/25/2026 17:21:01</publishTime>
+    </File>
+    <File Include="Views/Home/Certificate.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/CheckStatus.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/Complaintdetail_partail.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/Contact.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/DeListedDsd.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/DesktopHeader.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/DirectSellerContrazt.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/Disclaimer.cshtml">
+      <publishTime>06/25/2026 17:21:01</publishTime>
+    </File>
+    <File Include="Views/Home/Footer.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/FranchiseList.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/GetCartCount.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/GetCartDetails.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/Grievanceredressal.cshtml">
+      <publishTime>06/25/2026 17:21:01</publishTime>
+    </File>
+    <File Include="Views/Home/GrievanceRedressalMechanism.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/GrievanceRRedressal.cshtml">
+      <publishTime>06/25/2026 17:21:01</publishTime>
+    </File>
+    <File Include="Views/Home/Index.cshtml">
+      <publishTime>06/25/2026 17:10:24</publishTime>
+    </File>
+    <File Include="Views/Home/IndexBanner.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/KYCWarning.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/LevelIncome.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/Levelwisereport.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/Levelwisereport_partail.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/MemberProfile.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/Mobile_header.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/MyCoupon.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/Myorders.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/OfferBanner.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/OrderDetail.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/PrivacyPolicy.cshtml">
+      <publishTime>06/25/2026 17:21:01</publishTime>
+    </File>
+    <File Include="Views/Home/ReferalLinkPage.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/Registerofds.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/ReturnPolicy.cshtml">
+      <publishTime>06/25/2026 17:21:01</publishTime>
+    </File>
+    <File Include="Views/Home/Selfdeclaration.cshtml">
+      <publishTime>06/25/2026 17:21:01</publishTime>
+    </File>
+    <File Include="Views/Home/ShippingPolicy.cshtml">
+      <publishTime>06/25/2026 17:21:01</publishTime>
+    </File>
+    <File Include="Views/Home/Termsofuse.cshtml">
+      <publishTime>06/25/2026 17:21:01</publishTime>
+    </File>
+    <File Include="Views/Home/UpdateUserKyc.cshtml">
+      <publishTime>06/25/2026 15:00:31</publishTime>
+    </File>
+    <File Include="Views/Home/UpdateUserKycByapi.cshtml">
+      <publishTime>06/25/2026 15:00:49</publishTime>
+    </File>
+    <File Include="Views/Home/UserKyc.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/UserKycByapi.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/VisionMission.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/WalletDetail.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Home/WalletDetail_partail.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/ProductDetail/ProductDetail.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/ProductDetail/ProductReview_partial.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/ProductDetail/_Imagedetail.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Shared/Error.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Shared/_IndexLayout.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Shared/_Layout.cshtml">
+      <publishTime>06/25/2026 17:24:46</publishTime>
+    </File>
+    <File Include="Views/Shared/_VoiceAssistant.cshtml">
+      <publishTime>06/25/2026 11:28:24</publishTime>
+    </File>
+    <File Include="Views/ViewCart/CartProducts.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/ViewCart/ViewCart.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/ViewCart/Wishlist.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/Web.config">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Views/_ViewStart.cshtml">
+      <publishTime>06/24/2026 13:32:24</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>06/25/2026 17:26:33</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

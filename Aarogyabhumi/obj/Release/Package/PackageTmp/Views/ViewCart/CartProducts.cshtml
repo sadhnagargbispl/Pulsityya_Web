@@ -1,0 +1,345 @@
+@model Shopinv.Models.M_Category
+@{
+
+    var TotPrice = Model.CartDetail.Sum(s => (s.Price * s.qty));
+
+    var Totbv = Model.CartDetail.Sum(s => (s.Price * s.qty));
+
+    var totPV = Model.CartDetail.Sum(s => (s.PV * s.qty));
+    var totWeight = Model.CartDetail.Sum(s => (s.PV * s.Weight));
+    var cartCount = Model.CartDetail != null ? Model.CartDetail.Count() : 0;
+    var CourierCharge = Convert.ToDecimal(Session["CourierCharge"]);
+    var ToTpayAmount = TotPrice + CourierCharge;
+    //decimal TotPrice = 0;
+    //decimal Totbv = 0;
+    var TotPrice1 = "";
+    var Totbv1 = "";
+    decimal TotalBunchQtyAmount = 0;
+    decimal TotalAmount = 0;
+    int Totalbunchbv = 0;
+    int TotalBV = 0;
+    var GstWithOutPrice = 0;
+    var GstAmt = 0;
+
+    var isDistributor = Convert.ToString(Session["MemMode"]) == "D";
+    var noImage = Url.Content("~/theme/img/sample-product.jpg");
+}
+@*
+    Partial - rendered into #cartProducts (ViewCart.cshtml) by GET /ViewCart/CartProducts and
+    returned as "tblOrder" (Extension.RenderRazorViewToString) by UpadteCartdetail / DeleteLstRow.
+    jQuery / Bootstrap are already on the page (layout), so they are NOT loaded again here.
+*@
+
+<script type="text/javascript">
+    function checkcoupon()
+    {
+
+        debugger;
+var Value = $("#TxtCoupon").val();
+var netamount = $("#netamount").text();
+var totalbv = $("#totalbv").text();
+if (Value != "") {
+    GetCouponInfo(Value, @TotPrice, @Totbv);
+}
+else {
+    $("#netamount").text(@TotPrice);
+    $("#paidbv").text(@Totbv);
+    $("#CouponAmount").text('0');
+    $("#paidamount").text(@TotPrice);
+    document.getElementById("failedmsg").style.display = "none";
+    document.getElementById("successmsg").style.display = "none";
+    $.ajax({
+        url: '/ViewCart/ClearCoupon', // Replace with actual controller and method
+        type: 'POST',
+        data: { "TotalAmount": @TotPrice ,"TotalBv":@Totbv },
+        success: function (response) {
+
+        }
+    });
+
+
+}
+
+    }
+    $(document).ready(function () {
+        debugger;
+        $("#TxtCoupon").val("@HttpContext.Current.Session["coupon"]");
+        var Value = $("#TxtCoupon").val();
+        var netamount = $("#netamount").text();
+        var totalbv = $("#totalbv").text();
+        if (Value != "") {
+            GetCouponInfo(Value, netamount, totalbv);
+        }
+        else {
+            $("#netamount").val(netamount);
+            $("#paidbv").val(totalbv);
+        }
+    });
+
+    function UpdateProdQty(obj, prodid) {
+        debugger;
+        //var qty = $(obj).parent().prev().find('input[name="qty"]').val();
+        var Qty1 = $("#qtyText_" + prodid).val();
+        if (Qty1 >= 1) {
+            if (Qty1 == "") {
+                alert("Please Enter the Quantity!");
+                return false;
+            }
+            if (Qty1 == "0") {
+                alert("Quantity should be grater than 0!");
+                return false;
+            }
+            Qty1 = parseInt(Qty1) + 1;
+            $("#qtyText_" + prodid).val(Qty1);
+            $.ajax({
+                type: "POST",
+                url: '/ViewCart/UpadteCartdetail',
+                datatype: "html",
+                data: { ProdId: prodid, Quantity: Qty1 },
+                success: function (data) {
+                    if (data.msg == "S") {
+                        alert("cart Deatails Updated!");
+                    }
+                    $("#cartProducts").html('').html(data.tblOrder);
+
+                }
+
+            });
+        }
+        else {
+            $("#qtyText_" + prodid).val('1');
+        }
+    }
+    function UpdateProdQtyMinus(obj, prodid) {
+        debugger;
+        //var qty = $(obj).parent().prev().find('input[name="qty"]').val();
+        var Qty1 = $("#qtyText_" + prodid).val();
+        Qty1 = parseInt(Qty1) - 1;
+        if (Qty1 >= 1) {
+            if (Qty1 == "") {
+                alert("Please Enter the Quantity!");
+                return false;
+            }
+            if (Qty1 == "0") {
+                alert("Quantity should be grater than 0!");
+                return false;
+            }
+
+            $("#qtyText_" + prodid).val(Qty1);
+            $.ajax({
+                type: "POST",
+                url: '/ViewCart/UpadteCartdetail',
+                datatype: "html",
+                data: { ProdId: prodid, Quantity: Qty1 },
+                success: function (data) {
+                    if (data.msg == "S") {
+                        alert("cart Deatails Updated!");
+                    }
+                    $("#cartProducts").html('').html(data.tblOrder);
+
+                }
+
+            });
+        }
+        else {
+            $("#qtyText_" + prodid).val('1');
+        }
+    }
+
+
+    function GetCouponInfo(CouponNo, TotalAmount, totalbv) {
+
+        debugger;
+        $.ajax({
+            url: '@Url.Action("GetCouponInfo", "ViewCart")',
+            type: 'POST',
+            data: { "CouponNo": CouponNo ,"TotalAmount": TotalAmount,"TotalBV": totalbv},
+            dataType: "json",
+            success: function (objResult) {
+
+                if (objResult != null) {
+                    $("#CouponAmount").text(objResult.amount);
+
+                    var netamount;
+                    if (TotalAmount >= objResult.amount)
+                        {
+                        netamount= TotalAmount - (objResult.amount);
+                    }
+                    else
+                    {
+                        netamount = 0;
+                    }
+
+                    $("#paidamount").text(netamount);
+                    debugger;
+                    if (objResult.SuccessMsg != '') {
+                        $("#successmsg").text(objResult.SuccessMsg);
+                        $("#successmsg").removeAttr("style");
+                        $("#paidbv").text(objResult.remainbv);
+                        document.getElementById("failedmsg").style.display = "none";
+
+
+                    }
+                    else if (objResult.FailedMsg != '') {
+                        alert(objResult.FailedMsg);
+                        $("#failedmsg").text(objResult.FailedMsg);
+                        $("#failedmsg").removeAttr("style");
+                        document.getElementById("successmsg").style.display = "none";
+                        //$("#successmsg").setAttribute('style', 'display:none');
+                        //$("#paidbv").text(0);
+                    }
+                    else {
+                        document.getElementById("failedmsg").style.display = "none";
+                        document.getElementById("successmsg").style.display = "none";
+}
+                }
+
+
+
+            },
+            error: function (xhr, data) {
+                //  return false;
+                console.log(xhr);
+                console.log("Error:", data);
+            }
+        });
+
+    }
+    $("#CouponApplied").click(function (e) {
+
+        var Value = $("#TxtCoupon").val();
+        var netamount = $("#netamount").text();
+        var totalbv = $("#totalbv").text();
+        if (Value != "")
+            GetCouponInfo(Value, netamount, totalbv);
+        //  }
+    });
+
+</script>
+
+<div class="cart-row">
+    @if (Model.CartDetail != null && Model.CartDetail.Any())
+    {
+        <div class="row">
+            <div class="col-sm-7 col-md-8">
+                <div class="cart-item" id="cartTable">
+                    <h5>My Shopping Cart</h5>
+                    <p class="crt-count">You have @cartCount items in your cart</p>
+
+                    @foreach (var data in Model.CartDetail)
+                    {
+                        var detailUrl = Url.Content("~/ProductDetail/ProductDetail?ProdID=" + data.ProdId);
+                        var discount = 0;
+                        if (data.MRP > 0 && data.MRP > data.Price)
+                        {
+                            discount = Convert.ToInt32(Math.Round(((data.MRP - data.Price) * 100) / data.MRP));
+                        }
+                        <div class="crt-lst" data-price="@data.Price" data-bv="@data.bv">
+                            <p class="pr_remove">
+                                <a href="javascript:void(0);" class="btn-remove" title="Remove"
+                                   onclick="DeleteRow(this,'@data.id','@data.ProdId','@data.imagePath','@data.qty','@data.Price','@data.bv','@data.IpAddress')"></a>
+                            </p>
+                            <div class="crt-pic">
+                                <a href="@detailUrl">
+                                    <img src="@data.imagePath" alt="@data.ProdName"
+                                         onerror="this.onerror=null;this.src='@noImage';" />
+                                </a>
+                            </div>
+                            <div class="crt-inf">
+                                <p class="pr_name"><span>Product ID @data.ProdId</span><a href="@detailUrl">@data.ProdName</a></p>
+                                <div class="row">
+                                    <div class="col-xs-5 col-md-3 col-lg-2">
+                                        @* no dt-min / dt-max / step on purpose: layout.js's generic +/- handler stays a
+                                           no-op here and the live AJAX functions below own the quantity *@
+                                        <div class="num-incr-decr">
+                                            <span class="decrMent" title="Decrease" onclick="UpdateProdQtyMinus(this,'@data.ProdId',@data.Price);"></span>
+                                            <input type="text" class="quantity" id="qtyText_@data.ProdId" value="@data.qty" readonly>
+                                            <span class="incrMent" title="Increase" onclick="UpdateProdQty(this,'@data.ProdId',@data.Price);"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7 col-md-9 col-lg-10">
+                                        <p class="pr_rate">
+                                            @if (discount > 0)
+                                            {
+                                                <span class="pr_mrp">&#8377; @String.Format("{0:N2}", data.MRP)</span>
+                                            }
+                                            <span class="pr_offerprice">&#8377; @String.Format("{0:N2}", data.Price)</span>
+                                            @if (discount > 0)
+                                            {
+                                                <span class="pr_discount">@discount% Off</span>
+                                            }
+                                        </p>
+                                        <p class="pr_total">
+                                            Total : <b class="item-total">&#8377;@String.Format("{0:N2}", data.Price * data.qty)</b>
+                                            @if (isDistributor)
+                                            {
+                                                <span class="pr_sv">SV : @data.bv</span>
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <a href="~/Home/Index" class="btn btn-sub btn-shop">Continue Shopping</a>
+                </div>
+            </div>
+            <div class="col-sm-5 col-md-4">
+                <div class="price-lst-smry">
+                    <h5>Order Summary</h5>
+                    <ul>
+                        <li><span class="lft">Subtotal</span><span class="rght" id="subtotal">&#8377;@String.Format("{0:N2}", TotPrice)</span></li>
+                        @if (isDistributor)
+                        {
+                            <li class="vp"><span class="lft">Total SV</span><span class="rght" id="totalbv">@Totbv</span></li>
+                        }
+                        <li class="ftr"><span class="lft">Grand Total </span><span class="rght" id="grandTotal">&#8377;@String.Format("{0:N2}", TotPrice)</span></li>
+                    </ul>
+
+                    <ul class="smry-nte">
+                        <li>Tax included. Shipping calculated at checkout.</li>
+                    </ul>
+
+                    <a class="btn btn-sub btn-order" href="javascript:void(0);" onclick="prceedCheckOut(this,@Totbv,0);">Proceed to checkout</a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="empty-cart-msg">
+            <p>Your cart is empty.<span>Looks like you haven't added any products yet.</span></p>
+            <a href="~/Home/Index" class="btn btn-sub btn-shop">Continue Shopping</a>
+        </div>
+    }
+</div>
+
+<script>
+    function updateCart() {
+        var fmt = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+        var subtotal = 0;
+        document.querySelectorAll("#cartTable .crt-lst").forEach(function (row) {
+            var price = parseFloat(row.dataset.price) || 0;
+            var qtyBox = row.querySelector(".quantity");
+            var qty = (qtyBox ? parseInt(qtyBox.value) : 1) || 1;
+            var total = price * qty;
+            subtotal += total;
+            var itemTotal = row.querySelector(".item-total");
+            if (itemTotal) {
+                itemTotal.innerText = "\u20B9" + total.toLocaleString("en-IN", fmt);
+            }
+        });
+
+        var subtotalBox = document.getElementById("subtotal");
+        var grandTotalBox = document.getElementById("grandTotal");
+        if (subtotalBox) {
+            subtotalBox.innerText = "\u20B9" + subtotal.toLocaleString("en-IN", fmt);
+        }
+        if (grandTotalBox) {
+            grandTotalBox.innerText = "\u20B9" + subtotal.toLocaleString("en-IN", fmt);
+        }
+    }
+
+    updateCart();
+</script>

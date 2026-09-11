@@ -1,0 +1,175 @@
+@model Shopinv.Models.M_Complaint
+@{
+    ViewBag.Title = "Raise Complaint";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="breadcrmb plain">
+    <div class="breadcrmb-content">
+        <div class="container">
+            <ul class="breadcrmb-loc">
+                <li><a href="@Url.Content("~/")">Home</a></li>
+                <li><a class="active">Raise Complaint</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!--  -->
+<div class="content-row">
+    <div class="my-account">
+        <div class="container">
+            <div class="login-bar">
+                <div class="login-col rgstr-col">
+                    <h3>Raise Complaint</h3>
+                    <p>Your Voice, Our Commitment - Every Concern Matters.</p>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="Name">Full Name</label>
+                                <input type="text" class="form-control" id="Name" value="@Convert.ToString(Session["UserName"])" readonly required />
+                            </div>
+                        </div>
+                    </div>
+                    <!--  -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" value="@Convert.ToString(Session["Email"])" readonly required />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="mobileno">Mobile No.</label>
+                                <input type="text" class="form-control" id="mobileno" value="@Convert.ToString(Session["MobileNo"])" onkeypress="return isNumberKey(event);" readonly required />
+                            </div>
+                        </div>
+                    </div>
+                    <!--  -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="complaintid">Complaint Type</label>
+                                <select class="form-control" id="complaintid">
+                                    @if (Model.complainttype != null && Model.complainttype.Count > 0)
+                                    {
+                                        foreach (var item in Model.complainttype)
+                                        {
+                                            <option value="@item.complaintid">@item.complaintname</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <input type="text" class="form-control" id="subject" required />
+                            </div>
+                        </div>
+                    </div>
+                    <!--  -->
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" id="description" rows="2" required></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <button type="button" id="Apply" onclick="SaveCompaint()" class="btn btn-sub">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode == 46) {
+                return true;
+            }
+            else if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        }
+        function validateEmail(email) {
+            var emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function SaveCompaint() {
+            $("#Apply").prop('disabled', true);
+            var complaintid = $("#complaintid").val();
+            var subject = $("#subject").val();
+            if (subject == "") {
+                alert("Please enter subject");
+                $("#Apply").prop('disabled', false);
+                return false;
+            }
+            var email = $("#email").val();
+            if (email == "") {
+                alert("Please enter email");
+                $("#Apply").prop('disabled', false);
+                return false;
+            }
+            if (email != "" && validateEmail(email) == false) {
+                alert("Please enter valid email");
+                $("#Apply").prop('disabled', false);
+                return false;
+            }
+            var Name = $("#Name").val();
+            if (Name == "") {
+                alert("Please enter name");
+                $("#Apply").prop('disabled', false);
+                return false;
+            }
+            var mobileno = $("#mobileno").val();
+            if (mobileno == "") {
+                alert("Please enter mobileno");
+                $("#Apply").prop('disabled', false);
+                return false;
+            }
+            var description = $("#description").val();
+            if (description == "") {
+                alert("Please enter description");
+                $("#Apply").prop('disabled', false);
+                return false;
+            }
+
+            $.ajax({
+                type: "Post",
+                url: "/Account/SaveCompaint",
+                async: true,
+                data: {
+                    Complaintid: complaintid, Subject: subject, Email: email,
+                    Name: Name, Mobileno: mobileno, Description: description
+                },
+                success: function (data) {
+                    if (data.msg != "") {
+                        alert(data.msg);
+                    }
+                    if (data.status == "OK") {
+                        $("#subject").val('');
+                        $("#email").val('');
+                        $("#Name").val('');
+                        $("#mobileno").val('');
+                        $("#description").val('');
+                    }
+                    $("#Apply").prop('disabled', false);
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                    $("#Apply").prop('disabled', false);
+                },
+                error: function (response) {
+                    console.log(response.responseText);
+                    $("#Apply").prop('disabled', false);
+                }
+            });
+        }
+    </script>
+}

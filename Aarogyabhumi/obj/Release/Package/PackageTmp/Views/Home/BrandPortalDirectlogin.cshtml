@@ -1,0 +1,28 @@
+﻿@model Shopinv.Models.ExternalLogin
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>BrandPortalDirectlogin</title>
+</head>
+<body>
+    <form method="post" action="@System.Configuration.ConfigurationManager.AppSettings["BrandPortalUrl"]" name="frm2Post">
+        <input type="hidden" name="token" value="@Model.token" />
+        <input type="hidden" name="mod" value="@Model.mod" />
+        <input type="hidden" name="userid" value="@Model.userid" />
+        <input type="hidden" name="password" value="@Model.password" />
+    </form>
+
+    <script type="text/javascript">
+        document.frm2Post.submit();
+    </script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewBag.Title = "Cancellationpolicy";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="breadcrmb">
+    <img src="@Url.Content("~/theme/img/page-banner.jpg")" alt="Cancellation Policy">
+    <div class="breadcrmb-content">
+        <div class="container">
+            <h1>Cancellation Policy</h1>
+            <ul class="breadcrmb-loc">
+                <li><a href="@Url.Content("~/Home/Index")">Home</a></li>
+                <li><a class="active">Cancellation Policy</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="content-row">
+    <div class="container">
+        <div class="txt-page">
+            <h4 class="mb-3">Cancellation Policy</h4>
+            <hr>
+
+            <p>At @Convert.ToString(Session["CompTitle"]), we understand that circumstances can change, and sometimes you may need to cancel an order. We aim to make the cancellation process as smooth and convenient as possible. By shopping with us, you agree to adhere to these policies.</p>
+
+            <h5 class="mt-3">Cancellation Window</h5>
+            <p>You may request the cancellation of your order within <strong>48 hours</strong> of placing it. We recommend reviewing your order carefully during this time to ensure it meets your requirements.</p>
+
+            <h5 class="mt-3">Cancellation Process</h5>
+
+            <p>
+                To cancel an order, please contact our customer support team as soon as possible. Provide your order number and the reason for cancellation. Phone:
+                <a href="tel:@Convert.ToString(Session["MobileNo"])"> @Convert.ToString(Session["MobileNo"])</a>.
+            </p>
+
+            <h5 class="mt-3">Refunds for Cancelled Orders</h5>
+            <p>If your cancellation request is made within the specified cancellation window, we will process a full refund to your original payment method. Refunds may take up to <strong>7 business days</strong> to reflect in your account, depending on your financial institution’s policies.</p>
+
+            <h5 class="mt-3">Late Cancellation</h5>
+            <p>If you request a cancellation after the specified cancellation window, no refund will be issued.</p>
+
+            <h5 class="mt-3">Contact Us</h5>
+            <p>
+                If you have any questions or need assistance with cancelling an order, please contact our customer support team by email:
+                <a href="mailto:@Convert.ToString(Session["CompMail"])"> @Convert.ToString(Session["CompMail"])</a> or by phone: <a href="tel:@Convert.ToString(Session["MobileNo"])"> @Convert.ToString(Session["MobileNo"])</a>.
+            </p>
+
+            <h5 class="mt-3">Policy Changes</h5>
+            <p>@Convert.ToString(Session["CompTitle"]) reserves the right to update this Cancellation Policy. Any changes will be posted on our website; please review this policy periodically.</p>
+
+            <p class="mb-0 mt-3"><strong>Thank you for shopping with @Convert.ToString(Session["CompTitle"]). We appreciate your trust and strive to provide a hassle-free experience.</strong></p>
+        </div>
+    </div>
+</div>

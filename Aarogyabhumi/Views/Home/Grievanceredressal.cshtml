@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "Grievanceredressal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="breadcrmb">
+    <img src="@Url.Content("~/theme/img/page-banner.jpg")" alt="Grievance Redressal">
+    <div class="breadcrmb-content">
+        <div class="container">
+            <h1>Grievance Redressal</h1>
+            <ul class="breadcrmb-loc">
+                <li><a href="@Url.Content("~/Home/Index")">Home</a></li>
+                <li><a class="active">Grievance Redressal</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="content-row">
+    <div class="container">
+        <div class="txt-page">
+            <h4 class="mb-3">Grievance Redressal</h4>
+            <hr>
+
+            <h5 class="mb-2">Mechanism for Grievance Redressal</h5>
+
+            <p>
+                M/s @Convert.ToString(Session["CompName"]) adopts a conciliatory approach towards Consumers / Direct Sellers and takes all precautions to offer the best services. In unavoidable circumstances, the Company has devised the following system to address grievances.
+            </p>
+
+            <ol>
+                <li>
+                    @Convert.ToString(Session["CompName"]) complies with the Consumer Protection (Direct Selling) Rules, 2021 and the Consumer Protection Act, 2019 and has instructed its Direct Sellers to do the same.
+                </li>
+                <li>
+                    The Company maintains a register to track grievances received via Calls / Written Application / E‑mail / Walk‑in / Online Grievance Cell, etc. Each grievance is numbered for easy tracking, acknowledged within 48 hours of receipt at the Grievance Redressal Cell, and the time taken to resolve it is recorded.
+                </li>
+                <li>
+                    Grievances are entered into the internal grievance software. A unique tracking ID is generated for each grievance and communicated to the Consumer / Direct Seller on their registered e‑mail ID and mobile number within 48 hours of receipt.
+                </li>
+                <li>
+                    Consumers / Direct Sellers should retain the unique tracking ID to track and follow up on the grievance.
+                </li>
+                <li>
+                    @Convert.ToString(Session["CompName"]) has appointed a Grievance Redressal Officer. Contact details are provided below:
+                    <div class="mt-2 p-2 bg-light rounded">
+                        <p class="mb-1"><strong>Name:</strong> Mr. Bhausaheb Wakale</p>
+                        <p class="mb-1"><strong>E‑mail:</strong> <a href="mailto:@Convert.ToString(Session["CompMail"])">@Convert.ToString(Session["CompMail"])</a></p>
+                        <p class="mb-0"><strong>Contact No:</strong> <a href="tel:@Convert.ToString(Session["ContactNo"])">@Convert.ToString(Session["ContactNo"])</a></p>
+                    </div>
+                </li>
+                <li>
+                    The Grievance Redressal Officer will endeavour to redress the grievance within 30 days from the date of receipt.
+                </li>
+                <li>
+                    If resolution is delayed beyond 30 days, the Officer will inform the Consumer / Direct Seller of the reason for the delay on their registered e‑mail ID.
+                </li>
+                <li>
+                    If the Consumer remains dissatisfied with the resolution, they may approach the National Consumer Helpline or the State Consumer Helpline for mediation/resolution and thereafter the Consumer Forum / Court of appropriate jurisdiction. If a Direct Seller remains dissatisfied, they may proceed in accordance with the Dispute Resolution Clause of the Direct Seller Contract Agreement.
+                </li>
+            </ol>
+
+            <p class="mt-3"><strong>Note:</strong> This Grievance Redressal Mechanism forms part of the Contract Agreement entered by a Direct Seller and is to be read as part and parcel of that agreement; it is not reproduced in full in the agreement for brevity.</p>
+        </div>
+    </div>
+</div>

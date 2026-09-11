@@ -1,0 +1,220 @@
+@model Shopinv.Models.M_Category
+@{
+    var catName = (Request.QueryString["CatName"] ?? "").Trim();
+    var subCate = (Request.QueryString["Subcate"] ?? "").Trim();
+    var pageTitle = !string.IsNullOrEmpty(subCate) ? subCate : (!string.IsNullOrEmpty(catName) ? catName : "Products");
+
+    ViewBag.Title = pageTitle;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var products = Model.ProductList ?? Enumerable.Empty<Shopinv.Entity.E_Product>();
+    var productCount = products.Count();
+
+    // bounds of the price slider (theme/js/item_filter.js)
+    var lowestPrice = 0;
+    var highestPrice = 0;
+    if (productCount > 0)
+    {
+        lowestPrice = (int)Math.Floor(products.Min(p => p.Price));
+        highestPrice = (int)Math.Ceiling(products.Max(p => p.Price));
+        if (highestPrice <= lowestPrice)
+        {
+            highestPrice = lowestPrice + 1;
+        }
+    }
+
+    // the grid markup lives in _FilterProductRangeWise, which the sort AJAX returns as well
+    var gridModel = new Shopinv.Models.M_Category { SrchFilterProductList = products };
+    var allProductsUrl = Url.Action("CategoryList", "CategoryList");
+}
+
+@section styles {
+    <!--range slider-->
+    <link href="~/theme/plugins/price-slider/range-slider.css" rel="stylesheet" type="text/css">
+    <link href="~/theme/plugins/price-slider/jquery-ui.min.css" rel="stylesheet" type="text/css">
+    <style>
+        .itm-lst-row .itm-fltr .rslt-count {
+            float: right;
+            line-height: 30px;
+            color: #666;
+        }
+        /* equal-height rows, so cards with long names do not stagger the float grid */
+        .itm-lst-row .itm-lst > .row {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+        }
+        .itm-lst-row .itm-lst > .row:before,
+        .itm-lst-row .itm-lst > .row:after {
+            display: none;
+        }
+    </style>
+}
+
+<div class="breadcrmb">
+    <img src="~/theme/img/page-banner.jpg" alt="@pageTitle">
+    <div class="breadcrmb-content">
+        <div class="container">
+            <h1>@pageTitle</h1>
+            <ul class="breadcrmb-loc">
+                <li><a href="~/">Home</a></li>
+                @if (string.IsNullOrEmpty(catName) && string.IsNullOrEmpty(subCate))
+                {
+                    <li><a class="active">Products</a></li>
+                }
+                else
+                {
+                    <li><a href="@allProductsUrl">Products</a></li>
+                    if (!string.IsNullOrEmpty(catName))
+                    {
+                        if (string.IsNullOrEmpty(subCate))
+                        {
+                            <li><a class="active">@catName</a></li>
+                        }
+                        else
+                        {
+                            <li><a href="@Url.Action("CategoryList", "CategoryList", new { CatName = catName })">@catName</a></li>
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(subCate))
+                    {
+                        <li><a class="active">@subCate</a></li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+<!--  -->
+<div class="content-row">
+    <div class="itm-lst-row">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-4 col-md-3">
+                    <div class="mb-fltr-col">
+                        <div class="clse-btn"><span>&times;</span></div>
+                        @{ Html.RenderAction("GetCategorySideBar", "CategoryList"); }
+                        @if (productCount > 0)
+                        {
+                            <p class="fltr-head">Filter By Price</p>
+                            <div class="fltr-lst price">
+                                <div id="price-range" class="range-slider"></div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-8 col-md-9">
+                    <div class="row">
+                        <div class="col-xs-8 col-sm-12">
+                            <div class="itm-fltr">
+                                @if (productCount > 0)
+                                {
+                                    <span class="rslt-count hidden-xs">Showing <strong id="prodCount">@productCount</strong> Results</span>
+                                    <div class="fltr-typ">
+                                        Sort By  :
+                                        <select id="sorting" class="filter-by">
+                                            <option value="" selected>Default</option>
+                                            <option value="LH">Price Low - High</option>
+                                            <option value="HL">Price High - Low</option>
+                                        </select>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="hidden-sm hidden-md hidden-lg col-xs-4"><div class="mb-fltr">Filter</div></div>
+                    </div>
+                    <div id="divFilterProduct">
+                        @Html.Partial("_FilterProductRangeWise", gridModel)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <!--range slider-->
+    <script src="~/theme/plugins/price-slider/jquery-ui.min.js"></script>
+    @if (productCount > 0)
+    {
+        <script>
+            var lowest_price = @lowestPrice;
+            var highest_price = @highestPrice;
+        </script>
+        <script src="~/theme/js/item_filter.js"></script>
+    }
+    <script type="text/javascript">
+        var defaultProductGrid = null;
+
+        $(document).ready(function () {
+            defaultProductGrid = $("#divFilterProduct").html();
+
+            $('#sorting').change(function () {
+                var Selected = $("#sorting").val();
+                if (Selected == "LH") {
+                    LowToHigh();
+                }
+                else if (Selected == "HL") {
+                    HighToLow();
+                }
+                else {
+                    // "Default" - restore the list exactly as the page rendered it
+                    $("#divFilterProduct").html(defaultProductGrid);
+                    AfterProductGridLoad();
+                }
+            });
+        });
+
+        function HighToLow() {
+            $.ajax({
+                type: "POST",
+                url: '/CategoryList/HighToLowSrchProduct',
+                async: false,
+                dataType: "html",
+                data: {},
+                success: function (data) {
+                    $("#divFilterProduct").html('');
+                    $("#divFilterProduct").html(data);
+                    AfterProductGridLoad();
+                }
+            });
+            return false;
+        }
+
+        function LowToHigh() {
+            $.ajax({
+                type: "POST",
+                url: '/CategoryList/LowToHighSrchProduct',
+                async: false,
+                dataType: "html",
+                data: {},
+                success: function (data) {
+                    $("#divFilterProduct").html('');
+                    $("#divFilterProduct").html(data);
+                    AfterProductGridLoad();
+                }
+            });
+            return false;
+        }
+
+        // keep the result count and the price slider in step with the grid that was just injected
+        function AfterProductGridLoad() {
+            var $items = $('#divFilterProduct .col-item');
+            $('#prodCount').text($items.length);
+
+            var $range = $('#price-range');
+            if ($range.length && $range.hasClass('ui-slider')) {
+                var min = $range.slider('option', 'min');
+                var max = $range.slider('option', 'max');
+                var vals = $range.slider('values');
+                if (vals[0] > min || vals[1] < max) {
+                    $items.hide().filter(function () {
+                        var price = parseInt($(this).find('.range_price_item').val(), 10);
+                        return price >= vals[0] && price <= vals[1];
+                    }).show();
+                }
+            }
+        }
+    </script>
+}

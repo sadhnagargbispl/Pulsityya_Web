@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewBag.Title = "ReturnPolicy";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="breadcrmb">
+    <img src="@Url.Content("~/theme/img/page-banner.jpg")" alt="Return / Exchange Policy">
+    <div class="breadcrmb-content">
+        <div class="container">
+            <h1>Return / Exchange Policy</h1>
+            <ul class="breadcrmb-loc">
+                <li><a href="@Url.Content("~/Home/Index")">Home</a></li>
+                <li><a class="active">Return / Exchange Policy</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="content-row">
+    <div class="container">
+        <div class="txt-page">
+
+            <h4 class="mb-3">RETURN / EXCHANGE POLICY</h4>
+            <hr>
+
+            <p>This Return / Exchange Policy outlines the procedures and terms for returns and exchanges of products purchased from @Convert.ToString(Session["CompName"]). By engaging with our products and services, you agree to the terms outlined herein.</p>
+
+            <h5 class="mt-3">Eligibility for Return / Exchanges</h5>
+            <ul>
+                <li>Defective or damaged products</li>
+                <li>Incorrect products received</li>
+                <li>Products not meeting quality expectations</li>
+                <li>Only regular priced items may be refunded; sale items cannot be refunded</li>
+                <li>If the item was marked as a gift when purchased and shipped directly to you, you will receive a gift credit for the value of your return</li>
+            </ul>
+
+            <h5 class="mt-3">Return / Exchange Period</h5>
+            <p>We offer returns and/or exchanges within 30 days of your receipt of the product. If 30 days have passed since receipt, returns or exchanges will not be accepted.</p>
+
+            <h5 class="mt-3">Return / Exchange Process</h5>
+            <ol>
+
+                <li>Contact customer support at <a href="mailto:@Convert.ToString(Session["CompMail"])"> @Convert.ToString(Session["CompMail"])</a> or <a href="tel:@Convert.ToString(Session["MobileNo"])"> @Convert.ToString(Session["MobileNo"])</a> .</li>
+                <li>Provide your order number, product details, and reason for return/exchange.</li>
+                <li>Our customer support team will guide you through instructions for returning the item.</li>
+            </ol>
+
+            <h5 class="mt-3">Return / Exchange Conditions</h5>
+            <p>Customers / Direct Sellers must contact the Direct Seller / Company within 30 days from the date of receipt, provide a reason, and return products along with the original order receipt / invoice. The Direct Seller is responsible for satisfying the customer’s request for a refund or replacement. The Direct Seller may return these products, with the original invoice, to the Company. The Company will either replace the products free of cost or issue a cash voucher (zero BV) of the same amount, valid for 30 days.</p>
+
+            <p><strong>Documents required for returns:</strong></p>
+            <ul>
+                <li>Product Return Form</li>
+                <li>Reason for return</li>
+                <li>Copy of invoice</li>
+                <li>Products to be returned</li>
+            </ul>
+
+            <p>Products must be returned in original packaging, with all accessories and tags, unused and in the same condition as received. This policy does not apply to intentionally damaged or misused items. Proof of purchase (order confirmation) is required.</p>
+
+            <h5 class="mt-3">Return Shipping</h5>
+            <p>For defective, damaged, or incorrect products, the Company will arrange and cover return shipping costs. For returns for reasons other than defects, the customer is responsible for return shipping.</p>
+
+            <h5 class="mt-3">Inspection and Refund</h5>
+            <p>Once a returned product is received and inspected, we will process the return or exchange. Refunds are issued to the original payment method. Please allow up to 20 days for the refund to reflect in your account.</p>
+
+            <h5 class="mt-3">Cooling Off Policy</h5>
+            <p>Direct Sellers who resign within 7 days of registration may return @Convert.ToString(Session["CompTitle"]) products that are in good, unopened, resalable condition. The Company will provide a full refund after deducting any bonuses paid and reversing BV (if applicable).</p>
+
+            <h5 class="mt-3">Policy Updates</h5>
+            <p>We reserve the right to update this policy as needed. Changes will be posted on our website and the revised date will indicate the last update.</p>
+
+            <h5 class="mt-3">Contact Information</h5>
+
+            <p>For questions or requests related to returns or exchanges, contact customer support: <a href="mailto:@Convert.ToString(Session["CompMail"])"> @Convert.ToString(Session["CompMail"])</a> or <a href="tel:@Convert.ToString(Session["MobileNo"])"> @Convert.ToString(Session["MobileNo"])</a> .</p>
+            <p class="mt-3 mb-0"><strong>@Convert.ToString(Session["CompName"])</strong></p>
+
+        </div>
+    </div>
+</div>

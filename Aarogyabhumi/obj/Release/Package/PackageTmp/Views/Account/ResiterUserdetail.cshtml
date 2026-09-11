@@ -1,0 +1,447 @@
+﻿@model Shopinv.Models.LoginLPlus
+@{
+    ViewBag.Title = "ResiterUserdetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- ============================================================= -->
+<!--  WELCOME / SUCCESS CARD  (DARJUV9 navy + orange theme)        -->
+<!-- ============================================================= -->
+<style>
+    :root {
+        --dv9-navy-1: #1b2f57;
+        --dv9-navy-2: #0f1d3a;
+        --dv9-orange: #F7991C;
+        --dv9-orange-d: #e07d00;
+        --dv9-blue: #1565d8;
+    }
+
+    .dv9-welcome-overlay {
+        background: linear-gradient(160deg, #f3f6fc 0%, #ffffff 60%);
+    }
+
+    .dv9-welcome-card {
+        width: 100%;
+        max-width: 430px;
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid #e3e9f3;
+        box-shadow: 0 22px 60px rgba(27,47,87,.20), 0 4px 14px rgba(0,0,0,.06);
+        overflow: hidden;
+        animation: dv9PopIn .45s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    @@keyframes dv9PopIn {
+        from {
+            opacity: 0;
+            transform: translateY(18px) scale(.97);
+        }
+
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    /* ---- Header strip (navy) ---- */
+    .dv9-card-head {
+        background: linear-gradient(135deg, var(--dv9-navy-1) 0%, var(--dv9-navy-2) 100%);
+        padding: 32px 24px 26px;
+        text-align: center;
+        color: #fff;
+        position: relative;
+    }
+        /* orange accent line under header */
+        .dv9-card-head::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--dv9-orange), #ffcf80);
+        }
+
+    .dv9-tick-wrap {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 16px;
+        background: linear-gradient(135deg, var(--dv9-orange), var(--dv9-orange-d));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 22px rgba(247,153,28,.45);
+    }
+
+    .dv9-tick {
+        width: 50px;
+        height: 50px;
+    }
+
+    .dv9-tick-circle {
+        stroke: #fff;
+        stroke-width: 3;
+        fill: none;
+        stroke-dasharray: 160;
+        stroke-dashoffset: 160;
+        animation: dv9Circle .6s ease forwards .15s;
+    }
+
+    .dv9-tick-check {
+        stroke: #fff;
+        stroke-width: 4;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 48;
+        stroke-dashoffset: 48;
+        animation: dv9Check .35s ease forwards .7s;
+    }
+
+    @@keyframes dv9Circle {
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    @@keyframes dv9Check {
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    .dv9-welcome-title {
+        font-size: 1.28rem;
+        font-weight: 800;
+        margin: 0 0 4px;
+        line-height: 1.3;
+        color: var(--dv9-orange) !important;
+    }
+
+        .dv9-welcome-title span {
+            color: var(--dv9-orange) !important;
+        }
+
+    .dv9-welcome-sub {
+        font-size: .85rem;
+        margin: 0;
+        opacity: .85;
+    }
+
+    /* ---- Body ---- */
+    .dv9-card-body {
+        padding: 24px;
+    }
+
+    .dv9-cred-label {
+        font-size: .75rem;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #8a94a6;
+        font-weight: 700;
+        margin: 0 0 14px;
+        text-align: center;
+    }
+
+    .dv9-cred-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        background: #f3f6fc;
+        border: 1px solid #dde6f4;
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin-bottom: 10px;
+    }
+
+    .dv9-cred-info {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .dv9-cred-key {
+        font-size: .72rem;
+        color: var(--dv9-blue);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+    }
+
+    .dv9-cred-val {
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: var(--dv9-navy-1);
+        font-family: 'Courier New', monospace;
+        letter-spacing: .5px;
+        word-break: break-all;
+    }
+
+    .dv9-copy-btn {
+        border: none;
+        background: var(--dv9-orange);
+        color: #fff;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: .2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .dv9-copy-btn:hover {
+            background: var(--dv9-orange-d);
+            transform: translateY(-1px);
+        }
+
+        .dv9-copy-btn.copied {
+            background: #1e9e57;
+        }
+
+    .dv9-note {
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        font-size: .8rem;
+        color: #7a5a1f;
+        background: #fff6e6;
+        border: 1px dashed #f0cd8c;
+        border-radius: 10px;
+        padding: 10px 12px;
+        margin: 16px 0 18px;
+    }
+
+        .dv9-note i {
+            margin-top: 2px;
+            color: var(--dv9-orange);
+        }
+
+    .dv9-signin-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, var(--dv9-navy-1), var(--dv9-navy-2));
+        color: #fff !important;
+        font-weight: 800;
+        border-radius: 12px;
+        text-decoration: none;
+        box-shadow: 0 8px 20px rgba(27,47,87,.30);
+        transition: .2s;
+        border: 1px solid transparent;
+    }
+
+        .dv9-signin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 26px rgba(27,47,87,.40);
+            color: #fff;
+            border-color: var(--dv9-orange);
+        }
+
+        .dv9-signin-btn i {
+            color: var(--dv9-orange);
+        }
+</style>
+
+<div class="offcanvas offcanvas-bottom border-0 h-100 show dv9-welcome-overlay"
+     tabindex="-1" id="orderconfirm" aria-modal="true" role="dialog">
+    <div class="offcanvas-body d-flex align-items-center justify-content-center p-3">
+
+        <div class="dv9-welcome-card">
+
+            <!-- Header with animated success tick -->
+            <div class="dv9-card-head">
+                <div class="dv9-tick-wrap">
+                    <svg viewBox="0 0 52 52" class="dv9-tick" xmlns="http://www.w3.org/2000/svg">
+                        <circle class="dv9-tick-circle" cx="26" cy="26" r="24" />
+                        <path class="dv9-tick-check" d="M14 27 l8 8 l16 -18" />
+                    </svg>
+                </div>
+                <h4 class="dv9-welcome-title">Welcome to <span>@Convert.ToString(Session["CompName"])</span></h4>
+                <p class="dv9-welcome-sub">Your account has been created successfully</p>
+            </div>
+
+            <!-- Credentials -->
+            <div class="dv9-card-body">
+                <p class="dv9-cred-label">Please save your login credentials</p>
+
+                <div class="dv9-cred-row">
+                    <div class="dv9-cred-info">
+                        <span class="dv9-cred-key">Username</span>
+                        <span class="dv9-cred-val" id="dv9User">@Convert.ToString(ViewBag.idno)</span>
+                    </div>
+                    <button type="button" class="dv9-copy-btn" data-copy="dv9User" title="Copy username">
+                        <i class="fa fa-copy"></i>
+                    </button>
+                </div>
+
+                <div class="dv9-cred-row">
+                    <div class="dv9-cred-info">
+                        <span class="dv9-cred-key">Password</span>
+                        <span class="dv9-cred-val" id="dv9Pass">@Convert.ToString(ViewBag.passw)</span>
+                    </div>
+                    <button type="button" class="dv9-copy-btn" data-copy="dv9Pass" title="Copy password">
+                        <i class="fa fa-copy"></i>
+                    </button>
+                </div>
+
+                <div class="dv9-note">
+                    <i class="fa fa-info-circle"></i>
+                    <span>Kindly note down your Username &amp; Password — you will need them every time you log in.</span>
+                </div>
+
+                <a href="~/Account/Login" class="dv9-signin-btn">
+                    Sign In to Continue <i class="fa fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    // Copy-to-clipboard for credentials (welcome card only)
+    document.querySelectorAll('.dv9-copy-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var target = document.getElementById(btn.getAttribute('data-copy'));
+            if (!target) return;
+            var text = target.innerText.trim();
+
+            var done = function () {
+                var icon = btn.querySelector('i');
+                var oldCls = icon.className;
+                icon.className = 'fa fa-check';
+                btn.classList.add('copied');
+                setTimeout(function () {
+                    icon.className = oldCls;
+                    btn.classList.remove('copied');
+                }, 1500);
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done).catch(function () {
+                    dv9FallbackCopy(text); done();
+                });
+            } else {
+                dv9FallbackCopy(text); done();
+            }
+        });
+    });
+
+    function dv9FallbackCopy(text) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) { }
+        document.body.removeChild(ta);
+    }
+</script>
+
+<!-- Login Popup -->
+<div class="modal fade" id="login1" aria-hidden="true" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-white border-0 overflow-hidden rounded-4">
+            <div class="modal-body p-0">
+                <div class="row g-0">
+                    <div class="col-lg-12 p-4">
+                        <button type="button" class="btn-close float-end shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="mb-4 pe-5">
+                            <h6 class="fw-bold text-danger mb-1">User Sign</h6>
+                        </div>
+                        @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { id = "loginForm1" }))
+                        {
+                            <div class="text-start">
+                                @Html.AntiForgeryToken()
+                                <p class="lh-base pb-2 text-muted fs-6 mb-1">Enter your username to Login/Sign up</p>
+                                <div class="input-group bg-white shadow-sm rounded-3 border py-2 mb-2">
+                                    <div href="#" class="input-group-text bg-transparent border-0 rounded-0 text-black px-3">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.UserName, new { @id = "username1", @placeholder = "Type Username Here", @class = "form-control bg-transparent border-0 rounded-0 ps-0", @required = "required" })
+                                </div>
+                                <div class="input-group bg-white shadow-sm rounded-3 border py-2 mb-4">
+                                    <div href="#" class="input-group-text bg-transparent border-0 rounded-0 text-black px-3">
+                                        <i class="fa fa-lock"></i>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.Password, new { @id = "passw1", @placeholder = "Type Password Here", @class = "form-control bg-transparent border-0 rounded-0 ps-0", @required = "required", type = "password" })
+                                </div>
+                                <input type="submit" id="lbtn1" class="btn btn-danger fw-bold py-3 px-4 w-100 rounded-3 shadow" value="Login" />
+                                <button id="sbtn1" class="btn btn-danger fw-bold py-3 px-4 w-100 rounded-3 shadow" style="display:none;" type="button" disabled>
+                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                    Loading...
+                                </button>
+                                <div class="mt-3">
+                                    <p>Create an Account <a href="~/Account/signup">Sign Up.</a></p>
+                                    <p class="text-muted mb-1">By continuing, you agree to our</p>
+                                    <span class="small">
+                                        <a href="~/Home/ShippingPolicy" class="text-decoration-underline me-2">Shipping Policy</a>
+                                        <a href="~/Home/PrivacyPolicy" class="text-decoration-underline">Privacy Policy</a>
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Login Popup -->
+
+<script type="text/javascript">
+    $("#username1").val('@Convert.ToString(ViewBag.idno)')
+    $("#passw1").val('@Convert.ToString(ViewBag.passw)');
+
+    $('#loginForm1').submit(function (event) {
+        debugger;
+        event.preventDefault();
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        var username = $("#username1").val();
+        if (username == "" || username == null) {
+            alert("Please enter username");
+            return false;
+        }
+        var passw = $("#passw1").val();
+        if (passw == "" || passw == null) {
+            alert("Please enter password");
+            return false;
+        }
+        if (username != "" && passw != null) {
+            var Loginobj = {};
+            Loginobj["UserName"] = username;
+            Loginobj["Password"] = passw;
+            $("#lbtn").hide();
+            $("#sbtn").show();
+            $.ajax({
+                type: "POST",
+                url: "/Account/Login",
+                async: true,
+                dataType: "Json",
+                timeout: 900000,
+                data: { Loginobj: Loginobj },
+                success: function (data) {
+                    if (data.code == "101") {
+                        window.location.href = "/Home/Index";
+                    }
+                    else {
+                        alert(data.msg);
+                        $("#lbtn1").show();
+                        $("#sbtn1").hide();
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+    });
+
+</script>

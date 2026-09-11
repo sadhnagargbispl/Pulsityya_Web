@@ -1,0 +1,63 @@
+﻿@model Shopinv.Models.GroupDirectReport 
+@{
+    ViewBag.Title = "LevelIncome";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="osahan-listingmy-account-main-page mt-3 mb-3">
+    <div class="container">
+        
+        
+        <div class="row m-0">
+            <div class="col-lg-12">
+                <div class="row row-cols-xl-1 row-cols-lg-1 row-cols-md-1 row-cols-1 g-3 osahan-my-orders" id="Grdwallet">
+                    <div class="table-responsive bg-white">
+                        <table class="table table-bordered text-center mb-0 nowrap">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">SNo</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Level</th>
+                                    <th scope="col">IdNo</th>
+                                    <th scope="col">Member Name</th>
+                                    <th scope="col">Business</th>
+                                    <th scope="col">Slab</th>
+                                    <th scope="col">Level Bonus</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.m_LevelIncomes != null && Model.m_LevelIncomes.Count() > 0)
+                                {
+                                    foreach (var item in Model.m_LevelIncomes)
+                                    {
+                                        <tr class="">
+                                            <td>@item.SNo </td>
+                                            <td> @item.Date</td>
+                                            <td>@item.Level</td>
+                                            <td>@item.Idno</td>
+                                            <td>@item.MemberName</td>
+                                            <td>@item.Business</td>
+                                            <td>@item.Slab</td>
+                                            <td>@item.LevelBonus</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="8">
+                                            No Record Found
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+

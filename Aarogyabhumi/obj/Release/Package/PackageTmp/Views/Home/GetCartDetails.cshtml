@@ -1,0 +1,215 @@
+﻿@model Shopinv.Models.M_Category
+@using Shopinv.Entity
+@{
+    //var CartDetail1 = Session["Cartdetailsftch"] as IEnumerable<E_CartDetails>;
+    //IEnumerable<E_CartDetails> CartDetail = Model != null ? Model as IEnumerable<E_CartDetails> : null;
+
+    var CartDetail = Session["Cartdetailsftch"] as IEnumerable<E_CartDetails>;
+    var cartCount = CartDetail != null ? CartDetail.Count() : 0;
+    var TotPrice = CartDetail != null ? CartDetail.Sum(s => s.Price * s.qty).ToString() : "0";
+
+    var TotBV = CartDetail != null ? CartDetail.Sum(s => s.bv * s.qty).ToString() : "0";
+}
+
+<script type="text/javascript">
+
+     function prceedCheckOutCart(obj, TotalBV) {
+         debugger;
+         var r = confirm("Do you Want to Proceed ?")
+         if (r == true) {
+             var TotalBV = @TotBV;
+             ProductWiseStock(TotalBV);
+         }
+         else {
+             //window.location.href = "/ViewCart/ViewCart";
+             window.location.reload();
+         }
+    }
+    function ProductWiseStock_part(TotalBV) {
+        $.ajax({
+            url: '/ViewCart/ProductWiseStock',
+            type: 'post',
+            async: false,
+            datatype: "json",
+            data: {}
+        }).done(function (result) {
+            if (result.msg != "") {
+                alert(result.msg);
+            }
+            else {
+                CheckStatusCart(TotalBV)
+            }
+
+        }).fail(function (error) {
+            alert(error.statusText);
+            $(".preloader").hide();
+        });
+    }
+    function CheckStatusCart_part(TotalBV) {
+        debugger;
+        var UniqId = window.sessionStorage.getItem("SCUniqid");
+        var ScRegid = window.sessionStorage.getItem("ScRegid");
+
+        $.ajax({
+            url: '/ViewCart/CheckStatus',
+            type: 'GET',
+            async: false,
+            datatype: "html",
+            data: {}
+        }).done(function (result) {
+            debugger;
+            window.location.href = "/CheckOut/CheckOut";
+            $("#cartProducts").html("");
+            $("#cartProducts").html(result);
+        }).fail(function (error) {
+            alert(error.statusText);
+            $(".preloader").hide();
+        });
+        return false;
+    }
+    function DeleteRowCart_partial(obj, id, ProdId, imagePath, qty, Price, bv, IpAddress) {
+        debugger;
+        var r = confirm("Are you sure you want to delete ?");
+        if (r == true) {
+            var prodname = $("#prodname_" + ProdId).val();
+            $.ajax({
+                type: "POST",
+                url: '/Home/DeleteLstRowCartPopup',
+                datatype: "html",
+                data: { Id: id, ProdId: ProdId, ProdName: prodname, imagePath: imagePath, qty: qty, Price: Price, bv: bv, IpAddress: IpAddress },
+                success: function (data) {
+                    window.location.reload();
+                }
+
+            });
+        }
+
+        else {
+            // window.location.href = "/Home/GetCartDetails";
+            window.location.reload();
+
+        }
+    }
+    function UpdateProdQty_partialMinus(obj, prodid) {
+        debugger;
+        //var qty = $(obj).parent().prev().find('input[name="qty"]').val();
+        var Qty1 = $("#qtyText_" + prodid).val();
+        Qty1 = parseInt(Qty1) - 1;
+        if (Qty1 >= 1) {
+            if (Qty1 == "") {
+                alert("Please Enter the Quantity!");
+                return false;
+            }
+            if (Qty1 == "0") {
+                alert("Quantity should be grater than 0!");
+                return false;
+            }
+
+            $("#qtyText_" + prodid).val(Qty1);
+            $.ajax({
+                type: "POST",
+                url: '/Home/UpadteCartdetail',
+                datatype: "html",
+                data: { ProdId: prodid, Quantity: Qty1 },
+                success: function (data) {
+                    window.location.reload();
+                }
+            });
+        }
+        else {
+            $("#qtyText_" + prodid).val('1');
+        }
+    }
+    function UpdateProdQty_partial(obj, prodid) {
+        debugger;
+        var Qty1 = $("#qtyText_" + prodid).val();
+        if (Qty1 >= 1) {
+            if (Qty1 == "") {
+                alert("Please Enter the Quantity!");
+                return false;
+            }
+            if (Qty1 == "0") {
+                alert("Quantity should be grater than 0!");
+                return false;
+            }
+            Qty1 = parseInt(Qty1) + 1;
+            $("#qtyText_" + prodid).val(Qty1);
+            $.ajax({
+                type: "POST",
+                url: '/Home/UpadteCartdetail',
+                datatype: "html",
+                data: { ProdId: prodid, Quantity: Qty1 },
+                success: function (data) {
+                    window.location.reload();
+                }
+            });
+        }
+        else {
+            $("#qtyText_" + prodid).val('1');
+        }
+
+
+    }
+</script>
+
+
+
+
+<!-- Cart Popup Start -->
+
+
+<div class="offcanvas offcanvas-end my-cart-width" tabindex="-1" id="mycart">
+    <div class="offcanvas-header px-4 py-3">
+        <h5 class="offcanvas-title fw-bold">My Cart</h5>
+        <button type="button" class="btn-close shadow-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+        <div class="px-4 py-3">
+            @foreach (var item in CartDetail)
+            {
+                <div class="row align-items-center">
+                    <div class="col-4 cartimg">
+                        <img src="@item.imagePath" onerror="this.onerror=null;this.src='@Url.Content("~/theme/img/sample-product.jpg")';" alt="" class="img-fluid border rounded-4">
+                    </div>
+                    <div class="col-8">
+                        <div class="position-relative">
+                            <h6 class="fw-bold mb-1 f-s-4">@item.ProdName</h6>
+                            <div class="card-footer bg-transparent border-0 pt-0 pb-3">
+                                @*<h6 class="fw-bold mb-1">
+                                        <del class="text-danger small fw-normal">
+                                            MRP : <i class="fa fa-inr" aria-hidden="true"></i> 1339.00
+                                        </del>
+                                    </h6>*@
+                                <h6 class="fw-bold mb-1">
+                                    <span class="text-success small fw-normal">
+                                        DP : <i class="fa fa-inr" aria-hidden="true"></i> @(item.Price*item.qty)
+                                    </span>
+                                </h6>
+                                <div class="input-group border rounded overflow-hidden value">
+
+                                    <input type="button" value="-" onclick="UpdateProdQty_partialMinus(this,@item.ProdId)" class="button-minus btn btn-light btn-sm border-end col mt-2" data-field="quantity">
+                                    <input type="text" id="qtyText_@item.ProdId" readonly value="@item.qty" name="quantity" class="quantity-field form-control form-control-sm col text-center shadow-none border-0">
+                                    <input type="button" value="+" onclick="UpdateProdQty_partial(this,@item.ProdId)" class="button-plus btn btn-light btn-sm border-start col mt-2" data-field="quantity">
+                                </div>
+                            </div>
+                            <div class="position-absolute top-0 right-0">
+                                <div class="remove-btn ">
+                                    <input type="hidden" id="prodname_@item.ProdId" val="@item.ProdName" />
+                                    <a href="javascript:void(0)" onclick="DeleteRowCart_partial(this,'@item.id','@item.ProdId','@item.imagePath','@item.qty','@item.Price','@item.bv','@item.IpAddress')"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+    <div class="offcanvas-footer p-4">
+        <a href="~/ViewCart/ViewCart" class="btn btn-danger fw-bold d-flex align-items-center justify-content-between py-3 px-4 w-100 rounded-4 shadow">
+            <span><i class="fa fa-inr" aria-hidden="true"></i> @TotPrice</span>
+            <span class="text-uppercase">View Cart<i class="icofont-double-right ms-1"></i></span>
+        </a>
+    </div>
+</div>
+<!-- Cart Popup End -->
