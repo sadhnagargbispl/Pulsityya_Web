@@ -351,6 +351,8 @@
     <Content Include="assets\js\scrollCue.min.js" />
     <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
+    <Content Include="SiteDoc\company-master-setup.sql" />
+    <Content Include="SiteDoc\product-visibility-fix.sql" />
     <Content Include="theme\css\bootstrap.min.css" />
     <Content Include="theme\css\bs5-compat.css" />
     <Content Include="theme\css\custom-mvc.css" />
