@@ -1,0 +1,380 @@
+﻿@model VitaFlow.Domain.Entities.FranchiseeCommission
+@{
+    ViewData["Title"] = "FranchiseeCommission";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool IsSoldByHo = Convert.ToBoolean(Context.Session.GetString("IsSoldByHo"));
+    string CurrentPartyCode = Convert.ToString(Context.Session.GetString("PartyCode"));
+}
+<script type="text/javascript">
+     var grid, dialog;
+    var BillWiseGrid = [{}];
+    var PartyList = [];
+    var FullPartyList;
+    var IsParty = false;
+    var IsMonth = false;
+    var TransNoToUpdate = [];
+    var FromDate = "", ToDate = "";
+    $(document).ready(function () {
+        var IsAdministrator='@IsSoldByHo';
+        if (IsAdministrator=="True") {
+            //GetAllParty();
+        }
+        else{
+    @*$("#PartyName").val('@CurrentPartyName');
+            $("#PartyName").prop("readonly", "readonly");*@
+            $("#PartyCode").val('@CurrentPartyCode');
+        }
+        $(".preloader").hide();
+        $('#IsDateFilter').on('ifChecked', function () {
+            //console.log("checked");
+            IsDateFilter = true;
+            $("#StartDate").val("All");
+            $("#StartDate").prop("readonly", "readonly");
+            $("#EndDate").val("All");
+            $("#EndDate").prop("readonly", "readonly");
+            FromDate = "";
+            ToDate = "";
+            //GetSalesDetails($("#StartDate").val(), $("#EndDate").val(), '@CurrentPartyCode', "S");
+
+        });
+
+        $('#IsDateFilter').on('change', function () {
+        if ($(this).is(':checked')) {
+                IsDateFilter = true;
+                $("#StartDate").val("All");
+                $("#StartDate").prop("readonly", true);
+                FromDate = "";
+                ToDate = "";
+                $("#EndDate").val("All");
+                $("#EndDate").prop("readonly", true);
+        }
+        else
+        {
+                IsDateFilter = false;
+                $("#StartDate").val("");
+                $("#StartDate").prop("readonly", false);
+                $("#EndDate").val("");
+                $("#EndDate").prop("readonly", false);
+                FromDate = "";
+                ToDate = "";
+        }
+    });
+
+     $('#StartDate').datepicker({
+            format: 'dd-mm-yyyy', // Adjust to your format needs
+            autoclose: true,
+            todayHighlight: true
+            });
+
+        $('#EndDate').datepicker({
+            format: 'dd-mm-yyyy', // Adjust to your format needs
+            autoclose: true,
+            todayHighlight: true
+        });
+
+
+        $("#btnExport").on('click', function () {
+            var UserTypeStr = "FranchiseeBVCommission";
+
+            var tableString = "<thead><tr>";
+            tableString += "<th>S.No.</th>";
+            tableString += "<th>Franchisee Code</th>";
+            tableString += "<th>Franchisee Name</th>";
+            tableString += "<th>Franchisee Group</th>";
+            tableString += "<th>BillNo </th>";
+            tableString += "<th>BillDate</th>";
+            tableString += "<th>BillType</th>";
+            tableString += "<th>BV Value</th>";
+            tableString += "<th>Commission Slab(%)</th>";
+            tableString += "<th>Commission Value</th>";
+             tableString += "<th>PV Value</th>";
+            tableString += "<th>PV Slab</th>";
+            tableString += "<th>PVCommission Value</th>";
+
+            tableString += "</tr></thead><tbody>";
+            for (var i = 0; i < BillWiseGrid.length; i++) {
+                tableString += "<tr>";
+                tableString += "<td>" + BillWiseGrid[i].SNo + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].PartyCode + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].PartyName + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].GroupName + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].BillNo + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].BillDate + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].BillType + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].BVCommission + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].CommissionSlab + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].Commission + "</td>";
+                  tableString += "<td>" + BillWiseGrid[i].PVCommission + "</td>";
+                  tableString += "<td>" + BillWiseGrid[i].PVSlab + "</td>";
+                  tableString += "<td>" + BillWiseGrid[i].PVCommissionVal + "</td>";
+                tableString += "</tr>";
+            }
+
+            tableString += "</tbody>";
+            $("#gridExport").empty();
+            $("#gridExport").append(tableString);
+            tableToExcel('gridExport', UserTypeStr + "_Export");
+        });
+
+        $("#btnShowReport").on('click', function () {
+            $(".preloader").show();
+            var partyCode = $("#PartyCode").val();
+            if (IsAdministrator == "True") {
+                if (partyCode == "0") {
+                    partyCode = "WR";
+                }
+            }
+            else {
+                partyCode = "@CurrentPartyCode";
+            }
+            var DateError = false;
+            FromDate = $("#StartDate").val();
+            ToDate = $("#EndDate").val();
+            var Billtype = $("#Billtype").val();
+            if (FromDate != "" && FromDate != null && ToDate != "") {
+                var d1 = toDate(FromDate);
+                var d2 = toDate(ToDate);
+                if (d1 > d2) {
+                    DateError = true;
+                    $(".preloader").hide();
+
+                    OpenDialog("dialogMessage", "From Date should be less than To Date!", "false");
+                    //$("#StartDate").focus();
+                }
+                else {
+                    DateError = false;
+
+                }
+            }
+            else {
+                DateError = false;
+                if (IsDateFilter == false) {
+
+                }
+                if (FromDate == "" || FromDate == null) {
+                    FromDate = "All";
+                    // OpenDialog("dialogMessage", "Please enter from date!", "false");
+                }
+                if (ToDate == "" || ToDate == null) {
+                    ToDate = "All";
+                    //OpenDialog("dialogMessage", "Please enter to date!", "false");
+                }
+            }
+
+            //var yearID = $("#linktoYearId").val();
+            //var monthID = $("#linktoMonthId").val();
+            if (DateError == false)
+            {
+                $.ajax({
+                    url: '/Report/GetFranchiseeBVCommission',
+                    dataType: 'JSON',
+                    method: 'POST',
+                    data: { "code": partyCode, "FromDate": FromDate, "ToDate": ToDate, "Billtype": Billtype },
+                    success: function (data) {
+
+                        //response(data);
+                        if (data != null) {
+                            BillWiseGrid = [{}];
+                            console.log("data", data);
+                            if (data.length > 0) {
+                                BillWiseGrid = BillWiseGrid.splice(1);
+                                var chkstr = "";
+                                var totalbv = 0;
+                                var totalcommission = 0;
+                                for (var i = 0; i < data.length; i++) {
+                                    totalbv =+ parseFloat(totalbv) + parseFloat(data[i].BVCommission);
+                                    totalcommission =+ parseFloat(totalcommission) + parseFloat(data[i].Commission);
+                                    BillWiseGrid.push({
+                                        "GroupName": data[i].groupName,
+                                        "SNo": i + 1, "Code": data[i].code,
+                                        "Commission": parseFloat(data[i].commission).toFixed(2),
+                                        "BVCommission": parseFloat(data[i].bvCommission).toFixed(2),
+                                        "PartyCode": data[i].partyCode,
+                                        "PartyName": data[i].partyName,
+                                        "CommissionSlab": data[i].commissionSlab,
+                                        "BillNo": data[i].billNo,
+                                        "BillDate": data[i].billDate,
+                                        "BillType": data[i].billType,
+                                        "PVCommission": data[i].pvCommission,
+                                        "PVCommissionVal": data[i].pvCommissionVal,
+                                        "PVSlab": data[i].pvSlab
+                                    });
+                                }
+                                $("#lblTotalbv").text(totalbv.toFixed(2));
+                                $("#lbltotalcommission").text(totalcommission.toFixed(2));
+                                $("#noRecord").hide();
+                                console.log("data:", data);
+                                if (grid != null) {
+                                    grid.destroy();
+                                    $('#grid').empty();
+
+                                }
+                                grid = $('#grid').grid({
+                                    dataSource: BillWiseGrid,
+                                    uiLibrary: 'bootstrap',
+                                    headerFilter: true,
+                                    columns: [
+                                         { field: 'PartyCode', title: 'Franchisee Code', width: 100, sortable: true, hidden: false, filterable: true, align: 'center' },
+                                         { field: 'PartyName', title: 'Franchisee Name', width: 80, sortable: true, hidden: false, filterable: true },
+                                         { field: 'GroupName', title: 'Franchisee Group', width: 80, sortable: true, hidden: false, filterable: true },
+                                         { field: 'BillNo', title: 'BillNo', width: 80, sortable: true, hidden: false, filterable: true },
+                                         { field: 'BillDate', title: 'BillDate', width: 80, sortable: true, hidden: false, filterable: true },
+                                         { field: 'BillType', title: 'BillType', width: 80, sortable: true, hidden: false, filterable: true },
+                                         { field: 'BVCommission', title: 'BV Value', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'CommissionSlab', title: 'BV Commission Slab(%)', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'Commission', title: 'BV Commission Value', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'PVCommission', title: 'PV Commission', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'PVSlab', title: 'PV Slab', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'PVCommissionVal', title: 'PV Commission Value', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'BranchName', title: 'Branch Name', width: 150, sortable: true, hidden: true, filterable: true },
+                                    ],
+                                    pager: { limit: 20, sizes: [15, 20, 35, 50, 65, 80, 95, 100] }
+                                });
+
+                                $(".preloader").hide();
+                                $("#btnExport").show();
+                            }
+                            else {
+                                $(".preloader").hide();
+                                $("#noRecord").show();
+                                $('#grid').empty();
+                                $("#btnExport").hide();
+                                OpenDialog("dialogMessage", "No record found", "false");
+                            }
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            }
+        });
+
+        //function GetSalesDetails() {
+
+        //}
+        $("#PartyName").autocomplete({
+            source: function (request, response) {
+                var results = $.ui.autocomplete.filter(PartyList, request.term);
+
+                response(results.slice(0, 50));
+                //response(results);
+                //$('html').getNiceScroll().resize();
+                //$('#sidebar').getNiceScroll().resize();
+                //$('.scroll-panel').getNiceScroll().resize();
+                //response(ItemList);
+            },
+            minLength: 1,
+            scroll: true,
+            select: function (event, ui) {
+                //$("#txDestination").val(ui.item.label);
+                //cityID = ui.item.id;
+                console.log("ui.item", ui.item.label);
+                $("#PartyName").val(ui.item.label);
+                SetSpecificCode("Party", ui.item.label);
+                return false;
+            },
+
+        }).focus(function () {
+            $(this).autocomplete("search", "");
+        });
+
+        $('#IsParty').on('ifChecked', function () {
+            //console.log("checked");
+            IsParty = true;
+            //$("#PartyName").val("All");
+            //$("#PartyName").prop("readonly", "readonly");
+            //$("#PartyCode").val(0);
+            $("#PartyName").val('All');
+            $("#PartyName").prop("readonly", "readonly");
+            $("#PartyCode").val('0');
+        });
+
+        $('#IsParty').on('ifUnchecked', function () {
+            //console.log("checked");
+            IsParty = false;
+            //$("#PartyName").val("");
+            //$("#PartyName").prop("readonly", "");
+            //$("#PartyCode").val("");
+            $("#PartyName").val('');
+            $("#PartyName").prop("readonly", "");
+            $("#PartyCode").val('');
+        });
+
+    });
+
+    function toDate(dateStr) {
+        var parts = dateStr.split("-");
+        return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
+</script>
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-header justify-content-between">
+    <div class="left-content">
+        <div>
+            <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">Hi, @Convert.ToString(Context.Session.GetString("UserName"))!</h2>
+            <p class="mg-b-0"> @Convert.ToString(Context.Session.GetString("PartyName"))</p>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- Components Start -->
+<div class="row">
+    <div class="col-lg-12 col-xl-12 col-md-12 col-sm-12">
+        <div class="card  box-shadow-0">
+            <div class="card-header">
+                <h4 class="card-title mb-1">
+                    Wallet Report
+                </h4>
+            </div>
+            <div class="card-body pt-0 bg-white">
+                <div class="row">
+                    @Html.HiddenFor(m => m.PartyCode, new { id = "PartyCode", name = "PartyCode" })
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>From Date</label>
+                            <input type="text" name="StartDate" id="StartDate" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>To Date</label>
+                            <input type="text" name="EndDate" id="EndDate" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-1" id="IsProductDiv">
+                        <div class="form-group mt-4">
+                            <input type="checkbox" id="IsDateFilter" name="IsDateFilter" class="flat" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label>Bill Type</label>
+                            <select id="Billtype" class="form-control">
+                                <option value="All">All</option>
+                                <option value="B">BV Bill</option>
+                                <option value="P">PV Bill</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <input type="button" class="btn btn-primary" id="btnExport" name="btnExport" value="Download Excel" style=" display:none;" />
+                <input type="button" class="btn btn-primary fa-pull-right getReport" data-type="Invoice" id="btnShowReport" name="btnShowReport" value="Show Report" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-xl-12 col-md-12 col-sm-12">
+        <div class="card-table-two bg-white">
+            <div class="table-responsive country-table bg-white">
+                <table id="grid" class="table text-center table-striped table-bordered mb-0 text-sm-nowrap text-lg-nowrap text-xl-nowrap">
+                </table>
+            </div>
+        </div>
+        <table id="gridExport" style="display:none"></table>
+    </div>
+</div>
+
+<!-- Components end -->

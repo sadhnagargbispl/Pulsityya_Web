@@ -1,0 +1,39 @@
+﻿@model VitaFlow.Domain.Entities.PartyOrderList
+
+
+<table class="table text-center table-striped table-bordered mb-0 text-sm-nowrap text-lg-nowrap text-xl-nowrap">
+    <thead>
+        <tr>
+            <th class="wd-lg-25p">Image</th>
+            <th class="wd-lg-25p">Product Name</th>
+            <th class="wd-lg-25p">Total Order Qty</th>
+            <th class="wd-lg-25p">Total Dispatch Qty</th>
+            <th class="wd-lg-25p">Total Rem Qty</th>
+            <th class="wd-lg-25p">Price</th>
+            <th class="wd-lg-25p">PV</th>
+            <th class="wd-lg-25p">BV</th>
+            <th class="wd-lg-25p">Amount</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.GetPartyOrderlist)
+        {
+            <tr>
+                <td>
+                    <img src="@item.ImagePath"
+                         class="img-responsive"
+                         onerror="this.src='/images/no-image.png';" />
+                </td>
+                <td>@item.ProductName</td>
+                <td>@item.TotalOrdQty</td>
+                <td>@item.TotalDispQty</td>
+                <td>@item.TotalRemQty</td>
+                <td>@item.DP</td>
+                <td>@item.PV</td>
+                <td>@item.BV</td>
+                <td>@(item.TotalOrdQty * item.DP)</td>
+            </tr>
+        }
+    </tbody>
+</table>

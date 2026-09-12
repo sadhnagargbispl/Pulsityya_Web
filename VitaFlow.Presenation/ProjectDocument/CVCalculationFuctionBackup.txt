@@ -1,0 +1,110 @@
+﻿function CVClaculation() {
+        debugger;
+        //var dd= NetAmounPayable
+        var TaxCashamount = $("#CashAmount");
+        var hidfpamt = $("#hidfpamt").val();
+        var hidcamt = $("#hidcamt").val();
+        var fphalf = 0;
+        if ($("#IsCU").is(":checked") == true && $("#IsV").is(":checked") == false) {
+            // Coupon
+            if ($("#Coupon").val() != "") {
+                if (TotalNetBV <= parseFloat(hidcamt)) {
+                    SetBVTextbox(TotalNetBV);
+                    $("#AmountbyCoupon").val(TotalNetBV);
+                }
+                else {
+                    SetBVTextbox(hidcamt);
+                    $("#AmountbyCoupon").val(hidcamt);
+                }
+                // adjust cash amount
+                if (NetAmounPayable <= parseFloat(hidcamt)) {
+                    SetCashAmountTextbox(NetAmounPayable);
+                }
+                else {
+                    SetCashAmountTextbox(hidcamt);
+                }
+            }
+        }
+        else if ($("#IsCU").is(":checked") == false && $("#IsV").is(":checked") == true) {
+            //Fp Voucher
+            if ($("#FpVoucher").val() != "") {
+                fphalf = parseFloat(hidfpamt) / 2;
+                if (TotalNetBV <= fphalf) {
+                    SetBVTextbox(TotalNetBV)
+                    $("#AmountByVoucher").val(TotalNetBV);
+                }
+                else {
+                    SetBVTextbox(fphalf);
+                    $("#AmountByVoucher").val(fphalf);
+                }
+                // adjust cash amount
+                if (NetAmounPayable <= parseFloat(hidfpamt)) {
+                    SetCashAmountTextbox(NetAmounPayable);
+                }
+                else {
+                    SetCashAmountTextbox(hidfpamt);
+                }
+            }
+        }
+        else if ($("#IsV").is(":checked") == true && $("#IsCU").is(":checked") == true) {
+            if ($("#Coupon").val() != "" && $("#FpVoucher").val() != "") {
+                fphalf = parseFloat(hidfpamt) / 2;
+                var temptot = parseFloat(fphalf) + parseFloat(hidcamt);
+                if (TotalNetBV <= temptot) {
+                    SetBVTextbox(TotalNetBV);
+                    $("#AmountByVoucher").val(parseFloat(TotalNetBV) - parseFloat(hidcamt));
+                    $("#AmountbyCoupon").val(hidcamt);
+                }
+                else {
+                    SetBVTextbox(temptot);
+                    $("#AmountByVoucher").val(fphalf);
+                    $("#AmountbyCoupon").val(hidcamt);
+                }
+                // adjust cash amount
+                temptot = parseFloat(hidfpamt) + parseFloat(hidcamt);
+                if (NetAmounPayable <= temptot) {
+                    SetCashAmountTextbox(NetAmounPayable);
+                }
+                else {
+                    SetCashAmountTextbox(temptot);
+                }
+
+            }
+        }
+        else if ($("#IsV").is(":checked") == false && $("#IsCU").is(":checked") == false) {
+            SetBVTextbox(0);
+            SetCashAmountTextbox(0);
+        }
+    }
+
+
+    function SetBVTextbox(enteredValue) {
+        debugger;
+        console.log("NetPayableAmountFinal in set func", TotalBV);
+        var TotalBVTextbox = $("#TotalBV").val();
+        if (TotalBVTextbox != null && TotalBVTextbox != "") {
+            TotalBVTextbox = parseFloat(TotalBVTextbox);
+            TotalBVTextbox = TotalNetBV - enteredValue;
+        }
+        else {
+            TotalBVTextbox = 0;
+        }
+        console.log("cashAmountValue", TotalBVTextbox);
+        $("#TotalBV").val(TotalBVTextbox.toFixed(2));
+    }
+
+       function SetCashAmountTextbox(enteredValue) {
+        debugger;
+        console.log("NetPayableAmountFinal in set func", NetPayableAmountFinal);
+        var cashAmountValue = $("#CashAmount").val();
+        if (cashAmountValue != null && cashAmountValue != "") {
+            cashAmountValue = parseFloat(cashAmountValue);
+            //cashAmountValue = cashAmountValue - enteredValue;
+            cashAmountValue = parseFloat(NetAmounPayable) - enteredValue;
+        }
+        else {
+            cashAmountValue = 0;
+        }
+        console.log("cashAmountValue", cashAmountValue);
+        $("#CashAmount").val(cashAmountValue.toFixed(2));
+    }

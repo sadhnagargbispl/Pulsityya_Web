@@ -1,0 +1,448 @@
+﻿@model VitaFlow.Domain.Entities.M_WalletRequest
+@{
+    ViewData["Title"] = "WalletRequest";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .premium-wallet-page .card {
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(17, 38, 80, .07);
+        overflow: hidden;
+        background: #fff;
+    }
+    .premium-wallet-page .card-header {
+        background: linear-gradient(90deg, #2e5fe6 0%, #00b8a9 100%) !important;
+        border-bottom: none;
+        padding: 20px 24px;
+    }
+    .premium-wallet-page .card-title {
+        color: #fff;
+        font-weight: 700;
+        letter-spacing: .4px;
+        text-transform: uppercase;
+        font-size: 16px;
+        position: relative;
+        padding-left: 26px;
+        margin: 0;
+    }
+    .premium-wallet-page .card-title::before {
+        content: "\f09d";
+        font-family: "FontAwesome";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 15px;
+        color: #fff;
+        opacity: .95;
+    }
+    .premium-wallet-page .card-body { padding: 24px !important; }
+    .premium-wallet-page .form-control {
+        border: 1px solid #e2e8f5;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 14px;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .premium-wallet-page .form-control:focus {
+        border-color: #2e5fe6;
+        box-shadow: 0 0 0 3px rgba(46, 95, 230, .12);
+        outline: none;
+    }
+    .premium-wallet-page .form-group { margin-bottom: 16px; }
+    .premium-wallet-page label {
+        display: block;
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: .4px;
+        text-transform: uppercase;
+        color: #6b7891;
+        margin-bottom: 6px;
+    }
+    .premium-wallet-page .input-group.file-browser { margin-bottom: 16px; }
+    .premium-wallet-page .file-browser .btn-default {
+        background: #eef2fb;
+        border: 1px solid #e2e8f5;
+        color: #2e5fe6;
+        font-weight: 600;
+    }
+    .premium-wallet-page .btn-primary {
+        background: linear-gradient(90deg, #2e5fe6 0%, #00b8a9 100%);
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 9px 22px;
+        box-shadow: 0 8px 18px rgba(46, 95, 230, .22);
+        transition: transform .2s ease;
+    }
+    .premium-wallet-page .btn-primary:hover { transform: translateY(-1px); color: #fff; }
+    .premium-wallet-page .btn-secondary { border-radius: 8px; padding: 9px 22px; }
+</style>
+
+<div class="premium-wallet-page">
+
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-header justify-content-between">
+    <div class="left-content">
+        <div>
+            <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">Hi, @Convert.ToString(Context.Session.GetString("UserName"))!</h2>
+            <p class="mg-b-0"> @Convert.ToString(Context.Session.GetString("PartyName"))</p>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- Components Start -->
+<div class="row row-sm">
+    <div class="col-lg-12 col-xl-12 col-md-12 col-sm-12">
+        <div class="card  box-shadow-0">
+            <div class="card-header">
+                <h4 class="card-title mb-1">
+                    Wallet Request
+                </h4>
+                <p class="mb-2" style="display:none;">@ViewBag.Message</p>
+            </div>
+            <div class="card-body pt-0 bg-white">
+                <form id="walletreqform" class="form-horizontal" asp-controller="Transaction" asp-action="WalletRequest" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>Amount</label>
+                        <input type="text" asp-for="Amount" onkeypress="return isNumberKey(event);" name="Amount" class="form-control" id="amount" placeholder="Amount">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Date</label>
+                        <input type="date" asp-for="ReqDateStr" name="ReqDateStr" class="form-control" id="trndate" placeholder="Date">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Pay Mode</label>
+                        <select class="form-control" id="paymode" asp-for="Paymode" name="Paymode" onchange="showbanklist()">
+                            <option value="0">--Select--</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Bank">Bank</option>
+                            <option value="Paytm">Paytm</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6" id="bankdiv" style="display:none;">
+                        <label>Bank Name</label>
+                        <select class="form-control" id="BankName" asp-for="BankName" name="BankName">
+                            <option value="0">--Select--</option>
+                            <option value="SBI">SBI</option>
+                            <option value="AXIS">AXIS</option>
+                            <option value="INDUS">INDUS</option>
+                            <option value="HDFC">HDFC</option>
+                        </select>
+                    </div>
+                   @* @*  @{
+                        var walletType = Context.Request.Query["walletType"].ToString();
+                    }
+                    <div class="form-group">
+                        <select class="form-control" id="VType" asp-for="VType" name="VType">
+                            <option value="0" @(walletType == "0" ? "selected" : "")>--Select Wallet--</option>
+                            <option value="B" @(walletType == "B" ? "selected" : "")>BV Wallet</option>
+                            <option value="P" @(walletType == "P" ? "selected" : "")>PV Wallet</option>
+                        </select>
+                    </div> *@
+
+                     <div class="form-group col-md-6">
+                    <label>Select Wallet</label>
+                    <select class="form-control" id="VType" asp-for="VType" name="Select Wallet">
+                    <option value="0">--Select Wallet--</option>
+                            <option value="Z">BV Wallet Purchase Balanace</option>
+                            <option value="W">PV Wallet Purchase Balanace</option>
+                    </select>
+                    </div>
+                            <div class="form-group col-md-6">
+                                <label>Upload Receipt</label>
+                                <div class="input-group file-browser">
+                                    <input type="text" class="form-control browse-file" placeholder="choose" readonly="">
+                                    <label class="input-group-btn">
+                                        <span class="btn btn-default">
+                                            Browse <input type="file" style="display: none;" id="timage" asp-for="Image" name="Image" accept=".jpg,.jpeg,.png,.pdf">
+                                        </span>
+                                    </label>
+                                </div>
+                                <!-- Preview thumbnail: image select hote hi dikhega -->
+                                <div id="previewWrapper" style="display:none; margin-top:8px;">
+                                    <img id="previewThumb" src="" style="height:60px; border:1px solid #e2e8f5; border-radius:8px; cursor:pointer; padding:2px;" onclick="ShowImagePopup()" title="Click to view full image" />
+                                    <span id="pdfPreviewText" style="display:none; color:#2e5fe6; font-weight:600; font-size:13px;">
+                                        <i class="fa fa-file-pdf-o"></i> PDF selected — <a href="#" onclick="ShowImagePopup(); return false;" style="text-decoration:underline;">Preview</a>
+                                    </span>
+                                </div>
+                            </div>
+                    <div class="form-group col-md-6">
+                        <label>Remark</label>
+                        <input type="text" class="form-control" asp-for="Remarks" name="Remarks" id="remark" placeholder="Remark">
+                    </div>
+                    </div>
+                    <div class="form-group mb-0 mt-3 justify-content-end">
+                        <div>
+                            <button type="submit" id="uploadButton" class="btn btn-primary">Save</button>
+                            <button class="btn btn-primary" id="hidbtn" style="display:none;" type="button" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Wait--
+                            </button>
+                            <button type="button" id="CancelButton" class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<div id="dialogImagePreview" title="Uploaded Receipt Preview" style="display:none;">
+    <div style="text-align:center;">
+        <img id="imagePreviewImg" src="" style="max-width:100%; max-height:65vh; display:none;" />
+        <iframe id="pdfPreviewFrame" src="" style="width:100%; height:65vh; border:none; display:none;"></iframe>
+    </div>
+</div>
+<script type="text/javascript">
+        var selectedFileURL = "";
+    var selectedFileIsPdf = false;
+
+    // File select hote hi filename + preview dikhao
+    $("#timage").on('change', function () {
+        var file = this.files[0];
+        if (!file) {
+            $(".browse-file").val('');
+            $("#previewWrapper").hide();
+            return;
+        }
+
+        // Filename "choose" textbox me dikhao
+        $(".browse-file").val(file.name);
+
+        // Purana object URL revoke kar do (memory leak avoid)
+        if (selectedFileURL) {
+            URL.revokeObjectURL(selectedFileURL);
+        }
+        selectedFileURL = URL.createObjectURL(file);
+        selectedFileIsPdf = /\.pdf$/i.test(file.name);
+
+        if (selectedFileIsPdf) {
+            // PDF ke liye thumbnail nahi, text link dikhao
+            $("#previewThumb").hide();
+            $("#pdfPreviewText").show();
+        } else {
+            $("#previewThumb").attr("src", selectedFileURL).show();
+            $("#pdfPreviewText").hide();
+        }
+        $("#previewWrapper").show();
+    });
+        // Dialog sirf EK baar initialize — repeat init overlay stuck kar deta hai
+    $("#dialogImagePreview").dialog({
+        autoOpen: false,
+        modal: true,
+        width: 650,
+        height: 'auto',
+        resizable: true,
+        close: function () {
+            // band hote hi frame/img clear — memory + stale content avoid
+            $("#pdfPreviewFrame").attr("src", "");
+            $("#imagePreviewImg").attr("src", "");
+        }
+    });
+        function ShowImagePopup() {
+        if (!selectedFileURL) return;
+
+        if (selectedFileIsPdf) {
+            $("#imagePreviewImg").hide();
+            $("#pdfPreviewFrame").attr("src", selectedFileURL).show();
+        } else {
+            $("#pdfPreviewFrame").attr("src", "").hide();
+            $("#imagePreviewImg").attr("src", selectedFileURL).show();
+        }
+
+        $("#dialogImagePreview").dialog('open'); // sirf open, dobara init NAHI
+
+        $(".ui-dialog-titlebar-close").empty();
+        $(".ui-dialog-titlebar-close").append('<i class="fa fa-close"></i>');
+    }
+    function showbanklist() {
+        var paymode = $("#paymode").val();
+        if (paymode == "Bank") {
+            $("#bankdiv").show();
+        }
+        else {
+            $("#bankdiv").hide();
+        }
+    }
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode == 46) {
+            return true;
+        }
+        else if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+    document.getElementById("CancelButton").addEventListener("click", function () {
+        if (confirm("Are you sure you want to cancel?")) {
+            location.reload(); // reloads only if user clicks OK
+        }
+    });
+
+    $(document).ready(function () {
+        $('#walletreqform').on('submit', function (e) {
+            debugger;
+            var amount = $("#amount").val();
+            if (amount == "") {
+                toastr.error("Please enter amount", 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // 5 seconds
+                    extendedTimeOut: 1000 // 1 second longer than timeOut
+                });
+                e.preventDefault();
+                $("#amount").focus();
+                return false;
+            }
+            var trndate = $("#trndate").val();
+            if (trndate == "") {
+                toastr.error("Please enter date", 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // 5 seconds
+                    extendedTimeOut: 1000 // 1 second longer than timeOut
+                });
+                e.preventDefault();
+                $("#trndate").focus();
+                return false;
+            }
+            var paymode = $("#paymode").val();
+            if (paymode == "0") {
+                toastr.error("Please select paymode", 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // 5 seconds
+                    extendedTimeOut: 1000 // 1 second longer than timeOut
+                });
+                e.preventDefault();
+                $("#paymode").focus();
+                return false;
+            }
+            var BankName = "";
+            if (paymode == "Bank") {
+                BankName = $("#BankName").val();
+                if (BankName == "0") {
+                    toastr.error("Please select bank", 'Error', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000, // 5 seconds
+                        extendedTimeOut: 1000 // 1 second longer than timeOut
+                    });
+                    e.preventDefault();
+                    $("#paymode").focus();
+                    return false;
+                }
+            }
+            var VType = $("#VType").val();
+            //var VType = "R";
+            if (VType == "0") {
+                toastr.error("Please select Wallet", 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // 5 seconds
+                    extendedTimeOut: 1000 // 1 second longer than timeOut
+                });
+                e.preventDefault();
+                $("#VType").focus();
+                return false;
+            }
+            var timage = $("#timage").val();
+            if (timage == "") {
+                toastr.error("Please select image", 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // 5 seconds
+                    extendedTimeOut: 1000 // 1 second longer than timeOut
+                });
+                $("#timage").focus();
+                e.preventDefault();
+                return false;
+            }
+            $("#uploadButton").hide();
+            $("#hidbtn").show();
+            e.preventDefault();
+            var formData = new FormData();
+            var fileInput = $('#timage')[0].files[0];
+            var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.pdf)$/i;
+            var filePath = fileInput.name;
+
+            if (!allowedExtensions.exec(filePath)) {
+                alert('Invalid file type. Only PDF, JPG, PNG, and JPEG files are allowed.');
+                return false;
+            }
+            formData.append('Image', fileInput);
+            formData.append('Amount', amount);
+            formData.append('BankName', BankName);
+            formData.append('Paymode', paymode);
+            formData.append('Remarks', $("#remark").val());
+            formData.append('VType', VType);
+            $.ajax({
+                url: '@Url.Action("WalletRequest", "Transaction")',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.msg == "OK") {
+                        toastr.success("Saved Successfully!", 'Success', {
+                            closeButton: true,
+                            progressBar: true,
+                            positionClass: 'toast-top-right',
+                            timeOut: 5000, // 5 seconds
+                            extendedTimeOut: 1000 // 1 second longer than timeOut
+                        });
+
+                         $('#walletreqform')[0].reset();
+
+        // Manually clear fields that reset() may not handle cleanly
+        $("#amount").val('');
+        $("#trndate").val('');
+        $("#paymode").val('0');
+        $("#BankName").val('0');
+        $("#VType").val('0');
+        $("#remark").val('');
+        $("#timage").val('');
+        $(".browse-file").val('');   // "choose" text box clear
+        $("#bankdiv").hide();        // bank dropdown wapas chhupa do
+
+                    } else {
+                        toastr.error("Request fail", 'Error', {
+                            closeButton: true,
+                            progressBar: true,
+                            positionClass: 'toast-top-right',
+                            timeOut: 5000, // 5 seconds
+                            extendedTimeOut: 1000 // 1 second longer than timeOut
+                        });
+                    }
+                    $("#amount").val('');
+                    $("#uploadButton").show();
+                    $("#hidbtn").hide();
+                    $("#paymode").val('0');
+                    $("#timage").val('');
+                },
+                error: function () {
+                    toastr.error("An error occurred while wallet request", 'Error', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000, // 5 seconds
+                        extendedTimeOut: 1000 // 1 second longer than timeOut
+                    });
+                }
+            });
+        });
+    });
+</script>

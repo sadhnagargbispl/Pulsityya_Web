@@ -1,0 +1,988 @@
+@using Microsoft.AspNetCore.Http
+@{
+    var comp = await CompanyInfo.GetAsync();
+    var compName = comp.DisplayName();
+    var compLogo = comp.LogoUrl(Url);
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="Description" content="@compName">
+    <meta name="Author" content="@compName">
+    <meta name="Keywords" content="@compName">
+    <title>@ViewData["Title"]</title>
+    <!-- Favicon -->
+    <link rel="icon" href="~/assets/img/brand/favicon.png" type="image/x-icon">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" asp-append-version="true" href="~/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" asp-append-version="true" href="~/assets/css/icons.css" />
+    <link rel="stylesheet" asp-append-version="true" href="~/assets/css/sidebar.css" />
+    <link rel="stylesheet" asp-append-version="true" href="~/assets/css/p-scrollbar.css" />
+    <link rel="stylesheet" asp-append-version="true" href="~/assets/css/closed-sidemenu.css" />
+    <link rel="stylesheet" asp-append-version="true" href="~/assets/css/style.css" />
+    <link rel="stylesheet" asp-append-version="true" href="~/assets/css/style-dark.css" />
+    <link rel="stylesheet" href="~/assets/css/jqvmap.min.css" />
+    <link rel="stylesheet" href="~/assets/css/skin-modes.css" />
+    <link rel="stylesheet" href="~/assets/css/animate.css" />
+    <link rel="stylesheet" href="~/assets/css/switcher.css" />
+    <link rel="stylesheet" asp-append-version="true" href="~/assets/css/demo.css" />
+    <link rel="stylesheet" asp-append-version="true" href="~/assets/css/adminstyle.css" />
+    <link href="~/assets/toastr/toastr.css" asp-append-version="true" rel="stylesheet" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
+    <!-- Font Awasome Intro -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
+    <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode == 46) {
+        return true;
+        }
+        else if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+        }
+        return true;
+        }
+        $(document).ready(function () {
+        $.ajax({
+        type: "POST",
+        url: "/Product/GetCartCount",
+        async: true,
+        success: function (data) {
+        $("#spncartcount").text(data.total);
+        },
+        failure: function (response) {
+        console.log(response.responseText);
+        },
+        error: function (response) {
+        console.log(response.responseText);
+        },
+        failure: function (response) {
+        console.log(response.responseText);
+        }
+        });
+
+        // $.ajax({
+        //     type: "POST",
+        //     url: "/Home/GetWalletBalance",
+        //     async: true,
+        //     success: function (data) {
+        //         setTimeout(function () {
+        //             $("#walbal").text(data);
+        //         }, 1000);
+        //     },
+        //     failure: function (response) {
+        //         console.log(response.responseText);
+        //     },
+        //     error: function (response) {
+        //         console.log(response.responseText);
+        //     },
+        //     failure: function (response) {
+        //         console.log(response.responseText);
+        //     }
+        // });
+        $.ajax({
+        type: "POST",
+        url: "/Home/GetPVWalletBalance",
+        async: true,
+        success: function (data) {
+        setTimeout(function () {
+        $("#PVwalbal").text(data);
+        }, 1000);
+        },
+        failure: function (response) {
+        console.log(response.responseText);
+        },
+        error: function (response) {
+        console.log(response.responseText);
+        },
+        failure: function (response) {
+        console.log(response.responseText);
+        }
+        });
+        $.ajax({
+        type: "POST",
+        url: "/Home/GetBVWalletBalance",
+        async: true,
+        success: function (data) {
+        setTimeout(function () {
+        $("#BVwalbal").text(data);
+        }, 1000);
+        },
+        failure: function (response) {
+        console.log(response.responseText);
+        },
+        error: function (response) {
+        console.log(response.responseText);
+        },
+        failure: function (response) {
+        console.log(response.responseText);
+        }
+        });
+
+        $.ajax({
+        type: "POST",
+        url: "/Cart/GetPurchaseWalletBalance",
+        async: true,
+        data:{Wallettype:"Z"},
+        success: function (data) {
+        setTimeout(function () {
+        $("#BVpurchwalbal").text(data);
+        }, 1000);
+        },
+        failure: function (response) {
+        console.log(response.responseText);
+        },
+        error: function (response) {
+        console.log(response.responseText);
+        },
+        failure: function (response) {
+        console.log(response.responseText);
+        }
+        });
+
+        $.ajax({
+        type: "POST",
+        url: "/Cart/GetPurchaseWalletBalance",
+        async: true,
+        data:{Wallettype:"W"},
+        success: function (data) {
+        setTimeout(function () {
+        $("#PVpurchwalbal").text(data);
+        }, 1000);
+        },
+        failure: function (response) {
+        console.log(response.responseText);
+        },
+        error: function (response) {
+        console.log(response.responseText);
+        },
+        failure: function (response) {
+        console.log(response.responseText);
+        }
+        });
+
+        $.ajax({
+        type: "POST",
+        url: "/Home/GetPromoWalletBalance",
+        async: true,
+        success: function (data) {
+        setTimeout(function () {
+        $("#Promowalbal").text(data);
+        }, 1000);
+        },
+        failure: function (response) {
+        console.log(response.responseText);
+        },
+        error: function (response) {
+        console.log(response.responseText);
+        },
+        failure: function (response) {
+        console.log(response.responseText);
+        }
+        });
+
+        });
+    </script>
+    <style>
+        /* Desktop wala bada logo */
+        .main-logo {
+        max-width: 160px;
+        max-height: 50px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        }
+
+        /* Mobile / collapsed wala chhota icon logo */
+        .logo-icon {
+        max-width: 40px;
+        max-height: 40px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        }
+    </style>
+</head>
+<body class="main-body app sidebar-mini">
+
+    <!-- Main Content Start -->
+    <div class="page">
+        <!-- Desktop Sidebar Start -->
+        <!-- main-sidebar -->
+        <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
+        <aside class="app-sidebar sidebar-scroll">
+            <div class="main-sidebar-header active">
+                <a class="desktop-logo logo-light active" href="~/Home/index">
+                    <img src="@compLogo" class="main-logo" alt="@compName" title="@compName">
+                </a>
+                <a class="desktop-logo logo-dark active" href="~/Home/index">
+                    <img src="@compLogo" class="main-logo dark-theme" alt="@compName" title="@compName">
+                </a>
+                <a class="logo-icon mobile-logo icon-light active" href="~/Home/index">
+                    <img src="@compLogo" class="logo-icon" alt="@compName" title="@compName">
+                </a>
+                <a class="logo-icon mobile-logo icon-dark active" href="~/Home/index">
+                    <img src="@compLogo" class="logo-icon dark-theme" alt="@compName" title="@compName">
+                </a>
+
+
+                @*    <a class="desktop-logo logo-light active" href="~/Home/index"><img src="~/assets/img/logo (1).png" class="main-logo" alt="logo"></a>
+                <a class="desktop-logo logo-dark active" href="~/Home/index"><img src="~/assets/img/logo (1).png" class="main-logo dark-theme" alt="logo"></a>
+                <a class="logo-icon mobile-logo icon-light active" href="~/Home/index"><img src="~/assets/img/logo (1).png" class="logo-icon" alt="logo"></a>
+                <a class="logo-icon mobile-logo icon-dark active" href="~/Home/index"><img src="~/assets/img/logo (1).png" class="logo-icon dark-theme" alt="logo"></a> *@
+            </div>
+            <div class="main-sidemenu">
+                <ul class="side-menu">
+
+
+                    <!-- <li class="side-item side-item-category">My Profile</li> -->
+                    @{
+                        string vfPartyName = Convert.ToString(Context.Session.GetString("PartyName"));
+                        string vfInitials = "VF";
+                        if (!string.IsNullOrWhiteSpace(vfPartyName))
+                        {
+                            var vfParts = vfPartyName.Trim().Split(' ');
+                            vfInitials = vfParts[0].Substring(0, 1).ToUpper();
+                            if (vfParts.Length > 1 && vfParts[1].Length > 0) { vfInitials += vfParts[1].Substring(0, 1).ToUpper(); }
+                        }
+                    }
+                    <div class="sidebar-profile-card">
+                        <div class="sidebar-profile-avatar">@vfInitials</div>
+                        <h5 class="main-profile-name"> @Convert.ToString(Context.Session.GetString("PartyName"))</h5>
+                        <div class="sidebar-profile-meta">
+                            <span><i class="fa fa-map-marker" aria-hidden="true"></i> <span style="text-transform:capitalize;">@Convert.ToString(Context.Session.GetString("CityName"))</span>, @Convert.ToString(Context.Session.GetString("StateName"))</span>
+                            <span><i class="fa fa-rupee" aria-hidden="true"></i> BV Sale Bal: <span id="BVwalbal"></span></span>
+                            <span><i class="fa fa-rupee" aria-hidden="true"></i> PV Sale Bal: <span id="PVwalbal"></span></span>
+                            <span><i class="fa fa-shopping-bag" aria-hidden="true"></i> BV Pur Bal: <span id="BVpurchwalbal"></span></span>
+                            <span><i class="fa fa-shopping-bag" aria-hidden="true"></i> PV Pur Bal: <span id="PVpurchwalbal"></span></span>
+                            <span style="display:none;"><i class="fa fa-gift" aria-hidden="true"></i> Promo Bal: <span id="Promowalbal"></span></span>
+                        </div>
+                    </div>
+                    <li class="slide">
+                        <a class="side-menu__item" href="~/Home/index">
+                            <i class="side-menu__icon fa fa-th-large" aria-hidden="true"></i>
+                            <span class="side-menu__label">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="slide">
+                        <a class="side-menu__item" href="~/Product/Productlist">
+                            <i class="side-menu__icon fa fa-shopping-cart" aria-hidden="true"></i>
+                            <span class="side-menu__label">Order Products</span>
+                        </a>
+                    </li>
+                    <li class="slide">
+                        <a class="side-menu__item" href="~/Report/OrderReport">
+                            <i class="side-menu__icon fa fa-list-alt" aria-hidden="true"></i>
+                            <span class="side-menu__label">My Orders </span>
+                        </a>
+                    </li>
+                    @*  <li class="slide">
+                        <a class="side-menu__item" href="javascript:void(0);">
+                            <i class="side-menu__icon fa fa-cubes" aria-hidden="true"></i>
+                            <span class="side-menu__label">My Stocks  </span>
+                        </a>
+                    </li> *@
+                    @*   <li class="slide">
+                        <a class="side-menu__item" href="javascript:void(0);">
+                            <i class="side-menu__icon fa fa-money" aria-hidden="true"></i>
+                            <span class="side-menu__label">My Income  </span>
+                        </a>
+                    </li> *@
+                    @*   <li class="slide">
+                        <a class="side-menu__item" href="javascript:void(0);">
+                            <i class="side-menu__icon fa fa-file-text-o" aria-hidden="true"></i>
+                            <span class="side-menu__label">My Statement </span>
+                        </a>
+                    </li> *@
+                    @*  <li class="slide">
+                        <a class="side-menu__item" href="javascript:void(0);">
+                            <i class="side-menu__icon fa fa-user-circle-o" aria-hidden="true"></i>
+                            <span class="side-menu__label">User Profile </span>
+                        </a>
+                    </li> *@
+                    <li class="slide">
+                        <a class="side-menu__item" href="~/Transaction/WalletRequest">
+                            <i class="side-menu__icon fa fa-credit-card" aria-hidden="true"></i>
+                            <span class="side-menu__label">Wallet Request </span>
+                        </a>
+                    </li>
+                    @* <li class="slide">
+                        <a class="side-menu__item" href="~/Transaction/DistributorBill">
+                            <i class="side-menu__icon fa fa-file-text" aria-hidden="true"></i>
+                            <span class="side-menu__label">Distributor Bill </span>
+                        </a>
+                    </li> *@
+                  
+                    <li class="slide">
+                        <a class="side-menu__item" data-toggle="slide" href="#">
+                            <i class="side-menu__icon fa fa-exchange" aria-hidden="true"></i>
+                            <span class="side-menu__label">Transaction</span>
+                            <i class="fa fa-angle-down" aria-hidden="true"></i>
+                        </a>
+                        <ul class="slide-menu">
+                            @if (Convert.ToString(Context.Session.GetString("GroupId")) == "1"
+                                                        || Convert.ToString(Context.Session.GetString("GroupId")) == "2"
+                                                        || Convert.ToString(Context.Session.GetString("GroupId")) == "3")
+                            {
+                                <li><a class="slide-item" href="~/Transaction/PartyBill">Franchisee Bill</a></li>
+                                <li><a class="slide-item" href="~/Transaction/DistributorBill">Consultant Bill</a></li>
+                            }
+
+                            
+                            @if (Convert.ToString(Context.Session.GetString("GroupId")) == "6"
+                                                                                    || Convert.ToString(Context.Session.GetString("GroupId")) == "4")
+                            {
+
+                                <li><a class="slide-item" href="~/Transaction/DistributorBill">Consultant Bill</a></li>
+                            }
+                            @if (Convert.ToString(Context.Session.GetString("GroupId")) != "6")
+                            {
+                                <li><a class="slide-item" href="~/Transaction/PendingOrder">Pending Order</a></li>
+                            }
+
+                            @* <li><a class="slide-item" href="~/Transaction/CustomerBill">Customer Bill</a></li> *@
+
+                        </ul>
+                    </li>
+                    <li class="slide">
+                        <a class="side-menu__item" data-toggle="slide" href="javascript:void(0);">
+                            <i class="side-menu__icon fa fa-bar-chart" aria-hidden="true"></i>
+                            <span class="side-menu__label">Report</span>
+                            <i class="fa fa-angle-down" aria-hidden="true"></i>
+                        </a>
+                        <ul class="slide-menu">
+                            <li><a class="slide-item" href="~/Report/StockReport">Current Stock Report</a></li>
+                            <li><a class="slide-item" href="~/Report/DateWiseStockReport">Date wise stock Report</a></li>
+                            <li><a class="slide-item" href="~/Report/StockTransactionReport">Purchase Report</a></li>
+                            @* <li><a class="slide-item" href="#">Franchisee Commission</a></li> *@
+                            @* <li><a class="slide-item" href="#">Import Bills</a></li>
+                            <li><a class="slide-item" href="#">Sales Report</a></li> *@
+                            <li><a class="slide-item" href="~/Report/SalesReport">Bill Wise Sales Report</a></li>
+                            <li><a class="slide-item" href="~/Report/ProductSalesReport">Product Wise Sales Report</a></li>
+                            <li><a class="slide-item" href="~/Report/DateSalesReport">Date Wise Sales Report</a></li>
+                            <li><a class="slide-item" href="~/Report/PaymentSummary">Payment Summary</a></li>
+                            @*  <li><a class="slide-item" href="~/Report/SalesReturnReport">Sales Return Report</a></li> *@
+                            <li><a href="~/Report/GstSaleRegister" class="slide-item">Gst Sale Register</a> </li>
+                            <li><a href="~/Report/WalletRequestReport" class="slide-item">Wallet Request Report</a> </li>
+                            <li><a href="~/Report/WalletReport" class="slide-item">Wallet Report</a> </li>
+                            <li><a href="~/Report/OrderReport" class="slide-item">Order History</a> </li>
+                            @* <li><a href="~/Report/FranchiseeCommission" class="slide-item">Franchisee Commission</a> </li> *@
+                            <li><a href="~/Report/PayoutSummary" class="slide-item">Payout Summary</a> </li>
+                            @*  <li><a class="slide-item" href="#">Stock J.V. Report</a></li>
+                            <li><a class="slide-item" href="#">Purchase Reports</a></li>
+                            <li><a class="slide-item" href="#">Sale Register</a></li>
+                            <li><a class="slide-item" href="#">Payment Summary</a></li>
+                            <li><a class="slide-item" href="#">Purchase Return Report</a></li>
+                            <li><a class="slide-item" href="#">Sales Return Report</a></li>
+                            <li><a class="slide-item" href="#">Wallet Report</a></li>
+                            <li><a class="slide-item" href="#">Order History</a></li>
+                            <li><a class="slide-item" href="#">Offer Report</a></li>
+                            <li><a class="slide-item" href="#">Offer Detail</a></li>
+                            <li><a class="slide-item" href="#">Wallet Request Report</a></li>
+                            <li><a class="slide-item" href="#">Prev.Month Offer Detail</a></li>
+                            <li><a class="slide-item" href="#">Log Report</a></li>
+                            <li><a class="slide-item" href="#">Sample Product Report</a></li> *@
+                        </ul>
+                    </li>
+                    <li class="slide">
+                        <a class="side-menu__item" href="~/Account/Logout">
+                            <i class="side-menu__icon fa fa-sign-out" aria-hidden="true"></i>
+                            <span class="side-menu__label">Log Out </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        <!-- main-sidebar -->
+        <!-- Desktop Sidebar Start -->
+        <div class="main-content app-content">
+            <!-- Header Start -->
+            <div class="main-header sticky side-header nav nav-item layout-pin mobnavbar">
+                <div class="container-fluid">
+                    <div class="main-header-left ">
+                        <div class="responsive-logo">
+                            <a href="javascript:void(0);"><img src="@compLogo" class="logo-1 p-2" alt="@compName"></a>
+                            <a href="javascript:void(0);"><img src="@compLogo" class="dark-logo-1 p-2" alt="@compName"></a>
+                            <a href="javascript:void(0);"><img src="@compLogo" class="logo-2  p-2" alt="@compName"></a>
+                            <a href="javascript:void(0);"><img src="@compLogo" class="dark-logo-2 p-2" alt="@compName"></a>
+                        </div>
+                        <div class="app-sidebar__toggle" data-toggle="sidebar">
+                            <a class="open-toggle " href="#">
+                                <i class="header-icons fa fa-align-left text-dark"></i>
+                            </a>
+                            <a class="close-toggle" href="#">
+                                <i class="header-icons fa fa-align-left"></i>
+                            </a>
+                        </div>
+                        <a class="animated-arrow hor-header-toggle horizontal-navtoggle"></a>
+                    </div>
+                    <div class="main-header-right">
+                        <div class="nav nav-item  navbar-nav-right ml-auto">
+
+                            <div class="main-profile-menu nav nav-item nav-link">
+
+                                <a href="~/Cart/ViewCart" type="button" class="header-cart-btn">
+                                    <span class="header-cart-icon"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>
+                                    <span class="header-cart-text">Product Cart</span>
+                                    <span class="header-cart-badge" id="spncartcount">  </span>
+                                </a>
+                            </div>
+
+
+                            <!-- <div class="dropdown main-profile-menu nav nav-item nav-link">
+                                <a class="profile-user d-flex" href="">
+                                    <img alt="" src="assets/img/faces/6.jpg">
+                                </a>
+                                <div class="dropdown-menu">
+                                    <div class="main-header-profile bg-primary p-3">
+                                        <div class="d-flex wd-100p">
+                                            <div class="main-img-user">
+                                                <img alt="" src="assets/img/faces/6.jpg" class="">
+                                            </div>
+                                            <div class="ml-3 my-auto">
+                                                <h6>Vitaflow Healthcare </h6><span>Premium Member</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a class="dropdown-item" href="#"><i class="bx bx-user-circle"></i>Profile</a>
+                                    <a class="dropdown-item" href="#"><i class="bx bx-cog"></i> Edit Profile</a>
+                                    <a class="dropdown-item" href="#"><i class="bx bx-log-out"></i> Sign Out</a>
+                                </div>
+                            </div> -->
+                            <!-- <div class="nav-item full-screen fullscreen-button">
+                                <a class="new nav-link full-screen-link" href="#">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="header-icon-svgs" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-maximize">
+                                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                                    </svg>
+                                </a>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Header Start -->
+            <div class="container-fluid">
+                @RenderBody()
+            </div>
+        </div>
+
+    </div>
+    <!-- Main Content End -->
+    <!-- Notification Sidebar Start -->
+    <div class="sidebar sidebar-right sidebar-animate">
+        <div class="panel panel-primary card mb-0 box-shadow">
+            <div class="tab-menu-heading border-0 p-3">
+                <div class="card-title mb-0">Notifications</div>
+                <div class="card-options ml-auto">
+                    <a href="#" class="sidebar-remove"><i class="fe fe-x"></i></a>
+                </div>
+            </div>
+            <div class="panel-body tabs-menu-body latest-tasks p-0 border-0">
+                <div class="tabs-menu ">
+                    <ul class="nav panel-tabs">
+                        <li class="">
+                            <a href="#side1" class="active" data-toggle="tab">
+                                <i class="ion ion-md-chatboxes tx-18 mr-2"></i> Chat
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#side2" data-toggle="tab">
+                                <i class="ion ion-md-notifications tx-18  mr-2"></i> Notifications
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#side3" data-toggle="tab">
+                                <i class="ion ion-md-contacts tx-18 mr-2"></i> Friends
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane active " id="side1">
+                        <div class="list d-flex align-items-center border-bottom p-3">
+                            <div class="">
+                                <span class="avatar bg-primary brround avatar-md">CH</span>
+                            </div>
+                            <a class="wrapper w-100 ml-3" href="#">
+                                <p class="mb-0 d-flex ">
+                                    <b>New Websites is Created</b>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="mdi mdi-clock text-muted mr-1"></i>
+                                        <small class="text-muted ml-auto">30 mins ago</small>
+                                        <p class="mb-0"></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="list d-flex align-items-center border-bottom p-3">
+                            <div class="">
+                                <span class="avatar bg-danger brround avatar-md">N</span>
+                            </div>
+                            <a class="wrapper w-100 ml-3" href="#">
+                                <p class="mb-0 d-flex ">
+                                    <b>Prepare For the Next Project</b>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="mdi mdi-clock text-muted mr-1"></i>
+                                        <small class="text-muted ml-auto">2 hours ago</small>
+                                        <p class="mb-0"></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="list d-flex align-items-center border-bottom p-3">
+                            <div class="">
+                                <span class="avatar bg-info brround avatar-md">S</span>
+                            </div>
+                            <a class="wrapper w-100 ml-3" href="#">
+                                <p class="mb-0 d-flex ">
+                                    <b>Decide the live Discussion</b>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="mdi mdi-clock text-muted mr-1"></i>
+                                        <small class="text-muted ml-auto">3 hours ago</small>
+                                        <p class="mb-0"></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="list d-flex align-items-center border-bottom p-3">
+                            <div class="">
+                                <span class="avatar bg-warning brround avatar-md">K</span>
+                            </div>
+                            <a class="wrapper w-100 ml-3" href="#">
+                                <p class="mb-0 d-flex ">
+                                    <b>Meeting at 3:00 pm</b>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="mdi mdi-clock text-muted mr-1"></i>
+                                        <small class="text-muted ml-auto">4 hours ago</small>
+                                        <p class="mb-0"></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="list d-flex align-items-center border-bottom p-3">
+                            <div class="">
+                                <span class="avatar bg-success brround avatar-md">R</span>
+                            </div>
+                            <a class="wrapper w-100 ml-3" href="#">
+                                <p class="mb-0 d-flex ">
+                                    <b>Prepare for Presentation</b>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="mdi mdi-clock text-muted mr-1"></i>
+                                        <small class="text-muted ml-auto">1 days ago</small>
+                                        <p class="mb-0"></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="list d-flex align-items-center border-bottom p-3">
+                            <div class="">
+                                <span class="avatar bg-pink brround avatar-md">MS</span>
+                            </div>
+                            <a class="wrapper w-100 ml-3" href="#">
+                                <p class="mb-0 d-flex ">
+                                    <b>Prepare for Presentation</b>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="mdi mdi-clock text-muted mr-1"></i>
+                                        <small class="text-muted ml-auto">1 days ago</small>
+                                        <p class="mb-0"></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="list d-flex align-items-center border-bottom p-3">
+                            <div class="">
+                                <span class="avatar bg-purple brround avatar-md">L</span>
+                            </div>
+                            <a class="wrapper w-100 ml-3" href="#">
+                                <p class="mb-0 d-flex ">
+                                    <b>Prepare for Presentation</b>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="mdi mdi-clock text-muted mr-1"></i>
+                                        <small class="text-muted ml-auto">45 mintues ago</small>
+                                        <p class="mb-0"></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="list d-flex align-items-center p-3">
+                            <div class="">
+                                <span class="avatar bg-blue brround avatar-md">U</span>
+                            </div>
+                            <a class="wrapper w-100 ml-3" href="#">
+                                <p class="mb-0 d-flex ">
+                                    <b>Prepare for Presentation</b>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="mdi mdi-clock text-muted mr-1"></i>
+                                        <small class="text-muted ml-auto">2 days ago</small>
+                                        <p class="mb-0"></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane  " id="side2">
+                        <div class="list-group list-group-flush ">
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-3">
+                                    <span class="avatar avatar-lg brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/12.jpg"><span class="avatar-status bg-success"></span></span>
+                                </div>
+                                <div>
+                                    <strong>Madeleine</strong> Hey! there I' am available....
+                                    <div class="small text-muted">
+                                        3 hours ago
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-3">
+                                    <span class="avatar avatar-lg brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/1.jpg"></span>
+                                </div>
+                                <div>
+                                    <strong>Anthony</strong> New product Launching...
+                                    <div class="small text-muted">
+                                        5 hour ago
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-3">
+                                    <span class="avatar avatar-lg brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/2.jpg"><span class="avatar-status bg-success"></span></span>
+                                </div>
+                                <div>
+                                    <strong>Olivia</strong> New Schedule Realease......
+                                    <div class="small text-muted">
+                                        45 mintues ago
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-3">
+                                    <span class="avatar avatar-lg brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/8.jpg"><span class="avatar-status bg-success"></span></span>
+                                </div>
+                                <div>
+                                    <strong>Madeleine</strong> Hey! there I' am available....
+                                    <div class="small text-muted">
+                                        3 hours ago
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-3">
+                                    <span class="avatar avatar-lg brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/11.jpg"></span>
+                                </div>
+                                <div>
+                                    <strong>Anthony</strong> New product Launching...
+                                    <div class="small text-muted">
+                                        5 hour ago
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-3">
+                                    <span class="avatar avatar-lg brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/6.jpg"><span class="avatar-status bg-success"></span></span>
+                                </div>
+                                <div>
+                                    <strong>Olivia</strong> New Schedule Realease......
+                                    <div class="small text-muted">
+                                        45 mintues ago
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-3">
+                                    <span class="avatar avatar-lg brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/9.jpg"><span class="avatar-status bg-success"></span></span>
+                                </div>
+                                <div>
+                                    <strong>Olivia</strong> Hey! there I' am available....
+                                    <div class="small text-muted">
+                                        12 mintues ago
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="side3">
+                        <div class="list-group list-group-flush ">
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-2">
+                                    <span class="avatar avatar-md brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/9.jpg"><span class="avatar-status bg-success"></span></span>
+                                </div>
+                                <div class="">
+                                    <div class="font-weight-semibold" data-toggle="modal" data-target="#chatmodel">Mozelle Belt</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <a href="#" class="btn btn-sm btn-light" data-toggle="modal" data-target="#chatmodel">
+                                        <i class="fa fa-facebook-messenger"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-2">
+                                    <span class="avatar avatar-md brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/11.jpg"></span>
+                                </div>
+                                <div class="">
+                                    <div class="font-weight-semibold" data-toggle="modal" data-target="#chatmodel">Florinda Carasco</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <a href="#" class="btn btn-sm btn-light" data-toggle="modal" data-target="#chatmodel">
+                                        <i class="fa fa-facebook-messenger"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-2">
+                                    <span class="avatar avatar-md brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/10.jpg"><span class="avatar-status bg-success"></span></span>
+                                </div>
+                                <div class="">
+                                    <div class="font-weight-semibold" data-toggle="modal" data-target="#chatmodel">Alina Bernier</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <a href="#" class="btn btn-sm btn-light" data-toggle="modal" data-target="#chatmodel">
+                                        <i class="fa fa-facebook-messenger"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-2">
+                                    <span class="avatar avatar-md brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/2.jpg"><span class="avatar-status bg-success"></span></span>
+                                </div>
+                                <div class="">
+                                    <div class="font-weight-semibold" data-toggle="modal" data-target="#chatmodel">Zula Mclaughin</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <a href="#" class="btn btn-sm btn-light" data-toggle="modal" data-target="#chatmodel">
+                                        <i class="fa fa-facebook-messenger"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-2">
+                                    <span class="avatar avatar-md brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/13.jpg"></span>
+                                </div>
+                                <div class="">
+                                    <div class="font-weight-semibold" data-toggle="modal" data-target="#chatmodel">Isidro Heide</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <a href="#" class="btn btn-sm btn-light" data-toggle="modal" data-target="#chatmodel">
+                                        <i class="fa fa-facebook-messenger"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-2">
+                                    <span class="avatar avatar-md brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/12.jpg"><span class="avatar-status bg-success"></span></span>
+                                </div>
+                                <div class="">
+                                    <div class="font-weight-semibold" data-toggle="modal" data-target="#chatmodel">Mozelle Belt</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <a href="#" class="btn btn-sm btn-light">
+                                        <i class="fa fa-facebook-messenger"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-2">
+                                    <span class="avatar avatar-md brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/4.jpg"></span>
+                                </div>
+                                <div class="">
+                                    <div class="font-weight-semibold" data-toggle="modal" data-target="#chatmodel">Florinda Carasco</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <a href="#" class="btn btn-sm btn-light" data-toggle="modal" data-target="#chatmodel">
+                                        <i class="fa fa-facebook-messenger"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-2">
+                                    <span class="avatar avatar-md brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/7.jpg"></span>
+                                </div>
+                                <div class="">
+                                    <div class="font-weight-semibold" data-toggle="modal" data-target="#chatmodel">Alina Bernier</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <a href="#" class="btn btn-sm btn-light">
+                                        <i class="fa fa-facebook-messenger"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-2">
+                                    <span class="avatar avatar-md brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/2.jpg"></span>
+                                </div>
+                                <div class="">
+                                    <div class="font-weight-semibold" data-toggle="modal" data-target="#chatmodel">Zula Mclaughin</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <a href="#" class="btn btn-sm btn-light" data-toggle="modal" data-target="#chatmodel">
+                                        <i class="fa fa-facebook-messenger"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-2">
+                                    <span class="avatar avatar-md brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/14.jpg"><span class="avatar-status bg-success"></span></span>
+                                </div>
+                                <div class="">
+                                    <div class="font-weight-semibold" data-toggle="modal" data-target="#chatmodel">Isidro Heide</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <a href="#" class="btn btn-sm btn-light">
+                                        <i class="fa fa-facebook-messenger"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-2">
+                                    <span class="avatar avatar-md brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/11.jpg"></span>
+                                </div>
+                                <div class="">
+                                    <div class="font-weight-semibold" data-toggle="modal" data-target="#chatmodel">Florinda Carasco</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <a href="#" class="btn btn-sm btn-light" data-toggle="modal" data-target="#chatmodel">
+                                        <i class="fa fa-facebook-messenger"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-2">
+                                    <span class="avatar avatar-md brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/9.jpg"></span>
+                                </div>
+                                <div class="">
+                                    <div class="font-weight-semibold" data-toggle="modal" data-target="#chatmodel">Alina Bernier</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <a href="#" class="btn btn-sm btn-light" data-toggle="modal" data-target="#chatmodel">
+                                        <i class="fa fa-facebook-messenger"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-2">
+                                    <span class="avatar avatar-md brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/15.jpg"><span class="avatar-status bg-success"></span></span>
+                                </div>
+                                <div class="">
+                                    <div class="font-weight-semibold" data-toggle="modal" data-target="#chatmodel">Zula Mclaughin</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <a href="#" class="btn btn-sm btn-light" data-toggle="modal" data-target="#chatmodel">
+                                        <i class="fa fa-facebook-messenger"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item d-flex  align-items-center">
+                                <div class="mr-2">
+                                    <span class="avatar avatar-md brround cover-image" data-image-src="https://codeigniter.spruko.com/valex/ltr/public/assets/img/faces/4.jpg"></span>
+                                </div>
+                                <div class="">
+                                    <div class="font-weight-semibold" data-toggle="modal" data-target="#chatmodel">Isidro Heide</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <a href="#" class="btn btn-sm btn-light" data-toggle="modal" data-target="#chatmodel">
+                                        <i class="fa fa-facebook-messenger"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Notification Sidebar End -->
+    <!-- Footer Start -->
+    <div class="main-footer ht-40">
+        <div class="container-fluid pd-t-0-f ht-100p">
+            <span>Copyright © @DateTime.Now.Year <a href="~/Home/Index"> @compName </a> All rights reserved.</span>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://unpkg.com/bs-brain@2.0.4/components/charts/chart-1/assets/controller/chart-1.js"></script>
+
+
+
+    <script src="~/assets/js/popper.min.js"></script>
+    <script src="~/assets/js/bootstrap.js"></script>
+    <script src="~/assets/js/ionicons.js"></script>
+    <script src="~/assets/js/moment.js"></script>
+    <script src="~/assets/js/perfect-scrollbar.min.js"></script>
+    <script src="~/assets/js/p-scroll.js"></script>
+    <script src="~/assets/js/sticky.js"></script>
+    <script src="~/assets/js/eva-icons.min.js"></script>
+    <script src="~/assets/js/jquery.rating-stars.js"></script>
+    <script src="~/assets/js/jquery.barrating.js"></script>
+    <script src="~/assets/js/sidemenu.js"></script>
+    <script src="~/assets/js/sidebar.js"></script>
+    <script src="~/assets/js/sidebar-custom.js"></script>
+    <script src="~/assets/js/Chart.bundle.min.js"></script>
+    <script src="~/assets/js/jquery.sparkline.min.js"></script>
+    <script src="~/assets/js/raphael.min.js"></script>
+    <script src="~/assets/js/apexcharts.js"></script>
+    <script src="~/assets/js/jquery.vmap.min.js"></script>
+    <script src="~/assets/js/jquery.vmap.usa.js"></script>
+    <script src="~/assets/js/index.js" asp-append-version="true"></script>
+    <script src="~/assets/js/jquery.vmap.sampledata.js"></script>
+    <script src="~/assets/js/horizontal-menu.js" asp-append-version="true"></script>
+    <script src="~/assets/js/custom.js" asp-append-version="true"></script>
+    <script src="~/assets/js/switcher.js"></script>
+    <script src="~/assets/toastr/toastr.js" asp-append-version="true"></script>
+    <script src="~/assets/js/tabletoexcel.js"></script>
+</body>
+</html>

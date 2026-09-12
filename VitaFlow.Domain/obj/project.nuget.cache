@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "VKN09SnriQY=",
+  "success": true,
+  "projectFilePath": "\\\\localhost\\Sadhna\\New Github\\MShoppYDemo\\VitaFlow.Domain\\VitaFlow.Domain.csproj",
+  "expectedPackageFiles": [
+    "D:\\claude_tmp\\packages\\microsoft.aspnetcore.http.features\\5.0.17\\microsoft.aspnetcore.http.features.5.0.17.nupkg.sha512",
+    "D:\\claude_tmp\\packages\\microsoft.extensions.primitives\\5.0.1\\microsoft.extensions.primitives.5.0.1.nupkg.sha512",
+    "D:\\claude_tmp\\packages\\system.io.pipelines\\5.0.2\\system.io.pipelines.5.0.2.nupkg.sha512",
+    "D:\\claude_tmp\\packages\\microsoft.netcore.app.ref\\8.0.25\\microsoft.netcore.app.ref.8.0.25.nupkg.sha512",
+    "D:\\claude_tmp\\packages\\microsoft.windowsdesktop.app.ref\\8.0.25\\microsoft.windowsdesktop.app.ref.8.0.25.nupkg.sha512",
+    "D:\\claude_tmp\\packages\\microsoft.aspnetcore.app.ref\\8.0.25\\microsoft.aspnetcore.app.ref.8.0.25.nupkg.sha512"
+  ],
+  "logs": []
+}

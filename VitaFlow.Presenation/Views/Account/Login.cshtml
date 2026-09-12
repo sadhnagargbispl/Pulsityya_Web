@@ -1,0 +1,230 @@
+@model VitaFlow.Domain.Entities.Login
+@{
+    Layout = null;
+    var comp = await CompanyInfo.GetAsync();
+    var compName = comp.DisplayName();
+    var compLogo = comp.LogoUrl(Url);
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login - @compName</title>
+    <link rel="icon" type="image/png" href="#">
+
+    <link rel="stylesheet" type="text/css" href="~/login_files/bootstrap.min.css">
+
+    <link rel="stylesheet" type="text/css" href="~/login_files/font-awesome.min.css">
+
+    <link rel="stylesheet" type="text/css" href="~/login_files/icon-font.min.css">
+
+    <link rel="stylesheet" type="text/css" href="~/login_files/animate.css">
+
+    <link rel="stylesheet" type="text/css" href="~/login_files/hamburgers.min.css">
+
+    <link rel="stylesheet" type="text/css" href="~/login_files/select2.min.css">
+
+    <link rel="stylesheet" type="text/css" href="~/login_files/util.css">
+    <link rel="stylesheet" type="text/css" href="~/login_files/main.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/css/adminstyle.css">
+    <meta name="robots" content="noindex, follow">
+
+    <style>
+        .premium-login-page.container-login100 {
+            background: linear-gradient(135deg, #eef3fb 0%, #f7f9fd 45%, #eaf1fb 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-login-page.container-login100::before,
+        .premium-login-page.container-login100::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .premium-login-page.container-login100::before {
+            width: 360px;
+            height: 360px;
+            top: -110px;
+            left: -90px;
+            background: rgba(58, 123, 255, 0.16);
+        }
+
+        .premium-login-page.container-login100::after {
+            width: 400px;
+            height: 400px;
+            bottom: -130px;
+            right: -110px;
+            background: rgba(0, 184, 169, 0.14);
+        }
+
+        .premium-login-page .wrap-login100 {
+            position: relative;
+            z-index: 1;
+            width: 460px;
+            background: #ffffff;
+            border: 1px solid rgba(20, 40, 90, 0.06);
+            border-radius: 18px;
+            box-shadow: 0 20px 50px rgba(20, 40, 90, 0.12), 0 2px 6px rgba(20, 40, 90, 0.04);
+            animation: premiumFadeUp .55s ease both;
+        }
+
+        @@keyframes premiumFadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .premium-login-page .login100-form-title img {
+            padding: 6px;
+        }
+
+        .premium-login-page .logintext {
+            font-family: Raleway-Black, sans-serif;
+            color: #1b2740;
+            letter-spacing: .5px;
+            font-size: 22px;
+        }
+
+        .premium-login-page .wrap-input100 {
+            background: #f6f8fc;
+            border: 1px solid #e3e9f4;
+            border-radius: 10px;
+            transition: border-color .25s ease, box-shadow .25s ease, background .25s ease;
+        }
+
+        .premium-login-page .wrap-input100:focus-within {
+            background: #ffffff;
+            border-color: #3a7bff;
+            box-shadow: 0 0 0 3px rgba(58, 123, 255, 0.12);
+        }
+
+        .premium-login-page .input100 {
+            background: transparent;
+            color: #1b2740;
+            font-size: 15px;
+        }
+
+        .premium-login-page .input100::placeholder {
+            color: #9aa6bd;
+        }
+
+        .premium-login-page .symbol-input100 {
+            color: #9aa6bd;
+            transition: color .25s ease;
+        }
+
+        .premium-login-page .input100:focus + .focus-input100 + .symbol-input100 {
+            color: #3a7bff;
+        }
+
+        .premium-login-page .focus-input100::before {
+            background: linear-gradient(90deg, #3a7bff, #00b8a9);
+        }
+
+        .premium-login-page .login100-form-btn {
+            background: linear-gradient(90deg, #2e5fe6 0%, #00b8a9 100%);
+            border: none;
+            font-weight: 600;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+            font-size: 14px;
+            box-shadow: 0 12px 25px rgba(46, 95, 230, 0.22);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .premium-login-page .login100-form-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 32px rgba(0, 184, 169, 0.3);
+        }
+
+        .premium-login-page .txt1 {
+            color: #6b7891;
+        }
+
+        .premium-login-page .bo1 {
+            color: #2e5fe6;
+            border-bottom: 1px solid rgba(46, 95, 230, 0.4);
+        }
+
+        .premium-login-page .hov1:hover {
+            color: #00b8a9;
+            border-color: #00b8a9;
+        }
+    </style>
+</head>
+<body data-new-gr-c-s-check-loaded="14.1174.0" data-gr-ext-installed="" cz-shortcut-listen="true">
+    <div class="limiter">
+        <div class="container-login100 premium-login-page">
+            <div class="wrap-login100 p-l-50 p-r-50 p-t-77 p-b-30">
+                <form class="login100-form validate-form" asp-controller="Account" asp-action="Login" method="post" id="contactForm">
+                    <div class="login100-form-title p-b-10 text-center" align="center">
+                        <img src="@compLogo" alt="@compName" title="@compName" class="img-responsive text-center" width="150" />
+                       @*  <img src="~/assets/img/logo-color.png" alt="" class="img-responsive text-center" width="150"> *@
+                    </div>
+                    
+                    <span class="login100-form-title p-b-30 logintext">Login Account </span>
+
+                    <span class="text-danger">@ViewBag.loginerr </span>
+
+                    <div class="wrap-input100 validate-input m-b-16" data-validate="Username is required">
+                        <input class="input100" type="text" asp-for="Username" name="Username" placeholder="Username" autocomplete="off" />
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <span class="lnr lnr-envelope"></span>
+                        </span>
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="wrap-input100 validate-input m-b-16" data-validate="Password is required">
+                        <input class="input100" asp-for="Password" type="password" name="password" placeholder="Password" />
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <span class="lnr lnr-lock"></span>
+                        </span>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="container-login100-form-btn p-t-25">
+                       @*  <a href="index.asp" class="login100-form-btn">Login</a> *@
+                        <input type="submit" class="login100-form-btn" value="Login" />
+                    </div>
+
+                    <div class="text-center w-full p-t-115">
+                        <span class="txt1">
+                            Not a member?
+                        </span>
+                        <a class="txt1 bo1 hov1" href="~/Account/Registration">Sign Up Now</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+     <script type="text/javascript" async="" src="~/login_files/analytics.js"></script>
+    <script src="~/login_files/jquery-3.2.1.min.js"></script>
+
+    <script src="~/login_files/popper.js"></script>
+    <script src="~/login_files/bootstrap.min.js"></script>
+
+    <script src="~/login_files/select2.min.js"></script>
+
+    <script src="~/login_files/main.js"></script>
+
+    <script async="" src="~/login_files/js"></script>
+    <script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-23581568-13');
+	</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+﻿Changes in FP Voucher- 
+Free Product Voucher Condition (FP)
+
+Rs.1000 discount on minimum bill of Rs.2000
+ 2000 se zada ka bill hoga tab bhi maximum 1000 ka hi discount hoga
+
+only 1 voucher in 1 month can be used
+
+Note - ek table banani he FP Voucher ki usme ID wise data save karna he wallet type se .

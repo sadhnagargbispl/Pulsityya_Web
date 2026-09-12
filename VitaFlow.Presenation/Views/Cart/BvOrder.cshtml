@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "BvOrder";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-header justify-content-between">
+    <div class="left-content">
+        <div>
+            <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">Hi, @Convert.ToString(Context.Session.GetString("UserName"))!</h2>
+            <p class="mg-b-0"> @Convert.ToString(Context.Session.GetString("PartyName"))</p>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<div class="row row-sm row-deck">
+    <div class="col-md-12 col-lg-12 col-xl-12 col-sm-12">
+        <div class="card card-dashboard-eight pb-2 bg-light prodcutbox">
+            <h5> Order Method</h5>
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="ChkPG" value="PG" checked="checked">
+                        <label class="form-check-label" for="ChkPG">Payment Gateway</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="ChkWal" value="BV">
+                        <label class="form-check-label" for="ChkWal"> Wallet (@ViewBag.Walletbalance)</label>
+                        <input type="hidden" id="hidwlt" value="@ViewBag.Walletbalance" />
+                        <input type="hidden" id="hidtotalamount" value="@ViewBag.TotalAmont" />
+                    </div>
+                </div>
+            </div>
+            <table class="table-borderless w-50 mt-4">
+                <tbody>
+                    <tr>
+                        <td scope="row"><h5 class="text-success"> Payment Gatway : </h5></td>
+                        <td align="right"><h5 class="text-success">Rs. <span id="spnpgamount">@ViewBag.TotalAmont</span> </h5></td>
+                    </tr>
+                    <tr>
+                        <td scope="row"><h5 class="text-success"> Wallet : </h5></td>
+                        <td align="right"><h5 class="text-success">Rs. <span id="spnwalletamount">0</span> </h5></td>
+                    </tr>
+                    <tr>
+                        <td scope="row"><h5 class="text-success"> Total Payable Amount : </h5></td>
+                        <td align="right"><h5 class="text-success">Rs. @ViewBag.TotalAmont</h5></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        const checkBoxHandler = function () {
+            
+            const Walletamount = $("#hidwlt").val();
+            const Totalamount = $("#hidtotalamount").val();
+            const ChkPG = $('#ChkPG').is(':checked');
+            const ChkWal = $('#ChkWal').is(':checked');
+            setTimeout(() => {
+                
+                if (ChkPG == true && ChkWal == false) {
+                    $("#spnwalletamount").text(0);
+                    $("#spnpgamount").text(Totalamount);
+                }
+                else if (ChkPG == false && ChkWal == true) {
+                    if (parseFloat(Walletamount) >= parseFloat(Totalamount)) {
+                        $("#spnpgamount").text(0);
+                        $("#spnwalletamount").text(Totalamount);
+                    }
+                    else {
+                        $('#ChkWal').prop('checked', true);
+                        $("#spnwalletamount").text(0);
+                        $("#spnpgamount").text(Totalamount);
+                    }
+                }
+                else if (ChkPG == true && ChkWal == true) {
+                    if (parseFloat(Walletamount) >= parseFloat(Totalamount)) {
+                        $("#spnpgamount").text(0);
+                        $("#spnwalletamount").text(Totalamount);
+                    }
+                    else if (parseFloat(Walletamount) <= parseFloat(Totalamount)) {
+                        
+                        var pgamount = parseFloat(Totalamount) - parseFloat(Walletamount)
+                        $("#spnpgamount").text(pgamount);
+                        $("#spnwalletamount").text(Walletamount);
+                    }
+                }
+                else if (ChkPG == false && ChkWal == false) {
+                    $("#spnwalletamount").text(0);
+                    $("#spnpgamount").text(Totalamount);
+                }
+            }, 0);
+        };
+
+        $('#ChkPG').change(checkBoxHandler);
+        $('#ChkWal').change(checkBoxHandler);
+    });
+</script>

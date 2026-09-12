@@ -1,0 +1,207 @@
+﻿@model VitaFlow.Domain.Entities.PartyOrderList
+@{
+    ViewData["Title"] = "OrderReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    function GetOrderdetail(OrderNo) {
+        $("#spnorderid").text(OrderNo);
+        $.ajax({
+            type: "POST",
+            url: "/Report/PartyOrderDetail",
+            async: true,
+            data: { OrderNo: OrderNo },
+            success: function (data) {
+                $("#details").html(data);
+                $('#modelId').modal('show');
+            },
+            failure: function (response) {
+                // alert('failure');
+                console.log(response.responseText);
+                //alert(response.responseText);
+            },
+            error: function (response) {
+                //alert('error');
+
+                console.log(response.responseText);
+                //alert(response.responseText);
+            }
+
+        });
+    }
+</script>
+
+<style>
+    .premium-report-page .card-table-two {
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(17, 38, 80, .07);
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .premium-report-page .card-header {
+        background: #fff !important;
+        border-bottom: 1px solid #eef1f8;
+        padding: 18px 24px;
+    }
+
+    .premium-report-page .card-title {
+        color: #1b2740;
+        font-weight: 700;
+        letter-spacing: .3px;
+        position: relative;
+        padding-left: 14px;
+        margin: 0;
+    }
+
+    .premium-report-page .card-title::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 3px;
+        bottom: 3px;
+        width: 4px;
+        border-radius: 4px;
+        background: linear-gradient(180deg, #2e5fe6, #00b8a9);
+    }
+
+    .premium-report-page table { margin: 0; }
+
+    .premium-report-page table thead th {
+        background: linear-gradient(90deg, #2e5fe6 0%, #00b8a9 100%);
+        color: #fff;
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: .3px;
+        text-transform: uppercase;
+        border: none !important;
+        padding: 14px 12px;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .premium-report-page table tbody td {
+        font-size: 13px;
+        color: #3a4763;
+        padding: 12px;
+        vertical-align: middle;
+        border-color: #f0f3f9 !important;
+    }
+
+    .premium-report-page table tbody tr:hover { background: #f6f9ff; }
+
+    .premium-report-page table tbody td a {
+        color: #2e5fe6;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .premium-report-page table tbody td a:hover { text-decoration: underline; }
+
+    .premium-report-page .modal-header {
+        background: linear-gradient(90deg, #2e5fe6 0%, #00b8a9 100%);
+        color: #fff;
+    }
+    .premium-report-page .modal-header .close { color: #fff; opacity: .9; }
+    .premium-report-page .modal-content { border: none; border-radius: 14px; overflow: hidden; }
+</style>
+
+<div class="premium-report-page">
+
+    <!-- Breadcrumb Start -->
+    <div class="breadcrumb-header justify-content-between">
+        <div class="left-content">
+            <div>
+                <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">Hi, @Convert.ToString(Context.Session.GetString("UserName"))!</h2>
+                <p class="mg-b-0"> @Convert.ToString(Context.Session.GetString("PartyName"))</p>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <div class="row row-sm">
+        <div class="col-lg-12 col-xl-12 col-md-12 col-sm-12">
+            <div class="card-table-two bg-white">
+                <div class="card-header bg-white mb-3">
+                    <h4 class="card-title mb-1">Order List</h4>
+                </div>
+                <div class="table-responsive country-table bg-white">
+                    <table class="table text-center table-striped table-bordered mb-0 text-sm-nowrap text-lg-nowrap text-xl-nowrap">
+                        <thead>
+                            <tr>
+
+                                <th class="wd-lg-25p">Order No.</th>
+                                <th class="wd-lg-25p">Order Method</th>
+                                <th class="wd-lg-25p">Party Code</th>
+                                <th class="wd-lg-25p">Party Name</th>
+                                <th class="wd-lg-25p">Order Date</th>
+                                <th class="wd-lg-25p">Order Amt.</th>
+                                @* <th class="wd-lg-25p">Ch/DD No.</th>
+                            <th class="wd-lg-25p">Ch/DD Date</th>
+                            <th class="wd-lg-25p">Ch/DD Amt.</th>
+                            <th class="wd-lg-25p">Bank Name</th> *@
+                                <th class="wd-lg-25p">Wallet Amt.</th>
+                                <th class="wd-lg-25p">Total Order Qty</th>
+                                <th class="wd-lg-25p">Total Dispatch Qty</th>
+                                <th class="wd-lg-25p">Total Rem Qty</th>
+                                <th class="wd-lg-25p">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.GetPartyOrderlist)
+                            {
+                                <tr>
+                                    <td>
+                                        <a href="javascript:void(0);" onclick='GetOrderdetail("@item.OrderNo")'>@item.OrderNo</a>
+                                    </td>
+                                    <td>@item.OrderMethod</td>
+                                    <td>@item.PartyCode</td>
+                                    <td>@item.PartyName</td>
+                                    <td>@item.OrderDate</td>
+                                    <td>@item.OrderAmt</td>
+                                    @* <td>@item.ChNo</td>
+                                <td>@item.ChDate</td>
+                                <td>@item.ChAmt</td>
+                                <td>@item.BankName</td> *@
+                                    <td>
+                                        @item.WalletAmt
+                                    </td>
+                                    <td>@item.TotalOrdQty</td>
+                                    <td>@item.TotalDispQty</td>
+                                    <td>@item.TotalRemQty</td>
+                                    <td>
+                                        @item.DispStatus
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade bd-example-modal-xl" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><span id="spnorderid">1200</span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive country-table bg-white" id="details">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
