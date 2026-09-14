@@ -1,0 +1,274 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="MasteMain.master" AutoEventWireup="false"
+    CodeFile="specialbenfitverified.aspx.vb" Inherits="specialbenfitverified" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <style type="text/css">
+        .PagerStyle
+        {
+            background-image: url(../Images/td.jpg);
+            background-position: center;
+            background-repeat: repeat-x;
+            background-color: #ffffff;
+            font-weight: bold;
+            text-align: center;
+            width: 00px;
+        }
+        .PagerStyle table
+        {
+            text-align: center;
+            margin: auto;
+        }
+        .PagerStyle table td
+        {
+            border: 0px;
+            padding: 5px;
+        }
+        .PagerStyle td
+        {
+            border-top: #1d1d1d 3px solid;
+        }
+        .PagerStyle a
+        {
+            color: #000000;
+            text-decoration: none;
+            padding: 2px 10px 2px 10px;
+            border-top: solid 1px #777777;
+            border-right: solid 1px #333333;
+            border-bottom: solid 1px #333333;
+            border-left: solid 1px #777777;
+        }
+        .PagerStyle span
+        {
+            font-weight: bold;
+            color: #000000;
+            text-decoration: none;
+            padding: 2px 10px 2px 10px;
+        }
+    </style>
+
+    <script type="text/javascript">
+        //$(document).ready(function() { $('[id$=chkSelectAll]').click(function() { $("[id$='chkSelect']").attr('checked', this.checked); }); });
+        //    function reset() {
+        //        $("[id$='chkSelect']").prop('checked', false);
+        //    }
+
+        function confirmation() {
+            if (confirm('Are you sure about this action ?')) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function SelectAll(id) {
+            //get reference of GridView control
+            var grid = document.getElementById("<%= GvData.ClientID %>");
+            //variable to contain the cell of the grid
+            var cell;
+
+            if (grid.rows.length > 0) {
+                //loop starts from 1. rows[0] points to the header.
+                for (i = 1; i < grid.rows.length; i++) {
+                    //get the reference of first column
+                    cell = grid.rows[i].cells[0];
+
+                    //loop according to the number of childNodes in the cell
+                    for (j = 0; j < cell.childNodes.length; j++) {
+                        //if childNode type is CheckBox                 
+                        if (cell.childNodes[j].type == "checkbox") {
+                            //assign the status of the Select All checkbox to the cell 
+                            //checkbox within the grid
+                            cell.childNodes[j].checked = document.getElementById(id).checked;
+                        }
+                    }
+                }
+            }
+        }
+
+    </script>
+
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <div class="right_col" role="main">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>
+                            KYC Verify</h2>
+                        <div class="clearfix">
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div align="center">
+                            <span id="lblt" class="text-danger"></span>
+                        </div>
+                        <div class="table-responsive makeitresponsivegrid">
+                            <div align="center">
+                                <div class="col-md-12">
+                                    <div class="col-md-3">
+                                        <asp:CheckBox ID="ChkMem" runat="server" Text="Member ID Wise :" Font-Bold="true" /></div>
+                                    <div class="col-md-3">
+                                        <asp:TextBox ID="txtMemId" runat="server" class="form-control"></asp:TextBox>
+                                    </div>
+                                  
+                                </div>
+                                <div class="col-md-12">
+                                    <br />
+                                    <div class="col-md-3">
+                                        Verify Status:</div>
+                                    <div class="col-md-3">
+                                        <asp:DropDownList ID="DDlVerify" runat="server" class="form-control">
+                                            <asp:ListItem Text="VERIFY DUE" Value="N" Selected="True"></asp:ListItem>
+                                            
+                                            <asp:ListItem Text="APPROVED" Value="Y"></asp:ListItem>
+                                            <asp:ListItem Text="REJECTED" Value="R"></asp:ListItem>
+                                             <asp:ListItem Text="All" Value="S" ></asp:ListItem>
+                                           
+                                        </asp:DropDownList>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <asp:Button runat="server" ID="BtnSearch" class="btn btn-primary" Text="Search" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <asp:Button runat="server" ID="BtnExport" class="btn btn-primary" Text="Export To Excel"
+                                            Enabled="false" /></div>
+                                    <div class="col-md-1">
+                                        <asp:Button ID="BtnVerifiy" runat="server" Text="Verification" class="btn btn-primary"
+                                            Enabled="false" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <asp:Button ID="BTnUnVerification" runat="server" Text="Reject" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                                <div id="DivRemark" runat="server" visible="false">
+                                    <table id="TblRemark" runat="server" align="center" style="background-color: #cceeff;
+                                        color: #000000; border-color: Black; border-width: 1px; margin-top: -10px;">
+                                        <tr>
+                                            <td align="left">
+                                                <br />
+                                                <strong>Reason</strong>*
+                                            </td>
+                                            <td align="left">
+                                                <br />
+                                                <asp:DropDownList ID="DDlREason" runat="server">
+                                                </asp:DropDownList>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left">
+                                                <br />
+                                                <strong>Remark</strong>*
+                                            </td>
+                                            <td align="left">
+                                                <br />
+                                                <asp:TextBox ID="TxtARemark" runat="server" TextMode="MultiLine"></asp:TextBox>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                            </td>
+                                            <td>
+                                                <br />
+                                                <asp:Button ID="BtnUnVerify" runat="server" class="btn btn-primary" Text="Reject"
+                                                    OnClientClick="return confirmation();" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-12" style="overflow: scroll">
+                                    <asp:GridView ID="GvData" runat="server" AutoGenerateColumns="False" RowStyle-Height="25px"
+                                        GridLines="None" AllowPaging="true" class="table table-bordered" HeaderStyle-CssClass="bg-primary"
+                                        PagerStyle-CssClass="pgr" AlternatingRowStyle-CssClass="alt" ShowHeader="true"
+                                        PageSize="20" EmptyDataText="No data to display.">
+                                        <Columns>
+                                            <asp:TemplateField HeaderText="CheckAll">
+                                                <HeaderTemplate>
+                                                    <asp:CheckBox ID="chkSelectAll" runat="server" />
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <asp:CheckBox ID="chkSelect" runat="server" />
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="IDNo" Visible="false">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="LblGrpID" runat="server" Text='<%# Eval("FormNo") %>'></asp:Label>
+                                                    <asp:Label ID="LblIdno" runat="server" Text='<%# Eval("IdNo") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="S.No">
+                                                <ItemTemplate>
+                                                    <%# Container.DataItemIndex +1 %>.</ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:BoundField DataField="IDNo" HeaderText="ID No." />
+                                            <asp:BoundField DataField="MemName" HeaderText="Member Name" />
+                                             <asp:BoundField DataField="MemmName" HeaderText="Mother Name" />
+                                              <asp:BoundField DataField="MemFName" HeaderText="Father Name" />
+                                              <asp:BoundField DataField="MemDName" HeaderText="Daughter Name" />
+                                                <asp:BoundField DataField="MemDob" HeaderText="Date Of Dob" /> 
+                                            <asp:BoundField DataField="Doj" HeaderText="Date Of Joining" />
+                                            <asp:BoundField DataField="ActivationDate" HeaderText=" Date Of Activation" />
+                                            <asp:BoundField DataField="IdType" HeaderText="IdType" />
+                                            <asp:BoundField DataField="IdProofNo" HeaderText="Address Proof No" />
+                                            <asp:BoundField DataField="City" HeaderText="City" />
+                                          
+                                            <asp:BoundField DataField="Address1" HeaderText="Address" />
+                                           
+                                        
+                                               
+                                            <asp:TemplateField HeaderText="Front Address Proof" ItemStyle-HorizontalAlign="Center">
+                                                <ItemTemplate>
+                                                    <a href='<%# "Img.aspx?ID=" & Eval("FormNo") & "&Type=FrontAddressSpecial" %>'  onclick="return hs.htmlExpand(this, { objectType: 'iframe',width:500,height:500,marginTop : 50 } )">
+                                                        <asp:Image ID="Image3" Width="50px" Height="50px" runat="server" ImageUrl='<%#  Eval("AddressproofStatus")  %>' />
+                                                    </a>
+                                                    <br />
+                                                 <%--   Upload Date<br />
+                                                    <asp:Label ID="Lbldate" runat="server" Text='<%#Eval("AddressProofDate") %>'></asp:Label>
+                                               --%> </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Back Address Proof" ItemStyle-HorizontalAlign="Center">
+                                                <ItemTemplate>
+                                                    <a href='<%# "Img.aspx?ID=" & Eval("FormNo") & "&Type=BackAddressSpecial" %>' onclick="return hs.htmlExpand(this, { objectType: 'iframe',width:500,height:500,marginTop : 50 } )">
+                                                        <asp:Image ID="Image4" Width="50px" Height="50px" runat="server" ImageUrl='<%#  Eval("BackAdressProof")  %>' />
+                                                    </a>
+                                                    <br />
+                                                <%--    Upload Date:<br />
+                                                    <asp:Label ID="LblBackDate" runat="server" Text='<%#Eval("BackAddressDate") %>'></asp:Label>
+                                                --%></ItemTemplate>
+                                            </asp:TemplateField>
+                                          
+                                       
+                                                
+                                            <asp:TemplateField HeaderText="Uploaded Address Proof Date" ItemStyle-HorizontalAlign="Center">
+                                                <ItemTemplate>
+                                                    <strong>Verify Detail:</strong>
+                                                    <asp:Label ID="LblIdVerify" runat="server" Text='<%#Eval("AddrssVerf") %>'></asp:Label>
+                                                    <br />
+                                                    <strong>Verify Date</strong>
+                                                    <asp:Label ID="LblVerifyDate" runat="server" Text='<%# Eval("AddressVerifyDate") %>'></asp:Label>
+                                                    <strong>Processed By:</strong>
+                                                    <asp:Label ID="LblProcessby" runat="server" Text='<%# Eval("VerifyBy") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Reject">
+                                                <ItemTemplate>
+                                                    <strong>Reject Remark:</strong>
+                                                    <asp:Label ID="LblRejectRemark" runat="server" Text='<%#Eval("RejectRemark") %>'></asp:Label>
+                                                    <br />
+                                                    <strong>Reject Reason:</strong>
+                                                    <asp:Label ID="LblRejectReason" runat="server" Text='<%#Eval("RejectReason") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                        <PagerStyle CssClass="PagerStyle " />
+                                        <PagerSettings Mode="NumericFirstLast" />
+                                    </asp:GridView>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</asp:Content>

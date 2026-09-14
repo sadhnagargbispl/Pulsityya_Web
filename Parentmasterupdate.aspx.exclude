@@ -1,0 +1,156 @@
+<%@ Page Language="VB" MasterPageFile="~/MasteMain.master" AutoEventWireup="false"
+    CodeFile="Parentmasterupdate.aspx.vb" Inherits="Parentmasterupdate" Title="" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajax" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <style>
+        .upd-wrap { padding: 2rem 0; max-width: 560px; }
+        .upd-page-title { font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin: 0 0 1.5rem; }
+        .upd-card { background: #fff; border: 0.5px solid #e0e0e0; border-radius: 12px; padding: 1.5rem 1.75rem; }
+        .upd-field { margin-bottom: 1.25rem; }
+        .upd-label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: #555; margin-bottom: 6px; }
+        .upd-req { color: #E24B4A; font-size: 15px; line-height: 1; }
+        .upd-input { width: 100%; box-sizing: border-box; height: 38px; padding: 0 12px; border: 0.5px solid #ccc; border-radius: 8px; background: #f7f7f7; color: #1a1a1a; font-size: 14px; transition: border-color 0.15s, background 0.15s; outline: none; }
+        .upd-input:focus { border-color: #185FA5; background: #fff; box-shadow: 0 0 0 3px rgba(55,138,221,0.12); }
+        .upd-input:disabled { opacity: 0.55; cursor: not-allowed; background: #f0f0f0; }
+        .upd-hint { font-size: 12px; color: #aaa; margin-top: 4px; }
+        .upd-divider { border: none; border-top: 0.5px solid #e0e0e0; margin: 1.25rem 0; }
+        .upd-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .upd-btn { height: 36px; padding: 0 20px; border-radius: 8px; border: 0.5px solid #ccc; background: #fff; color: #1a1a1a; font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background 0.12s, transform 0.08s; text-decoration: none; }
+        .upd-btn:hover { background: #f5f5f5; }
+        .upd-btn:active { transform: scale(0.98); }
+        .upd-btn-primary { background: #185FA5; color: #fff !important; border-color: #185FA5; }
+        .upd-btn-primary:hover { background: #0C447C; border-color: #0C447C; }
+        .upd-status { display: none; font-size: 13px; align-items: center; gap: 6px; margin-top: 4px; }
+        .upd-status-ok { color: #1D9E75; }
+        .upd-status-err { color: #E24B4A; }
+        #nameFieldDiv { display: none; }
+        #nameFieldDiv.visible { display: block; }
+
+        /* Override master page panel styles if needed */
+        .upd-wrap .x_panel { border: none; box-shadow: none; padding: 0; }
+    </style>
+
+    <script type="text/javascript">
+        function onParentIdBlur() {
+            var idBox = document.getElementById('<%= TxtSerialno.ClientID %>');
+            var nameDiv = document.getElementById('nameFieldDiv');
+            var val = idBox.value.trim();
+            if (val.length > 0) {
+                nameDiv.classList.add('visible');
+            } else {
+                nameDiv.classList.remove('visible');
+            }
+        }
+
+        function confirmation() {
+            var id = document.getElementById('<%= TxtSerialno.ClientID %>').value.trim();
+            var name = document.getElementById('<%= TxtSpName.ClientID %>').value.trim();
+            if (id === '') {
+                showStatus('err', 'Parent ID is required.');
+                return false;
+            }
+            if (name === '') {
+                showStatus('err', 'Parent Name is required.');
+                return false;
+            }
+            if (confirm('Are you sure you want to update this Parent ID?')) {
+                return true;
+            }
+            return false;
+        }
+
+        function showStatus(type, msg) {
+            var el = document.getElementById('clientStatus');
+            if (!el) return;
+            el.style.display = 'flex';
+            el.className = 'upd-status upd-status-' + type;
+            el.innerText = msg;
+        }
+
+        function handleReset() {
+            document.getElementById('<%= TxtSerialno.ClientID %>').value = '';
+            document.getElementById('<%= TxtSpName.ClientID %>').value = '';
+            document.getElementById('nameFieldDiv').classList.remove('visible');
+            var el = document.getElementById('clientStatus');
+            if (el) { el.style.display = 'none'; el.innerText = ''; }
+        }
+    </script>
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <div class="right_col" role="main">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+
+                <div class="upd-wrap">
+                    <p class="upd-page-title">Update Parent ID</p>
+
+                    <div class="upd-card">
+
+                        <%-- Parent ID Field --%>
+                        <div class="upd-field">
+                            <label class="upd-label" for="<%= TxtSerialno.ClientID %>">
+                                Parent ID <span class="upd-req">*</span>
+                            </label>
+                            <asp:TextBox ID="TxtSerialno" runat="server"
+                                CssClass="upd-input"
+                                AutoPostBack="true"
+                                onblur="onParentIdBlur()"
+                                placeholder="Enter parent ID"
+                                autocomplete="off" />
+                            <asp:Label ID="lblFormno" runat="server" Visible="false" />
+                            <asp:Label ID="LblMobl"   runat="server" Visible="false" />
+                            <p class="upd-hint">Enter a valid parent member ID — the name will auto-fill.</p>
+                        </div>
+
+                        <%-- Parent Name Field (shown after ID is entered) --%>
+                        <div class="upd-field" id="nameFieldDiv" runat="server">
+                            <label class="upd-label" for="<%= TxtSpName.ClientID %>">
+                                Parent Name <span class="upd-req">*</span>
+                            </label>
+                            <asp:TextBox ID="TxtSpName" runat="server"
+                                CssClass="upd-input"
+                                Enabled="false"
+                                placeholder="Auto-filled from ID" />
+                            <asp:HiddenField ID="HdnCheckTrnns" runat="server" />
+                        </div>
+
+                        <hr class="upd-divider" />
+
+                        <%-- Actions --%>
+                        <div class="upd-actions">
+                            <asp:Button ID="cmdSave1" runat="server"
+                                Text="Update"
+                                CssClass="upd-btn upd-btn-primary"
+                                ValidationGroup="Validation"
+                                OnClientClick="return confirmation();" />
+
+                            <button type="button" class="upd-btn" onclick="handleReset()">Reset</button>
+
+                            <%-- Server-side error label --%>
+                            <asp:Label ID="LblError" runat="server" Visible="false"
+                                CssClass="upd-status upd-status-err"
+                                style="display:inline-flex;" />
+                        </div>
+
+                        <%-- Client-side status message --%>
+                        <div id="clientStatus" class="upd-status" style="margin-top:12px;"></div>
+
+                    </div><%-- /upd-card --%>
+                </div><%-- /upd-wrap --%>
+
+            </div>
+        </div>
+    </div>
+
+    <%-- Keep nameFieldDiv visible on postback if TxtSerialno has a value --%>
+    <script type="text/javascript">
+        (function () {
+            var idVal = document.getElementById('<%= TxtSerialno.ClientID %>').value.trim();
+            if (idVal.length > 0) {
+                document.getElementById('nameFieldDiv').classList.add('visible');
+            }
+        })();
+    </script>
+</asp:Content>

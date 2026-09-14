@@ -1,0 +1,168 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports System.IO
+Imports System.Net
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
+Imports System.Xml
+
+Partial Class freeproduct
+    Inherits System.Web.UI.Page
+    Dim dtData As New DataTable
+    Dim objDAL As DAL
+    Dim objGen As clsGeneral = New clsGeneral
+
+    Protected Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
+        If Session("AStatus") = "OK" Then
+            Session("PageName") = "Master / Online Transaction Detail"
+        Else
+            Response.Redirect("Default.aspx")
+        End If
+    End Sub
+
+    Protected Sub btnShowRecord_Click(ByVal sender As Object, _
+    ByVal e As System.EventArgs) Handles btnShowRecord.Click
+        BindData()
+        btnShowRecord.Visible = False
+        lblView.Visible = False
+    End Sub
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        Try
+            objDAL = New DAL()
+            If Not Page.IsPostBack Then
+                btnShowRecord.Visible = False
+                lblView.Visible = False
+                If Session("AStatus") = "OK" Then
+                    BindData()
+                End If
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Public Sub BindData()
+        Try
+            Dim TransactionID As String = "0"
+            Dim startDate As String
+            Dim endDate As String
+            Dim currentDate As DateTime = DateTime.Now
+            Dim formattedDate As String = currentDate.ToString("dd-MMM-yyyy")
+            If TxtMemID.Text <> "" Then
+                TransactionID = TxtMemID.Text.Trim
+            Else
+                TransactionID = ""
+            End If
+            If txtStartDate.Text = "" Then
+                startDate = "12-oct-2017"
+            Else
+                startDate = txtStartDate.Text
+            End If
+            If txtEndDate.Text = "" Then
+                endDate = formattedDate
+            Else
+                endDate = txtEndDate.Text
+            End If
+            Dim sql As String = "exec sp_GetFreeProductClaimReport '" & TransactionID & "','" & startDate & "','" & endDate & "'"
+            dtData = New DataTable
+            dtData = objDAL.GetData(sql)
+            GvData.DataSource = dtData
+            GvData.DataBind()
+            Session("GData") = dtData
+            ViewState("WithDrawDate") = "BankCode"
+            ViewState("Sort_Order") = "ASC"
+            If dtData.Rows.Count > 0 Then
+                btnExport.Enabled = True
+            Else
+                btnExport.Enabled = False
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+    Protected Sub BtnSearch_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles BtnSearch.Click
+        BindData()
+    End Sub
+    Protected Sub GvData_PageIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewPageEventArgs) Handles GvData.PageIndexChanging
+        GvData.PageIndex = e.NewPageIndex
+        GvData.DataSource = Session("GData")
+        GvData.DataBind()
+    End Sub
+    Protected Sub Gvdata_Sorting(ByVal sender As Object, ByVal e As GridViewSortEventArgs)
+        If e.SortExpression = ViewState("WithDrawDate").ToString() Then
+            If ViewState("Sort_Order").ToString() = "ASC" Then
+                RebindData(e.SortExpression, "DESC")
+                For i As Integer = 0 To GvData.Columns.Count - 1
+                    Dim lbText As String = "DESC"
+                    If lbText = ViewState("Sort_Order").ToString() Then
+                        Dim tableCell As TableCell = GvData.HeaderRow.Cells(i)
+                        Dim img As New Image()
+                        tableCell.Controls.Add(New LiteralControl("&nbsp;"))
+                        tableCell.Controls.Add(img)
+                    End If
+                Next
+            Else
+                RebindData(e.SortExpression, "ASC")
+                For i As Integer = 0 To GvData.Columns.Count - 1
+                    Dim lbText As String = "ASC"
+                    If lbText = e.SortExpression Then
+                        Dim tableCell As TableCell = GvData.HeaderRow.Cells(i)
+                        Dim img As New Image()
+                        tableCell.Controls.Add(New LiteralControl("&nbsp;"))
+                        tableCell.Controls.Add(img)
+                    End If
+                Next
+            End If
+        Else
+            RebindData(e.SortExpression, "ASC")
+        End If
+    End Sub
+    Private Sub RebindData(ByVal sColimnName As String, ByVal sSortOrder As String)
+        Dim dt As DataTable = CType(Session("GData"), DataTable)
+        dt.DefaultView.Sort = sColimnName + " " + sSortOrder
+        GvData.DataSource = dt
+        GvData.DataBind()
+        ViewState("WithDrawDate") = sColimnName
+        ViewState("Sort_Order") = sSortOrder
+    End Sub
+    Protected Sub btnExport_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnExport.Click
+        Response.ClearContent()
+        Response.Buffer = True
+        Response.AddHeader("content-disposition", String.Format("attachment; filename={0}", "FreeProductReport.xls"))
+        Response.ContentType = "application/ms-excel"
+        Dim sw As New StringWriter()
+        Dim htw As New HtmlTextWriter(sw)
+        GvData.AllowPaging = False
+        GvData.GridLines = GridLines.Both
+        dtData = New DataTable
+        dtData = Session("GData")
+        GvData.DataSource = dtData
+        GvData.DataBind()
+        GvData.HeaderRow.Style.Add("background-color", "#FFFFFF")
+        For i As Integer = 0 To GvData.HeaderRow.Cells.Count - 1
+            GvData.HeaderRow.Cells(i).Style.Add("background-color", "#D8A38D")
+        Next
+        GvData.HeaderRow.Cells(GvData.HeaderRow.Cells.Count - 1).Visible = False
+        For i As Integer = 0 To GvData.Rows.Count - 1
+            GvData.Rows(i).Cells(GvData.HeaderRow.Cells.Count - 1).Visible = False
+        Next
+        For i As Integer = 0 To GvData.Rows.Count - 1
+            For j As Integer = 0 To GvData.Rows(i).Cells.Count - 1
+                GvData.Rows(i).Cells(j).Style.Add("background-color", "#FFFFFF")
+                GvData.Rows(i).Cells(j).Style.Add("color", "#000000")
+            Next
+        Next
+        GvData.RenderControl(htw)
+        Response.Write(sw.ToString())
+        Response.[End]()
+    End Sub
+    Public Overrides Sub VerifyRenderingInServerForm(ByVal control As Control)
+    End Sub
+    Public Function convertJsonStringToDataSet(ByVal jsonString As String) As DataSet
+        Dim xd As XmlDocument = New XmlDocument()
+        jsonString = "{ ""rootNode"": {" & jsonString.Trim().TrimStart("{"c).TrimEnd("}"c) & "} }"
+        xd = CType(JsonConvert.DeserializeXmlNode(jsonString), XmlDocument)
+        Dim ds As DataSet = New DataSet()
+        ds.ReadXml(New XmlNodeReader(xd))
+        Return ds
+    End Function
+End Class

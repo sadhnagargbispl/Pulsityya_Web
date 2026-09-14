@@ -1,14 +1,13 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="NewTree.aspx.cs" Inherits="NewTree" %>
+<%@ Page Language="VB" AutoEventWireup="false" CodeFile="NewTree.aspx.vb" Inherits="NewTree" %>
 
-<!DOCTYPE html>
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/tr/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
+<head>
     <title>NewTree</title>
     <link href="css/tree.css" type="text/css" rel="stylesheet" />
-
     <style type="text/css">
-        #dhtmltooltip {
+        #dhtmltooltip
+        {
             border-right: black 1px solid;
             padding-right: 2px;
             border-top: black 1px solid;
@@ -24,54 +23,60 @@
             position: absolute;
             background-color: Yellow;
         }
-
-        #dhtmlpointer {
+        #dhtmlpointer
+        {
             z-index: 101;
             left: -300px;
             visibility: hidden;
             position: absolute;
         }
     </style>
+    <%--	<link href="dtree/dtree.css" type="text/css" rel="stylesheet" />--%>
+    <link href="css/dtree.css" rel="stylesheet" type="text/css" />
 
-    <link href="dtree/dtree.css" type="text/css" rel="stylesheet" />
-    <script src="dtree/dtree.js" type="text/javascript"></script>
+  
 
-    <% 
-        string comp = Session["CompID"]?.ToString() ?? "";
- if (comp == "1101")
-        { %>
-    <script src="dtree/vertdtreeRuncha.js" type="text/javascript"></script>
-    <% }
-        else if (comp == "1105")
-        { %>
-    <script src="dtree/vertdtreenew.js" type="text/javascript"></script>
+    <%--<script src="dtree/dtree.js" type="text/javascript"></script>--%>
+<% If Session("CompID") = 1061 Then%>
 
-    <% }
-        else if (comp == "1107")
-        { %>
-    <script src="dtree/vertdtreeEV.js" type="text/javascript"></script>
+    <script src="js/vertdtreeNIGT.js" type="text/javascript"></script>
+    <%ElseIf Session("CompID") = 1074 Then%>
+<script src="js/dtree.js" type="text/javascript"></script>
+      <script src="js/vertdtreecashless.js" type="text/javascript"></script>
+<%ElseIf Session("CompID") = 1075 Then%>
+<script src="js/dtree.js" type="text/javascript"></script>
+      <script src="js/vertdtreeprohealth.js" type="text/javascript"></script>
+      <%ElseIf Session("CompID") = 1070 Then%>
+ <script src="js/dtree.js" type="text/javascript"></script>
+      <script src="js/vertdtreeDadarwal.js" type="text/javascript"></script>
+      
+       <%ElseIf Session("CompID") = 1081 Then%>
+ <script src="js/dtree.js" type="text/javascript"></script>
+      <script src="js/vertdtreetrueway.js" type="text/javascript"></script>
+      
+      <%ElseIf Session("CompID") = 1090 Then%>
+      <script src="js/dtree.js" type="text/javascript"></script>
+      <script src="js/vertdtreegenesis.js" type="text/javascript"></script>
+       <%ElseIf Session("CompID") = 1107 Then%>
+      <script src="js/dtree.js" type="text/javascript"></script>
+      <script src="js/vertdtreegenesis.js" type="text/javascript"></script>
+        <%ElseIf Session("CompID") = 1108 Then%>
+       <script src="js/dtree.js" type="text/javascript"></script>
+      <script src="js/vertdtreedv9.js" type="text/javascript"></script>
+    <% Else%>
+    
+  <script src="js/dtree.js" type="text/javascript"></script>
+      <script src="js/vertdtree.js" type="text/javascript"></script>
 
-    <% }
-        else if (comp == "1108" || comp == "1110")
-        { %>
-    <script src="dtree/vertdtreeDV.js?ver=1.1" type="text/javascript"></script>
+    <% End If%>
 
-    <% }
-        else if (comp == "1109")
-        { %>
-    <script src="dtree/vertdtreeBV.js?v=1.5" type="text/javascript"></script>
 
-    <% }
-        else
-        { %>
-    <script src="dtree/vertdtree.js" type="text/javascript"></script>
-
-    <% } %>
-
+    <%--		<script src="dtree/vertdtree.js" type="text/javascript"></script>--%>
     <meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR" />
     <meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE" />
     <meta content="JavaScript" name="vs_defaultClientScript" />
     <meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema" />
+
     <script type="text/javascript">
 
         var offsetfromcursorX = 22 //Customize x offset of tooltip
@@ -80,7 +85,7 @@
         var offsetdivfrompointerX = 22 //Customize x offset of tooltip div relative to pointer image
         var offsetdivfrompointerY = 24 //Customize y offset of tooltip div relative to pointer image. Tip: Set it to (height_of_pointer_image-1).
 
-        document.write('<div id="dhtmltooltip" ></div>') //write out tooltip div
+        document.write('<div id="dhtmltooltip"></div>') //write out tooltip div
         document.write('<img id="dhtmlpointer" >') //write out pointer image
 
         var ie = document.all
@@ -169,123 +174,80 @@
 
 
     </script>
+
 </head>
 <body>
     <form id="form1" runat="server">
-        <center>
-            <style>
-                /* Common button style */
-                .btn {
-                    height: 40px;
-                    min-width: 120px;
-                    padding: 0 16px;
-                    line-height: 40px;
-                    font-size: 14px;
-                    color: #fff;
-                    border-radius: 4px;
-                    border: none;
-                }
+    <center>
+        <div>
+            <div style="vertical-align: top; position: absolute; top: 8px; left: 0px;">
+          <asp:Button ID="cmdBack" runat="server" Text="Home" class="btn btn-warning btn-flat" PostBackUrl="~/Home.aspx" />
 
-                .btn-home {
-                    background-color: #198754; /* Green */
-                }
-                /* Hover effect */
-                .btn:hover {
-                    opacity: 0.9;
-                }
-
-                .btn-left {
-                    background-color: #dc3545; /* Red */
-                }
-
-                .btn-right {
-                    background-color: #dc3545; /* Purple */
-                }
-
-                .form-control {
-                    /* proper height */
-                    font-size: 14px;
-                    padding: 6px 12px;
-                    border-radius: 4px;
-                }
-            </style>
-            <div>
-                <div style="vertical-align: top; position: absolute; top: 8px; left: 0px;">
-                    <table cellpadding="0" cellspacing="1" border="0" width="350px" style="vertical-align: top;">
-                        <tr style="font-weight: bold; font-size: 10px; font-family: Verdana;">
-                            <td style="width: 100px">Downline ID
-                            </td>
-                            <td style="width: 84px">
-                                <input class="form-control" id="DownLineFormNo" type="text" name="DownLineFormNo"
-                                    runat="server" />
-                            </td>
-                            <td>
-                                <asp:Button ID="Button1" runat="server" Text="Search" Class="btn btn-home" OnClick="Button1_Click" />
-                            </td>
-                            <td style="padding: 1%">
-                                <asp:Button ID="cmdBack" runat="server" Text="Home" Class="btn btn-home" OnClick="cmdBack_Click" />
-                            </td>
-                            <td style="padding: 1%">
-                                <asp:Button ID="BtnStepAbove" runat="server" Text="1 Step Above" Class="btn btn-home" OnClick="BtnStepAbove_Click" />
-                            </td>
-                            <td style="padding: 1%">
-                                <asp:Button ID="btnhomeTree" runat="server" Text="Back" Class="btn btn-home" Visible="false" OnClick="btnhomeTree_Click" />
-                            </td>
-                            <td style="padding: 1%">
-                                <asp:Button ID="BtnExtremeLeft" runat="server" Text="Extreme Left" CssClass="btn btn-left" OnClick="BtnExtremeLeft_Click" />
-                            </td>
-                            <td style="padding: 1%">
-                                <asp:Button ID="BtnExtremeRight" runat="server" Text="Extreme Right" CssClass="btn btn-right" OnClick="BtnExtremeRight_Click" />
-                            </td>
-                            <td style="padding: 1%">
-                                <asp:Button ID="Button2" runat="server" Text="Extreme Right" CssClass="btn btn-right" OnClick="Button2_Click" />
-                            </td>
-                        </tr>
-                    </table>
-                    <table id="Table1" cellpadding="0" cellspacing="1" border="0" width="300px" style="vertical-align: top; padding-left: 10px"
-                        runat="server">
-                        <tr id="Tr1" runat="server" style="font-weight: bold; font-size: 10px; font-family: Verdana;">
-                            <td id="td11" runat="server" style="width: 15%; height: 50Px">
-                                <asp:Image ID="img11" runat="server" Height="55px" Width="55px" Visible="false" />
-                            </td>
-                            <td id="td12" runat="server" style="width: 15%; height: 50Px">
-                                <asp:Image ID="img12" runat="server" Height="55px" Width="55px" Visible="false" />
-                            </td>
-                            <td id="td13" runat="server" style="width: 15%; height: 50Px">
-                                <asp:Image ID="img13" runat="server" Height="55px" Width="55px" Visible="false" />
-                            </td>
-                            <td id="td14" runat="server" style="width: 15%; height: 50Px">
-                                <asp:Image ID="img14" runat="server" Height="55px" Width="55px" Visible="false" />
-                            </td>
-                            <td id="td15" runat="server" style="width: 15%; height: 50Px">
-                                <asp:Image ID="img15" runat="server" Height="55px" Width="55px" Visible="false" />
-                            </td>
-                            <td id="td16" runat="server" style="width: 15%; height: 50Px">
-                                <asp:Image ID="img16" runat="server" Height="55px" Width="55px" Visible="false" />
-                            </td>
-                            <td id="td17" runat="server" style="width: 15%; height: 50Px">
-                                <asp:Image ID="img17" runat="server" Height="55px" Width="55px" Visible="false" />
-                            </td>
-                            <td id="td18" runat="server" style="width: 15%; height: 50Px">
-                                <asp:Image ID="img18" runat="server" Height="55px" Width="55px" Visible="false" />
-                            </td>
-                        </tr>
-                        <tr style="font-weight: bold; font-size: 10px; font-family: Verdana;">
-                            <td id="td21" style="width: 15%" align="center" runat="server"></td>
-                            <td id="td22" style="width: 15%" align="center" runat="server"></td>
-                            <td id="td23" style="width: 15%" align="center" runat="server"></td>
-                            <td id="td24" style="width: 15%" align="center" runat="server"></td>
-                            <td id="td25" style="width: 15%" align="center" runat="server"></td>
-                            <td id="td26" style="width: 15%" align="center" runat="server"></td>
-                            <td id="td27" style="width: 15%" align="center" runat="server"></td>
-                            <td id="td28" style="width: 15%" align="center" runat="server"></td>
-                        </tr>
-                    </table>
-                </div>
-                <center>
-                </center>
+                <%--<table cellpadding="0" cellspacing="1" border="0" width="350px" style="vertical-align:top">
+			        <tr style="font-weight: bold; font-size: 10px; font-family: Verdana;">
+				        <td style="WIDTH: 100px"> Downline ID</td>
+				        <td style="WIDTH: 84px">
+					        <input id="DownLineFormNo" style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" maxlength="12" name="DownLineFormNo" runat="server" size="9" />
+				        </td>
+				        <td>
+					        <asp:ImageButton id="cmdSave1" runat="server" ToolTip="Submit" ImageUrl="~/Images/submit.jpg"></asp:ImageButton>
+				        </td>
+				        <td>
+					        <asp:ImageButton id="cmdBack" runat="server" ToolTip="Back" ImageUrl="images/back.jpg"></asp:ImageButton>
+				        </td>
+			        </tr>
+		        </table>--%>
+                <table id="Table1" cellpadding="0" cellspacing="1" border="0" width="980px" style="vertical-align: top;
+                    padding-left: 10px" runat="server">
+                    <tr>
+                        <td colspan="8" align="center">
+                            <asp:Label ID="lblError" Visible="false" runat="server" Font-Size="13px" Text=""
+                                ForeColor="Red" Font-Bold="True"></asp:Label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="8">
+                        </td>
+                    </tr>
+                    <%-- <tr id="Tr1" runat ="server" style="font-weight: bold; font-size: 10px;">
+			            <td id = "td11" runat ="server" style="WIDTH: 15%; height:50Px"><asp:Image id = "img11" runat ="server" Height="55px" Width="55px"  Visible ="false"/></td>
+				        <td id = "td12" runat ="server" style="WIDTH: 15%; height:50Px"><asp:Image id = "img12" runat ="server" Height="55px" Width="55px"  Visible ="false"/></td>
+				        <td id = "td13" runat ="server" style="WIDTH: 15%; height:50Px"><asp:Image id = "img13" runat ="server" Height="55px" Width="55px"  Visible ="false"/></td>				        
+				        <td id = "td14" runat ="server" style="WIDTH: 15%; height:50Px"><asp:Image id = "img14" runat ="server" Height="55px" Width="55px"  Visible ="false"  /></td>				        
+				        <td id = "td15" runat ="server" style="WIDTH: 15%; height:50Px"><asp:Image id = "img15" runat ="server" Height="55px" Width="55px"  Visible ="false"  /></td>				        
+				        <td id = "td16" runat ="server" style="WIDTH: 15%; height:50Px"><asp:Image id = "img16" runat ="server" Height="55px" Width="55px"  Visible ="false"  /></td>				        
+				        <td id = "td17" runat ="server" style="WIDTH: 15%; height:50Px"><asp:Image id = "img17" runat ="server" Height="55px" Width="55px"  Visible ="false"  /></td>
+				        <td id = "td18" runat ="server" style="WIDTH: 15%; height:50Px"><asp:Image id = "img18" runat ="server" Height="55px" Width="55px"  Visible ="false"  /></td>				        
+			        </tr>--%>
+                    <tr style="font-weight: bold; font-size: 10px;">
+                        <td id="td21" style="width: 15%" align="center" runat="server">
+                        </td>
+                        <td id="td22" style="width: 15%" align="center" runat="server">
+                        </td>
+                        <td id="td23" style="width: 15%" align="center" runat="server">
+                        </td>
+                        <td id="td24" style="width: 15%" align="center" runat="server">
+                        </td>
+                        <td id="td25" style="width: 15%" align="center" runat="server">
+                        </td>
+                        <td id="td26" style="width: 15%" align="center" runat="server">
+                        </td>
+                        <td id="td27" style="width: 15%" align="center" runat="server">
+                        </td>
+                        <td id="td28" style="width: 15%" align="center" runat="server">
+                        </td>
+                    </tr>
+                  <%--  <tr style="font-weight: bold; font-size: 10px; font-family: Verdana;">
+                    <td>
+                        <asp:Button ID="cmdBack" runat="server" Text="Home" class="btn btn-warning btn-flat" />
+                    </td>
+                </tr>--%>
+                </table>
             </div>
-        </center>
+            <center>
+            </center>
+        </div>
+    </center>
     </form>
 </body>
 </html>

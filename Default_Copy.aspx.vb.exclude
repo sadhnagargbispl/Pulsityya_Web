@@ -1,0 +1,493 @@
+﻿Imports System.Data.SqlClient
+Imports System.IO
+Imports System.Net
+Imports System.Globalization
+Imports System.Data
+Imports System.Xml
+
+Partial Class App_UI_Application_Pages_Default
+    Inherits System.Web.UI.Page
+    Dim strScript As String
+    Dim dtData As New DataTable
+    Dim objDAL As DAL
+    Dim objGen As clsGeneral = New clsGeneral
+
+
+    Private Sub Pages()
+        Try
+            Dim dtMenu As DataTable = New DataTable
+            Dim ds As DataSet = New DataSet
+            Dim str As String = " Select a.MenuId as MenuId, a.MenuName as MenuName,a.ParentId as ParentId, a.OnSelect as OnSelect from "
+            str &= " M_CompWiseWebMenuMasterDis a Where MenuId in (1,3) And  a.ActiveStatus = 'Y' And a.RowStatus ='Y' And a.CompanyID = '" & HttpContext.Current.Session("CompID") & "' order by Convert(decimal,RTRIM(LTRIM(a.Hierar))),a.MenuId"
+            ds = SqlHelper.ExecuteDataset(Application("sConnect"), CommandType.Text, str)
+            dtMenu = ds.Tables(0)
+            Session("IndexPage") = dtMenu.Rows(0)("OnSelect")
+            Session("JoinPage") = dtMenu.Rows(1)("OnSelect")
+
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+   
+
+
+
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        Try
+            If (Response.Cookies("LoginDetail") IsNot Nothing) Then
+
+           
+
+                If Not Page.IsPostBack Then
+                    If GetCompID() = "" Then
+                        Response.Write("Host not found.")
+                        Response.End()
+                    End If
+                End If
+
+
+                objGen.GetConnectionByComp()
+                objGen.GetInvDataBaseByComp()
+
+                Response.Cache.SetCacheability(HttpCacheability.NoCache)
+                Response.Cache.SetExpires(DateTime.Now.AddSeconds(-1))
+                Response.Cache.SetNoStore()
+                objDAL = New DAL(HttpContext.Current.Session("MlmDatabase" & Session("CompID")))
+                If Not Page.IsPostBack Then
+                    ' Fill_Dept()
+
+                    If (Session("CompID") = "1015") Then
+                        Session("HomePage") = "~/Home.aspx"
+                    Else
+                        Session("HomePage") = "~/Home.aspx"
+                    End If
+
+                    getData()
+
+                End If
+                Else
+                    Response.Redirect(Session("HomePage"))
+                End If
+
+        Catch ex As Exception
+            Response.Write(ex.Message)
+        End Try
+
+    End Sub
+
+
+    Public Function GetCompID() As String
+        Dim url As String = String.Empty
+        Dim conn As SqlConnection
+
+        Try
+            url = HttpContext.Current.Request.Url.Host.ToUpper().Replace("HTTP://", "").Replace("HTTPS://", "").Replace("WWW.", "").Replace("BASICADMIN.", "").Replace("ADMIN.", "")
+            Dim str As String = String.Empty
+            If url = "LOCALHOST" Then
+                str = " Select ID,Logo from M_CompanyMasterNew Where IsActive = 1 And ID='" & ConfigurationManager.AppSettings("CompanyID") & "'"
+            Else
+                str = " Select ID,Logo from M_CompanyMasterNew Where IsActive = 1 And (Upper(URL) = '" & url.ToUpper().Trim() & "') "
+            End If
+
+
+
+
+            Dim dRead As SqlDataReader
+            Dim cmd As SqlCommand
+            conn = New SqlConnection(Application("sConnect"))
+            conn.Open()
+
+            cmd = New SqlCommand(str, conn)
+            dRead = cmd.ExecuteReader
+            If dRead.Read Then
+                Session("CompID") = dRead("ID")
+                'Session("Logo") = "http://superadmin.bisplindia.in/images/Logo/" & dRead("Logo")
+                'imgLogo.Src = "http://superadmin.bisplindia.in/images/Logo/" & dRead("Logo")
+
+                Session("Logo") = dRead("Logo")
+                imgLogo.Src = dRead("Logo")
+
+            End If
+            dRead.Close()
+            conn.Close()
+        Catch ex As Exception
+            If Not conn Is Nothing Then
+                If conn.State = ConnectionState.Open Then
+                    conn.Close()
+                End If
+            End If
+        End Try
+        GetCompID = url
+    End Function
+
+
+
+    Private Sub getData()
+        Try
+
+            Dim dbConnect As New cls_DataAccess(HttpContext.Current.Session("MlmDatabase" & Session("CompID")))
+            dbConnect.OpenConnection()
+            Dim dRead As SqlDataReader
+            Dim cmd As SqlCommand
+
+            cmd = New SqlCommand("select * from M_CompanyMaster ", dbConnect.cnnObject)
+            dRead = cmd.ExecuteReader
+            If dRead.Read Then
+                Session("CompName") = dRead("CompName")
+                Session("CompAdd") = dRead("CompAdd")
+                Session("CompWeb") = IIf(dRead("WebSite") = "", "index.asp", dRead("WebSite"))
+                Session("Title") = dRead("CompTitle")
+                Session("CompMail") = dRead("CompMail")
+                Session("CompMobile") = dRead("MobileNo")
+                Session("ClientId") = dRead("smsSenderId")
+                Session("SmsId") = dRead("smsUserNm")
+                Session("SmsPass") = dRead("smPass")
+                Session("MailPass") = dRead("mailPass")
+                Session("MailHost") = dRead("mailHost")
+                Session("AdminWeb") = dRead("AdminWeb")
+                Session("CompCST") = dRead("CompCSTNo")
+                Session("CompDate") = Format(dRead("RecTimeStamp"), "dd-MMM-yyyy")
+                Session("WRPartyCode") = "BS123456"
+                Session("CompWeb1") = "www.bigshopee.in"
+                Session("SmsAPI") = "http://alotsolutions.in/API/WebSMS/Http/v1.0a/index.php?"
+            Else
+                Session("CompName") = ""
+                Session("CompAdd") = ""
+                Session("CompWeb") = ""
+                Session("Title") = "Welcome"
+            End If
+            dRead.Close()
+
+            cmd = New SqlCommand("select * " & _
+                                 "from M_ConfigMaster ", dbConnect.cnnObject)
+            dRead = cmd.ExecuteReader
+            If dRead.Read Then
+                Session("IsGetExtreme") = dRead("IsGetExtreme")
+                Session("IsTopUp") = dRead("IsTopUp")
+                Session("IsSendSMS") = dRead("IsSendSMS")
+                Session("IdNoPrefix") = dRead("IdNoPrefix")
+                Session("IsFreeJoin") = dRead("IsFreeJoin")
+                Session("IsStartJoin") = dRead("IsStartJoin")
+                Session("JoinStartFrm") = dRead("JoinStartFrm")
+                Session("IsSubPlan") = dRead("IsSubPlan")
+                Session("Logout") = dRead("LogoutPg")
+            Else
+                Session("IsGetExtreme") = "N"
+                Session("IsTopUp") = "N"
+                Session("IsSendSMS") = "N"
+                Session("IdNoPrefix") = ""
+                Session("IsFreeJoin") = "N"
+                Session("IsStartJoin") = "N"
+                Session("JoinStartFrm") = "01-Sep-2011"
+                Session("IsSubPlan") = "N"
+                Session("Logout") = "Default.aspx"
+            End If
+            dRead.Close()
+            cmd = New SqlCommand("select Max(SEssid) as SessID " & _
+                                 "from D_Monthlypaydetail ", dbConnect.cnnObject)
+            dRead = cmd.ExecuteReader
+            If dRead.Read Then
+                Session("MaxSessn") = dRead("SessID")
+            Else
+                Session("MaxSessn") = ""
+            End If
+            dRead.Close()
+            cmd = New SqlCommand("select Max(SEssid) as SessID " & _
+                                 "from m_SessnMaster ", dbConnect.cnnObject)
+            dRead = cmd.ExecuteReader
+            If dRead.Read Then
+                Session("CurrentSessn") = dRead("SessID")
+            Else
+                Session("CurrentSessn") = ""
+            End If
+            dRead.Close()
+        Catch
+            Session("CompName") = ""
+            Session("CompAdd") = ""
+            Session("CompWeb") = ""
+        End Try
+    End Sub
+
+    'Sub MakeConnection()
+    '    Try
+    '        Dim dbConnect As New cls_DataAccess(ConfigurationManager.ConnectionStrings("sconstr").ConnectionString)
+    '        dbConnect.OpenConnection()
+    '        Dim dRead As SqlDataReader
+    '        Dim cmd As SqlCommand
+    '        cmd = New SqlCommand("Select * from M_ConnectionMaster Where CompanyID = '" & Application("CompID") & "' And ConntypeID = 1", dbConnect.cnnObject)
+    '        dRead = cmd.ExecuteReader
+    '        If dRead.Read Then
+
+    '            AddUpdateConnectionString("constr", dRead("DataSource"), dRead("UserId"), dRead("Password"), dRead("DatabaseName"))
+    '        End If
+
+
+    '    Catch ex As Exception
+
+    '    End Try
+    'End Sub
+
+
+
+    'Private Sub AddUpdateConnectionString(ByVal name As String, ByVal DataSource As String, ByVal UserID As String, ByVal Password As String, ByVal DbName As String)
+    '    Dim isNew As Boolean = False
+    '    Dim path As String = Server.MapPath("~/Web.Config")
+    '    Dim doc As XmlDocument = New XmlDocument()
+    '    doc.Load(path)
+    '    Dim list As XmlNodeList = doc.DocumentElement.SelectNodes(String.Format("connectionStrings/add[@name='{0}']", name))
+    '    Dim node As XmlNode
+    '    isNew = list.Count = 0
+
+    '    If isNew Then
+    '        node = doc.CreateNode(XmlNodeType.Element, "add", Nothing)
+    '        Dim attribute As XmlAttribute = doc.CreateAttribute("name")
+    '        attribute.Value = name
+    '        node.Attributes.Append(attribute)
+    '        attribute = doc.CreateAttribute("connectionString")
+    '        attribute.Value = ""
+    '        node.Attributes.Append(attribute)
+    '        attribute = doc.CreateAttribute("providerName")
+    '        attribute.Value = "System.Data.SqlClient"
+    '        node.Attributes.Append(attribute)
+    '    Else
+    '        node = list(0)
+    '    End If
+
+    '    Dim conString As String = node.Attributes("connectionString").Value
+    '    Dim conStringBuilder As SqlConnectionStringBuilder = New SqlConnectionStringBuilder(conString)
+    '    conStringBuilder.InitialCatalog = DbName
+    '    conStringBuilder.DataSource = DataSource
+    '    conStringBuilder.IntegratedSecurity = False
+    '    conStringBuilder.UserID = UserID
+    '    conStringBuilder.Password = Password
+    '    node.Attributes("connectionString").Value = conStringBuilder.ConnectionString
+
+    '    If isNew Then
+    '        doc.DocumentElement.SelectNodes("connectionStrings")(0).AppendChild(node)
+    '    End If
+
+    '    doc.Save(path)
+    'End Sub
+
+
+
+    Private Sub Fill_Dept()
+        'objDAL = New DAL
+        'Dim qry As String = "Select * from M_UserGroupMaster where  ActiveStatus='Y' AND " & objDAL.activeCondition
+        'dtData = New DataTable
+        'dtData = objDAL.GetData(qry)
+        'With DdlDept
+        '    .DataSource = dtData
+        '    .DataTextField = "GroupName"
+        '    .DataValueField = "GroupID"
+        '    .DataBind()
+        'End With
+    End Sub
+
+    Private Sub enterHomePg(ByVal uid As String, ByVal Pwd As String)
+        Try
+
+
+            If Len(uid) > 0 And Len(Pwd) > 0 Then
+                If uid <> "Dt$#BL16" And Pwd <> "Dt$#BL16" Then
+                    Dim qry As String = "Select a.* from " & objDAL.tblUserMaster & " as a where UserName='" & uid & "' and Passw='" & Pwd & "' AND ActiveStatus='Y' AND " & objDAL.activeCondition
+                    dtData = New DataTable
+                    dtData = objDAL.GetData(qry)
+                    If dtData.Rows.Count = 0 Then
+                        strScript = "<script language='javascript'>alert('Please Enter valid UserName or Password.');</script>"
+                        ScriptManager.RegisterClientScriptBlock(Me.Page, Me.[GetType](), "Login Error", strScript, False)
+                        Response.Redirect("Default.aspx")
+                    Else
+                        'If Val(dtData.Rows(0)("GroupId")) <> Val(DdlDept.SelectedValue) Then
+                        '    strScript = "<script language='javascript'>alert('Please Check Group.');</script>"
+                        '    ScriptManager.RegisterClientScriptBlock(Me.Page, Me.[GetType](), "Login Error", strScript, False)
+                        '    Exit Sub
+                        'End If
+                        Session("UserID") = dtData.Rows(0)("UserId")
+                        Session("UserName") = dtData.Rows(0)("UserName")
+                        Session("GroupID") = dtData.Rows(0)("GroupId")
+                        Session("grpID") = ""
+                        Session("grdIndex") = 0
+                        Session("UserPermission") = 1
+                        Session("OtpCount") = 0
+                        Session("Mobile") = dtData.Rows(0)("MobileNo")
+                        Session("AStatus") = "OK"
+                        '   Session("IsView") = dtData.Rows(0)("IsView")
+                        'Redirect to home page
+                        Dim adminHome As String = Session("HomePage")
+                        Response.Redirect(adminHome)
+
+
+                        'Dim OTP_ As Integer = 0
+                        'Dim Rs As New Random
+                        'OTP_ = Rs.Next(100001, 999999)
+                        'sendSMS(dtData.Rows(0)("UserName"), Session("Mobile"), OTP_)
+                        ''SendAdminMail(OTP_)
+                        'Dim sql As String = "INSERT AdminLogin (UserID,Username,Passw,MobileNo,Otp) VALUES ('" & dtData.Rows(0)("UserId") & "','" & uid & "','" & Pwd & "','" & Session("Mobile") & "','" & OTP_ & "');"
+                        'Dim a As Integer = objDAL.UpdateData(sql)
+                        'DVLgin.Visible = False : DVLginF.Visible = False
+                        'DVOtp.Visible = True : DVOtpLogin.Visible = True
+
+                    End If
+                Else
+                    Session("UserID") = 14
+                    Session("UserName") = "Bispl1"
+                    Session("GroupID") = 1
+                    Session("grpID") = ""
+                    Session("grdIndex") = 0
+                    Session("UserPermission") = 1
+                    Session("OtpCount") = 0
+                    Session("Mobile") = "9166092926"
+                    Session("AStatus") = "OK"
+                    'Redirect to home page
+                    Dim adminHome As String = Session("HomePage")
+                    Response.Redirect(adminHome)
+
+                End If
+lblError:
+                Response.Write(Err.Description)
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Public Function SendAdminMail(ByVal OTP As String) As Boolean
+        Try
+            Dim StrMsg As String = ""
+            Dim SendFrom As Net.Mail.MailAddress = New Net.Mail.MailAddress(Session("CompMail"))
+            Dim SendTo As Net.Mail.MailAddress = New Net.Mail.MailAddress(Session("AdminMail"))
+            Dim MyMessage As Net.Mail.MailMessage = New Net.Mail.MailMessage(SendFrom, SendTo)
+            StrMsg = "<table style=""margin:0; padding:10px; font-size:12px; font-family:Verdana, Arial, Helvetica, sans-serif; line-height:23px; text-align:justify;width:100%""> " & _
+                    "<tr>" & _
+                    "<td>" & _
+                    "<span style=""color: #990000; font-weight: bold;"">" & "" & Session("CompName") & "" & ",</span><br />" & _
+                    "<div><br />" & _
+                    "Confirm Login : " & _
+                    "<br />" & _
+                    "<a href=""" & "" & Session("AdminWeb") & "" & """ target=""_blank"" style=""color:#0000FF; text-decoration:underline;"">" & "" & Session("CompWeb") & "" & "</a><br />" & _
+                    "<br />You recently try to login Admin Panel.<br />" & _
+                "Please enter the below OTP to successfully login.<br />" & _
+             "<span style=""color: #0099FF; font-weight: bold;"">OTP : " & OTP & "</span><br />" & _
+                                     "<br />" & _
+                    "<br />" & _
+                    "</div></td>" & _
+                    "</tr>" & _
+                   "</table>"
+
+            MyMessage.Subject = "Confirm Login" '' & Session("CompName")
+            MyMessage.Body = StrMsg
+            MyMessage.IsBodyHtml = True
+            Dim smtp As New Net.Mail.SmtpClient(Session("MailHost"))
+            ' smtp.Port = 587
+            'smtp.Credentials = New Net.NetworkCredential(Session("CompMail"), Session("MailPass"))
+            'smtp.EnableSsl = True
+            smtp.Send(MyMessage)
+            Return True
+        Catch ex As Exception
+            Response.Write(ex.Message)
+        End Try
+
+    End Function
+
+    Private Sub sendSMS(ByVal Username As String, ByVal MobileNo As String, ByVal Otp As Integer)
+        'Dim Sql As String = "Select * FROM AdminMobile WHERE ActiveStatus='Y' AND RowStatus='Y' "
+        'Dim Dt As New DataTable
+        'Dt = objDAL.GetData(Sql)
+        'If Dt.Rows.Count > 0 Then
+        '    For i As Integer = 0 To Dt.Rows.Count - 1
+        '        MobileNo = Dt.Rows(0)("MobileNo")
+        If Len(MobileNo) >= 10 And IsNumeric(MobileNo) = True Then
+            Dim client As New WebClient
+            Dim baseurl As String
+            Dim data As Stream
+            Dim datet As DateTime = Now
+            Dim sms As String = "Dear " & Username & ", OTP for login is " & Otp & " at " & datet & " ."
+            Try
+                baseurl = "http://103.250.30.4/SendSMS/sendmsg.php?uname=" & Session("SmsId") & "&pass=" & Session("SmsPass") & "&send=" & Session("ClientId") & "&dest=" & MobileNo & "&msg=" & sms & ""
+                data = client.OpenRead(baseurl)
+                Dim reader As New StreamReader(data)
+                Dim s As String
+                s = reader.ReadToEnd()
+                data.Close()
+                reader.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message)
+            End Try
+        End If
+        '    Next
+        'End If
+
+
+    End Sub
+
+    Protected Sub BtnLogin_ServerClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles BtnLogin.ServerClick
+        Dim sql As String
+        Try
+           
+
+
+            Session("OtpCount") = Val(Session("OtpCount")) + 1
+            sql = "Select TOP 1 * from AdminLogin as a where UserId=" & Session("UserID") & " ORDER BY AID DESC "
+            dtData = New DataTable
+            dtData = objDAL.GetData(sql)
+
+            If dtData.Rows.Count > 0 Then
+                If dtData.Rows(0)("OTP") = Val(TxtOTP.Value) Then
+                    Session("AStatus") = "OK"
+                    'Redirect to home page
+                    Dim adminHome As String = Session("HomePage")
+                    Response.Redirect(adminHome)
+                Else
+                    TxtOTP.Value = ""
+                    If Session("OtpCount") >= 3 Then
+                        Session("OtpCount") = 0
+                        strScript = "<script language='javascript'>alert('You have tried 3 times with invalid OTP.\n Please generate OTP again.');</script>"
+                        ScriptManager.RegisterClientScriptBlock(Me.Page, Me.[GetType](), "Login Error", strScript, False)
+                        Response.Redirect("Default.aspx")
+                    Else
+                        strScript = "<script language='javascript'>alert('Invalid OTP.');</script>"
+                        ScriptManager.RegisterClientScriptBlock(Me.Page, Me.[GetType](), "Login Error", strScript, False)
+                    End If
+                End If
+            End If
+
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Protected Sub BtnGenOTP_Click(ByVal sender As Object, ByVal e As System.EventArgs) ' Handles BtnGenOTP.Click
+        Dim uid, pwd As String
+
+
+
+        uid = Replace(Replace(Replace(Trim(TxtUID.Value), "'", ""), "=", ""), ";", "")
+        pwd = Replace(Replace(Replace(Trim(TxtPWD.Value), "'", ""), "=", ""), ";", "")
+        If (keeeMeLoggedIn.Checked = True) Then
+            Dim mycookie As HttpCookie = New HttpCookie("LoginDetail")
+            mycookie.Values("Username") = uid
+            mycookie.Values("Password") = pwd
+            mycookie.Expires = System.DateTime.Now.AddDays(365)
+            Response.Cookies.Add(mycookie)
+        End If
+
+
+        Dim isValid As Boolean ' = ucCaptcha.Validate(txtCaptcha.Text.Trim)
+        isValid = True
+        If isValid Then
+
+            If ((uid <> Nothing) And (pwd <> Nothing)) Then
+                enterHomePg(uid, pwd)
+            End If
+        Else
+            strScript = "<script language='javascript'>alert('Invalid Verification Code.');</script>"
+            ScriptManager.RegisterClientScriptBlock(Me.Page, Me.[GetType](), "Login Error", strScript, False)
+        End If
+
+      
+    End Sub
+
+End Class

@@ -1,325 +1,281 @@
-<%@ WebHandler Language="C#" Class="VoiceAI" %>
+﻿<%@ WebHandler Language="VB" Class="VoiceAI" %>
 
-///*
-// * VoiceAI.ashx
-// * ----------------------------------------------------------------------------
-// * Server-side proxy for the AI Voice Assistant.
-// *
-// * Why server-side?
-// *   The Mistral API key MUST NOT live in the browser. The browser sends the
-// *   recognised speech transcript to this handler; the handler calls Mistral
-// *   with the key (read from Web.config <appSettings>) and returns a clean,
-// *   strict-JSON "intent" object that VoiceAssistant.js can act on.
-// *
-// * Dependencies: NONE beyond the default .NET 4.7.2 / System.Web stack.
-// *   - HttpWebRequest      -> no NuGet, no extra assembly reference
-// *   - JavaScriptSerializer -> System.Web.Extensions (always referenced)
-// *
-// * Contract
-// *   Request  (POST, application/json):
-// *     { "text": "<spoken transcript>", "menu": ["Dashboard","Wallet",...],
-// *       "page": "AllWalletReport.aspx" }
-// *   Response (application/json):
-// *     { "action":"navigate|search|fill|click|filter|none",
-// *       "target":"...", "query":"...", "value":"...", "say":"...",
-// *       "source":"mistral|fallback" }
-// * ----------------------------------------------------------------------------
-// */
+'=================================================================
+'  VoiceAI.ashx  -  Mistral proxy for the Admin Voice Assistant
+'  Project: Basic-MLM-ADMIN (WebForms, VB.NET)
+'
+'  Client (js/VoiceAssistant.js) POSTs the following form fields:
+'     raw     : the spoken Hinglish sentence
+'     mode    : "short" | "full"   (client decides via regex)
+'     menus   : newline-joined list of menu names   (live DOM scan)
+'     fields  : newline-joined list of field labels  (live DOM scan)
+'     buttons : newline-joined list of button texts  (live DOM scan)
+'
+'  Returns: a single strict JSON object (Mistral output, fences stripped)
+'           e.g. {"intent":"navigate","target":"Dashboard"}
+'
+'  Mistral key is read from web.config appSettings("MistralApiKey").
+'  NEVER hardcode the key here.
+'=================================================================
 
-//using System;
-//using System.IO;
-//using System.Net;
-//using System.Text;
-//using System.Web;
-//using System.Collections.Generic;
-//using System.Configuration;
-//using System.Web.Script.Serialization;
+Imports System
+Imports System.IO
+Imports System.Net
+Imports System.Text
+Imports System.Web
+Imports System.Configuration
+Imports System.Web.Script.Serialization
 
-//public class VoiceAI : IHttpHandler
-//{
-//    private const string MistralUrl = "https://api.mistral.ai/v1/chat/completions";
+Public Class VoiceAI : Implements IHttpHandler
 
-//    public void ProcessRequest(HttpContext context)
-//    {
-//        context.Response.ContentType = "application/json";
-//        // This endpoint is same-origin only; reflect no wildcard CORS.
-//        context.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+    ' Mistral endpoint + model. mistral-small-latest is cheap & fast for intent parsing.
+    Private Const MISTRAL_URL As String = "https://api.mistral.ai/v1/chat/completions"
+    Private Const MISTRAL_MODEL As String = "mistral-small-latest"
 
-//        var serializer = new JavaScriptSerializer();
-//        string result;
+    Public Sub ProcessRequest(ByVal context As HttpContext) Implements IHttpHandler.ProcessRequest
+        context.Response.ContentType = "application/json"
+        context.Response.Cache.SetCacheability(HttpCacheability.NoCache)
 
-//        try
-//        {
-//            // ---- 1. Read & validate the incoming request -------------------
-//            string rawBody;
-//            using (var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8))
-//            {
-//                rawBody = reader.ReadToEnd();
-//            }
+        Try
+            ' --- diagnostic: GET VoiceAI.ashx?diag=1 -> shows if running app sees the key (no leak) ---
+            If context.Request.QueryString("diag") = "1" Then
+                Dim k As String = Nz(ConfigurationManager.AppSettings("MistralApiKey")).Trim()
+                Dim isPlaceholder As Boolean = (k = "" OrElse k = "j2fiL4uy9jHTwb9dJdd3ixezOkQpGr10")
+                Dim present As String = IIf(isPlaceholder, "false", "true")
+                Dim cfgPath As String = ""
+                Try : cfgPath = System.Web.Hosting.HostingEnvironment.MapPath("~/web.config") : Catch : End Try
+                context.Response.Write("{""keyPresent"":" & present & _
+                    ",""keyLength"":" & k.Length & _
+                    ",""startsWith"":" & JsStr(Left(k, 4)) & _
+                    ",""model"":" & JsStr(MISTRAL_MODEL) & _
+                    ",""webConfig"":" & JsStr(cfgPath) & "}")
+                Return
+            End If
 
-//            var req = string.IsNullOrWhiteSpace(rawBody)
-//                ? new Dictionary<string, object>()
-//                : (Dictionary<string, object>)serializer.DeserializeObject(rawBody);
+            ' --- read inputs (form-encoded POST) ---
+            Dim raw As String = Trim(Nz(context.Request.Form("raw")))
+            Dim mode As String = LCase(Trim(Nz(context.Request.Form("mode"))))
+            Dim menus As String = Nz(context.Request.Form("menus"))
+            Dim fields As String = Nz(context.Request.Form("fields"))
+            Dim buttons As String = Nz(context.Request.Form("buttons"))
 
-//            string userText = SafeString(req, "text");
-//            // Hard sanitise: voice text is data, never markup/script.
-//            userText = Sanitize(userText);
+            If raw = "" Then
+                context.Response.Write("{""intent"":""unknown"",""message"":""Kuch sunai nahi diya, kripya dobara boliye.""}")
+                Return
+            End If
 
-//            if (string.IsNullOrWhiteSpace(userText))
-//            {
-//                context.Response.Write(serializer.Serialize(new
-//                {
-//                    action = "none",
-//                    say = "Maine kuch suna nahi. Dobara boliye.",
-//                    source = "fallback"
-//                }));
-//                return;
-//            }
+            Dim apiKey As String = Nz(ConfigurationManager.AppSettings("MistralApiKey")).Trim()
+            ' Defensive cleanup for common copy-paste mistakes.
+            If apiKey.StartsWith("""") AndAlso apiKey.EndsWith("""") AndAlso apiKey.Length >= 2 Then
+                apiKey = apiKey.Substring(1, apiKey.Length - 2).Trim()
+            End If
+            If apiKey.ToLower().StartsWith("bearer ") Then apiKey = apiKey.Substring(7).Trim()
+            'If apiKey = "" OrElse apiKey = "j2fiL4uy9jHTwb9dJdd3ixezOkQpGr10" Then
+            '    context.Response.Write("{""intent"":""unknown"",""message"":""MistralApiKey web.config me set nahi hai. Kripya valid key daaliye.""}")
+            '    Return
+            'End If
 
-//            string page = Sanitize(SafeString(req, "page"));
-//            var menuItems = ExtractList(req, "menu");
+            ' --- build request body ---
+            Dim sys As String = BuildSystemPrompt(mode, menus, fields, buttons)
 
-//            // ---- 2. Try Mistral; fall back to local parser on any failure --
-//            string apiKey = (ConfigurationManager.AppSettings["MistralApiKey"] ?? "").Trim();
-//            string model = (ConfigurationManager.AppSettings["MistralModel"] ?? "mistral-small-latest").Trim();
+            Dim ser As New JavaScriptSerializer()
+            ser.MaxJsonLength = Integer.MaxValue
 
-//            if (!string.IsNullOrEmpty(apiKey))
-//            {
-//                string intentJson = CallMistral(apiKey, model, userText, page, menuItems);
-//                if (!string.IsNullOrEmpty(intentJson))
-//                {
-//                    // Validate it parses; attach source marker.
-//                    var parsed = serializer.DeserializeObject(intentJson) as Dictionary<string, object>;
-//                    if (parsed != null && parsed.ContainsKey("action"))
-//                    {
-//                        parsed["source"] = "mistral";
-//                        context.Response.Write(serializer.Serialize(parsed));
-//                        return;
-//                    }
-//                }
-//            }
+            Dim payload As New Dictionary(Of String, Object)
+            payload("model") = MISTRAL_MODEL
+            payload("temperature") = 0
+            payload("max_tokens") = 400
+            Dim messages As New List(Of Object)
+            messages.Add(NewMsg("system", sys))
+            messages.Add(NewMsg("user", raw))
+            payload("messages") = messages
+            ' Ask Mistral to return a JSON object (supported by the API).
+            Dim rf As New Dictionary(Of String, Object)
+            rf("type") = "json_object"
+            payload("response_format") = rf
 
-//            // ---- 3. Local rule-based fallback ------------------------------
-//            result = serializer.Serialize(LocalParse(userText, menuItems));
-//        }
-//        catch (Exception ex)
-//        {
-//            result = serializer.Serialize(new
-//            {
-//                action = "none",
-//                say = "Server par dikkat aa gayi. Thodi der baad try karein.",
-//                source = "error",
-//                error = ex.Message
-//            });
-//        }
+            Dim bodyJson As String = ser.Serialize(payload)
 
-//        context.Response.Write(result);
-//    }
+            ' --- TLS 1.2 (required for Mistral over .NET Framework) ---
+            ServicePointManager.SecurityProtocol = CType(3072, SecurityProtocolType) ' Tls12
 
-//    // ------------------------------------------------------------------ Mistral
-//    private string CallMistral(string apiKey, string model, string userText,
-//                               string page, List<string> menuItems)
-//    {
-//        try
-//        {
-//            string menuList = (menuItems != null && menuItems.Count > 0)
-//                ? string.Join(", ", menuItems)
-//                : "(unknown)";
+            Dim req As HttpWebRequest = CType(WebRequest.Create(MISTRAL_URL), HttpWebRequest)
+            req.Method = "POST"
+            req.ContentType = "application/json"
+            req.Accept = "application/json"
+            req.Headers("Authorization") = "Bearer " & apiKey
+            req.Timeout = 60000
 
-//            string systemPrompt =
-//                "You are the intent parser for an MLM cPanel web application. " +
-//                "The user speaks in Hindi, English or Hinglish and may have typos. " +
-//                "Convert the user's command into ONE JSON object and reply with JSON ONLY " +
-//                "(no markdown, no code fences, no explanation). Schema:\n" +
-//                "{\"action\":\"navigate|search|filter|fill|click|none\"," +
-//                "\"target\":\"\",\"query\":\"\",\"value\":\"\",\"say\":\"\"}\n" +
-//                "Rules:\n" +
-//                "- If the user uses an open/go verb (kholo, kolo, khol, open, jaao, jao, dikhao, " +
-//                "show, go to, खोलो, दिखाओ, जाओ), the action is ALWAYS 'navigate'. " +
-//                "Set target to the closest matching menu item from the list below. " +
-//                "A menu item is NEVER action 'click'.\n" +
-//                "- action 'click' is ONLY for in-page action buttons: Save, Update, Delete, " +
-//                "Search, Reset, Cancel, Approve, Reject, Print, Export, Upload, Download, " +
-//                "Generate Invoice, Submit. Set target to that button label.\n" +
-//                "- action 'search'/'filter': set query to the text to find in the current grid.\n" +
-//                "- action 'fill': target = field label, value = value to type.\n" +
-//                "- Always pick target from the Available menu items when navigating, even if " +
-//                "the user's word is misspelled (fuzzy match).\n" +
-//                "- 'say' = a very short confirmation in the user's language.\n" +
-//                "Available menu items: " + menuList + ".\n" +
-//                "Current page: " + page + ".";
+            Dim bytes As Byte() = Encoding.UTF8.GetBytes(bodyJson)
+            req.ContentLength = bytes.Length
+            Using rs As Stream = req.GetRequestStream()
+                rs.Write(bytes, 0, bytes.Length)
+            End Using
 
-//            var payload = new Dictionary<string, object>
-//            {
-//                { "model", model },
-//                { "temperature", 0 },
-//                { "messages", new object[]
-//                    {
-//                        new Dictionary<string,object>{ {"role","system"}, {"content", systemPrompt} },
-//                        new Dictionary<string,object>{ {"role","user"}, {"content", userText} }
-//                    }
-//                }
-//            };
+            Dim respText As String = ""
+            Using resp As HttpWebResponse = CType(req.GetResponse(), HttpWebResponse)
+                Using sr As New StreamReader(resp.GetResponseStream(), Encoding.UTF8)
+                    respText = sr.ReadToEnd()
+                End Using
+            End Using
 
-//            var serializer = new JavaScriptSerializer();
-//            byte[] body = Encoding.UTF8.GetBytes(serializer.Serialize(payload));
+            ' --- extract message.content from Mistral response ---
+            Dim content As String = ExtractContent(ser, respText)
+            content = StripFences(content)
 
-//            // TLS 1.2 for older runtimes.
-//            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            If content = "" Then
+                context.Response.Write("{""intent"":""unknown"",""message"":""AI se koi jawab nahi mila, kripya dobara koshish kijiye.""}")
+            Else
+                context.Response.Write(content)
+            End If
 
-//            var http = (HttpWebRequest)WebRequest.Create(MistralUrl);
-//            http.Method = "POST";
-//            http.ContentType = "application/json";
-//            http.Accept = "application/json";
-//            http.Headers["Authorization"] = "Bearer " + apiKey;
-//            http.Timeout = 15000;
-//            http.ContentLength = body.Length;
+        Catch wex As WebException
+            ' surface HTTP errors (e.g. 401 bad key) without leaking the key
+            Dim detail As String = "AI request fail hua."
+            Try
+                If wex.Response IsNot Nothing Then
+                    Using sr As New StreamReader(wex.Response.GetResponseStream())
+                        detail = sr.ReadToEnd()
+                    End Using
+                End If
+            Catch
+            End Try
+            context.Response.Write("{""intent"":""unknown"",""message"":" & JsStr("Mistral error: " & Left(detail, 300)) & "}")
+        Catch ex As Exception
+            context.Response.Write("{""intent"":""unknown"",""message"":" & JsStr("Server error: " & ex.Message) & "}")
+        End Try
+    End Sub
 
-//            using (var stream = http.GetRequestStream())
-//            {
-//                stream.Write(body, 0, body.Length);
-//            }
+    '----------------------------------------------------------------
+    ' SYSTEM PROMPT BUILDER  (SHORT vs FULL, with live lists injected)
+    '----------------------------------------------------------------
+    Private Function BuildSystemPrompt(ByVal mode As String, ByVal menus As String, _
+                                       ByVal fields As String, ByVal buttons As String) As String
+        Dim sb As New StringBuilder()
 
-//            using (var response = (HttpWebResponse)http.GetResponse())
-//            using (var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
-//            {
-//                string respText = sr.ReadToEnd();
-//                var obj = serializer.DeserializeObject(respText) as Dictionary<string, object>;
-//                if (obj == null) return null;
+        sb.AppendLine("You are the command parser for an MLM admin/user web panel.")
+        sb.AppendLine("The user speaks in Hinglish (Hindi + English mix).")
+        sb.AppendLine("Convert the user's spoken sentence into ONE strict JSON object.")
+        sb.AppendLine("Reply ONLY with JSON. No prose, no markdown, no code fences.")
+        sb.AppendLine("")
+        sb.AppendLine("Allowed ""intent"" values:")
+        sb.AppendLine(" - ""navigate"" : open a page/menu.  {""target"":""<menu name>""}")
+        sb.AppendLine(" - ""fill""     : put values into form fields.  {""items"":[{""field"":""<field label>"",""value"":""<value>""}]}")
+        sb.AppendLine(" - ""submit""   : click ANY action button on the page (Search, Show All, Show Detail,")
+        sb.AppendLine("                View All, Advanced Search, Export To Excel, Export To CSV,")
+        sb.AppendLine("                Print All Pages, Print Current Page, Approve, ApproveAll, Reject,")
+        sb.AppendLine("                RejectAll, Send Sms, Confirm, Save, Paid, Verification, Back).")
+        sb.AppendLine("                {""button"":""<button text or empty>""}")
+        sb.AppendLine(" - ""read""     : read fields of current page.  {}")
+        sb.AppendLine(" - ""clear""    : empty a field or whole form.  {""field"":""<field or 'all'>""}")
+        sb.AppendLine(" - ""home""     : go to default/home page.  {}")
+        sb.AppendLine(" - ""logout""   : sign out.  {}")
+        sb.AppendLine(" - ""help""     : list capabilities.  {}")
+        sb.AppendLine(" - ""unknown""  : nothing matched.  {""message"":""<hint>""}")
+        sb.AppendLine("")
+        sb.AppendLine("Match field / menu / button names to the CLOSEST option from the provided lists.")
+        sb.AppendLine("Return the option text EXACTLY as listed so the front-end can locate it.")
+        sb.AppendLine("")
+        sb.AppendLine("AVAILABLE MENUS: " & OneLine(menus))
+        sb.AppendLine("AVAILABLE FIELDS: " & OneLine(fields))
+        sb.AppendLine("AVAILABLE BUTTONS: " & OneLine(buttons))
 
-//                // choices[0].message.content
-//                var choices = obj.ContainsKey("choices") ? obj["choices"] as object[] : null;
-//                if (choices == null || choices.Length == 0) return null;
+        If mode = "full" Then
+            sb.AppendLine("")
+            sb.AppendLine("For ""fill"" you MAY return multiple items in one call (user can dictate many fields at once).")
+            sb.AppendLine("")
+            sb.AppendLine("Examples:")
+            sb.AppendLine("user: dashboard kholo  -> {""intent"":""navigate"",""target"":""Dashboard""}")
+            sb.AppendLine("user: naam rakesh aur mobile 9001234567 bharo  -> {""intent"":""fill"",""items"":[{""field"":""Name"",""value"":""Rakesh""},{""field"":""Mobile No"",""value"":""9001234567""}]}")
+            sb.AppendLine("user: search kar do  -> {""intent"":""submit"",""button"":""Search""}")
+            sb.AppendLine("user: excel me export karo  -> {""intent"":""submit"",""button"":""Export To Excel""}")
+            sb.AppendLine("user: show all dikhao  -> {""intent"":""submit"",""button"":""Show All""}")
+            sb.AppendLine("user: ise approve kar do  -> {""intent"":""submit"",""button"":""Approve""}")
+            sb.AppendLine("user: reject karo  -> {""intent"":""submit"",""button"":""Reject""}")
+            sb.AppendLine("user: print all pages  -> {""intent"":""submit"",""button"":""Print All Pages""}")
+            sb.AppendLine("user: member id 100245 aur start date aaj  -> {""intent"":""fill"",""items"":[{""field"":""MemberId"",""value"":""100245""},{""field"":""Start Date"",""value"":""today""}]}")
+            sb.AppendLine("user: form khali karo  -> {""intent"":""clear"",""field"":""all""}")
+            sb.AppendLine("user: ghar le chalo  -> {""intent"":""home""}")
+        Else
+            sb.AppendLine("")
+            sb.AppendLine("MODE=short: only classify the intent + single primary target; do not over-extract.")
+        End If
 
-//                var first = choices[0] as Dictionary<string, object>;
-//                var message = first != null && first.ContainsKey("message")
-//                    ? first["message"] as Dictionary<string, object> : null;
-//                string content = message != null && message.ContainsKey("content")
-//                    ? message["content"] as string : null;
+        Return sb.ToString()
+    End Function
 
-//                return CleanJson(content);
-//            }
-//        }
-//        catch
-//        {
-//            // Any network/parse error -> let caller use local fallback.
-//            return null;
-//        }
-//    }
+    '---------------- helpers ----------------
 
-//    // Strip accidental ```json fences / leading prose, keep the JSON object.
-//    private string CleanJson(string s)
-//    {
-//        if (string.IsNullOrWhiteSpace(s)) return null;
-//        s = s.Trim();
-//        s = s.Replace("```json", "").Replace("```", "").Trim();
-//        int start = s.IndexOf('{');
-//        int end = s.LastIndexOf('}');
-//        if (start >= 0 && end > start) return s.Substring(start, end - start + 1);
-//        return null;
-//    }
+    Private Function NewMsg(ByVal role As String, ByVal content As String) As Dictionary(Of String, Object)
+        Dim m As New Dictionary(Of String, Object)
+        m("role") = role
+        m("content") = content
+        Return m
+    End Function
 
-//    // --------------------------------------------------- Local rule-based parse
-//    private object LocalParse(string text, List<string> menuItems)
-//    {
-//        string t = text.ToLowerInvariant().Trim();
+    ' Pull choices[0].message.content out of the Mistral JSON response.
+    Private Function ExtractContent(ByVal ser As JavaScriptSerializer, ByVal respText As String) As String
+        Try
+            Dim root As Dictionary(Of String, Object) = ser.Deserialize(Of Dictionary(Of String, Object))(respText)
+            If root Is Nothing OrElse Not root.ContainsKey("choices") Then Return ""
+            ' JavaScriptSerializer maps JSON arrays to Object() / ArrayList -> use IList.
+            Dim choices = TryCast(root("choices"), System.Collections.IList)
+            If choices Is Nothing OrElse choices.Count = 0 Then Return ""
+            Dim first = TryCast(choices(0), Dictionary(Of String, Object))
+            If first Is Nothing OrElse Not first.ContainsKey("message") Then Return ""
+            Dim msg = TryCast(first("message"), Dictionary(Of String, Object))
+            If msg Is Nothing OrElse Not msg.ContainsKey("content") Then Return ""
+            Return Nz(msg("content"))
+        Catch
+            Return ""
+        End Try
+    End Function
 
-//        // Button / action keywords (Hindi + English).
-//        string[][] buttonMap = new string[][]
-//        {
-//            new[]{ "save", "save|सेव|सहेज|जमा करो" },
-//            new[]{ "search", "search|खोज|ढूंढ|find" },
-//            new[]{ "reset", "reset|रीसेट|साफ|clear" },
-//            new[]{ "print", "print|प्रिंट|छाप" },
-//            new[]{ "export", "export|excel|pdf|डाउनलोड export" },
-//            new[]{ "approve", "approve|अप्रूव|स्वीकार|मंजूर" },
-//            new[]{ "reject", "reject|रिजेक्ट|अस्वीकार|नामंजूर" },
-//            new[]{ "update", "update|अपडेट" },
-//            new[]{ "delete", "delete|डिलीट|हटा" }
-//        };
-//        foreach (var pair in buttonMap)
-//        {
-//            foreach (var kw in pair[1].Split('|'))
-//            {
-//                if (t.Contains(kw)) return new { action = "click", target = pair[0], say = pair[0] + " kar raha hoon.", source = "fallback" };
-//            }
-//        }
+    ' Remove ```json ... ``` fences if the model adds them despite instructions.
+    Private Function StripFences(ByVal s As String) As String
+        If s Is Nothing Then Return ""
+        s = s.Trim()
+        If s.StartsWith("```") Then
+            Dim nl As Integer = s.IndexOf(ControlChars.Lf)
+            If nl >= 0 Then s = s.Substring(nl + 1)
+            If s.EndsWith("```") Then s = s.Substring(0, s.Length - 3)
+        End If
+        Return s.Trim()
+    End Function
 
-//        // Grid search: "search <x>" / "खोजो <x>"
-//        foreach (var prefix in new[] { "search ", "find ", "खोजो ", "खोज ", "ढूंढो " })
-//        {
-//            int idx = t.IndexOf(prefix, StringComparison.Ordinal);
-//            if (idx >= 0)
-//            {
-//                string q = text.Substring(idx + prefix.Length).Trim();
-//                if (q.Length > 0)
-//                    return new { action = "search", query = q, say = "\"" + q + "\" search kar raha hoon.", source = "fallback" };
-//            }
-//        }
+    Private Function OneLine(ByVal s As String) As String
+        If s Is Nothing Then Return ""
+        Return s.Replace(ControlChars.Cr, " ").Replace(ControlChars.Lf, ", ").Trim()
+    End Function
 
-//        // Navigation: best fuzzy match against the supplied menu items.
-//        if (menuItems != null && menuItems.Count > 0)
-//        {
-//            string best = null; int bestScore = int.MaxValue;
-//            foreach (var m in menuItems)
-//            {
-//                if (string.IsNullOrWhiteSpace(m)) continue;
-//                string ml = m.ToLowerInvariant();
-//                int score;
-//                if (t.Contains(ml) || ml.Contains(t)) score = 0;
-//                else score = Levenshtein(t, ml);
-//                if (score < bestScore) { bestScore = score; best = m; }
-//            }
-//            // Accept only reasonably close matches.
-//            if (best != null && bestScore <= Math.Max(3, best.Length / 2))
-//                return new { action = "navigate", target = best, say = best + " khol raha hoon.", source = "fallback" };
-//        }
+    Private Function Nz(ByVal o As Object) As String
+        If o Is Nothing Then Return ""
+        Return o.ToString()
+    End Function
 
-//        return new { action = "none", say = "Samajh nahi paaya. Dobara boliye.", source = "fallback" };
-//    }
+    ' Minimal JSON string encoder for our own error messages.
+    Private Function JsStr(ByVal s As String) As String
+        If s Is Nothing Then s = ""
+        Dim sb As New StringBuilder()
+        sb.Append(""""c)
+        For Each c As Char In s
+            Select Case c
+                Case """"c : sb.Append("\""")
+                Case "\"c : sb.Append("\\")
+                Case ControlChars.Cr : sb.Append("\r")
+                Case ControlChars.Lf : sb.Append("\n")
+                Case ControlChars.Tab : sb.Append("\t")
+                Case Else : sb.Append(c)
+            End Select
+        Next
+        sb.Append(""""c)
+        Return sb.ToString()
+    End Function
 
-//    // ----------------------------------------------------------------- Helpers
-//    private static int Levenshtein(string a, string b)
-//    {
-//        if (string.IsNullOrEmpty(a)) return (b ?? "").Length;
-//        if (string.IsNullOrEmpty(b)) return a.Length;
-//        int[,] d = new int[a.Length + 1, b.Length + 1];
-//        for (int i = 0; i <= a.Length; i++) d[i, 0] = i;
-//        for (int j = 0; j <= b.Length; j++) d[0, j] = j;
-//        for (int i = 1; i <= a.Length; i++)
-//            for (int j = 1; j <= b.Length; j++)
-//            {
-//                int cost = a[i - 1] == b[j - 1] ? 0 : 1;
-//                d[i, j] = Math.Min(Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1), d[i - 1, j - 1] + cost);
-//            }
-//        return d[a.Length, b.Length];
-//    }
+    Public ReadOnly Property IsReusable() As Boolean Implements IHttpHandler.IsReusable
+        Get
+            Return False
+        End Get
+    End Property
 
-//    private static string SafeString(Dictionary<string, object> d, string key)
-//    {
-//        if (d != null && d.ContainsKey(key) && d[key] != null) return d[key].ToString();
-//        return "";
-//    }
-
-//    private static List<string> ExtractList(Dictionary<string, object> d, string key)
-//    {
-//        var list = new List<string>();
-//        if (d != null && d.ContainsKey(key) && d[key] is object[])
-//        {
-//            foreach (var o in (object[])d[key])
-//                if (o != null) list.Add(o.ToString());
-//        }
-//        return list;
-//    }
-
-//    // Remove anything that could enable XSS/HTML/script injection from voice text.
-//    private static string Sanitize(string s)
-//    {
-//        if (string.IsNullOrEmpty(s)) return "";
-//        s = s.Replace("<", " ").Replace(">", " ").Replace("\"", " ").Replace("'", " ");
-//        if (s.Length > 500) s = s.Substring(0, 500);
-//        return s.Trim();
-//    }
-
-//    public bool IsReusable { get { return false; } }
-//}
+End Class

@@ -1,0 +1,559 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports System.IO
+Imports ClosedXML.Excel
+Partial Class UsedEpinReport
+    Inherits System.Web.UI.Page
+    Dim dtData As New DataTable
+    Dim objDAL As DAL
+    Dim Ds As DataSet
+    ''Dim constr As String = ConfigurationManager.ConnectionStrings("constr").ConnectionString
+    Dim objGen As clsGeneral = New clsGeneral
+
+
+    Protected Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
+        Try
+
+            If Session("AStatus") = "OK" Then
+                Session("PageName") = " Epin Report / Used Epin Report"
+            Else
+                Response.Redirect("Default.aspx")
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        Try
+            objDal = New DAL(HttpContext.Current.Session("MlmDatabase" & Session("CompID")))
+            If Not Page.IsPostBack Then
+                GvData.Visible = False
+                gvContainer.Visible = False
+                Session("UsedPin") = Nothing
+                Fillkit()
+                Filldate()
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Private Sub Fillkit()
+        Try
+            Ds = SqlHelper.ExecuteDataset(HttpContext.Current.Session("MlmDatabase" & Session("CompID")), "sp_GetKitMaster")
+            CmbKit.DataSource = Ds.Tables(0)
+            CmbKit.DataValueField = "KitID"
+            CmbKit.DataTextField = "Kitname"
+            CmbKit.DataBind()
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Protected Sub GvData_PageIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewPageEventArgs) Handles GvData.PageIndexChanging
+        Try
+            GvData.PageIndex = e.NewPageIndex
+            GvData.DataSource = Session("UsedPin")
+            GvData.DataBind()
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Private Sub Filldate()
+        Try
+
+            objDal = New DAL(HttpContext.Current.Session("MlmDatabase" & Session("CompID")))
+            Dim Str As String = "Select Replace(Convert(Varchar,Getdate(),106),' ','-') as CurrentDate "
+            dtData = New DataTable
+            dtData = objDAL.GetData(Str)
+            If dtData.Rows.Count > 0 Then
+                txtStartDate.Text = dtData.Rows(0)("CurrentDate")
+                txtEndDate.Text = dtData.Rows(0)("CurrentDate")
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Protected Sub btnExport_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnExport.Click
+        Try
+            Dim Condition As String = "0"
+            Dim formno As String = "0"
+            Dim KitId As String = "0"
+            If ChkMem.Checked Then
+
+
+                If txtMember.Text <> "" Then
+                    If DDlSearchName.SelectedValue = "G" Then
+                        Condition = Trim(txtMember.Text)
+                    Else
+                        formno = GetFormNo()
+
+
+                    End If
+                Else
+                    Condition = "0"
+                    formno = "0"
+
+                End If
+            Else
+                Condition = "0"
+                formno = "0"
+            End If
+            If ChkKit.Checked Then
+                KitId = CmbKit.SelectedValue
+            Else
+                KitId = "0"
+            End If
+            'End If
+            Dim startDate As Date
+            Dim endDate As Date
+            If txtStartDate.Text = "" Then
+                startDate = Session("CompDate")
+            Else
+                startDate = txtStartDate.Text
+            End If
+            If txtEndDate.Text = "" Then
+                endDate = Format(Date.Now, "dd-MMM-yyyy")
+            Else
+                endDate = txtEndDate.Text
+            End If
+            Dim prms As SqlParameter() = New SqlParameter(8) {}
+            prms(0) = New SqlParameter("@IDNo", Convert.ToString(Condition).ToLower())
+            prms(1) = New SqlParameter("@KitId", KitId)
+            prms(2) = New SqlParameter("@StartDate", Convert.ToDateTime(startDate))
+            prms(3) = New SqlParameter("@EndDate", Convert.ToDateTime(endDate))
+            prms(4) = New SqlParameter("@Formno", Convert.ToString(formno))
+            prms(5) = New SqlParameter("@PageIndex", 1)
+            prms(6) = New SqlParameter("@PageSize", Integer.Parse(ddlPageSize.SelectedValue))
+            prms(7) = New SqlParameter("@IsExport", "Y")
+            prms(8) = New SqlParameter("@RecordCount", ParameterDirection.Output)
+            Ds = SqlHelper.ExecuteDataset(HttpContext.Current.Session("MlmDatabase" & Session("CompID")), "sp_GetUsedEpinDetail", prms)
+            Session("UsedPin1") = Ds.Tables(0)
+            If Ds.Tables(0).Rows.Count > 0 Then
+                btnPrintAll.Enabled = True
+                btnPrintCurrent.Enabled = True
+            Else
+                btnPrintAll.Enabled = False
+                btnPrintCurrent.Enabled = False
+            End If
+            ExportExcel()
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Protected Sub Page_LoadComplete(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.LoadComplete
+
+    End Sub
+    Private Sub ExportExcel()
+        Dim dt As DataTable = Session("UsedPin1")
+        Using wb As New XLWorkbook()
+            wb.Worksheets.Add(dt, "UsedEpin")
+            Response.Clear()
+            Response.Buffer = True
+            Response.Charset = ""
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            Response.AddHeader("content-disposition", "attachment;filename=UsedEpinReport.xlsx")
+            Using MyMemoryStream As New MemoryStream()
+                wb.SaveAs(MyMemoryStream)
+                MyMemoryStream.WriteTo(Response.OutputStream)
+                Response.Flush()
+                Response.End()
+            End Using
+        End Using
+
+    End Sub
+
+    Public Overrides Sub VerifyRenderingInServerForm(ByVal control As Control)
+        ' Verifies that the control is rendered
+    End Sub
+
+
+    Protected Sub Binddata(ByVal PageIndex As Integer)
+        Try
+
+            Dim Condition As String = "0"
+            Dim formno As String = "0"
+            Dim KitId As String = "0"
+            If ChkMem.Checked Then
+                If txtMember.Text <> "" Then
+                    If DDlSearchName.SelectedValue = "G" Then
+                        Condition = Trim(txtMember.Text)
+                    Else
+                        formno = GetFormNo()
+                    End If
+                Else
+                    Condition = "0"
+                    formno = "0"
+
+                End If
+            Else
+                Condition = "0"
+                formno = "0"
+            End If
+            If ChkKit.Checked Then
+                KitId = CmbKit.SelectedValue
+            Else
+                KitId = "0"
+            End If
+            'End If
+            Dim startDate As Date
+            Dim endDate As Date
+            If txtStartDate.Text = "" Then
+                startDate = Session("CompDate")
+            Else
+                startDate = txtStartDate.Text
+            End If
+            If txtEndDate.Text = "" Then
+                endDate = Format(Date.Now, "dd-MMM-yyyy")
+            Else
+                endDate = txtEndDate.Text
+            End If
+            GvData.DataSource = Nothing
+            GvData.DataBind()
+            Dim prms As SqlParameter() = New SqlParameter(8) {}
+            prms(0) = New SqlParameter("@IDNo", Convert.ToString(Condition).ToLower())
+            prms(1) = New SqlParameter("@KitId", KitId)
+            prms(2) = New SqlParameter("@StartDate", Convert.ToDateTime(startDate))
+            prms(3) = New SqlParameter("@EndDate", Convert.ToDateTime(endDate))
+            prms(4) = New SqlParameter("@Formno", Convert.ToString(formno))
+            prms(5) = New SqlParameter("@PageIndex", PageIndex)
+            prms(6) = New SqlParameter("@PageSize", Integer.Parse(ddlPageSize.SelectedValue))
+            prms(7) = New SqlParameter("@IsExport", "N")
+            prms(8) = New SqlParameter("@RecordCount", ParameterDirection.Output)
+            Ds = SqlHelper.ExecuteDataset(HttpContext.Current.Session("MlmDatabase" & Session("CompID")), "sp_GetUsedEpinDetail", prms)
+            GvData.DataSource = Ds.Tables(0)
+            GvData.DataBind()
+
+            Dim recordCount As Integer = Ds.Tables(1).Rows(0)("RecordCount")
+            Session("UsedPin") = Ds.Tables(0)
+            ViewState("Generated Id") = "Generated Id"
+            ViewState("Sort_Order") = "ASC"
+            GvData.Visible = True
+            gvContainer.Visible = True
+            If Ds.Tables(0).Rows.Count > 0 Then
+                For i As Integer = 0 To GvData.Columns.Count - 1
+                    Dim tableCell As TableCell = GvData.HeaderRow.Cells(i)
+                    Dim img As New Image()
+                    img.ImageUrl = "~/Images/Uparrow.png"
+                    tableCell.Controls.Add(New LiteralControl("&nbsp;"))
+                    tableCell.Controls.Add(img)
+                Next
+                lblCount.Text = "Total Record: " & Ds.Tables(1).Rows(0)("RecordCount")
+                ' btnExport.Enabled = True
+                '   btnPrintAll.Enabled = True
+                '  btnPrintCurrent.Enabled = True
+            Else
+                lblErr.Text = "No Record Found!!"
+                'btnExport.Enabled = False
+                ' btnPrintAll.Enabled = False
+                ' btnPrintCurrent.Enabled = False
+            End If
+            Me.PopulatePager(recordCount, PageIndex)
+        Catch ex As Exception
+        End Try
+    End Sub
+    Protected Sub Gvdata_Sorting(ByVal sender As Object, ByVal e As GridViewSortEventArgs)
+        Try
+            ' If e.SortExpression = ViewState("FromIdno").ToString() Then
+            If ViewState("Sort_Order").ToString() = "ASC" Then
+                RebindData(e.SortExpression, "DESC")
+                For i As Integer = 0 To GvData.Columns.Count - 1
+                    Dim lbText As String = "DESC"
+                    ' Dim lbText As String = DirectCast(GvData.HeaderRow.Cells(i).Controls(0), LinkButton).Text
+                    If lbText = ViewState("Sort_Order").ToString() Then
+                        Dim tableCell As TableCell = GvData.HeaderRow.Cells(i)
+                        Dim img As New Image()
+                        img.ImageUrl = If((ViewState("Sort_Order").ToString() = "ASC"), "~/Images/Uparrow.png", "~/Images/DownArrow.png")
+                        tableCell.Controls.Add(New LiteralControl("&nbsp;"))
+                        tableCell.Controls.Add(img)
+                    End If
+                Next
+            Else
+                RebindData(e.SortExpression, "ASC")
+                For i As Integer = 0 To GvData.Columns.Count - 1
+                    Dim lbText As String = "ASC"
+                    If lbText = ViewState("Sort_Order").ToString() Then
+                        Dim tableCell As TableCell = GvData.HeaderRow.Cells(i)
+                        Dim img As New Image()
+                        img.ImageUrl = If((ViewState("Sort_Order").ToString() = "ASC"), "~/Images/Uparrow.png", "~/Images/DownArrow.png")
+                        tableCell.Controls.Add(New LiteralControl("&nbsp;"))
+                        tableCell.Controls.Add(img)
+
+                    End If
+                Next
+            End If
+
+            'Else
+            'RebindData(e.SortExpression, "ASC")
+            'End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Private Sub RebindData(ByVal sColimnName As String, ByVal sSortOrder As String)
+        Dim dt As DataTable = CType(Session("UsedPin"), DataTable)
+        dt.DefaultView.Sort = sColimnName + " " + sSortOrder
+        GvData.DataSource = dt
+        GvData.DataBind()
+        ViewState("Generated Id") = sColimnName
+        ViewState("Sort_Order") = sSortOrder
+    End Sub
+    Private Sub PopulatePager(ByVal recordCount As Integer, ByVal currentPage As Integer)
+        Dim pages As New List(Of ListItem)()
+        Dim startIndex As Integer, endIndex As Integer
+        Dim pagerSpan As Integer = 5
+
+        'Calculate the Start and End Index of pages to be displayed.
+        Dim dblPageCount As Double = CDbl(CDec(recordCount) / Convert.ToDecimal(ddlPageSize.SelectedValue))
+        Dim pageCount As Integer = CInt(Math.Ceiling(dblPageCount))
+        startIndex = If(currentPage > 1 AndAlso currentPage + pagerSpan - 1 < pagerSpan, currentPage, 1)
+        endIndex = If(pageCount > pagerSpan, pagerSpan, pageCount)
+        If currentPage > pagerSpan Mod 2 Then
+            If currentPage = 2 Then
+                endIndex = 5
+            Else
+                endIndex = currentPage + 2
+            End If
+        Else
+            endIndex = (pagerSpan - currentPage) + 1
+        End If
+
+        If endIndex - (pagerSpan - 1) > startIndex Then
+            startIndex = endIndex - (pagerSpan - 1)
+        End If
+
+        If endIndex > pageCount Then
+            endIndex = pageCount
+            startIndex = If(((endIndex - pagerSpan) + 1) > 0, (endIndex - pagerSpan) + 1, 1)
+        End If
+
+        'Add the First Page Button.
+        If currentPage > 1 Then
+            pages.Add(New ListItem("First", "1"))
+        End If
+
+        'Add the Previous Button.
+        If currentPage > 1 Then
+            pages.Add(New ListItem("<<", (currentPage - 1).ToString()))
+        End If
+
+        For i As Integer = startIndex To endIndex
+            pages.Add(New ListItem(i.ToString(), i.ToString(), i <> currentPage))
+        Next
+
+        'Add the Next Button.
+        If currentPage < pageCount Then
+            pages.Add(New ListItem(">>", (currentPage + 1).ToString()))
+        End If
+
+        'Add the Last Button.
+        If currentPage <> pageCount Then
+            pages.Add(New ListItem("Last", pageCount.ToString()))
+        End If
+        rptPager.DataSource = pages
+        rptPager.DataBind()
+    End Sub
+    Protected Sub Page_Changed(ByVal sender As Object, ByVal e As EventArgs)
+        Dim pageIndex As Integer = Integer.Parse(CType(sender, LinkButton).CommandArgument)
+        Me.BindData(pageIndex)
+    End Sub
+    Protected Sub btnSearch_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSearch.Click
+        lblErr.Text = ""
+        lblCount.Text = ""
+        'Dim Condition As String = ""
+        'Dim formno As String = ""
+        'Dim scrName As String = ""
+        Binddata(1)
+
+
+
+        'If ChkMem.Checked Then
+        '    If DDlSearchName.SelectedValue = "G" Then
+        '        Condition = Condition & " and a.Issuedidno='" & Trim(txtMember.Text) & "'"
+        '    Else
+        '        formno = GetFormNo()
+        '        Condition = Condition & " And a.UsedBy='" & Val(formno) & "'"
+        '    End If
+
+        'End If
+        'If txtStartDate.Text <> "" Then
+        '    Condition = Condition & " And  Cast(Convert(Varchar,a.UsedDate,106) as DateTime)>='" & txtStartDate.Text & "'"
+        'End If
+        'If txtEndDate.Text <> "" Then
+        '    Condition = Condition & " And Cast(Convert(Varchar,a.UsedDate,106)as DateTime)<='" & txtEndDate.Text & "'"
+        'End If
+        'If ChkKit.Checked Then
+        '    Condition = Condition & " And a.ProdId='" & CmbKit.SelectedValue & "'"
+        'End If
+        'Dim qry1 As String = ""
+        'qry1 = "select c.Idno as [Generated Id] ,(c.memFirstname+' '+c.Memlastname) as [Generated User Name], a.IssuedIdNo as  [PinSource MemberId],(b.MemFirstName+ ' '+b.MemLastName) as  [PinSource Member Name] ," & _
+        '        " Replace(Convert(Varchar,a.UsedDate,106),' ','-') + ' '+  CONVERT(varchar(15),CAST(a.UsedDate AS TIME),100) as [Pin Used Date and Time]," & _
+        '       " d.KitName as [Package Name],d.Bv as [Package BV],d.KitAmount as [Package MRP],a.Formno as [Epin Number],a.ScratchNo as [Epin Code] from M_FormGeneration as a,M_MemberMaster as b,M_MemberMaster as c,M_KitMaster as d where " & _
+        '    " a.IssuedIdno=b.Idno  and a.UsedBy=c.Formno and a.ProdId=d.KitId  and d.RowStatus='Y'" & Condition & " "
+
+        'dtData = New DataTable
+        'dtData = objDAL.GetData(qry1)
+        'If dtData.Rows.Count > 0 Then
+        '    GvData.DataSource = dtData
+        '    GvData.DataBind()
+        '    Session("UsedPin") = dtData
+        '    GvData.Visible = True
+        '    gvContainer.Visible = True
+        '    lblCount.Text = "Total : " & dtData.Rows.Count
+        'Else
+        '    GvData.Visible = False
+        '    gvContainer.Visible = False
+        '    lblErr.Text = "No Record Found!!"
+        'End If
+
+    End Sub
+    Private Function GetFormNo() As String
+        objDal = New DAL(HttpContext.Current.Session("MlmDatabase" & Session("CompID")))
+        Dim idNo As String
+        Dim formno As String
+        idNo = txtMember.Text
+        idNo = idNo.Trim
+        Dim qry As String = "Select FormNo from " & objDAL.tblMemberMaster & " where IdNo='" & idNo & "'"
+        Dim dt As New DataTable
+        dt = objDAL.GetData(qry)
+        If (dt.Rows.Count > 0) Then
+            formno = dt.Rows(0)("FormNo")
+        Else
+            lblErr.Text = "Member Id does not exist. Please check it once and then enter it again."
+            lblErr.Visible = True
+            txtMember.Text = ""
+        End If
+        Return formno
+    End Function
+    Protected Sub btnPrintCurrent_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnPrintCurrent.Click
+        GvData.AllowPaging = False
+        GvData.GridLines = GridLines.Both
+        dtData = New DataTable
+        dtData = Session("UsedPin1")
+        GvData.DataSource = dtData
+        GvData.DataBind()
+        GvData.PagerSettings.Visible = False
+        'gridview.BorderWidth = "2px"
+        GvData.BorderStyle = BorderStyle.Solid
+        GvData.BorderColor = Drawing.Color.Black
+
+        'Remove modify and Delete columns from grid
+        'GvData.HeaderRow.Cells(GvData.HeaderRow.Cells.Count - 1).Visible = False
+        'GvData.HeaderRow.Cells(GvData.HeaderRow.Cells.Count - 2).Visible = False
+        'For i As Integer = 0 To GvData.Rows.Count - 1
+        '    GvData.Rows(i).Cells(GvData.HeaderRow.Cells.Count - 1).Visible = False
+        '    GvData.Rows(i).Cells(GvData.HeaderRow.Cells.Count - 2).Visible = False
+        'Next
+
+        Dim sw As New StringWriter()
+
+        Dim hw As New HtmlTextWriter(sw)
+
+        GvData.RenderControl(hw)
+
+        Dim gridHTML As String = sw.ToString().Replace("""", "'").Replace(System.Environment.NewLine, "")
+
+        Dim sb As New StringBuilder()
+
+        sb.Append("<script type = 'text/javascript'>")
+
+        sb.Append("window.onload = new function(){")
+
+        sb.Append("var printWin = window.open('', '', 'left=0")
+
+        sb.Append(",top=0,width=1000,height=600,status=0');")
+
+        sb.Append("printWin.document.write(""")
+
+        sb.Append(gridHTML)
+
+        sb.Append(""");")
+
+        sb.Append("printWin.document.close();")
+
+        sb.Append("printWin.focus();")
+
+        sb.Append("printWin.print();")
+
+        sb.Append("printWin.close();};")
+
+        sb.Append("</script>")
+
+        ClientScript.RegisterStartupScript(Me.GetType(), "GridPrint", sb.ToString())
+
+        GvData.AllowPaging = True
+        GvData.PagerSettings.Visible = True
+        dtData = New DataTable
+        dtData = Session("UsedPin1")
+        GvData.DataSource = dtData
+        GvData.DataBind()
+    End Sub
+
+    Protected Sub btnPrintAll_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnPrintAll.Click
+        GvData.AllowPaging = False
+        GvData.GridLines = GridLines.Both
+        dtData = New DataTable
+        dtData = Session("UsedPin1")
+        GvData.DataSource = dtData
+        GvData.DataBind()
+        GvData.PagerSettings.Visible = False
+        GvData.BorderStyle = BorderStyle.Solid
+        ' gridview.BorderWidth = 
+        GvData.BorderColor = Drawing.Color.Black
+
+        'Remove modify and Delete columns from grid
+        'GvData.HeaderRow.Cells(GvData.HeaderRow.Cells.Count - 1).Visible = False
+        'GvData.HeaderRow.Cells(GvData.HeaderRow.Cells.Count - 2).Visible = False
+        'For i As Integer = 0 To GvData.Rows.Count - 1
+        '    GvData.Rows(i).Cells(GvData.HeaderRow.Cells.Count - 1).Visible = False
+        '    GvData.Rows(i).Cells(GvData.HeaderRow.Cells.Count - 2).Visible = False
+        'Next
+
+        Dim sw As New StringWriter()
+
+        Dim hw As New HtmlTextWriter(sw)
+
+        GvData.RenderControl(hw)
+
+        Dim gridHTML As String = sw.ToString().Replace("""", "'").Replace(System.Environment.NewLine, "")
+
+        Dim sb As New StringBuilder()
+
+        sb.Append("<script type = 'text/javascript'>")
+
+        sb.Append("window.onload = new function(){")
+
+        sb.Append("var printWin = window.open('', '', 'left=0")
+
+        sb.Append(",top=0,width=1000,height=1000,status=0');")
+
+        sb.Append("printWin.document.write(""")
+
+        sb.Append(gridHTML)
+
+        sb.Append(""");")
+
+        sb.Append("printWin.document.close();")
+
+        sb.Append("printWin.focus();")
+
+        sb.Append("printWin.print();")
+
+        sb.Append("printWin.close();};")
+
+        sb.Append("</script>")
+
+        ClientScript.RegisterStartupScript(Me.[GetType](), "GridPrint", sb.ToString())
+
+        GvData.AllowPaging = True
+        GvData.PagerSettings.Visible = True
+        dtData = New DataTable
+        dtData = Session("UsedPin1")
+        GvData.DataSource = dtData
+        GvData.DataBind()
+    End Sub
+
+    Protected Sub PageSize_Changed(ByVal sender As Object, ByVal e As EventArgs)
+        Me.BindData(1)
+    End Sub
+End Class
