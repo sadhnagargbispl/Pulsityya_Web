@@ -290,14 +290,17 @@
                             <td><span id="lblOrderNoText" text-align="right"> @Model.OrderNo </span></td> *@
                             <td> <span id="lblOrderNo" text-align="right">State:</span></td>
 
-                            <td><span id="lblOrderNoText" text-align="right"> UP </span></td>
+                            <td><span id="lblOrderNoText" text-align="right"> @comp.DisplayState() </span></td>
 
                         </tr>
-                        <tr>
-                            <td> <span text-align="right">StateCode:</span></td>
+                        @if (!string.IsNullOrEmpty(comp.GstStateCode()))
+                        {
+                            <tr>
+                                <td> <span text-align="right">StateCode:</span></td>
 
-                            <td><span text-align="right">  09 </span></td>
-                        </tr>
+                                <td><span text-align="right">  @comp.GstStateCode() </span></td>
+                            </tr>
+                        }
                         <tr>
                             <td> <span text-align="right">Pan No:</span></td>
 

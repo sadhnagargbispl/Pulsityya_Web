@@ -43,5 +43,9 @@ namespace VitaFlow.Domain.Entities
         public string FTPPassw { get; set; }
         public string CompCity { get; set; }
         public string CompLogo { get; set; }
+        public string logourl { get; set; }
+        public string CompGSTNo { get; set; }
+        // not a table column - state name looked up from M_StateDivMaster by CompState
+        public string CompStateName { get; set; }
     }
 }

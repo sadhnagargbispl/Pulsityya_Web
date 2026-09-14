@@ -296,6 +296,18 @@ namespace VitaFlow.Infrastructure.Repository
                 {
                     var sql = "select * from M_CompanyMaster";
                     obj = (await connection.QueryAsync<M_CompanyMaster>(sql, commandType: CommandType.Text)).FirstOrDefault();
+                    if (obj != null && obj.CompState > 0)
+                    {
+                        try
+                        {
+                            var stateSql = "select top 1 StateName from M_StateDivMaster where StateCode = @StateCode";
+                            obj.CompStateName = await connection.QueryFirstOrDefaultAsync<string>(stateSql, new { StateCode = obj.CompState });
+                        }
+                        catch (Exception)
+                        {
+                            // state name is optional - never lose the company row because of it
+                        }
+                    }
                 }
 
             }

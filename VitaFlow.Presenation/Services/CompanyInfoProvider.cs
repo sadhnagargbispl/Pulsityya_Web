@@ -86,9 +86,26 @@ namespace VitaFlow.Presenation.Services
             return site.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? site : "https://" + site;
         }
 
+        public static string DisplayState(this M_CompanyMaster comp)
+        {
+            return First(comp?.CompStateName);
+        }
+
+        public static string GstNo(this M_CompanyMaster comp)
+        {
+            return First(comp?.CompGSTNo, comp?.CompTinNo, comp?.CompCSTNo);
+        }
+
+        /// <summary>GST state code = first two digits of the company GSTIN (blank when there is no GSTIN).</summary>
+        public static string GstStateCode(this M_CompanyMaster comp)
+        {
+            var gst = comp.GstNo();
+            return gst.Length >= 2 && char.IsDigit(gst[0]) && char.IsDigit(gst[1]) ? gst.Substring(0, 2) : string.Empty;
+        }
+
         public static string LogoUrl(this M_CompanyMaster comp, IUrlHelper url)
         {
-            var logo = comp?.CompLogo;
+            var logo = First(comp?.logourl, comp?.CompLogo);
             if (string.IsNullOrWhiteSpace(logo))
             {
                 return url.Content(DefaultLogo);
