@@ -33,7 +33,7 @@ public partial class Directlogin : System.Web.UI.Page
             ColumnName();
             Pages();
 
-            conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             conn.Open();
 
             Response.Cache.SetCacheability(HttpCacheability.NoCache);
@@ -204,7 +204,7 @@ public partial class Directlogin : System.Web.UI.Page
             SqlDataReader dRead;
             SqlCommand cmd;
 
-            conn = new SqlConnection(Application["sConnect"].ToString());
+            conn = SqlConnTracker.Create(Application["sConnect"].ToString());
             conn.Open();
 
             cmd = new SqlCommand(str, conn);
@@ -276,9 +276,10 @@ public partial class Directlogin : System.Web.UI.Page
     }
     private void getData()
     {
+        cls_DataAccess dbConnect = null;
         try
         {
-            cls_DataAccess dbConnect = new cls_DataAccess(
+            dbConnect = new cls_DataAccess(
                 HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString()
             );
 
@@ -390,6 +391,10 @@ public partial class Directlogin : System.Web.UI.Page
             Session["CompName"] = "";
             Session["CompAdd"] = "";
             Session["CompWeb"] = "";
+        }
+        finally
+        {
+            dbConnect?.CloseConnection();
         }
     }
     private void enterHomePg()

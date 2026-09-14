@@ -34,9 +34,9 @@ public partial class epinDetailtopup : System.Web.UI.Page
             if (Session["Status"] != null && Session["Status"].ToString() == "OK")
             {
                 obj = new DAL();
-                Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+                Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
                 Conn.Open();
-                Connselect = new SqlConnection(HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]].ToString());
+                Connselect = SqlConnTracker.Create(HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]].ToString());
                 Connselect.Open();
                 if (!Page.IsPostBack)
                 {

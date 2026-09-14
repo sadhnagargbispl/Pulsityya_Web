@@ -112,9 +112,9 @@ public partial class ProcessAPIWithK : System.Web.UI.Page
                                               CommandType.Text, sql);
             }
             catch { }
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             Conn.Open();
-            Connselect = new SqlConnection(HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]].ToString());
+            Connselect = SqlConnTracker.Create(HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]].ToString());
             Connselect.Open();
             constr = HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString();
 
@@ -337,9 +337,10 @@ public partial class ProcessAPIWithK : System.Web.UI.Page
     }
     private void getData()
     {
+        cls_DataAccess dbConnect = null;
         try
         {
-            var dbConnect = new cls_DataAccess((string)HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]]);
+            dbConnect = new cls_DataAccess((string)HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]]);
             dbConnect.OpenConnection();
 
             // -----------------------
@@ -464,6 +465,10 @@ public partial class ProcessAPIWithK : System.Web.UI.Page
             HttpContext.Current.Session["CompName"] = "";
             HttpContext.Current.Session["CompAdd"] = "";
             HttpContext.Current.Session["CompWeb"] = "";
+        }
+        finally
+        {
+            dbConnect?.CloseConnection();
         }
     }
     public void Process(string _Reqtype, Dictionary<string, string> dict)

@@ -298,9 +298,10 @@ public partial class StatementDailyPB : System.Web.UI.Page
     }
     private void getData()
     {
+        cls_DataAccess dbConnect = null;
         try
         {
-            cls_DataAccess dbConnect = new cls_DataAccess(
+            dbConnect = new cls_DataAccess(
                 HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]].ToString()
             );
 
@@ -354,6 +355,10 @@ public partial class StatementDailyPB : System.Web.UI.Page
             Session["CompName"] = "";
             Session["CompAdd"] = "";
             Session["CompWeb"] = "";
+        }
+        finally
+        {
+            dbConnect?.CloseConnection();
         }
     }
     public string GetCompID()

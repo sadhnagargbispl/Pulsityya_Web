@@ -515,9 +515,10 @@ public partial class NewJoiningfreeuc : System.Web.UI.Page
 
     private void getData()
     {
+        cls_DataAccess dbConnect = null;
         try
         {
-            var dbConnect = new cls_DataAccess((string)HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]]);
+            dbConnect = new cls_DataAccess((string)HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]]);
             dbConnect.OpenConnection();
 
             // -----------------------
@@ -642,6 +643,10 @@ public partial class NewJoiningfreeuc : System.Web.UI.Page
             HttpContext.Current.Session["CompName"] = "";
             HttpContext.Current.Session["CompAdd"] = "";
             HttpContext.Current.Session["CompWeb"] = "";
+        }
+        finally
+        {
+            dbConnect?.CloseConnection();
         }
     }
     private void FillPaymode()

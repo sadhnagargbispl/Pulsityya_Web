@@ -299,9 +299,10 @@ public partial class welcome : System.Web.UI.Page
     }
     private void getData()
     {
+        cls_DataAccess dbConnect = null;
         try
         {
-            cls_DataAccess dbConnect =
+            dbConnect =
                 new cls_DataAccess(HttpContext.Current.Session["MlmDatabase" + HttpContext.Current.Session["CompID"]].ToString());
 
             dbConnect.OpenConnection();
@@ -403,6 +404,10 @@ public partial class welcome : System.Web.UI.Page
             HttpContext.Current.Session["CompName"] = "";
             HttpContext.Current.Session["CompAdd"] = "";
             HttpContext.Current.Session["CompWeb"] = "";
+        }
+        finally
+        {
+            dbConnect?.CloseConnection();
         }
     }
     protected void btnActive_ServerClick(object sender, EventArgs e)

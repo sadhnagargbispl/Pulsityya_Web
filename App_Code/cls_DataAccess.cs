@@ -32,7 +32,8 @@ public class cls_DataAccess
         {
             if (cnnObject == null)
             {
-                cnnObject = new SqlConnection(_ConnectionString);
+                // tracked: closed at the end of the request even if the page never calls CloseConnection()
+                cnnObject = SqlConnTracker.Create(_ConnectionString);
             }
 
             if (cnnObject.State == ConnectionState.Closed || cnnObject.State == ConnectionState.Broken)

@@ -40,9 +40,9 @@ public partial class CheckLogin : System.Web.UI.Page
             //ColumnName();
            // Pages();
             Obj = new DAL();
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             Conn.Open();
-            Connselect = new SqlConnection(HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]].ToString());
+            Connselect = SqlConnTracker.Create(HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]].ToString());
             Connselect.Open();
             getData();
 
@@ -806,9 +806,10 @@ public partial class CheckLogin : System.Web.UI.Page
     }
     private void getData()
     {
+        cls_DataAccess dbConnect = null;
         try
         {
-            cls_DataAccess dbConnect = new cls_DataAccess(
+            dbConnect = new cls_DataAccess(
                 HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]].ToString());
 
             dbConnect.OpenConnection();
@@ -922,6 +923,10 @@ public partial class CheckLogin : System.Web.UI.Page
             Session["CompAdd"] = "";
             Session["CompWeb"] = "";
         }
+        finally
+        {
+            dbConnect?.CloseConnection();
+        }
     }
     private string GetWalletName(string WalletType)
     {
@@ -955,7 +960,7 @@ public partial class CheckLogin : System.Web.UI.Page
 
         try
         {
-            Conn = new SqlConnection(
+            Conn = SqlConnTracker.Create(
                 HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]].ToString()
             );
             Conn.Open();
@@ -988,7 +993,7 @@ public partial class CheckLogin : System.Web.UI.Page
         {
             double RtrVal = 0;
 
-            Conn = new SqlConnection(
+            Conn = SqlConnTracker.Create(
                 HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]].ToString()
             );
             Conn.Open();
@@ -1030,7 +1035,7 @@ public partial class CheckLogin : System.Web.UI.Page
             int LoginSuccess = 0;
             int FormNo = 0;
 
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             if (Conn.State == ConnectionState.Closed) Conn.Open();
 
             FormNo = GetFormNo(Uname, Pwd);
@@ -1159,7 +1164,7 @@ public partial class CheckLogin : System.Web.UI.Page
             int LoginSuccess = 0;
             int FormNo = 0;
 
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             if (Conn.State == ConnectionState.Closed) Conn.Open();
 
             FormNo = GetFormNo_1(Uname);
@@ -1277,7 +1282,7 @@ public partial class CheckLogin : System.Web.UI.Page
     {
         try
         {
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             Conn.Open();
 
             double AvailBal;
@@ -1345,7 +1350,7 @@ public partial class CheckLogin : System.Web.UI.Page
     {
         try
         {
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             Conn.Open();
 
             double AvailBal = 0;
@@ -1870,7 +1875,7 @@ public partial class CheckLogin : System.Web.UI.Page
             int FormNo = 0;
             int fromrankid = 0;
 
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
 
             string str = Obj.IsoStart + "Select * FROM " + Obj.dBName + "..M_MemberMaster WHERE IDNo='" + Uname + "'" + Obj.IsoEnd;
             DataTable Dt_ = SqlHelper.ExecuteDataset(
@@ -2093,7 +2098,7 @@ public partial class CheckLogin : System.Web.UI.Page
             int FormNo = 0;
             int fromrankid = 0;
 
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
 
             string str = Obj.IsoStart + "Select * FROM " + Obj.dBName + "..M_MemberMaster WHERE IDNo = '" + Uname + "'" + Obj.IsoEnd;
             DataTable Dt_ = SqlHelper.ExecuteDataset(
@@ -2239,7 +2244,7 @@ public partial class CheckLogin : System.Web.UI.Page
         }
         catch { }
 
-        Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+        Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
         if (Conn.State == ConnectionState.Closed) Conn.Open();
 
         string str = "";
@@ -2270,7 +2275,7 @@ public partial class CheckLogin : System.Web.UI.Page
     }
     private int GetFormNo_1(string Uname)
     {
-        Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+        Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
         if (Conn.State == ConnectionState.Closed) Conn.Open();
 
         string str = Obj.IsoStart + "Select * FROM " + Obj.dBName + "..M_MemberMaster WHERE IDNo='" + Uname + "'" + Obj.IsoEnd;
@@ -2289,7 +2294,7 @@ public partial class CheckLogin : System.Web.UI.Page
     }
     private int GetrankFormNo(string Uname)
     {
-        Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+        Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
         if (Conn.State == ConnectionState.Closed) Conn.Open();
 
         string str = Obj.IsoStart + "Select * FROM " + Obj.dBName + "..M_MemberMaster WHERE Idno='" + Uname + "' and Planid=5" + Obj.IsoEnd;
@@ -2314,7 +2319,7 @@ public partial class CheckLogin : System.Web.UI.Page
     }
     private int GetrankFormNoNew(string Uname)
     {
-        Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+        Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
         if (Conn.State == ConnectionState.Closed) Conn.Open();
 
         string str = Obj.IsoStart + "Select * FROM " + Obj.dBName + "..M_MemberMaster WHERE Idno='" + Uname + "' and Planid=5" + Obj.IsoEnd;
@@ -2336,7 +2341,7 @@ public partial class CheckLogin : System.Web.UI.Page
     {
         try
         {
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             Conn.Open();
 
             double AvailBal = 0;
@@ -2441,7 +2446,7 @@ public partial class CheckLogin : System.Web.UI.Page
         {
             int LoginSuccess = 0, FormNo = 0;
 
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             if (Conn.State == ConnectionState.Closed) Conn.Open();
 
             FormNo = GetFormNo(Uname, Pwd);
@@ -2555,7 +2560,7 @@ public partial class CheckLogin : System.Web.UI.Page
         {
             int LoginSuccess = 0, FormNo = 0;
 
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             if (Conn.State == ConnectionState.Closed) Conn.Open();
 
             FormNo = GetFormNo_1(Uname);
@@ -2678,7 +2683,7 @@ public partial class CheckLogin : System.Web.UI.Page
         {
             double RtrVal = 0;
 
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             Conn.Open();
 
             string query = Obj.IsoStart + "Select balance From dbo.ufnGetBalance('" + FormNo + "','" + Session["RWalletType"] + "')" + Obj.IsoEnd;
@@ -2708,7 +2713,7 @@ public partial class CheckLogin : System.Web.UI.Page
         {
             double RtrVal = 0;
 
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             Conn.Open();
 
             string query = Obj.IsoStart + "Select balance From dbo.ufnGetBalance('" + FormNo + "','" + Session["MWalletType"] + "')" + Obj.IsoEnd;
@@ -2751,7 +2756,7 @@ public partial class CheckLogin : System.Web.UI.Page
         {
             int LoginSuccess = 0, FormNo = 0;
 
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             if (Conn.State == ConnectionState.Closed) Conn.Open();
 
             FormNo = GetFormNo(Uname, Pwd);
@@ -2964,7 +2969,7 @@ public partial class CheckLogin : System.Web.UI.Page
                     InVoiceNo = 0;
 
                     // ----------- Get Session ID -----------
-                    Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+                    Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
                     if (Conn.State == ConnectionState.Closed) Conn.Open();
 
                     Comm = new SqlCommand(Obj.IsoStart + "Select top 1 SessId as SessId from " + Obj.dBName + "..M_SessnMaster order by SessID desc" + Obj.IsoEnd, Connselect);
@@ -3093,7 +3098,7 @@ public partial class CheckLogin : System.Web.UI.Page
         {
             int LoginSuccess = 0, FormNo = 0;
 
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             if (Conn.State == ConnectionState.Closed) Conn.Open();
 
             FormNo = GetFormNo(Uname, Pwd);
@@ -3170,7 +3175,7 @@ public partial class CheckLogin : System.Web.UI.Page
             SqlDataAdapter adp;
             DataTable Dt = new DataTable();
 
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             Conn.Open();
 
             _output = "{\"states\": [";
@@ -3210,7 +3215,7 @@ public partial class CheckLogin : System.Web.UI.Page
             SqlDataAdapter adp;
             DataTable Dt = new DataTable();
 
-            Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+            Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
             Conn.Open();
 
             _output = "{\"bank\": [";
@@ -3248,7 +3253,7 @@ public partial class CheckLogin : System.Web.UI.Page
     {
         SqlDataReader Dread;
 
-        Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+        Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
         Conn.Open();
 
         // -------------------- CHECK REFERRAL --------------------

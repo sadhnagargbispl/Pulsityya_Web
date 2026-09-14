@@ -803,7 +803,7 @@ public partial class Fundwithdraw : System.Web.UI.Page
 
                 string Sessid = "";
 
-                Conn = new SqlConnection(
+                Conn = SqlConnTracker.Create(
                     HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString()
                 );
                 Conn.Open();

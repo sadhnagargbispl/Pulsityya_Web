@@ -25,7 +25,7 @@ public partial class DownlinePurchase : System.Web.UI.Page
             if (Session["Status"] != null && Session["Status"].ToString() == "OK")
             {
                 obj = new DAL();
-                Conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+                Conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
                 Conn.Open();
                 if (!IsPostBack)
                 {

@@ -16,6 +16,12 @@
         }
     }
 
+    protected void Application_EndRequest(object sender, EventArgs e)
+    {
+        // Close any SQL connection that was left open during this request
+        SqlConnTracker.CloseAll();
+    }
+
     protected void Application_Start(object sender, EventArgs e)
     {
         // Code that runs on application startup
@@ -55,13 +61,12 @@ new ScriptResourceDefinition
     }
     private void getData()
     {
+        cls_DataAccess dbConnect = null;
         try
         {
 
-            var dbConnect = new cls_DataAccess("Data Source =103.193.74.91,1533;Initial Catalog=darju9;Integrated Security=false;User ID=usrdarju9;PWD=Ju9!7@#DrVsh;Max Pool Size=2000;Pooling=true");
+            dbConnect = new cls_DataAccess("Data Source =103.193.74.91,1533;Initial Catalog=darju9;Integrated Security=false;User ID=usrdarju9;PWD=Ju9!7@#DrVsh;Max Pool Size=2000;Pooling=true");
             dbConnect.OpenConnection();
-            var dbConnectselect = new cls_DataAccess("Data Source =103.193.74.91,1533;Initial Catalog=darju9select;Integrated Security=false;User ID=usrdarju9;PWD=Ju9!7@#DrVsh;Max Pool Size=2000;Pooling=true");
-            dbConnectselect.OpenConnection();
             var session = HttpContext.Current.Session;
             var dbName = "darju9";
             //var dbConnect = new cls_DataAccess(dbName);
@@ -159,9 +164,6 @@ new ScriptResourceDefinition
                 session["CurrentSessn"] = "";
             }
             dRead.Close();
-
-            // Close connection if your cls_DataAccess provides a close method
-            dbConnect.CloseConnection();
         }
         catch
         {
@@ -171,6 +173,11 @@ new ScriptResourceDefinition
             session["CompAdd"] = "";
             session["CompWeb"] = "";
             session["Title"] = "Welcome";
+        }
+        finally
+        {
+            // close even if a query failed
+            dbConnect?.CloseConnection();
         }
     }
 </script>

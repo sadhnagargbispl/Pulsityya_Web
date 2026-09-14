@@ -732,11 +732,10 @@ body, h1, h2, h3, h4, h5, h6, td, th, p, span, strong {
     }
     private void getData()
     {
+        cls_DataAccess dbConnectselect = null;
         try
         {
-            var dbConnect = new cls_DataAccess((string)HttpContext.Current.Session["MlmDatabase" + Session["CompID"]]);
-            dbConnect.OpenConnection();
-            var dbConnectselect = new cls_DataAccess((string)HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]]);
+            dbConnectselect = new cls_DataAccess((string)HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]]);
             dbConnectselect.OpenConnection();
             using (var cmd = new SqlCommand(obj.IsoStart + " select * from " + obj.dBName + "..M_CompanyMaster " + obj.IsoEnd, dbConnectselect.cnnObject))
             using (var dRead = cmd.ExecuteReader())
@@ -857,6 +856,10 @@ body, h1, h2, h3, h4, h5, h6, td, th, p, span, strong {
             HttpContext.Current.Session["CompName"] = "";
             HttpContext.Current.Session["CompAdd"] = "";
             HttpContext.Current.Session["CompWeb"] = "";
+        }
+        finally
+        {
+            dbConnectselect?.CloseConnection();
         }
     }
     private string ClearInject(string StrObj)

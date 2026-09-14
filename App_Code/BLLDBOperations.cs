@@ -18,7 +18,7 @@ public class BLLDBOperations
 
 
     DbProviderFactory provider;
-    protected SqlConnection ConnStr = new SqlConnection();
+    protected SqlConnection ConnStr = SqlConnTracker.Track(new SqlConnection());
 
     decimal MinimumCharges;
     //public ClassOperations()
@@ -188,7 +188,8 @@ public class BLLDBOperations
         DbDataReader dr;
         CloseConnection();
         OpenConnection();
-        dr = command.ExecuteReader();
+        // closing the reader also closes the connection
+        dr = command.ExecuteReader(CommandBehavior.CloseConnection);
         return dr;
     }
     public DbDataReader GetDataReader(String commandText, CommandType commandType)

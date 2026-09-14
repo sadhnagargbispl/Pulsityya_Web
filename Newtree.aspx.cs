@@ -40,7 +40,7 @@ public partial class NewTree : System.Web.UI.Page
             {
                 obj = new DAL();
 
-                conn = new SqlConnection(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
+                conn = SqlConnTracker.Create(HttpContext.Current.Session["MlmDatabase" + Session["CompID"]].ToString());
                 conn.Open();
 
                 if (!Page.IsPostBack)

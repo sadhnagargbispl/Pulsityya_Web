@@ -143,11 +143,10 @@ public partial class SitePage : System.Web.UI.MasterPage
     }
     private void getData()
     {
+        cls_DataAccess dbConnectselect = null;
         try
         {
-            var dbConnect = new cls_DataAccess((string)HttpContext.Current.Session["MlmDatabase" + Session["CompID"]]);
-            dbConnect.OpenConnection();
-            var dbConnectselect = new cls_DataAccess((string)HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]]);
+            dbConnectselect = new cls_DataAccess((string)HttpContext.Current.Session["MlmSelectDatabase" + Session["CompID"]]);
             dbConnectselect.OpenConnection();
             using (var cmd = new SqlCommand(obj.IsoStart + " select * from " + obj.dBName + "..M_CompanyMaster " + obj.IsoEnd, dbConnectselect.cnnObject))
             using (var dRead = cmd.ExecuteReader())
@@ -268,6 +267,10 @@ public partial class SitePage : System.Web.UI.MasterPage
             HttpContext.Current.Session["CompName"] = "";
             HttpContext.Current.Session["CompAdd"] = "";
             HttpContext.Current.Session["CompWeb"] = "";
+        }
+        finally
+        {
+            dbConnectselect?.CloseConnection();
         }
     }
     public string CallPostFunction(string detail, string url)

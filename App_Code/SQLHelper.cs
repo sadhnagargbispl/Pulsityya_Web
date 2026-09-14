@@ -305,16 +305,23 @@ public sealed class SqlHelper
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
         bool mustCloseConnection = false;
-        PrepareCommand(cmd, connection, (SqlTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection);
+        try
+        {
+            PrepareCommand(cmd, connection, (SqlTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection);
 
-        // Finally, execute the command
-        int retval = cmd.ExecuteNonQuery();
+            // Finally, execute the command
+            int retval = cmd.ExecuteNonQuery();
 
-        // Detach the SqlParameters from the command object, so they can be used again
-        cmd.Parameters.Clear();
-        if (mustCloseConnection)
-            connection.Close();
-        return retval;
+            // Detach the SqlParameters from the command object, so they can be used again
+            cmd.Parameters.Clear();
+            return retval;
+        }
+        finally
+        {
+            // Close the connection we opened, even if the command failed
+            if (mustCloseConnection)
+                connection.Close();
+        }
     }
 
     /// <summary>
@@ -551,23 +558,29 @@ public sealed class SqlHelper
         // Create a command and prepare it for execution
         SqlCommand cmd = new SqlCommand();
         bool mustCloseConnection = false;
-        PrepareCommand(cmd, connection, (SqlTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection);
-
-        // Create the DataAdapter & DataSet
-        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+        try
         {
-            DataSet ds = new DataSet();
+            PrepareCommand(cmd, connection, (SqlTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection);
 
-            // Fill the DataSet using default values for DataTable names, etc
-            da.Fill(ds);
-            // Detach the SqlParameters from the command object, so they can be used again
-            cmd.Parameters.Clear();
+            // Create the DataAdapter & DataSet
+            using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+            {
+                DataSet ds = new DataSet();
 
+                // Fill the DataSet using default values for DataTable names, etc
+                da.Fill(ds);
+                // Detach the SqlParameters from the command object, so they can be used again
+                cmd.Parameters.Clear();
+
+                // Return the dataset
+                return ds;
+            }
+        }
+        finally
+        {
+            // Close the connection we opened, even if the command failed
             if (mustCloseConnection)
                 connection.Close();
-
-            // Return the dataset
-            return ds;
         }
     }
 
@@ -825,7 +838,8 @@ public sealed class SqlHelper
         SqlConnection connection = null;
         try
         {
-            connection = new SqlConnection(connectionString);
+            // tracked: closed at the end of the request even if the caller never closes the reader
+            connection = SqlConnTracker.Create(connectionString);
             connection.Open();
 
             // Call the private overload that takes an internally owned connection in place of the connection string
@@ -1149,18 +1163,24 @@ public sealed class SqlHelper
         SqlCommand cmd = new SqlCommand();
 
         bool mustCloseConnection = false;
-        PrepareCommand(cmd, connection, (SqlTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection);
+        try
+        {
+            PrepareCommand(cmd, connection, (SqlTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection);
 
-        // Execute the command & return the results
-        object retval = cmd.ExecuteScalar();
+            // Execute the command & return the results
+            object retval = cmd.ExecuteScalar();
 
-        // Detach the SqlParameters from the command object, so they can be used again
-        cmd.Parameters.Clear();
+            // Detach the SqlParameters from the command object, so they can be used again
+            cmd.Parameters.Clear();
 
-        if (mustCloseConnection)
-            connection.Close();
-
-        return retval;
+            return retval;
+        }
+        finally
+        {
+            // Close the connection we opened, even if the command failed
+            if (mustCloseConnection)
+                connection.Close();
+        }
     }
 
     /// <summary>
