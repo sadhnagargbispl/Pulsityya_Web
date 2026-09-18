@@ -38,17 +38,16 @@ namespace VitaFlow.Presenation.Controllers
         //    }
 
         //}
-        public IActionResult WalletRequest(string walletType)
+        public async Task<IActionResult> WalletRequest(string walletType)
         {
             if (!string.IsNullOrEmpty(HttpContext.Session.GetString("Status")))
             {
                 var model = new M_WalletRequest();
 
-                // Button से आए तो वही wallet preselect कर दें
-                if (!string.IsNullOrEmpty(walletType))
-                {
-                    model.VType = walletType; // "P" या "B"
-                }
+                // एक ही wallet है (VoucherType where IsWr = 1), इसलिए selection नहीं - सीधे वही set कर देते हैं
+                var wallet = await i_Product.GetWalletType();
+                model.VType = (wallet.Vtype ?? "").Trim();
+                ViewBag.WalletName = wallet.Voucher_Discrption;
 
                 return View(model);
             }
@@ -83,7 +82,8 @@ namespace VitaFlow.Presenation.Controllers
                         await req.Image.CopyToAsync(stream);
                     }
                     req.ReqBy = HttpContext.Session.GetString("FCode");
-                    req.VType = req.VType;
+                    // Single wallet setup - wallet हमेशा master से ही लेते हैं
+                    req.VType = ((await i_Product.GetWalletType()).Vtype ?? "").Trim();
                     req.ScannedFileName = ShoppingUrl + ScannedFileName;
                     Response = await i_Transaction.SaveWalletRequest(req);
                     if (Response != null && Response == "OK")

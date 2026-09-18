@@ -134,25 +134,9 @@
                             <option value="HDFC">HDFC</option>
                         </select>
                     </div>
-                   @* @*  @{
-                        var walletType = Context.Request.Query["walletType"].ToString();
-                    }
-                    <div class="form-group">
-                        <select class="form-control" id="VType" asp-for="VType" name="VType">
-                            <option value="0" @(walletType == "0" ? "selected" : "")>--Select Wallet--</option>
-                            <option value="B" @(walletType == "B" ? "selected" : "")>BV Wallet</option>
-                            <option value="P" @(walletType == "P" ? "selected" : "")>PV Wallet</option>
-                        </select>
-                    </div> *@
+                    @* एक ही wallet है (VoucherType where IsWr = 1), इसलिए selection हटा दिया गया है *@
+                    <input type="hidden" id="VType" asp-for="VType" />
 
-                     <div class="form-group col-md-6">
-                    <label>Select Wallet</label>
-                    <select class="form-control" id="VType" asp-for="VType" name="Select Wallet">
-                    <option value="0">--Select Wallet--</option>
-                            <option value="Z">BV Wallet Purchase Balanace</option>
-                            <option value="W">PV Wallet Purchase Balanace</option>
-                    </select>
-                    </div>
                             <div class="form-group col-md-6">
                                 <label>Upload Receipt</label>
                                 <div class="input-group file-browser">
@@ -345,19 +329,6 @@
                 }
             }
             var VType = $("#VType").val();
-            //var VType = "R";
-            if (VType == "0") {
-                toastr.error("Please select Wallet", 'Error', {
-                    closeButton: true,
-                    progressBar: true,
-                    positionClass: 'toast-top-right',
-                    timeOut: 5000, // 5 seconds
-                    extendedTimeOut: 1000 // 1 second longer than timeOut
-                });
-                e.preventDefault();
-                $("#VType").focus();
-                return false;
-            }
             var timage = $("#timage").val();
             if (timage == "") {
                 toastr.error("Please select image", 'Error', {
@@ -412,7 +383,6 @@
         $("#trndate").val('');
         $("#paymode").val('0');
         $("#BankName").val('0');
-        $("#VType").val('0');
         $("#remark").val('');
         $("#timage").val('');
         $(".browse-file").val('');   // "choose" text box clear

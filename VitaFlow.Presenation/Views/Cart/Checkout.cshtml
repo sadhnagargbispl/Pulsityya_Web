@@ -123,10 +123,10 @@
 
 
 
-        // On dropdown change
-        $("#ordermethod").on("change", function () {
+        // Single wallet - order method is fixed, so just apply it on load.
+        function applyOrderMethod() {
             debugger;
-            let selectedValue = $(this).val();
+            let selectedValue = $("#ordermethod").val();
             $("#promobaladjust").val('0');
             if (selectedValue === "BV") {
                 $("#ordermethodselectwallet").hide();
@@ -156,11 +156,9 @@
                 $("#trBVPurchaseBalanace").hide();
                 $("#PVPurchaseBaladjust").val('0');
             }
-        });
-        // Optional: if you want balance to appear on page load if already selected
-        let initialValue = $("#ordermethod").val();
-        if(initialValue === "BV") loadBVBalance();
-        else if(initialValue === "PV") loadPVBalance();
+        }
+
+        applyOrderMethod();
     });
 
     function SaveAddressdetail() {
@@ -278,17 +276,6 @@
         // {
             var totalAmount = parseFloat($("#totalamount").val()); // total amount from page
             ordermethod = $("#ordermethod").val();
-            if (ordermethod=="0")
-            {
-                toastr.error("Please select order method", 'Error', {
-                    closeButton: true,
-                    progressBar: true,
-                    positionClass: 'toast-top-right',
-                    timeOut: 5000, // 5 seconds
-                    extendedTimeOut: 1000 // 1 second longer than timeOut
-                });
-                return false;
-            }
 
             if(ordermethod=="PV")
             {
@@ -950,14 +937,8 @@
                 <div class="summary-row total"><span>Total Payable Amount</span><span>Rs. @Model.TotalAmont</span></div>
                 <input type="hidden" id="totalamount" class="form-control" value="@Model.TotalAmont " />
 
-                <div class="summary-row summary-method-row">
-                    <span>Order Method</span>
-                    <select class="form-control summary-method-select" id="ordermethod">
-                        <option value="0">Select Order Method</option>
-                        <option value="PV">PV</option>
-                        <option value="BV">BV</option>
-                    </select>
-                </div>
+                @* Company runs on a single wallet (VoucherType where IsWr = 1) - no selection needed. *@
+                <input type="hidden" id="ordermethod" value="@Model.OrderMethod" />
 
                 <div class="summary-row" id="ordermethodselectwallet" style="display:none;">
                     <span>BV Wallet Balance</span>
@@ -970,7 +951,7 @@
                 </div>
 
                 <div class="summary-wallet-block" id="trPVPurchaseBalanace" style="display:none;">
-                    <p class="summary-wallet-title">PV Wallet Purchase Balanace</p>
+                    <p class="summary-wallet-title">@Model.WalletName</p>
                     <div class="row">
                         <div class="col-md-5 form-group">
                             <label>Aval. Bal.</label>
@@ -984,7 +965,7 @@
                 </div>
 
                 <div class="summary-wallet-block" id="trBVPurchaseBalanace" style="display:none;">
-                    <p class="summary-wallet-title">BV Wallet Purchase Balanace</p>
+                    <p class="summary-wallet-title">@Model.WalletName</p>
                     <div class="row">
                         <div class="col-md-5 form-group">
                             <label>Aval. Bal.</label>

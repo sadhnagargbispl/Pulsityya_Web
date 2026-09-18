@@ -25,5 +25,7 @@ namespace VitaFlow.Domain.Entities
         public decimal TotalAmont { get; set; }
         public string OrderMethod { get; set; }
         public string IsFirstOrder { get; set; }
+        public string WalletVType { get; set; }
+        public string WalletName { get; set; }
     }
 }

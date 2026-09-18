@@ -438,18 +438,8 @@
                             <input type="checkbox" id="IsDateFilter" name="IsDateFilter" class="flat" />
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <select class="form-control" id="VType" name="Select Wallet">
-                              @*   <option value="R">Main Wallet</option> *@
-                                <option value="B">BV Wallet Sale Balance</option>
-                                <option value="P">PV Wallet Sale Balance</option>
-                                <option value="Z">BV Wallet Purchase Balanace</option>
-                                <option value="W">PV Wallet Purchase Balanace</option>
-                               @*  <option value="X">Promo Wallet</option> *@
-                            </select>
-                        </div>
-                    </div>
+                    @* एक ही wallet है (VoucherType where IsWr = 1), इसलिए selection हटा दिया गया है *@
+                    <input type="hidden" id="VType" value="@ViewBag.WalletVType" />
                 </div>
             </div>
             <div class="card-footer">

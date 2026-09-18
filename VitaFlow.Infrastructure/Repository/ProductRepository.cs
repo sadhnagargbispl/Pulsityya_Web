@@ -696,6 +696,46 @@ namespace VitaFlow.Infrastructure.Repository
             }
             return Rstr;
         }
+        /// <summary>
+        /// The one wallet the company runs on (VoucherType where IsWr = 1). Never returns null,
+        /// so no screen has to offer a wallet selection.
+        /// </summary>
+        public async Task<WalletTypeMaster> GetWalletType()
+        {
+            WalletTypeMaster obj = null;
+            string sql = "SELECT Id, Vtype, Voucher_Discrption FROM VoucherType WHERE IsWr = 1 ORDER BY Id";
+            try
+            {
+                using (var connection = _context.CreateLiveconnInv())
+                {
+                    obj = (await connection.QueryAsync<WalletTypeMaster>(sql)).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            if (obj == null)
+            {
+                try
+                {
+                    using (var connection = _context.CreateConnection())
+                    {
+                        obj = (await connection.QueryAsync<WalletTypeMaster>(sql)).FirstOrDefault();
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            if (obj == null)
+            {
+                obj = new WalletTypeMaster { Vtype = "P", Voucher_Discrption = "Wallet Balance" };
+            }
+            return obj;
+        }
+
         public async Task<string> GetOrderNo(string LoginPartyCode)
         {
             string OrderNo = "ORD/";

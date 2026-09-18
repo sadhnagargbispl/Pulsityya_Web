@@ -16,11 +16,13 @@ namespace VitaFlow.Presenation.Controllers
         private readonly ILogger<ReportController> _logger;
         private readonly I_Report i_Report;
         private readonly I_Login i_Login_Service;
-        public ReportController(ILogger<ReportController> logger, I_Report iReport, I_Login i_Login_Service)
+        private readonly I_Product i_Product;
+        public ReportController(ILogger<ReportController> logger, I_Report iReport, I_Login i_Login_Service, I_Product i_Product)
         {
             _logger = logger;
             i_Report = iReport;
             this.i_Login_Service = i_Login_Service;
+            this.i_Product = i_Product;
         }
         public async Task<IActionResult> OrderReport()
         {
@@ -345,13 +347,17 @@ namespace VitaFlow.Presenation.Controllers
             }
         }
 
-        public IActionResult WalletReport()
+        public async Task<IActionResult> WalletReport()
         {
             if (!string.IsNullOrEmpty(HttpContext.Session.GetString("Status")))
             {
                 var configurations = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
                 ViewBag.PartyCaption = configurations["PartyCaption"];
                 ViewBag.CustomerCaption = configurations["CustomerCaption"];
+                // एक ही wallet है (VoucherType where IsWr = 1), इसलिए wallet filter नहीं दिखाते
+                var wallet = await i_Product.GetWalletType();
+                ViewBag.WalletVType = (wallet.Vtype ?? "").Trim();
+                ViewBag.WalletName = wallet.Voucher_Discrption;
                 return View();
             }
             else

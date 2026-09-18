@@ -23,6 +23,7 @@ namespace VitaFlow.Domain.Interface
         Task<ResponseDetail> SavePartyOrderDetails(OrderReq req);
         Task<int> GetOrderCount(string Fcode);
         Task<string> GetorderMethodSelection(int Userid);
+        Task<WalletTypeMaster> GetWalletType();
         Task<decimal> GetPartyWalletBalance(string LoginPartyCode, string vtype);
         Task<string> GetOrderNo(string LoginPartyCode);
         Task<string> SaveOrderMethod(int userid, string Ordermethod);

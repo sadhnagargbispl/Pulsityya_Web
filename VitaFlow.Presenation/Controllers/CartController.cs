@@ -269,15 +269,13 @@ namespace VitaFlow.Presenation.Controllers
                 {
                     isfirstorder = "No";
                 }
-                if (isfirstorder == "No")
-                {
-                    var res = await i_Product.GetorderMethodSelection(Convert.ToInt32(HttpContext.Session.GetString("UserId")));
-                    if (res != null)
-                    {
-                        Ordermethod = res;
-                        obj.OrderMethod = Ordermethod;
-                    }
-                }
+                // Company has a single wallet (VoucherType where IsWr = 1), so the order method
+                // is decided from that wallet instead of being asked from the member.
+                var wallet = await i_Product.GetWalletType();
+                Ordermethod = wallet.OrderMethod;
+                obj.OrderMethod = Ordermethod;
+                obj.WalletVType = (wallet.Vtype ?? "").Trim();
+                obj.WalletName = wallet.Voucher_Discrption;
                 obj.IsFirstOrder = isfirstorder;
                 M_CartDetails Creq = new M_CartDetails();
                 Creq.Action = "srchCartDetails";
@@ -333,6 +331,8 @@ namespace VitaFlow.Presenation.Controllers
             try
             {
                 HttpContext.Session.SetString("promobalance", promowalletBal);
+                // Single wallet setup - order method always comes from the wallet master, not from the post.
+                OrderMethod = (await i_Product.GetWalletType()).OrderMethod;
                 ShippingDetail shipping = new ShippingDetail();
                 shipping.BusinessName = BusinessName;
                 shipping.CustomerName = CustomerName;
