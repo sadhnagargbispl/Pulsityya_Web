@@ -1,0 +1,337 @@
+@model VitaFlow.Domain.Entities.ResponseDetail
+@{
+    ViewData["Title"] = "Thankyouorder";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .premium-thankyou-page .thankyou-hero-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(17, 38, 80, .07);
+        padding: 48px 32px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .premium-thankyou-page .thankyou-hero-img {
+        max-width: 220px;
+        margin: 0 auto 10px;
+    }
+
+    .premium-thankyou-page .thankyou-success-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        color: #fff;
+        background: linear-gradient(135deg, #2e5fe6, #00b8a9);
+        box-shadow: 0 10px 24px rgba(0, 184, 169, .35);
+    }
+
+    .premium-thankyou-page .thankyou-hero-card h2 {
+        font-weight: 700;
+        color: #1b2740;
+        margin-bottom: 12px;
+    }
+
+    .premium-thankyou-page .thankyou-lead {
+        font-size: 15px;
+        color: #4d5875;
+        margin-bottom: 4px;
+    }
+
+    .premium-thankyou-page .thankyou-sub {
+        font-size: 13.5px;
+        color: #8893a8;
+        margin-bottom: 24px;
+    }
+
+    .premium-thankyou-page .thankyou-actions {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .premium-thankyou-page .btn-continue-shopping,
+    .premium-thankyou-page .btn-view-orders {
+        display: inline-block;
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13.5px;
+        text-decoration: none;
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .premium-thankyou-page .btn-continue-shopping {
+        background: linear-gradient(90deg, #2e5fe6 0%, #00b8a9 100%);
+        color: #fff;
+        box-shadow: 0 12px 25px rgba(46, 95, 230, .25);
+    }
+
+    .premium-thankyou-page .btn-continue-shopping:hover {
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 16px 30px rgba(0, 184, 169, .32);
+    }
+
+    .premium-thankyou-page .btn-view-orders {
+        background: #f6f8fc;
+        color: #1b2740;
+        border: 1px solid #e3e9f4;
+    }
+
+    .premium-thankyou-page .btn-view-orders:hover {
+        background: #eef1f8;
+        color: #1b2740;
+    }
+
+    .premium-thankyou-page .thankyou-support-row {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .premium-thankyou-page .thankyou-support-card {
+        flex: 1;
+        min-width: 220px;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(17, 38, 80, .07);
+        padding: 18px 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .premium-thankyou-page .thankyou-support-icon {
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: #fff;
+        background: linear-gradient(135deg, #2e5fe6, #00b8a9);
+    }
+
+    .premium-thankyou-page .thankyou-support-card .label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+        color: #8893a8;
+    }
+
+    .premium-thankyou-page .thankyou-support-card .value {
+        display: block;
+        font-size: 14px;
+        font-weight: 700;
+        color: #1b2740;
+    }
+
+    .premium-thankyou-page .thankyou-order-card {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(17, 38, 80, .07);
+        overflow: hidden;
+    }
+
+    .premium-thankyou-page .thankyou-order-header {
+        padding: 18px 24px;
+        border-bottom: 1px solid #eef1f8;
+        text-align: left;
+    }
+
+    .premium-thankyou-page .thankyou-order-header h5 {
+        margin: 0;
+        font-weight: 700;
+        color: #1b2740;
+    }
+
+    .premium-thankyou-page .thankyou-order-item {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+        padding: 20px 24px;
+        border-bottom: 1px solid #f0f3f9;
+        text-align: left;
+    }
+
+    .premium-thankyou-page .thankyou-order-item:last-child {
+        border-bottom: none;
+    }
+
+    .premium-thankyou-page .thankyou-order-item img {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(17, 38, 80, .1);
+        flex-shrink: 0;
+    }
+
+    .premium-thankyou-page .thankyou-order-item-info {
+        flex: 1;
+        min-width: 220px;
+    }
+
+    .premium-thankyou-page .thankyou-order-item-info h6 {
+        font-weight: 700;
+        color: #1b2740;
+        margin-bottom: 4px;
+    }
+
+    .premium-thankyou-page .thankyou-order-item-info > p {
+        font-size: 12.5px;
+        color: #8893a8;
+        margin-bottom: 8px;
+    }
+
+    .premium-thankyou-page .thankyou-order-item-prices {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .premium-thankyou-page .thankyou-order-item-prices span {
+        font-size: 11.5px;
+        font-weight: 600;
+        color: #5b6679;
+        background: #f6f8fc;
+        padding: 3px 10px;
+        border-radius: 20px;
+    }
+
+    .premium-thankyou-page .thankyou-order-item-prices span.net {
+        color: #fff;
+        background: linear-gradient(90deg, #2e5fe6, #00b8a9);
+    }
+
+    .premium-thankyou-page .thankyou-order-item-status {
+        min-width: 170px;
+        font-size: 12px;
+        color: #8893a8;
+    }
+
+    .premium-thankyou-page .thankyou-order-item-status p {
+        margin: 2px 0;
+    }
+
+    .premium-thankyou-page .status-badge {
+        display: inline-block;
+        margin-bottom: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+    }
+
+    .premium-thankyou-page .status-badge.pending {
+        background: rgba(255, 159, 28, .14);
+        color: #c97a05;
+    }
+
+    .premium-thankyou-page .status-message-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(17, 38, 80, .07);
+        padding: 48px 32px;
+        text-align: center;
+    }
+</style>
+
+<div class="premium-thankyou-page">
+    <div class="row row-sm justify-content-center mt-5">
+        @if (Model.StatusCode == 101)
+        {
+            <div class="col-md-12 col-lg-12 col-xl-10 col-sm-12">
+                <div class="status-message-card">
+                    <div class="thankyou-success-icon"><i class="fa fa-info" aria-hidden="true"></i></div>
+                    <h2>Order Status</h2>
+                    <p class="thankyou-lead">@Model.ResponseMessage</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="col-md-12 col-lg-12 col-xl-10 col-sm-12">
+
+                <div class="thankyou-hero-card">
+                    <img src="~/assets/img/thankimg.png" alt="thank you" class="thankyou-hero-img img-responsive">
+                    <h2>Order Placed Successfully!</h2>
+                    <p class="thankyou-lead">Thanks for placing your order with us here at <b>( @Model.Comapnydetail.DisplayName() )</b></p>
+                    <p class="thankyou-sub">Please find your order status in the "Orders" section in your account. Your order has been placed successfully.</p>
+
+                    <div class="thankyou-actions">
+                        <a href="~/Product/Productlist" class="btn-continue-shopping">Continue Shopping</a>
+                        <a href="~/Report/OrderHistory" class="btn-view-orders">View My Orders</a>
+                    </div>
+                </div>
+
+                <div class="thankyou-support-row">
+                    <div class="thankyou-support-card">
+                        <div class="thankyou-support-icon"><i class="fa fa-headphones" aria-hidden="true"></i></div>
+                        <div>
+                            <span class="label">Need More Support?</span>
+                            <span class="value">We're here to help</span>
+                        </div>
+                    </div>
+                    <div class="thankyou-support-card">
+                        <div class="thankyou-support-icon"><i class="fa fa-phone" aria-hidden="true"></i></div>
+                        <div>
+                            <span class="label">Call Us</span>
+                            <span class="value">@Model.Comapnydetail.DisplayPhone()</span>
+                        </div>
+                    </div>
+                    <div class="thankyou-support-card">
+                        <div class="thankyou-support-icon"><i class="fa fa-envelope" aria-hidden="true"></i></div>
+                        <div>
+                            <span class="label">Email Us</span>
+                            <span class="value">@Model.Comapnydetail.DisplayEmail()</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="thankyou-order-card">
+                    <div class="thankyou-order-header">
+                        <h5>Your Order Details</h5>
+                    </div>
+                    @foreach (var item in Model.OrderConfirmation)
+                    {
+                        <div class="thankyou-order-item">
+                            <img src="@item.ImagePath" alt="@item.ProductName"
+                                 onerror="this.onerror=null;this.src='/assets/img/no-image.png';">
+                            <div class="thankyou-order-item-info">
+                                <h6>@item.ProductName</h6>
+                                <p>Code: @item.ProductCode &nbsp;|&nbsp; QTY: @item.Qty &nbsp;|&nbsp; Order No: @item.OrderNo</p>
+                                <div class="thankyou-order-item-prices">
+                                    <span>Offer Price: Rs. @item.DP</span>
+                                    <span>Mrp: Rs. @item.MRP</span>
+                                </div>
+                            </div>
+                            <div class="thankyou-order-item-status">
+                                <span class="status-badge pending">Pending</span>
+                                <p>Dispatch Status : Pending</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            </div>
+        }
+    </div>
+</div>

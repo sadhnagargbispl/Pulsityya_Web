@@ -1,0 +1,484 @@
+﻿@model VitaFlow.Domain.Entities.M_Registration
+@{
+    Layout = null;
+    var comp = await CompanyInfo.GetAsync();
+    var compName = comp.DisplayName();
+    var compLogo = comp.LogoUrl(Url);
+}
+
+<!DOCTYPE html>
+<style>
+    /* ===== Registration page background — Login jaisa soft gradient ===== */
+    .container-login100 {
+        background: linear-gradient(135deg, #dbe9f9 0%, #eef2f9 50%, #e3ddf0 100%) !important;
+    }
+
+    /* ===== SUBMIT button — Login page jaisa blue-to-teal gradient ===== */
+    .login100-form-btn {
+        background: linear-gradient(to right, #155fa0 0%, #0d9488 100%) !important;
+        border: none !important;
+        color: #ffffff !important;
+        transition: all 0.3s ease;
+    }
+
+        .login100-form-btn:hover {
+            background: linear-gradient(to right, #0d9488 0%, #155fa0 100%) !important;
+            box-shadow: 0 6px 16px rgba(13, 148, 136, 0.35);
+        }
+
+    /* ===== Placeholder text ko readable banane ke liye ===== */
+    .registratoninput::placeholder {
+        color: #6b7280 !important;
+        opacity: 1;
+    }
+
+    /* Dropdown (Apply for / State / Parent Party) ka faint text bhi dark ===== */
+    .registratoninput {
+        color: #374151 !important;
+    }
+</style>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Part Registration</title>
+    <link rel="icon" type="image/png" href="https://colorlib.com/etc/lf/Login_v11/images/icons/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="~/login_files/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/login_files/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/login_files/icon-font.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/login_files/animate.css" />
+    <link rel="stylesheet" type="text/css" href="~/login_files/hamburgers.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/login_files/select2.min.css" />
+    <link rel="stylesheet" asp-append-version="true" type="text/css" href="~/login_files/util.css" />
+    <link rel="stylesheet" asp-append-version="true" type="text/css" href="~/login_files/main.css" />
+    <link rel="stylesheet" type="text/css" href="~/assets/css/adminstyle.css" />
+    <meta name="robots" content="noindex, follow">
+    <style>
+
+    </style>
+</head>
+<body data-new-gr-c-s-check-loaded="14.1174.0" data-gr-ext-installed="" cz-shortcut-listen="true" onload="generate()">
+
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="registrationbox p-l-50 p-r-50 p-t-77 p-b-30">
+                <form id="signupform" class="login100-form validate-form" asp-controller="Account" asp-action="Registration">
+                    @* @Html.ValidationSummary() *@
+                    @Html.AntiForgeryToken()
+                    <div class="login100-form-title p-b-10 text-center" align="center">
+                        <img src="@compLogo" alt="@compName" title="@compName" class="img-responsive text-center" width="150" />
+              
+                    </div>
+
+                    <span class="login100-form-title p-b-30 logintext">New Registration</span>
+
+                    <span class="text-danger">@ViewBag.Rerr</span>
+                    <div class="wrap-input100 validate-input m-b-16">
+                        <select name="GroupId" asp-for="GroupId" class="registratoninput" id="PartyGroup" autocomplete="off">
+                            <option selected="selected" value="0">Apply for</option>
+                            @if (Model.GroupList != null && Model.GroupList.Count() > 0)
+                            {
+                                foreach (var item in Model.GroupList)
+                                {
+                                    <option value="@item.GroupId">@item.GroupName</option>
+                                }
+                            }
+
+                        </select>
+                        <span asp-validation-for="GroupId" class="text-danger"></span>
+                        <span class="text-danger">@ViewBag.groupiderr</span>
+                    </div>
+                    <div class="wrap-input100 validate-input m-b-16">
+                        <input class="registratoninput" type="text" id="firmname" asp-for="Name" name="Name" placeholder="Firm Name" autocomplete="off" />
+                        <span class="focus-input100"></span>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="wrap-input100 validate-input m-b-16">
+                        <input class="registratoninput" type="text" asp-for="MobileNo" name="MobileNo" placeholder="Mobile Number" autocomplete="off" onkeypress="return isNumberKey(event);">
+                        <span class="focus-input100"></span>
+                        <span asp-validation-for="MobileNo" class="text-danger"></span>
+                    </div>
+                    <div class="wrap-input100 validate-input m-b-16">
+                        <input class="registratoninput" type="text" asp-for="Address" name="Address" placeholder="Address" autocomplete="off" />
+                        <span class="focus-input100"></span>
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input m-b-16">
+                        <input class="registratoninput" onkeypress="return isNumberKey(event);" onkeyup="GetPincodeDetail()" type="text" asp-for="PinCode" name="pincode" id="pincode" placeholder="Pin code" autocomplete="off" />
+                        <span class="focus-input100"></span>
+                        <span asp-validation-for="PinCode" class="text-danger"></span>
+                    </div>
+                    <div class="wrap-input100 validate-input m-b-16">
+                        <select name="StateCode" asp-for="StateCode" class="registratoninput" id="registraton" autocomplete="off">
+                            <option selected="selected" value="Select City" disabled>Select State </option>
+                            @if (Model.Statelist != null && Model.Statelist.Count() > 0)
+                            {
+                                foreach (var item in Model.Statelist)
+                                {
+                                    <option value="@item.StateCode">@item.StateName</option>
+                                }
+                            }
+
+                        </select>
+                        <span asp-validation-for="StateCode" class="text-danger"></span>
+                        <span class="text-danger">@ViewBag.stateerr</span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input m-b-16">
+                        <input class="registratoninput" type="text" asp-for="City" name="city" placeholder="City" autocomplete="off" />
+                        <span class="focus-input100"></span>
+                        <span asp-validation-for="City" class="text-danger"></span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input m-b-16">
+                        <input type="hidden" name="PartyCode" asp-for="PartyCode" id="hiddenParentPartyCode" />
+                        <select name="ParentPartyCode" asp-for="ParentPartyCode" class="registratoninput" id="ParentPartyCode" autocomplete="off">
+                            <option>Parent Party</option>
+                        </select>
+                     
+                        <span asp-validation-for="PartyCode" class="text-danger"></span>
+                        <span style="color:red;">@ViewBag.partyerr</span>
+                    </div>
+                    <div class="wrap-input100 validate-input m-b-16" id="divpartname" style="display:none;">
+                        <span style="color:red;" id="partyname"></span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input m-b-16">
+                        <input class="registratoninput" id="gstnum" type="text" name="GST"
+                               value="" placeholder="GST Number"
+                               autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" />
+                        <span class="focus-input100"></span>
+                        <span asp-validation-for="GST" class="text-danger"></span>
+                    </div>
+
+                 @*    <div class="wrap-input100 validate-input m-b-16">
+                        <input class="registratoninput" id="gstnum" type="text" asp-for="GST" name="GST" placeholder="GST Number" autocomplete="off" />
+                        <span class="focus-input100"></span>
+                        <span asp-validation-for="GST" class="text-danger"></span>
+
+
+                    </div>
+ *@
+                    <div class="wrap-input100 validate-input m-b-16">
+                        <input class="registratoninput" asp-for="Password" type="password" name="password" placeholder="Login Password" autocomplete="off" />
+                        <span class="focus-input100"></span>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="wrap-input100 validate-input m-b-16">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" name="code" class="registratoninput" placeholder="Captcha code" />
+                            </div>
+                            <div class="col-md-1">
+                                <canvas id="canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container-login100-form-btn p-t-25">
+                        @* <a href="thankyou.asp" class="login100-form-btn">Submit</a> *@
+                        <input type="submit" id="uploadButton" class="login100-form-btn" value="Submit" />
+                        <button class="login100-form-btn" id="hidbtn" style="display:none;" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Wait--
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript" async="" src="~/login_files/analytics.js"></script>
+    <script src="~/login_files/jquery-3.2.1.min.js"></script>
+
+    <script src="~/login_files/popper.js"></script>
+    <script src="~/login_files/bootstrap.min.js"></script>
+
+    <script src="~/login_files/select2.min.js"></script>
+
+    <script src="~/login_files/main.js"></script>
+
+    <script async="" src="~/login_files/js"></script>
+    <script src="~/assets/captcha/jquery-captcha.js"></script>
+    <script src="~/assets/captcha/jquery-captcha.min.js"></script>
+    <script type="text/javascript">
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode == 46) {
+                return true;
+            }
+            else if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+                }function GetPincodeDetail() {
+            debugger;
+
+            var PartyGroup = $("#PartyGroup").val();
+
+            if (PartyGroup == "0") {
+                alert("Please select franchise package");
+                $("#uploadButton").show();
+                $("#hidbtn").hide();
+                return false;
+            }
+
+            var Pincode = $("#pincode").val();
+
+            if (Pincode.length >= 6) {
+
+                $.ajax({
+                    url: '/Account/GetPincodeDetail',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { Pincode: Pincode },
+
+                    success: function (data) {
+
+                        if (data.code == "200") {
+
+                            // City Fill
+                            $("#City").val(data.district);
+
+                            // City Readonly (Disable Like State)
+                            $("#City").prop("readonly", true);
+
+                            // State Select
+                            $("#registraton option").each(function () {
+                                if ($(this).text().trim().toUpperCase() == data.state.trim().toUpperCase()) {
+                                    $(this).prop("selected", true);
+                                }
+                            });
+
+                            // State Disable
+                            $("#registraton").prop("disabled", true);
+
+                            // Parent List
+                            var SelectedVal = $("#PartyGroup").val();
+                            GetParentPartyList(SelectedVal);
+
+                        } else {
+
+                            $("#City").val("");
+                            $("#City").prop("readonly", false);
+                            $("#registraton").prop("disabled", false);
+                        }
+                    },
+
+                    error: function (xhr, status, error) {
+
+                        console.log(error);
+
+                        $("#City").val("");
+                        $("#City").prop("readonly", false);
+                        $("#registraton").prop("disabled", false);
+                    }
+                });
+
+            } else {
+
+                $("#City").val("");
+                $("#City").prop("readonly", false);
+                $("#registraton").prop("disabled", false);
+            }
+        }
+        $(document).ready(function () {
+            debugger;
+            $('#PartyCode').focusout(function () {
+                // Check if Enter key is pressed
+                Checkparty();
+            });
+
+            $('#PartyCode').keypress(function (event) {
+                if (event.which === 13) {
+                    // Check if Enter key is pressed
+                    Checkparty()
+                }
+            });
+
+            $('#signupform').on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if ($('#PartyCode').is(':focus')) {
+                        Checkparty();
+                    }
+                    return false;
+                }
+            });
+
+            $('#uploadButton').on('click', function (e) {
+                debugger;
+                $("#uploadButton").hide();
+                $("#hidbtn").show();
+                debugger;
+                var PartyGroup = $("#PartyGroup").val();
+                if (PartyGroup == "0") {
+                    alert("Please select franchise package");
+                    e.preventDefault();
+                    $("#uploadButton").show();
+                    $("#hidbtn").hide();
+                    return false;
+                }
+                var PartyCode = $("#PartyCode").val();
+                if (PartyCode == "") {
+                    alert("Please enter party code");
+                    e.preventDefault();
+                    $("#uploadButton").show();
+                    $("#hidbtn").hide();
+                    return false;
+                }
+                        var gstnum = $("#gstnum").val().trim().toUpperCase();
+
+        if (gstnum !== "") {
+            var reggst = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][0-9A-Z]Z[0-9A-Z]$/;
+
+            if (!reggst.test(gstnum)) {
+                alert("GST Identification Number is not valid.");
+                e.preventDefault();
+                $("#uploadButton").show();
+                $("#hidbtn").hide();
+                return false;
+            }
+        }
+                // var gstnum = $("#gstnum").val();
+                // if (gstnum != "") {
+                //     var reggst = /^([0-9]){2}([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}([0-9]){1}([a-zA-Z]){1}([0-9]){1}?$/;
+                //     if (!reggst.test(gstnum) && gstnum != '') {
+                //         alert('GST Identification Number is not valid.');
+                //         e.preventDefault();
+                //         $("#uploadButton").show();
+                //         $("#hidbtn").hide();
+                //         return false;
+                //     }
+                // }
+                if ($('input[name="code"]').val() == "") {
+                    alert("Please enter captcha");
+                    $('input[name="code"]').focus();
+                    $("#uploadButton").show();
+                    $("#hidbtn").hide();
+                    return false;
+                }
+                const ans = captcha.valid($('input[name="code"]').val());
+                if (ans == false) {
+                    alert("Captcha is mismatch");
+                    $('input[name="code"]').val('')
+                    $('input[name="code"]').focus();
+                    captcha.refresh();
+                    $("#uploadButton").show();
+                    $("#hidbtn").hide();
+                    return false;
+                }
+
+            });
+            $("#PartyGroup").change(function () {
+                var SelectedVal = $("#PartyGroup").val();
+                //$("#hiddenGroupId").val(SelectedVal);
+                GetParentPartyList(SelectedVal);
+                //GetPartyCode();
+
+            });
+            $("#ParentPartyCode").change(function () {
+                var SelectedVal = $("#ParentPartyCode").val();
+                $("#hiddenParentPartyCode").val(SelectedVal);
+                //GetPartyCode();
+            });
+        });
+        function GetParentPartyList(GroupId) {
+            debugger;
+            var stateCode = $("#registraton").val();
+            var District = $("#City").val();
+            $.ajax({
+        url: '/Account/GetParentPartyList',
+                dataType: 'JSON',
+                method: 'GET',
+                data: { 'GroupId': GroupId, "stateCode": stateCode, "District": District },
+                success: function (data) {
+                    debugger;
+                    console.log("data:", data);
+                    //response(data);
+                    if (data.length > 0) {
+                        $("#hiddenParentPartyCode").val(data[0].partyCode);
+                        $("#ParentPartyCode").empty();
+                        for (var i = 0; i < data.length; i++) {
+                            $("#ParentPartyCode").append("<option value=" + data[i].partyCode + ">" + data[i].partyName + "(" + data[i].partyCode + ")" + "</option>");
+                        }
+                        //GetPartyCode();
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+        function Checkparty() {
+            var PartyGroup = $("#PartyGroup").val();
+            if (PartyGroup == "0") {
+                alert("Please select franchise package");
+                return false;
+            }
+            var PartyCode = $("#PartyCode").val();
+            if (PartyCode == "") {
+                alert("Please enter party code");
+
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: "/Account/GetParentParty",
+                async: true,
+                data: { PartyCode: PartyCode, Groupid: PartyGroup },
+                success: function (data) {
+                    debugger;
+                    if (data.err == "0") {
+                        $("#divpartname").show();
+                        $("#partyname").text(data.partyname);
+                    }
+                    else {
+                        alert(data.msg);
+                        $("#partyname").text("");
+                    }
+                },
+                failure: function (response) {
+                    alert('failure');
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    alert('error');
+                    console.log(response.responseText);
+                }
+
+            });
+        }
+
+    </script>
+    <script>
+        // step-1
+        const captcha = new Captcha($('#canvas'), {
+            length: 4
+        });
+        // api
+        //captcha.refresh();
+        //captcha.getCode();
+        //captcha.valid("");
+
+        $('#valid').on('click', function () {
+            const ans = captcha.valid($('input[name="code"]').val());
+            alert(ans);
+            captcha.refresh();
+        })
+    </script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-23581568-13');
+    </script>
+    <script defer="" src="~/login_files/vef91dfe02fce4ee0ad053f6de4f175db1715022073587" integrity="sha512-sDIX0kl85v1Cl5tu4WGLZCpH/dV9OHbA4YlKCuCiMmOQIk4buzoYDZSFj+TvC71mOBLh8CDC/REgE0GX0xcbjA==" data-cf-beacon="{&quot;rayId&quot;:&quot;888c8619be9fa786&quot;,&quot;version&quot;:&quot;2024.4.1&quot;,&quot;token&quot;:&quot;cd0b4b3a733644fc843ef0b185f98241&quot;}" crossorigin="anonymous"></script>
+
+
+    <iframe frameborder="0" scrolling="no" style="background-color: transparent; border: 0px; display: none;" src="./login_files/saved_resource.html"></iframe>
+    <div id="GOOGLE_INPUT_CHEXT_FLAG" input="" input_stat="{&quot;tlang&quot;:true,&quot;tsbc&quot;:true,&quot;pun&quot;:true,&quot;mk&quot;:true,&quot;ss&quot;:true}" style="display: none;"></div>
+</body>
+</html>

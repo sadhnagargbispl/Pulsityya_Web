@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace VitaFlow.Domain.Entities
+{
+    public class Inv_M_UserMaster
+    {
+        public decimal UId { get; set; }
+        public decimal UserId { get; set; }
+        public string BranchCode { get; set; }
+        public string FCode { get; set; }
+        public string UserName { get; set; }
+        public string Passw { get; set; }
+        public string Remarks { get; set; }
+        public string Status { get; set; }
+        public System.DateTime CreateDate { get; set; }
+        public string CreateBy { get; set; }
+        public string LastIP { get; set; }
+        public System.DateTime LastLoginTime { get; set; }
+        public string LastLogOutTime { get; set; }
+        public string Version { get; set; }
+        public string LoginStatus { get; set; }
+        public decimal GroupId { get; set; }
+        public string ActiveStatus { get; set; }
+        public System.DateTime RecTimeStamp { get; set; }
+        public decimal LUserId { get; set; }
+        public string LastModified { get; set; }
+        public string IsAdmin { get; set; }
+    }
+}

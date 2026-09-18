@@ -1,0 +1,683 @@
+@model VitaFlow.Domain.Entities.CartDetails
+@{
+    ViewData["Title"] = "ViewCart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.qty-input').on('input', function () {
+            debugger;
+            var catid = $(this).data('qty')
+            QTYChange(catid);
+        });
+        vfRecalcCart();
+    });
+    function QTYChange(catid) {
+        if (catid == "0" || catid == "") {
+            location.reload();
+        }
+        var Qty = $("#qty_" + catid).val();
+        var availqty = $("#avlqty_" + catid).val();
+        if (Qty == "") {
+            return false;
+        }
+        var hidqty = $("#hidqty_" + catid).val();
+        if (Qty == "0") {
+            $("#qty_" + catid).val(hidqty);
+            return false;
+        }
+        if (parseInt(Qty) > parseInt(availqty)) {
+            var msg = 'Please enter a number less than or equal to ' + availqty;
+            toastr.error(msg, 'Error', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-top-right',
+                timeOut: 5000, // 5 seconds
+                extendedTimeOut: 1000 // 1 second longer than timeOut
+            });
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: '/Cart/Updatecartproduct',
+            datatype: "json",
+            async: true,
+            data: { Productid: catid, Qty: Qty },
+            success: function (data) {
+                if (data.code == "1") {
+                    // toastr.success(data.msg, 'Success', {
+                    //     closeButton: true,
+                    //     progressBar: true,
+                    //     positionClass: 'toast-top-right',
+                    //     timeOut: 5000, // 5 seconds
+                    //     extendedTimeOut: 1000 // 1 second longer than timeOut
+                    // });
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000);
+                }
+                else {
+                    toastr.error(data.msg, 'Error', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000, // 5 seconds
+                        extendedTimeOut: 1000 // 1 second longer than timeOut
+                    });
+                }
+
+            }
+        });
+    }
+
+    function DeleteCartDeatils(id) {
+        if (confirm("Are you sure?") == true) {
+            $.ajax({
+                type: "POST",
+                url: '/Cart/DeleteCartDeatils',
+                datatype: "json",
+                async: true,
+                data: { Cid: id },
+                success: function (data) {
+                    if (data.code == "1") {
+                        toastr.success(data.msg, 'Success', {
+                            closeButton: true,
+                            progressBar: true,
+                            positionClass: 'toast-top-right',
+                            timeOut: 5000, // 5 seconds
+                            extendedTimeOut: 1000 // 1 second longer than timeOut
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
+                    }
+                    else {
+                        toastr.error(data.msg, 'Error', {
+                            closeButton: true,
+                            progressBar: true,
+                            positionClass: 'toast-top-right',
+                            timeOut: 5000, // 5 seconds
+                            extendedTimeOut: 1000 // 1 second longer than timeOut
+                        });
+                    }
+
+                }
+            });
+        }
+
+    }
+
+    // ---- Checkbox-driven total + checkout (added; existing cart logic untouched) ----
+    function vfRecalcCart() {
+        var total = 0, count = 0;
+        $('.vf-item-check:checked').each(function () {
+            total += parseFloat($(this).attr('data-amount')) || 0;
+            count++;
+        });
+        $('#vfItemCount').text(count);
+        $('#vfPayable').text('Rs. ' + total.toFixed(2));
+        var btn = $('#vfProceedBtn');
+        if (btn.length) {
+            if (count === 0) { btn.addClass('disabled'); }
+            else { btn.removeClass('disabled'); }
+        }
+    }
+
+    function vfProceedChecked() {
+        var checkedCount = $('.vf-item-check:checked').length;
+        if (checkedCount === 0) {
+            toastr.error("Please select at least one product", 'Error', {
+                closeButton: true, progressBar: true, positionClass: 'toast-top-right', timeOut: 5000
+            });
+            return false;
+        }
+
+        // NEW: agar koi CHECKED item out of stock hai to checkout rok do aur message dikhao.
+        var oosItems = [];
+        $('.vf-item-check:checked').each(function () {
+            if ($(this).attr('data-oos') === '1') {
+                oosItems.push($(this).attr('data-name') || 'A product');
+            }
+        });
+        if (oosItems.length > 0) {
+            toastr.error('Out of stock: ' + oosItems.join(', ') + '. Please remove or uncheck to continue.', 'Error', {
+                closeButton: true, progressBar: true, positionClass: 'toast-top-right', timeOut: 6000, extendedTimeOut: 1500
+            });
+            return false;
+        }
+
+        var unchecked = [];
+        $('.vf-item-check').each(function () {
+            if (!$(this).is(':checked')) {
+                var cid = $(this).attr('data-cid');
+                if (cid !== undefined && cid !== null && cid !== '') { unchecked.push(cid); }
+            }
+        });
+        if (unchecked.length === 0) {
+            Checkpackage();
+            return;
+        }
+        if (!confirm("Unchecked products will be removed from cart. Continue?")) { return false; }
+        $('#vfProceedBtn').addClass('disabled');
+        var calls = [];
+        $.each(unchecked, function (i, cid) {
+            calls.push($.ajax({
+                type: "POST",
+                url: '/Cart/DeleteCartDeatils',
+                datatype: "json",
+                data: { Cid: cid }
+            }));
+        });
+        $.when.apply($, calls).done(function () {
+            Checkpackage();
+        }).fail(function () {
+            $('#vfProceedBtn').removeClass('disabled');
+            toastr.error("Could not update cart. Please try again.", 'Error', {
+                closeButton: true, progressBar: true, positionClass: 'toast-top-right', timeOut: 5000
+            });
+        });
+    }
+
+    function Checkpackage() {
+        $.ajax({
+            type: "POST",
+            url: '/Cart/Checkpackage',
+            datatype: "json",
+            async: true,
+            success: function (data) {
+                if (data.status == "0") {
+                    window.location.href = "/Cart/PackageSelection";
+                }
+                else if (data.status == "1") {
+                    toastr.warning("Your cart amount is less than selected package", 'Success', {
+                        closeButton: false,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000, // 5 seconds
+                        extendedTimeOut: 3000 // 1 second longer than timeOut
+                    });
+                }
+                else {
+                    window.location.href = "/Cart/Checkout";
+
+                }
+
+            }
+        });
+    }
+    function VfQtyStep(catid, dir) {
+        var input = document.getElementById('qty_' + catid);
+        if (!input) return;
+        if (dir === 'up') { input.stepUp(); } else { input.stepDown(); }
+        QTYChange(catid);
+    }
+</script>
+
+<style>
+    /* Grid fix: row-deck makes cols flex; force cards to fill their column (esp. when cart empty) */
+    .premium-cart-page .row.row-deck {
+        margin-left: -16px;
+        margin-right: -16px;
+    }
+
+        .premium-cart-page .row.row-deck > [class*="col-"] {
+            padding-left: 16px;
+            padding-right: 16px;
+            display: block;
+        }
+
+    .premium-cart-page .cart-card,
+    .premium-cart-page .summary-card {
+        width: 100%;
+    }
+
+    .premium-cart-page .cart-card {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(17, 38, 80, .07);
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .premium-cart-page .cart-card-header {
+        padding: 18px 24px;
+        border-bottom: 1px solid #eef1f8;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .premium-cart-page .cart-card-header h5 {
+            margin: 0;
+            font-weight: 700;
+            color: #1b2740;
+        }
+
+    .premium-cart-page .badge-count {
+        background: linear-gradient(90deg, #2e5fe6, #00b8a9);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 20px;
+    }
+
+    .premium-cart-page .cart-item {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 18px;
+        padding: 20px 24px;
+        border-bottom: 1px solid #f0f3f9;
+        transition: background .2s ease;
+    }
+
+        .premium-cart-page .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .premium-cart-page .cart-item:hover {
+            background: #f9fbff;
+        }
+
+        /* NEW: out-of-stock cart row highlight */
+        .premium-cart-page .cart-item.vf-oos {
+            background: #fff7f7;
+        }
+
+            .premium-cart-page .cart-item.vf-oos:hover {
+                background: #fff1f1;
+            }
+
+    /* NEW: out-of-stock badge */
+    .premium-cart-page .vf-oos-badge {
+        display: inline-block;
+        margin-left: 8px;
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #d64545;
+        background: #ffe3e3;
+        padding: 2px 9px;
+        border-radius: 20px;
+        vertical-align: middle;
+    }
+
+    .premium-cart-page .cart-item-check input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .premium-cart-page .cart-item-img img {
+        width: 72px;
+        height: 72px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(17, 38, 80, .1);
+    }
+
+    .premium-cart-page .cart-item-info {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .premium-cart-page .cart-item-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1b2740;
+        margin-bottom: 4px;
+    }
+
+    .premium-cart-page .cart-item-meta {
+        font-size: 12.5px;
+        color: #8893a8;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .premium-cart-page .cart-item-remove {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12.5px;
+        color: #e5484d;
+        margin-top: 6px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+        .premium-cart-page .cart-item-remove:hover {
+            color: #b3262a;
+        }
+
+    .premium-cart-page .qty-stepper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: auto;
+    }
+
+    .premium-cart-page .qty-btn {
+        width: 30px;
+        height: 30px;
+        flex-shrink: 0;
+        border: 1px solid #e3e9f4;
+        border-radius: 50%;
+        background: #f6f8fc;
+        color: #1b2740;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background .2s ease, color .2s ease, border-color .2s ease;
+    }
+
+        .premium-cart-page .qty-btn:hover {
+            background: linear-gradient(90deg, #2e5fe6, #00b8a9);
+            border-color: transparent;
+            color: #fff;
+        }
+
+    .premium-cart-page .qty-input {
+        width: 50px;
+        height: 30px;
+        text-align: center;
+        border: 1px solid #e3e9f4;
+        border-radius: 8px;
+        background: #fff;
+        font-weight: 700;
+        color: #1b2740;
+        padding: 0;
+    }
+
+        .premium-cart-page .qty-input:focus {
+            outline: none;
+            border-color: #2e5fe6;
+        }
+
+    .premium-cart-page .cart-item-price {
+        text-align: right;
+        min-width: 120px;
+    }
+
+    .premium-cart-page .price-offer {
+        display: block;
+        font-size: 15px;
+        font-weight: 700;
+        color: #1b2740;
+    }
+
+    .premium-cart-page .price-discount {
+        display: inline-block;
+        margin-top: 4px;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: #00b8a9;
+        background: rgba(0, 184, 169, .1);
+        padding: 2px 8px;
+        border-radius: 20px;
+    }
+
+    .premium-cart-page .cart-item-total {
+        text-align: right;
+        min-width: 110px;
+    }
+
+        .premium-cart-page .cart-item-total .label {
+            display: block;
+            font-size: 11px;
+            color: #8893a8;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+
+        .premium-cart-page .cart-item-total .value {
+            display: block;
+            font-size: 15px;
+            font-weight: 700;
+            color: #1b2740;
+        }
+
+    .premium-cart-page .summary-card {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(17, 38, 80, .07);
+        padding: 24px;
+        position: sticky;
+        top: 90px;
+        overflow: hidden;
+    }
+
+        .premium-cart-page .summary-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #2e5fe6, #00b8a9);
+        }
+
+        .premium-cart-page .summary-card h5 {
+            font-weight: 700;
+            color: #1b2740;
+            margin-bottom: 18px;
+        }
+
+    .premium-cart-page .summary-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #5b6679;
+        padding: 8px 0;
+    }
+
+        .premium-cart-page .summary-row.total {
+            border-top: 1px dashed #e3e9f4;
+            margin-top: 8px;
+            padding-top: 16px;
+            font-size: 17px;
+            font-weight: 700;
+            color: #1b2740;
+        }
+
+            .premium-cart-page .summary-row.total span:last-child {
+                color: #2e5fe6;
+            }
+
+    .premium-cart-page .btn-checkout {
+        display: block;
+        text-align: center;
+        width: 100%;
+        background: linear-gradient(90deg, #2e5fe6 0%, #00b8a9 100%);
+        color: #fff;
+        font-weight: 600;
+        letter-spacing: .4px;
+        text-transform: uppercase;
+        font-size: 13.5px;
+        padding: 13px;
+        border-radius: 10px;
+        margin-top: 18px;
+        border: none;
+        box-shadow: 0 12px 25px rgba(46, 95, 230, .25);
+        transition: transform .2s ease, box-shadow .2s ease;
+        text-decoration: none;
+    }
+
+        .premium-cart-page .btn-checkout:hover {
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px rgba(0, 184, 169, .32);
+        }
+
+        .premium-cart-page .btn-checkout:disabled,
+        .premium-cart-page .btn-checkout.disabled {
+            opacity: .55;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    .premium-cart-page .btn-continue {
+        display: block;
+        text-align: center;
+        width: 100%;
+        background: #f6f8fc;
+        color: #1b2740;
+        font-weight: 600;
+        font-size: 13.5px;
+        padding: 12px;
+        border-radius: 10px;
+        margin-top: 10px;
+        border: 1px solid #e3e9f4;
+        text-decoration: none;
+        transition: background .2s ease;
+    }
+
+        .premium-cart-page .btn-continue:hover {
+            background: #eef1f8;
+            color: #1b2740;
+        }
+
+    .premium-cart-page .summary-note {
+        font-size: 12px;
+        color: #aab2c5;
+        text-align: center;
+        margin-top: 14px;
+    }
+
+    .premium-cart-page .cart-empty {
+        padding: 48px 24px;
+        text-align: center;
+        color: #8893a8;
+        font-size: 14px;
+    }
+
+    @@media (max-width: 991px) {
+        .premium-cart-page .summary-card {
+            position: static;
+            margin-top: 0;
+        }
+
+        .premium-cart-page .cart-item-price,
+        .premium-cart-page .cart-item-total {
+            text-align: left;
+            min-width: auto;
+        }
+    }
+</style>
+
+<div class="container-fluid premium-cart-page">
+
+    <!-- Breadcrumb Start -->
+    <div class="breadcrumb-header justify-content-between">
+        <div class="left-content">
+            <div>
+                <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1"> Product Cart </h2>
+                <p class="mg-b-0"> @Convert.ToString(Context.Session.GetString("PartyName"))</p>
+            </div>
+        </div>
+        @if (!string.IsNullOrEmpty(Context.Session.GetString("lessPackageAmount")))
+        {
+            <div class="right-content">
+                <div>
+                    <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1"> Pending Amount </h2>
+                    <p class="mg-b-0"> @Convert.ToString(Context.Session.GetString("lessPackageAmount"))</p>
+                </div>
+            </div>
+        }
+    </div>
+    <!-- Breadcrumb End -->
+    <!-- Cart Start -->
+    <div class="row row-sm row-deck">
+
+        <div class="col-lg-8">
+            <div class="cart-card">
+                <div class="cart-card-header">
+                    <h5>My Cart</h5>
+                    <span class="badge-count">@(Model.CartList != null ? Model.CartList.Count() : 0) Items</span>
+                </div>
+
+                @if (Model.CartList != null && Model.CartList.Count() > 0)
+                {
+                    foreach (var item in Model.CartList)
+                    {
+                        // NEW: out-of-stock detection (server se aayi AvailStock aur qty ke aadhaar par)
+                        double availStk = 0;
+                        double.TryParse(Convert.ToString(item.AvailStock), out availStk);
+                        double curQty = 0;
+                        double.TryParse(Convert.ToString(item.qty), out curQty);
+                        bool isOOS = (availStk <= 0) || (curQty > availStk);
+
+                        <div class="cart-item @(isOOS ? "vf-oos" : "")">
+                            <div class="cart-item-check">
+                                <div class="form-check">
+                                    <input class="form-check-input vf-item-check" type="checkbox" checked
+                                           data-cid="@item.id"
+                                           data-amount="@(item.qty * item.Price)"
+                                           data-oos="@(isOOS ? "1" : "0")"
+                                           data-name="@item.ProdName"
+                                           onchange="vfRecalcCart()">
+                                </div>
+                            </div>
+                            <div class="cart-item-img">
+                                <a href="javascript:void(0);"><img src="@item.imagePath" alt="#"></a>
+                            </div>
+                            <div class="cart-item-info">
+                                <h6 class="cart-item-title">
+                                    @item.ProdName
+                                    @if (isOOS)
+                                    {
+                                        <span class="vf-oos-badge">Out of Stock</span>
+                                    }
+                                </h6>
+                                <p class="cart-item-meta">BV: @item.bv &nbsp;|&nbsp; PV: @item.PV</p>
+                                <a class="cart-item-remove" href="javascript:void(0);" onclick="DeleteCartDeatils(@item.id)"><i class="fa fa-trash-o"></i> Remove</a>
+                            </div>
+                            <div class="qty-stepper">
+                                <button type="button" class="qty-btn" aria-label="Decrease quantity" onclick="VfQtyStep('@item.ProdId','down')">&minus;</button>
+                                <input class="form-control qty-input" min="1" type="number" onkeyup='QTYChange("@item.ProdId")' data-qty="@item.ProdId" placeholder="" id="qty_@item.ProdId" value="@item.qty" required="required" autocomplete="off">
+                                <button type="button" class="qty-btn" aria-label="Increase quantity" onclick="VfQtyStep('@item.ProdId','up')">+</button>
+                            </div>
+                            <input type="hidden" id="hidqty_@item.ProdId" value="@item.qty" />
+                            <input type="hidden" id="avlqty_@item.ProdId" value="@item.AvailStock" />
+                            <div class="cart-item-price">
+                                <span class="price-offer">Rs. @item.Price</span>
+                                <span class="price-discount">+@item.bv BV</span>
+                            </div>
+                            <div class="cart-item-total">
+                                <span class="label">Item Total</span>
+                                <span class="value">Rs. @(item.qty * item.Price)</span>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="cart-empty">Your cart is empty.</div>
+                }
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="summary-card">
+                <h5>Order Summary</h5>
+                <div class="summary-row"><span>Items (<span id="vfItemCount">@(Model.CartList != null ? Model.CartList.Count() : 0)</span>)</span><span></span></div>
+                <div class="summary-row total"><span>Payable Amount</span><span id="vfPayable">Rs. @Model.TotalAmont</span></div>
+
+                @if (Model.CartList != null && Model.CartList.Count() > 0)
+                {
+                    <a href="javascript:void(0)" id="vfProceedBtn" onclick="vfProceedChecked()" class="btn-checkout">Proceed To Checkout</a>
+                }
+                else
+                {
+                    <a href="javascript:void(0)" class="btn-checkout disabled" onclick="return false;">Proceed To Checkout</a>
+                }
+                <a href="~/Product/Productlist" class="btn-continue">Back To Shopping</a>
+                <p class="summary-note">Taxes and final charges calculated at checkout.</p>
+            </div>
+        </div>
+
+    </div>
+    <!-- Cart End -->
+
+</div>

@@ -1,0 +1,138 @@
+﻿@model VitaFlow.Domain.Entities.M_PackageMaster
+@{
+    ViewData["Title"] = "PackageSelection";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    
+    function Save() {
+        var checkedValue = $("input[name='packageradio']:checked").val();
+        if (checkedValue == undefined)
+        {
+            toastr.error("Please select package", 'Error', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-top-right',
+                timeOut: 5000, // 5 seconds
+                extendedTimeOut: 1000 // 1 second longer than timeOut
+            });
+            return false;
+        }
+        
+        $("#btnsave").hide();
+        $("#hidbtn").show();
+        $.ajax({
+            type: "POST",
+            url: "/Cart/SavePackage",
+            async: true,
+            dataType: "Json",
+            timeout: 900000,
+            beforeSend: function () {
+                $("#btnsave").hide();
+                $("#hidbtn").show();
+            },
+            data: { Packageid: checkedValue },
+            success: function (data) {
+                if (data.msg=="1")
+                {
+                    
+                    toastr.success("Package detail save successfully", 'Success', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000, // 5 seconds
+                        extendedTimeOut: 1000 // 1 second longer than timeOut
+                    });
+                    setTimeout(function () {
+                        window.location.href = "/Product/Productlist";
+                    }, 1000);
+                }
+                else
+                {
+                    toastr.success("Package detail not save", 'Success', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000, // 5 seconds
+                        extendedTimeOut: 1000 // 1 second longer than timeOut
+                    });
+                    $("#btnsave").show();
+                    $("#hidbtn").hide();
+                }
+            },
+            failure: function (response) {
+                console.log(response.responseText);
+                $("#Submitbtn").prop('disabled', false);
+            },
+            error: function (response) {
+                console.log(response.responseText);
+                $("#Submitbtn").prop('disabled', false);
+            },
+            failure: function (response) {
+                console.log(response.responseText);
+                $("#Submitbtn").prop('disabled', false);
+            }
+        });
+    }
+</script>
+
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-header justify-content-between">
+    <div class="left-content">
+        <div>
+            <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">Hi, @Convert.ToString(Context.Session.GetString("UserName"))!</h2>
+            <p class="mg-b-0"> @Convert.ToString(Context.Session.GetString("PartyName"))</p>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<div class="row row-sm">
+    <div class="col-lg-12 col-xl-12 col-md-12 col-sm-12">
+        <div class="card-table-two bg-white">
+            <div class="card-header bg-white mb-3">
+                <h4 class="card-title mb-1">Package List</h4>
+            </div>
+            <div class="table-responsive country-table bg-white">
+                <table class="table text-center table-striped table-bordered mb-0 text-sm-nowrap text-lg-nowrap text-xl-nowrap">
+                    <thead>
+                        <tr>
+
+                            <th class="wd-lg-25p">Package</th>
+                            <th class="wd-lg-25p">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.PackageMasters)
+                        {
+                            <tr>
+
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="packageradio" id="pack_@item.PackageId" value="@item.PackageId">
+                                        <label class="form-check-label" for="pack_@item.PackageId">
+                                            @item.PackageName
+                                        </label>
+                                    </div>
+
+                                </td>
+                                <td>@item.PackageAmount</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                <button id="btnsave" class="btn btn-primary" onclick="Save()">Save</button>
+                <button class="btn btn-primary" id="hidbtn" style="display:none;" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Wait ...
+                </button>
+                <input type="hidden" id="ispackages" value="0" />
+            </div>
+        </div>
+    </div>
+</div>
+
+

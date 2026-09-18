@@ -1,0 +1,377 @@
+﻿@model VitaFlow.Domain.Entities.M_PayoutSummary
+@{
+    ViewData["Title"] = "PayoutSummary";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+     var grid, dialog;
+    var BillWiseGrid = [{}];
+    var PartyList = [];
+    var FullPartyList;
+    var IsParty = false;
+    var IsMonth = false;
+    var TransNoToUpdate = [];
+    var FromDate = "", ToDate = "";
+    $(document).ready(function () {
+        $(".preloader").hide();
+        $("#btnExport").on('click', function () {
+            var UserTypeStr = "FranchiseeBVCommission";
+            var tableString = "<thead><tr>";
+            tableString += "<th>S.No.</th>";
+            tableString += "<th>Franchisee Code</th>";
+            tableString += "<th>Franchisee Name</th>";
+            tableString += "<th>Franchisee Group</th>";
+            tableString += "<th>BillNo </th>";
+            tableString += "<th>BillDate</th>";
+            tableString += "<th>BillType</th>";
+            tableString += "<th>BV Value</th>";
+            tableString += "<th>Commission Slab(%)</th>";
+            tableString += "<th>Commission Value</th>";
+             tableString += "<th>PV Value</th>";
+            tableString += "<th>PV Slab</th>";
+            tableString += "<th>PVCommission Value</th>";
+
+            tableString += "</tr></thead><tbody>";
+            for (var i = 0; i < BillWiseGrid.length; i++) {
+                tableString += "<tr>";
+                tableString += "<td>" + BillWiseGrid[i].SNo + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].PartyCode + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].PartyName + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].GroupName + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].BillNo + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].BillDate + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].BillType + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].BVCommission + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].CommissionSlab + "</td>";
+                tableString += "<td>" + BillWiseGrid[i].Commission + "</td>";
+                  tableString += "<td>" + BillWiseGrid[i].PVCommission + "</td>";
+                  tableString += "<td>" + BillWiseGrid[i].PVSlab + "</td>";
+                  tableString += "<td>" + BillWiseGrid[i].PVCommissionVal + "</td>";
+                tableString += "</tr>";
+            }
+
+            tableString += "</tbody>";
+            $("#gridExport").empty();
+            $("#gridExport").append(tableString);
+            tableToExcel('gridExport', UserTypeStr + "_Export");
+        });
+
+        $("#btnShowReport").on('click', function () {
+            $(".preloader").show();
+            var Sessid=$("#Sessid").val();
+            if(Sessid=="0"){
+                  toastr.error("Please select session", 'Error', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 8000, // 8 seconds
+                        extendedTimeOut: 2000 // 2 second longer than timeOut
+                     });
+                $(".preloader").hide();
+                return false;
+            }
+            $.ajax({
+                    url: '/Report/GetMonthWiseIncome',
+                    dataType: 'JSON',
+                    method: 'POST',
+                    data: { "Sessid":Sessid },
+                    success: function (data) {
+
+                        //response(data);
+                        if (data != null) {
+                            BillWiseGrid = [{}];
+                            console.log("data", data);
+                            if (data.length > 0) {
+                                BillWiseGrid = BillWiseGrid.splice(1);
+                                for (var i = 0; i < data.length; i++) {
+                                    var StatementPath = '@Url.Action("PayoutStatement", "Report", new { Prm = "-1" })';
+                                    var encodedparameters = Sessid;
+                                    var EncryptedB64Url = window.btoa(encodedparameters);
+                                    StatementPath = StatementPath.replace("-1", EncryptedB64Url);
+                                    BillWiseGrid.push({
+                                        "SNo": i + 1,
+                                        "Statement":StatementPath,
+                                        "sessID": data[i].sessID,
+                                        "Code": data[i].partyCode,
+                                        "self_Comm_BV": parseFloat(data[i].self_Comm_BV).toFixed(2),
+                                        "diff_Comm_BV": parseFloat(data[i].diff_Comm_BV).toFixed(2),
+                                        "bV_Slab": data[i].bV_Slab,
+                                        "selfIncomePv": data[i].selfIncomePv,
+                                        "diff_Comm_Pv": data[i].diff_Comm_Pv,
+                                        "pvSlab": data[i].pvSlab,
+                                        "gross_Amount": data[i].gross_Amount,
+                                        "tds_Deduction": data[i].tds_Deduction,
+                                        "rndOff": data[i].rndOff,
+                                        "netIncome": data[i].netIncome,
+                                        "AdminCharge": data[i].adminCharge
+                                    });
+                                }
+
+                                $("#noRecord").hide();
+                                console.log("data:", data);
+                                if (grid != null) {
+                                    grid.destroy();
+                                    $('#grid').empty();
+
+                                }
+                                grid = $('#grid').grid({
+                                    dataSource: BillWiseGrid,
+                                    uiLibrary: 'bootstrap',
+                                    headerFilter: true,
+                                    columns: [
+                                         { field: 'SNo', title: 'SNo', width: 100, sortable: true, hidden: false, filterable: true, align: 'center' },
+                                          { field: 'Statement', title: 'Statement', width: 130, sortable: true, hidden: false, filterable: true, tmpl: '<a target="_blank" style="text-decoration:underline;color:blue" href={Statement}>Open</a>', align: 'center' },
+                                         { field: 'Code', title: 'Franchisee Code', width: 80, sortable: true, hidden: false, filterable: true },
+                                         { field: 'self_Comm_BV', title: 'Self Comm - BV', width: 80, sortable: true, hidden: false, filterable: true },
+                                         { field: 'diff_Comm_BV', title: 'Diff. Comm-BV', width: 80, sortable: true, hidden: false, filterable: true,
+                                         renderer: function (value, record) {
+                                          return `<a href="javascript:void(0)" onclick="openModal(${record.SNo})">${value}</a>`;}},
+                                         { field: 'bV_Slab', title: 'BV Slab', width: 80, sortable: true, hidden: false, filterable: true },
+                                         { field: 'selfIncomePv', title: 'SelfIncome Pv', width: 80, sortable: true, hidden: false, filterable: true },
+                                         { field: 'diff_Comm_Pv', title: 'Diff. Comm-Pv', width: 100, sortable: true, hidden: false, filterable: true,
+                                           renderer: function (value, record) {
+                                           return `<a href="javascript:void(0)" onclick="openPvModal(${record.SNo})">${value}</a>`;}},
+                                         { field: 'pvSlab', title: 'PvSlab', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'gross_Amount', title: 'Gross Amount', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'tds_Deduction', title: 'Tds Deduction', width: 100, sortable: true, hidden: true, filterable: true },
+                                         { field: 'AdminCharge', title: 'Admin Charge', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'rndOff', title: 'RndOff', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'netIncome', title: 'NetIncome', width: 100, sortable: true, hidden: false, filterable: true },
+                                    ],
+                                    pager: { limit: 20, sizes: [15, 20, 35, 50, 65, 80, 95, 100] }
+                                });
+
+                                $(".preloader").hide();
+                                // $("#btnExport").show();
+                            }
+                            else {
+                                $(".preloader").hide();
+                                $("#noRecord").show();
+                                $('#grid').empty();
+                                // $("#btnExport").hide();
+
+                                  toastr.error("No record found", 'Error', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 8000, // 8 seconds
+                        extendedTimeOut: 2000 // 2 second longer than timeOut
+                     });
+                            }
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+        });
+    });
+
+    function toDate(dateStr) {
+        var parts = dateStr.split("-");
+        return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
+
+        function openModal(sno) {
+            SessID=$("#Sessid").val();
+            $.ajax({
+                    url: '/Report/GetPerformanceInc',
+                    dataType: 'JSON',
+                    method: 'POST',
+                    data: { "Action":"BV",SessID:SessID },
+                    success: function (data) {
+                         // Find selected row data
+        var row = BillWiseGrid.find(x => x.SNo == sno);
+
+        // 🔥 Build table HTML
+            var html = `
+                <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Party Code</th>
+                            <th>MLevel</th>
+                            <th>Diff. Comm-BV</th>
+                             <th>Self Slab</th>
+                             <th>Down Slab</th>
+                            <th>Diff. Comm-Bv</th>
+                            <th>Comm.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            // Loop through data
+            $.each(data, function (i, item) {
+                html += `
+                    <tr>
+                        <td>${item.fromPartyCode}</td>
+                        <td>${item.mLevel}</td>
+                        <td>${item.diff_Comm_BV}</td>
+                         <td>${item.selfSlab}</td>
+                         <td>${item.downSlab}</td>
+                        <td>${item.diff_Comm_Pv}</td>
+                        <td>${item.comm}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table></div>`;
+
+            // Set modal content
+            $('#modalContent').html(html);
+
+        // Open modal
+        $('#myModal').modal('show');
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+
+    }
+
+        function openPvModal(sno) {
+            SessID=$("#Sessid").val();
+               $.ajax({
+                    url: '/Report/GetPerformanceInc',
+                    dataType: 'JSON',
+                    method: 'POST',
+                    data: { "Action":"PV" ,SessID:SessID},
+                    success: function (data) {
+                        var row = BillWiseGrid.find(x => x.SNo == sno);
+
+       var html = `
+                
+                <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Party Code</th>
+                            <th>MLevel</th>
+                            <th>PV</th>
+                            <th>Self Slab</th>
+                            <th>Down Slab</th>
+                            <th>Diff. Slab</th>
+                            <th>Comm.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            //  Loop data
+            $.each(data, function (i, item) {
+
+                html += `
+                    <tr>
+                        <td>${item.fromPartyCode}</td>
+                        <td>${item.mLevel}</td>
+                        <td>${item.pv}</td>
+                        <td>${item.selfSlab}</td>
+                        <td>${item.downSlab}</td>
+                        <td>${item.slab}</td>
+                        <td>${item.comm}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table></div>`;
+
+            // Set modal content
+            $('#pvModalContent').html(html);
+
+        $('#pvModal').modal('show');
+                        
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+
+        
+    }
+</script>
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-header justify-content-between">
+    <div class="left-content">
+        <div>
+            <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">Hi, @Convert.ToString(Context.Session.GetString("UserName"))!</h2>
+            <p class="mg-b-0"> @Convert.ToString(Context.Session.GetString("PartyName"))</p>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- Components Start -->
+<div class="row">
+    <div class="col-lg-12 col-xl-12 col-md-12 col-sm-12">
+        <div class="card  box-shadow-0">
+            <div class="card-header">
+                <h4 class="card-title mb-1">
+                    Payout Summary
+                </h4>
+            </div>
+            <div class="card-body pt-0 bg-white">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Session</label>
+                            <select id="Sessid" class="form-control">
+                                <option value="0">Select Session</option>
+                                @foreach (var item in Model.MSessids)
+                                {
+                                    <option value="@item.SessID">@item.SessMonth</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <input type="button" class="btn btn-primary" id="btnExport" name="btnExport" value="Download Excel" style=" display:none;" />
+                <input type="button" class="btn btn-primary fa-pull-right getReport" data-type="Invoice" id="btnShowReport" name="btnShowReport" value="Show Report" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-xl-12 col-md-12 col-sm-12">
+        <div class="card-table-two bg-white">
+            <div class="table-responsive country-table bg-white">
+                <table id="grid" class="table text-center table-striped table-bordered mb-0 text-sm-nowrap text-lg-nowrap text-xl-nowrap">
+                </table>
+            </div>
+        </div>
+        <table id="gridExport" style="display:none"></table>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg  modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Diff Comm BV Details</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="modalContent"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="pvModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Diff Comm PV Details</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="pvModalContent"></p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Components end -->

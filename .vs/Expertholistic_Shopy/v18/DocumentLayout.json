@@ -1,0 +1,105 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|e:\\sadhna garg\\githhubfranchise\\expertholistic_shopy\\vitaflow.presenation\\controllers\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|solutionrelative:vitaflow.presenation\\controllers\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|e:\\sadhna garg\\githhubfranchise\\expertholistic_shopy\\vitaflow.presenation\\views\\transaction\\distributorbill.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|solutionrelative:vitaflow.presenation\\views\\transaction\\distributorbill.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|e:\\sadhna garg\\githhubfranchise\\expertholistic_shopy\\vitaflow.presenation\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|solutionrelative:vitaflow.presenation\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|e:\\sadhna garg\\githhubfranchise\\expertholistic_shopy\\vitaflow.presenation\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|solutionrelative:vitaflow.presenation\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|e:\\sadhna garg\\githhubfranchise\\expertholistic_shopy\\vitaflow.presenation\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|solutionrelative:vitaflow.presenation\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TransactionController.cs",
+              "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Presenation\\Controllers\\TransactionController.cs",
+              "RelativeDocumentMoniker": "VitaFlow.Presenation\\Controllers\\TransactionController.cs",
+              "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Presenation\\Controllers\\TransactionController.cs",
+              "RelativeToolTip": "VitaFlow.Presenation\\Controllers\\TransactionController.cs",
+              "ViewState": "AgIAAPIAAAAAAAAAAAAewAsBAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-18T06:19:25.261Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DistributorBill.cshtml",
+              "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Presenation\\Views\\Transaction\\DistributorBill.cshtml",
+              "RelativeDocumentMoniker": "VitaFlow.Presenation\\Views\\Transaction\\DistributorBill.cshtml",
+              "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Presenation\\Views\\Transaction\\DistributorBill.cshtml*",
+              "RelativeToolTip": "VitaFlow.Presenation\\Views\\Transaction\\DistributorBill.cshtml*",
+              "ViewState": "AgIAAOoJAAAAAAAAAAAYwBsKAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-18T06:17:31.214Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Presenation\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "VitaFlow.Presenation\\Views\\Home\\Index.cshtml",
+              "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Presenation\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "VitaFlow.Presenation\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAANsAAAAAAAAAAAAAAPkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-18T06:13:10.703Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Presenation\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "VitaFlow.Presenation\\Controllers\\HomeController.cs",
+              "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Presenation\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "VitaFlow.Presenation\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-18T06:11:21.4Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Presenation\\appsettings.json",
+              "RelativeDocumentMoniker": "VitaFlow.Presenation\\appsettings.json",
+              "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Presenation\\appsettings.json",
+              "RelativeToolTip": "VitaFlow.Presenation\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-09-18T06:06:32.051Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

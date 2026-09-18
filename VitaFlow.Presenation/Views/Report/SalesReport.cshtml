@@ -1,0 +1,515 @@
+﻿@model VitaFlow.Domain.Entities.SalesReport
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "SalesReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool IsSoldByHo = Convert.ToBoolean(Context.Session.GetString("IsSoldByHo"));
+    string CurrentPartyCode = Convert.ToString(Context.Session.GetString("PartyCode"));
+    string CurrentPartyName = Convert.ToString(Context.Session.GetString("PartyName"));
+    string PartyCaption = ViewBag.PartyCaption;
+    string CustomerCaption = ViewBag.CustomerCaption;
+}
+<script type="text/javascript">
+        var grid, dialog;
+        var IsYes = false;
+        var BillWiseGrid = [{}];
+        var PreviouslySelectedFromDate = "";
+        var PreviouslySelectedToDate = "";
+        var PreviouslySelectedToPickerDate = "";
+        var PreviouslySelectedFromPickerDate = "";
+        var SalesType = "BillWise";
+        var IsCustomerFilter = false;
+        var IsDateFilter = false;
+        var FromDate = "", ToDate = "";
+        var CustomerId = "";
+        var IsParty = false;
+        var PartyList = [];
+        var FullPartyList;
+        $(document).ready(function () {
+            debugger;
+            var IsAdministrator = '@IsSoldByHo';
+            if (IsAdministrator == "True") {
+                GetAllParty();
+            }
+            else {
+                $("#PartyCode").val('@CurrentPartyCode');
+            }
+
+            $("#hiddenInvoiceType").val("");
+
+            $("#InvoiceType").change(function () {
+                var SelectedVal = $("#InvoiceType").val();
+                $("#hiddenInvoiceType").val(SelectedVal);
+            });
+            $('#CustCode').focusout(function () {
+                //console.log("checked");
+                //var FromDate = $('#StartDate').val();
+                //var ToDate = $('#EndDate').val();
+                CustomerId = $('#CustCode').val();
+            });
+
+
+
+
+     $('#IsCustomerFilter').on('change', function () {
+        if ($(this).is(':checked')) {
+                    IsCustomerFilter = true;
+                    $("#CustCode").val("All");
+                    $("#CustCode").prop("readonly", true);
+                    CustomerId = $('#CustCode').val();
+        }
+        else
+        {
+               IsCustomerFilter = false;
+                $("#CustCode").val("");
+                $("#CustCode").prop("readonly", false);
+                CustomerId = "";
+        }
+    });
+
+          $('#IsDateFilter').on('change', function () {
+        if ($(this).is(':checked')) {
+                IsDateFilter = true;
+                $("#StartDate").val("All");
+                $("#StartDate").prop("readonly", true);
+                FromDate = "";
+                ToDate = "";
+                $("#EndDate").val("All");
+                $("#EndDate").prop("readonly", true);
+        }
+        else
+        {
+                IsDateFilter = false;
+                $("#StartDate").val("");
+                $("#StartDate").prop("readonly", false);
+                $("#EndDate").val("");
+                $("#EndDate").prop("readonly", false);
+                FromDate = "";
+                ToDate = "";
+        }
+    });
+
+            $('#StartDate').datepicker({
+            format: 'dd-mm-yyyy', // Adjust to your format needs
+            autoclose: true,
+            todayHighlight: true
+            });
+
+        $('#EndDate').datepicker({
+            format: 'dd-mm-yyyy', // Adjust to your format needs
+            autoclose: true,
+            todayHighlight: true
+        });
+
+            $("#btnExport").on('click', function () {
+                //var tableToExcel = new TableToExcel();
+                // tableToExcel.render("grid");
+                var UserTypeStr = "BillWiseSalesReport";
+
+                //$("#grid").table2excel({
+                //    exclude: ".noExl",
+                //    name: UserTypeStr + "_Export",
+                //    filename: UserTypeStr + "_Export",
+                //    fileext: ".xls",
+                //});
+                console.log("in export gridExport", BillWiseGrid);
+                var tableString = "<thead><tr>";
+                tableString += "<th>S.No.</th>";
+                tableString += "<th>Bill No.</th>";
+                tableString += "<th>Bill Date</th>";
+                tableString += "<th>Invoice Type</th>";
+                tableString += "<th>Introducer PC ID</th>";
+                tableString += "<th>UserName</th>";
+                tableString += "<th>Mobile No</th>";
+                tableString += "<th>@CustomerCaption Code</th>";
+                tableString += "<th>@CustomerCaption Name</th>";
+                tableString += "<th>City</th>";
+                tableString += "<th>FV</th>";
+                tableString += "<th>BV</th>"; 
+                tableString += "<th>PV</th>";
+                tableString += "<th>Total Qty</th>";
+                tableString += "<th>Net Amount</th>";
+                tableString += "<th>Gross Amount</th>";
+                tableString += "</tr></thead><tbody>";
+                for (var i = 0; i < BillWiseGrid.length; i++) {
+                    tableString += "<tr>";
+                    tableString += "<td>" + BillWiseGrid[i].SNo + "</td>";
+                    tableString += "<td>" + BillWiseGrid[i].BillNo + "</td>";
+                    tableString += "<td>" + BillWiseGrid[i].BillDate + "</td>";
+                    tableString += "<td>" + BillWiseGrid[i].InvType + "</td>";
+                    tableString += "<td>" + BillWiseGrid[i].RefIDNo + "</td>";
+                    tableString += "<td>" + BillWiseGrid[i].UserName + "</td>";
+                    tableString += "<td>" + BillWiseGrid[i].MobileNo + "</td>";
+                    tableString += "<td>" + BillWiseGrid[i].Code + "</td>";
+                    tableString += "<td>" + BillWiseGrid[i].Name + "</td>";
+                    tableString += "<td>" + BillWiseGrid[i].city + "</td>";
+                    tableString += "<td>" + parseInt(BillWiseGrid[i].FV) + "</td>";
+                    tableString += "<td>" + parseInt(BillWiseGrid[i].RV) + "</td>";
+                    tableString += "<td>" + parseInt(BillWiseGrid[i].PV) + "</td>";
+                    tableString += "<td>" + parseInt(BillWiseGrid[i].TotalQty) + "</td>";
+                    tableString += "<td>" + parseInt(BillWiseGrid[i].NetAmount) + "</td>";
+                    tableString += "<td>" + parseInt(BillWiseGrid[i].GrossAmount) + "</td>";
+                    tableString += "</tr>";
+                }
+
+
+                tableString += "</tbody>";
+                $("#gridExport").empty();
+                $("#gridExport").append(tableString);
+                tableToExcel('gridExport', UserTypeStr + "_Export");
+
+            });
+            $("#btnShowReport").on('click', function () {
+                debugger;
+                $("#btnShowReport").hide();
+                $("#hidbtn").show();
+                var PartyCode = $("#PartyCode").val();
+                var FType = $("#FType").val();
+                var DateError = false;
+                FromDate=$("#StartDate").val();
+                ToDate=$("#EndDate").val();
+                if (FromDate != "" && FromDate != null && ToDate != null && ToDate != "") {
+                    // var d1 = toDate(FromDate);
+                    // var d2 = toDate(ToDate);
+                    // if (d1 > d2) {
+                    //     DateError = true;
+                    //     toastr.error("From Date should be less than ToDate!", 'Error', {
+                    //         closeButton: true,
+                    //         progressBar: true,
+                    //         positionClass: 'toast-top-right',
+                    //         timeOut: 5000, // 5 seconds
+                    //         extendedTimeOut: 1000 // 1 second longer than timeOut
+                    //     });
+                    //     $("#btnShowReport").show();
+                    //     $("#hidbtn").hide();
+                    // }
+                    // else {
+                    //     DateError = false;
+                    // }
+                }
+                else {
+                    DateError = false;
+                    // console.log("PreviouslySelectedFromDate", PreviouslySelectedFromDate);
+                    // console.log("PreviouslySelectedToDate", PreviouslySelectedToDate);
+                    if (IsDateFilter == false) {
+                        //if (FromDate == "" || FromDate == null) {
+                        //    FromDate=PreviouslySelectedFromDate;
+                        //}
+                        //if (ToDate == "" || ToDate == null) {
+                        //    ToDate = PreviouslySelectedToDate;
+                        //}
+                    }
+                    if (FromDate == "" || FromDate == null) {
+                        FromDate = "All";
+                        //OpenDialog("dialogMessage", "Please enter from date!", "false");
+                    } if (ToDate == "" || ToDate == null) {
+                        ToDate = "All";
+                        // OpenDialog("dialogMessage", "Please enter to date!", "false");
+                    }
+                }
+                if (CustomerId == "" || CustomerId == null) {
+                    CustomerId = "All";
+                    //OpenDialog("dialogMessage", "Please enter IdNo!", "false");
+                }
+
+                if (DateError == false) {
+                    //FromDate = toDate(FromDate);
+                    //ToDate = toDate(ToDate);
+
+
+                    //if (FromDate != "All") {
+                    //    PreviouslySelectedFromDate = FromDate;
+                    //    //var splitDate = FromDate.split("-");
+                    //    //FromDate = splitDate[2] + "-" + splitDate[1] + "-" + splitDate[0];
+                    //}
+                    //if (ToDate != "All") {
+                    //    PreviouslySelectedToDate = ToDate;
+                    //    //var splitToDate = ToDate.split("-");
+                    //    //ToDate = splitToDate[2] + "-" + splitToDate[1] + "-" + splitToDate[0];
+                    //}
+                    // console.log("FromDate", FromDate);
+                    // console.log("ToDate", ToDate);
+                    var InvoiceTypeVal = $("#hiddenInvoiceType").val();
+                    var OfferType = $("#OfferType").val();
+                    $.ajax({
+                        url: '/Report/GetSalesReport',
+                        type: 'POST',
+                        data: { "FromDate": FromDate, "ToDate": ToDate, "CustomerId": CustomerId, "ProductCode": "", "CategoryCode": "", "PartyCode": PartyCode, "BType": "S", "SalesType": SalesType, "InvoiceType": InvoiceTypeVal, "FType": FType, "OfferType": OfferType },
+                        dataType: "json",
+                        success: function (objResult) {
+                            BillWiseGrid = [{}];
+                            console.log("objResult", objResult);
+                            //if (objResult[0].ErrorMsg != null || objResult[0].ErrorMsg != "" || objResult[0].ErrorMsg != undefined) {
+                            //    console.log("objResult[0].ErrorMsg", objResult[0].ErrorMsg);
+                            //}
+                            //if (objResult != null) {
+                            //    alert("objResult", objResult);
+                            //}
+                            if (objResult.length > 0) {
+                                debugger;
+                                BillWiseGrid = BillWiseGrid.splice(1);
+                                for (var i = 0; i < objResult.length; i++) {
+                                    var dateObj = new Date(objResult[i].billDate);
+                                    var myDate = (dateObj.getDate()) + "/" + (dateObj.getMonth() + 1) + "/" + dateObj.getFullYear();
+                                    var InvoicePath = '@Url.Action("InvoicePrint", "Transaction", new { Pm = "-1" })';
+                                    var encodedparameters = objResult[i].billNo;
+                                    //console.log("encodedparameters", encodedparameters);
+                                    //encodedparameters="uid=testuser&pwd=test123456&Id=84503&Name=tes&Email=abc@xyz.com&MobileNo=9829898298&Address=Bhl";
+                                    var EncryptedB64Url = window.btoa(encodedparameters);
+                                    console.log("EncryptedB64Url", EncryptedB64Url);
+                                    InvoicePath = InvoicePath.replace("-1", EncryptedB64Url);
+                                    var FV = 0;
+                                    var RV = 0;
+                                    if (objResult[i].BillType == "B") {
+                                        FV = objResult[i].totalBV;
+                                    }
+                                    else {
+                                        RV = objResult[i].totalBV;
+                                    }
+                                    var TaxAmount = (parseFloat(objResult[i].igstAmount) + parseFloat(objResult[i].cgstAmount) + parseFloat(objResult[i].sgstAmount)).toFixed(2);
+                                    var GrossAmount = parseFloat(objResult[i].grossAmt);
+                                    BillWiseGrid.push({ "GrossAmount": parseInt(GrossAmount), "RefIDNo": objResult[i].refIDNo, 
+                                    "BillType": objResult[i].billType, "FV": parseInt(FV), "RV": parseInt(RV), "UserName": objResult[i].userName,
+                                    "TotalQty": parseInt(objResult[i].totalQty), "city": objResult[i].city, "MobileNo": objResult[i].mobileNO,
+                                    "InvoicePath": InvoicePath, "SNo": i + 1, 
+                                    "BillNo": objResult[i].billNo,"UserBillNo": objResult[i].userBillNo,
+                                    "BillDate": myDate, 
+                                    "PartyCode": objResult[i].partyCode, "PartyName": objResult[i].partyName, "Code": objResult[i].custCode,
+                                    "Name": objResult[i].custName, "Amount": parseInt(objResult[i].amount), "TaxAmount": parseInt(TaxAmount),
+                                    "IGSTAmount": parseInt(objResult[i].igstAmount), "CGSTAmount": parseInt(objResult[i].cgstAmount),
+                                    "SGSTAmount": parseInt(objResult[i].sgstAmount), "NetAmount": parseInt(objResult[i].netAmount),
+                                    "InvoiceType": objResult[i].billType, "InvType": objResult[i].invoiceType, "PV": objResult[i].pvValue });
+                                }
+                            }
+                            fillGrid();
+                             $("#btnShowReport").show();
+                              $("#hidbtn").hide();
+                            //$("#StartDate").val("");
+                            //$("#EndDate").val("");
+                            //if (PreviouslySelectedFromDate != "All") {
+                            //    FromDate = PreviouslySelectedFromDate;// $("#StartDate").val();
+                            //}
+                            //if (PreviouslySelectedToDate != "All") {
+                            //    ToDate = PreviouslySelectedToDate// $("#EndDate").val();
+                            //}
+                            //$(".preloader").hide();
+                        },
+                        error: function (xhr, data) {
+                            //  return false;
+                            console.log(xhr);
+                            console.log("Error:", data);
+                        }
+                    });
+                }
+            });
+
+            $("#PartyName").autocomplete({
+                source: function (request, response) {
+                    var results = $.ui.autocomplete.filter(PartyList, request.term);
+
+                    response(results.slice(0, 50));
+                    //response(results);
+                    //$('html').getNiceScroll().resize();
+                    //$('#sidebar').getNiceScroll().resize();
+                    //$('.scroll-panel').getNiceScroll().resize();
+                    //response(ItemList);
+                },
+                minLength: 1,
+                scroll: true,
+                select: function (event, ui) {
+                    //$("#txDestination").val(ui.item.label);
+                    //cityID = ui.item.id;
+                    console.log("ui.item", ui.item.label);
+                    $("#PartyName").val(ui.item.label);
+                    SetSpecificCode("Party", ui.item.label);
+                    return false;
+                },
+
+            }).focus(function () {
+                $(this).autocomplete("search", "");
+            });
+
+            $('#IsParty').on('ifChecked', function () {
+                //console.log("checked");
+                IsParty = true;
+                //$("#PartyName").val("All");
+                //$("#PartyName").prop("readonly", "readonly");
+                //$("#PartyCode").val(0);
+                $("#PartyName").val('All');
+                $("#PartyName").prop("readonly", "readonly");
+                $("#PartyCode").val('0');
+            });
+
+            $('#IsParty').on('ifUnchecked', function () {
+                //console.log("checked");
+                IsParty = false;
+                //$("#PartyName").val("");
+                //$("#PartyName").prop("readonly", "");
+                //$("#PartyCode").val("");
+                $("#PartyName").val('');
+                $("#PartyName").prop("readonly", "");
+                $("#PartyCode").val('');
+            });
+
+        });
+        function fillGrid() {
+            debugger;
+            console.log("BillWiseGrid", BillWiseGrid);
+            // BillWiseGrid = BillWiseGrid.splice(1);
+            //console.log("ProductGrid", ProductGrid);
+            if (grid != null) {
+                grid.destroy();
+                $('#grid').empty();
+
+            }
+            grid = $('#grid').grid({
+                dataSource: BillWiseGrid,
+                uiLibrary: 'bootstrap',
+                headerFilter: true,
+                columns: [
+                    { field: 'SNo', title: 'S.No.', width: 50, sortable: true, hidden: false, filterable: false },
+                    { field: 'UserBillNo', title: 'Bill No', width: 130, sortable: true, hidden: false, filterable: true, tmpl: '<a target="_blank" style="text-decoration:underline;color:blue" href={InvoicePath}>{UserBillNo}</a>', align: 'center' },
+                    { field: 'BillDate', title: 'Bill Date', width: 100, sortable: true, hidden: false, filterable: true },
+                    { field: 'InvType', title: 'Invoice Type', width: 150, sortable: true, hidden: false, filterable: true },
+                    { field: 'RefIDNo', title: 'Introducer PC ID ', width: 120, sortable: true, hidden: false, filterable: true },
+                    { field: 'PartyCode', title: '@PartyCaption Code', width: 90, sortable: true, hidden: true, filterable: true },
+                    { field: 'PartyName', title: '@PartyCaption Name', width: 150, sortable: true, hidden: true, filterable: true },
+                    { field: 'UserName', title: 'Billed By', width: 150, sortable: true, hidden: false, filterable: true },
+                    { field: 'Code', title: '@CustomerCaption Code', width: 110, sortable: true, hidden: false, filterable: true },
+                    { field: 'Name', title: '@CustomerCaption Name', width: 150, sortable: true, hidden: false, filterable: true },
+                    { field: 'MobileNo', title: 'Mobile No', width: 150, sortable: true, hidden: false, filterable: true },
+                    { field: 'city', title: 'City Name', width: 150, sortable: true, hidden: false, filterable: true },
+                    { field: 'FV', title: 'FV', width: 90, sortable: true, hidden: false, filterable: true },
+                    { field: 'RV', title: 'BV', width: 90, sortable: true, hidden: false, filterable: true },
+                    { field: 'PV', title: 'PV', width: 90, sortable: true, hidden: false, filterable: true },
+                    { field: 'TotalQty', title: 'Total Quantity', width: 110, sortable: true, hidden: false, filterable: true },
+                    { field: 'NetAmount', width: 80, title: 'Net Amount', sortable: true, hidden: false, filterable: true },
+                    { field: 'GrossAmount', width: 80, title: 'Gross Amount', sortable: true, hidden: false, filterable: true },
+                ],
+                pager: { limit: 100, sizes: [15, 20, 35, 50, 65, 80, 95, 100] }
+            });
+        }
+</script>
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-header justify-content-between">
+    <div class="left-content">
+        <div>
+            <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">Hi, @Convert.ToString(Context.Session.GetString("UserName"))!</h2>
+            <p class="mg-b-0"> @Convert.ToString(Context.Session.GetString("PartyName"))</p>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- Components Start -->
+<div class="row">
+    <div class="col-lg-12 col-xl-12 col-md-12 col-sm-12">
+        <div class="card  box-shadow-0">
+            <div class="card-header">
+                <h4 class="card-title mb-1">
+                    Bill Wise Report
+                </h4>
+            </div>
+            <div class="card-body pt-0 bg-white">
+                <form class="form-horizontal" id="BillWiseSalesForm" method="post" name="BillWiseSalesForm" onsubmit="false">
+                    <div class="row">
+                        @Html.HiddenFor(m => m.PartyCode, new { id = "PartyCode", name = "PartyCode" })
+                        @Html.HiddenFor(m => m.InvoiceType, new { id = "hiddenInvoiceType", name = "hiddenInvoiceType" })
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>From Date</label>
+                                @Html.TextBoxFor(m => m.StartDate, new { name = "StartDate", id = "StartDate", tabindex = "1", @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>To Date</label>
+                                @Html.TextBoxFor(m => m.EndDate, new { name = "EndDate", id = "EndDate", @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-2" id="IsProductDiv">
+                            <div class="form-group mt-4">
+                                <input type="checkbox" id="IsDateFilter" name="IsDateFilter" class="flat" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>@CustomerCaption No</label>
+                                @Html.TextBoxFor(m => m.CustCode, new { name = "CustCode", id = "CustCode", @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group mt-4">
+                                <input type="checkbox" id="IsCustomerFilter" name="IsCustomerFilter" class="flat" />
+                            </div>
+                        </div>
+                    </div>
+                    @if (IsSoldByHo)
+                    {
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label>Enter @PartyCaption</label>
+                                    @Html.TextBoxFor(m => m.PartyName, new { name = "PartyName", id = "PartyName", tabindex = "5", @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group mt-4">
+                                    <input type="checkbox" id="IsParty" name="IsParty" class="flat" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <br />
+                    <b>Invoice Type</b>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.DropDownListFor(m => m.InvoiceType, ViewBag.InvoiceTypes as IEnumerable<SelectListItem>, new { name = "InvoiceType", id = "InvoiceType", @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.DropDownListFor(m => m.FType, new SelectList(new List<SelectListItem>{
+                                new SelectListItem { Text="--"+ PartyCaption +" Type--",Value="A"},
+                                new SelectListItem { Text="Consultant",Value="M"},
+                                new SelectListItem { Text = PartyCaption ,Value="D"} }, "Value", "Text"), new { @class = "form-control", @id = "FType" })
+                            </div>
+                        </div>
+                        <div class="col-md-3" style="visibility:hidden;">
+                            <div class="form-group">
+                                @Html.DropDownListFor(m => m.BillType, new SelectList(new List<SelectListItem>{
+                                new SelectListItem { Text="--All Bills--",Value="A"},
+                                new SelectListItem { Text="Offer Bill",Value="F"},
+                                new SelectListItem { Text="Without Offer Bill",Value="W"} }, "Value", "Text"), new { @class = "form-control", @id = "OfferType" })
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="card-footer">
+                <input type="button" class="btn btn-primary" id="btnExport" name="btnExport" value="Download Excel" />
+                <input type="button" class="btn btn-primary fa-pull-right" id="btnShowReport" name="btnShowReport" value="Show Report" />
+                <a href="javascript:void(0)" id="hidbtn" style="display:none;" class="btn btn-primary fa-pull-right">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Wait...
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-lg-12 col-xl-12 col-md-12 col-sm-12">
+        <div class="card-table-two bg-white">
+            <div class="table-responsive country-table bg-white">
+                <table id="grid" class="table text-center table-striped table-bordered mb-0 text-sm-nowrap text-lg-nowrap text-xl-nowrap">
+                </table>
+            </div>
+        </div>
+        <table id="gridExport" style="display:none"></table>
+    </div>
+</div>
+<!-- Components End -->

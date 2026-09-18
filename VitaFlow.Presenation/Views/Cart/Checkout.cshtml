@@ -1,0 +1,1031 @@
+@model VitaFlow.Domain.Entities.ShippingDetail
+@{
+    ViewData["Title"] = "Checkout";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    function GetCity()
+    {
+        var citycode = $("#citycode");
+        var Statecode = $("#statecode").val();
+        $.ajax({
+            type: "POST",
+            url: '/Cart/GetCity',
+            datatype: "json",
+            async: true,
+            data: { Statecode: Statecode },
+            success: function (data) {
+                debugger;
+                citycode.empty();
+                $.each(data, function (index, value) {
+                    debugger;
+                    citycode.append("<option value='" + value.cityCode + "'>" + value.cityName + "</option>")
+                });
+            }
+        });
+    }
+    function validateEmail(email)
+    {
+        var emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+        return emailRegex.test(email);
+    }
+    function Checkpackage()
+    {
+        $.ajax({
+            type: "POST",
+            url: '/Cart/Checkpackage',
+            datatype: "json",
+            async: true,
+            success: function (data) {
+                debugger;
+                if (data.status == "0") {
+                    window.location.href = "/Cart/PackageSelection";
+                }
+                else if (data.status == "1") {
+                    toastr.warning("Your cart amount is less than selected package", 'Success', {
+                        closeButton: false,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000, // 5 seconds
+                        extendedTimeOut: 3000 // 1 second longer than timeOut
+                    });
+                }
+                else {
+                   return true;
+
+                }
+
+            }
+        });
+    }
+        function loadBVBalance()
+          {
+        $.ajax({
+            type: "POST",
+            url: "/Cart/GetWalletBalance",
+            success: function (data) {
+                console.log("BV Wallet Response:", data);
+                if (typeof data === "object" && data.balance !== undefined) {
+                    $("#walbal1").text(data.balance);
+                } else {
+                    $("#walbal1").text(data);
+                }
+            },
+            error: function (xhr) {
+                console.log("Error BV:", xhr.responseText);
+            }
+        });
+    }
+        function loadPVBalance()
+    {
+        $.ajax({
+            type: "POST",
+            url: "/Cart/GetPVWalletBalance",
+            success: function (data) {
+                console.log("PV Wallet Response:", data);
+                if (typeof data === "object" && data.balance !== undefined) {
+                    $("#PVwalbal1").text(data.balance);
+                } else {
+                    $("#PVwalbal1").text(data);
+                }
+            },
+            error: function (xhr) {
+                console.log("Error PV:", xhr.responseText);
+            }
+        });
+    }
+
+        function loadPurchaseBalance(Wallettype,walletid)
+    {
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: "/Cart/GetPurchaseWalletBalance",
+            data:{Wallettype:Wallettype},
+            success: function (data) {
+                debugger;
+                if (typeof data === "object" && data.balance !== undefined) {
+                    $("#"+walletid+"").val(data.balance);
+                } else {
+                    $("#"+walletid+"").val(data);
+                }
+            },
+            error: function (xhr) {
+                console.log("Error BV:", xhr.responseText);
+            }
+        });
+    }
+
+                   $(document).ready(function ()
+                   {
+                       debugger;
+
+
+
+
+        // On dropdown change
+        $("#ordermethod").on("change", function () {
+            debugger;
+            let selectedValue = $(this).val();
+            $("#promobaladjust").val('0');
+            if (selectedValue === "BV") {
+                $("#ordermethodselectwallet").hide();
+                $("#ordermethodselectPVwallet").hide();
+                loadBVBalance(); // Load BV balance dynamically
+                $("#promobalance").hide();
+                $("#trPVPurchaseBalanace").hide();
+                $("#trBVPurchaseBalanace").show();
+                $("#PVPurchaseBaladjust").val('0');
+                loadPurchaseBalance("Z","BVPurchaseBal");
+            }
+            else if (selectedValue === "PV") {
+                $("#ordermethodselectwallet").hide();
+                $("#ordermethodselectPVwallet").hide();
+                loadPVBalance(); // Load PV balance dynamically
+                $("#promobalance").hide();
+                $("#trPVPurchaseBalanace").show();
+                $("#trBVPurchaseBalanace").hide();
+                $("#PVPurchaseBaladjust").val($("#totalamount").val());
+                 loadPurchaseBalance("W","PVPurchaseBal");
+            }
+            else {
+                $("#ordermethodselectwallet").hide();
+                $("#ordermethodselectPVwallet").hide();
+                $("#promobalance").hide();
+                $("#trPVPurchaseBalanace").hide();
+                $("#trBVPurchaseBalanace").hide();
+                $("#PVPurchaseBaladjust").val('0');
+            }
+        });
+        // Optional: if you want balance to appear on page load if already selected
+        let initialValue = $("#ordermethod").val();
+        if(initialValue === "BV") loadBVBalance();
+        else if(initialValue === "PV") loadPVBalance();
+    });
+
+    function SaveAddressdetail() {
+        debugger;
+        var BusinessName = $("#BusinessName").val();
+        if (BusinessName == "")
+        {
+            toastr.error("Please enter business name", 'Error', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-top-right',
+                timeOut: 5000, // 5 seconds
+                extendedTimeOut: 1000 // 1 second longer than timeOut
+            });
+            $("#BusinessName").focus();
+            return false;
+        }
+        var CustomerName = $("#CustomerName").val();
+        if (CustomerName == "")
+        {
+            toastr.error("Please enter custer name", 'Error', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-top-right',
+                timeOut: 5000, // 5 seconds
+                extendedTimeOut: 1000 // 1 second longer than timeOut
+            });
+            $("#CustomerName").focus();
+            return false;
+        }
+        var Address1 = $("#Address1").val();
+        if (Address1 == "")
+        {
+            toastr.error("Please enter address", 'Error', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-top-right',
+                timeOut: 5000, // 5 seconds
+                extendedTimeOut: 1000 // 1 second longer than timeOut
+            });
+            $("#Address1").focus();
+            return false;
+        }
+        var pincode = $("#pincode").val();
+        if (pincode == "")
+        {
+            toastr.error("Please enter pincode", 'Error', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-top-right',
+                timeOut: 5000, // 5 seconds
+                extendedTimeOut: 1000 // 1 second longer than timeOut
+            });
+            $("#pincode").focus();
+            return false;
+        }
+        var mobile = $("#mobile").val();
+        var mobilePattern = /^\d{10}$/;
+        if (mobile == "")
+        {
+            toastr.error("Please enter mobile", 'Error', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-top-right',
+                timeOut: 5000, // 5 seconds
+                extendedTimeOut: 1000 // 1 second longer than timeOut
+            });
+            $("#mobile").focus();
+            return false;
+        }
+        if (mobilePattern.test(mobile) == false)
+        {
+            toastr.error("Invalid mobile number. Please enter a 10-digit number.", 'Error', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-top-right',
+                timeOut: 5000, // 5 seconds
+                extendedTimeOut: 1000 // 1 second longer than timeOut
+            });
+            $("#mobile").focus();
+            return false;
+        }
+        var email = $("#email").val()
+        if (email == "")
+        {
+            toastr.error("Please enter email", 'Error', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-top-right',
+                timeOut: 5000, // 5 seconds
+                extendedTimeOut: 1000 // 1 second longer than timeOut
+            });
+            $("#email").focus();
+            return false;
+        }
+        if (validateEmail(email) == false)
+        {
+            toastr.error("Please enter valid email", 'Error', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-top-right',
+                timeOut: 5000, // 5 seconds
+                extendedTimeOut: 1000 // 1 second longer than timeOut
+            });
+            $("#email").focus();
+            return false;
+        }
+        var Address2 = $('#Address2').val();
+        var StateCode = $('#statecode').val();
+        var CityCode = $('#citycode').val();
+        var isfirstorder = $("#isfirstorder").val();
+        var ordermethod = "";
+        // if (isfirstorder == "Yes") { Checkpackage(); };
+        // if (isfirstorder=="No")
+        // {
+            var totalAmount = parseFloat($("#totalamount").val()); // total amount from page
+            ordermethod = $("#ordermethod").val();
+            if (ordermethod=="0")
+            {
+                toastr.error("Please select order method", 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // 5 seconds
+                    extendedTimeOut: 1000 // 1 second longer than timeOut
+                });
+                return false;
+            }
+
+            if(ordermethod=="PV")
+            {
+                var PVPurchaseBal=$("#PVPurchaseBal").val();
+                if(PVPurchaseBal==0)
+                {
+                   toastr.error("Insufficient balance in PV wallet purchase", 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // 5 seconds
+                    extendedTimeOut: 1000 // 1 second longer than timeOut
+                   });
+                 return false;
+                }
+                if(parseFloat(PVPurchaseBal)<parseFloat(totalAmount))
+                {
+                    toastr.error("PV wallet purchase should be greater than or equal total amount", 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // 5 seconds
+                    extendedTimeOut: 1000 // 1 second longer than timeOut
+                   });
+                   return false;
+                }
+
+                var PVPurchaseBaladjust=$("#PVPurchaseBaladjust").val();
+                if(parseFloat(PVPurchaseBaladjust)<=0)
+                {
+                    toastr.error("Please enter adjust amount", 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // 5 seconds
+                    extendedTimeOut: 1000 // 1 second longer than timeOut
+                   });
+                   $("#PVPurchaseBaladjust").focus();
+                   return false;
+                }
+
+                if(parseFloat(PVPurchaseBaladjust)!=parseFloat(totalAmount))
+                {
+                    toastr.error("Total wallet amount must equal bill amount", 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // 5 seconds
+                    extendedTimeOut: 1000 // 1 second longer than timeOut
+                   });
+                   $("#PVPurchaseBaladjust").focus();
+                   return false;
+                }
+            }
+
+            if(ordermethod=="BV")
+            {
+                debugger;
+                var BVPurchaseBal=$("#BVPurchaseBal").val();
+                var promobal=$("#promobal").val();
+
+                var BVPurchaseBaladjust=$("#BVPurchaseBaladjust").val();
+                var promobaladjust=$("#promobaladjust").val();
+                if(validatePayment(BVPurchaseBaladjust,promobaladjust,totalAmount,BVPurchaseBal,promobaladjust)==false)
+                {
+                    return false;
+                }
+
+                
+            }
+
+            //var walletBalance = 0;
+
+    // if(ordermethod === "BV")
+    // {
+    //     walletBalance = parseFloat($("#walbal1").text());
+    // }
+    // else if(ordermethod === "PV")
+    // {
+    //     walletBalance = parseFloat($("#PVwalbal1").text());
+    // }
+    // if(ordermethod === "BV" || ordermethod === "PV") {
+    //     if(walletBalance < totalAmount) {
+    //         toastr.error("Your wallet balance is insufficient to complete this order.", 'Error', {
+    //                 closeButton: true,
+    //                 progressBar: true,
+    //                 positionClass: 'toast-top-right',
+    //                 timeOut: 5000, // 5 seconds
+    //                 extendedTimeOut: 1000 // 1 second longer than timeOut
+    //             });
+    //             return false;
+    //     }
+    // }
+        // }
+         var promowalletBal = parseFloat($('#promobaladjust').val()) || 0;
+        $("#btn").hide();
+        $("#hidbtn").show();
+        $.ajax({
+            type: "POST",
+            url: '/Cart/SaveAddressdetail',
+            data: {
+                BusinessName: BusinessName, CustomerName: CustomerName, Address1: Address1,
+                Address2: Address2, StateCode: StateCode, CityCode: CityCode,
+                pincode: pincode, MobileNo: mobile, Email: email, OrderMethod: ordermethod,promowalletBal:promowalletBal
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data.statuscode == "1") {
+                    toastr.success(data.msg, 'Success', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000, // 5 seconds
+                        extendedTimeOut: 1000 // 1 second longer than timeOut
+                    });
+
+                    if (ordermethod == "BV") {
+                        setTimeout(function () {
+                            //window.location.href = "/Cart/BvOrder";
+                            window.location.href = "/Cart/SaveOrder";
+                        }, 1000);
+                    }
+                    else
+                    {
+                        setTimeout(function () {
+                            window.location.href = "/Cart/SaveOrder";
+                        }, 1000);
+                    }
+
+                }
+                else {
+                    toastr.error(data.msg, 'Error', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000, // 5 seconds
+                        extendedTimeOut: 1000 // 1 second longer than timeOut
+                    });
+                }
+                // $("#btn").show();
+                // $("#hidbtn").hide();
+            }
+        });
+    }
+
+           function validatePayment(mainWallet, promoWallet, billAmount, mainBalance, promoBalance) {
+               debugger;
+        // Convert values to numbers
+        mainWallet = Number(mainWallet) || 0;
+        promoWallet = Number(promoWallet) || 0;
+        billAmount = Number(billAmount);
+        mainBalance = Number(mainBalance);
+        promoBalance = Number(promoBalance);
+
+        // Check available balance for each wallet
+        if (promoWallet > promoBalance) {
+            
+            toastr.error("Promo wallet amount exceeds available promo balance.", 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // 5 seconds
+                    extendedTimeOut: 1000 // 1 second longer than timeOut
+                   });
+            return false;
+        }
+
+        if (mainWallet > mainBalance) {
+            
+            toastr.error("BV wallet purchase amount exceeds available main balance.", 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // 5 seconds
+                    extendedTimeOut: 1000 // 1 second longer than timeOut
+                   });
+            return false;
+        }
+
+        // Check total required amount
+        if ((mainWallet + promoWallet) !== billAmount) {
+            
+            toastr.error("Total wallet amount must equal bill amount.", 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // 5 seconds
+                    extendedTimeOut: 1000 // 1 second longer than timeOut
+                   });
+            return false;
+        }
+
+        // Case 1: Full payment from promo wallet
+        if (promoWallet === billAmount) {
+            return true;
+        }
+
+        // Case 2: Using both wallets
+        if (promoWallet > 0 && mainWallet > 0) {
+            return true;
+        }
+
+        // Case 3: Promo insufficient → main wallet mandatory
+        if (promoWallet < billAmount && mainWallet > 0) {
+            return true;
+        }
+
+        // otherwise invalid
+        
+        toastr.error("BV wallet purchase wallet is required when promo wallet does not cover full bill.", 'Error', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // 5 seconds
+                    extendedTimeOut: 1000 // 1 second longer than timeOut
+                   });
+        return false;
+    }
+
+
+
+     $(document).ready(function () {
+          $.ajax({
+                type: "POST",
+                url: "/Home/GetWalletTypeBalance",
+                async: true,
+                data:{WalletType:"X"},
+                success: function (data) {
+                    setTimeout(function () {
+                        $("#promobal").val(data);
+                    }, 1000);
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    console.log(response.responseText);
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                }
+            });
+
+                $('#promobaladjust').on('focusout', function () {
+                    debugger;
+        // Get values
+        var promoBal = parseFloat($(this).val()) || 0;           // Input value
+        var netPayBal = parseFloat($('#totalamount').val()) || 0;  // Assuming you have a textbox or hidden field for net pay balance
+        var promowalletBal = parseFloat($('#promobal').val()) || 0; // Assuming wallet balance field
+        if(promowalletBal>0)
+        {
+              if (promoBal > promowalletBal) {
+
+         toastr.error("You cannot use more than your wallet balance.", 'Error', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000, // 5 seconds
+                        extendedTimeOut: 1000 // 1 second longer than timeOut
+                    });
+        $(this).val('0');  // clear the input
+        $(this).focus();  // bring focus back
+        return false;
+    }
+
+            if (promoBal > netPayBal) {
+             toastr.error("Promo balance cannot be greater than Net Payable Amount.", 'Error', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000, // 5 seconds
+                        extendedTimeOut: 1000 // 1 second longer than timeOut
+                    });
+            $(this).val('0');  // Clear input
+            $(this).focus();  // Refocus the input
+            return false;
+        }
+        }
+        else
+        {
+             $(this).val('0');
+             toastr.error("Promo Balance is 0", 'Error', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000, // 5 seconds
+                        extendedTimeOut: 1000 // 1 second longer than timeOut
+                    });
+        }
+
+
+    });
+
+        $('#promobaladjust').on('keypress', function (e) {
+        var charCode = (e.which) ? e.which : e.keyCode;
+
+        // Allow: backspace, delete, tab, escape, enter
+        if ($.inArray(charCode, [8, 9, 27, 13, 46]) !== -1) {
+            return true;
+        }
+
+        // Allow: one dot (.)
+        if (charCode == 46) {
+            if ($(this).val().indexOf('.') === -1) {
+                return true;
+            } else {
+                return false; // block second dot
+            }
+        }
+
+        // Allow: 0-9
+        if (charCode >= 48 && charCode <= 57) {
+            return true;
+        }
+
+        // Block everything else
+        return false;
+    });
+
+     });
+</script>
+<style>
+    /* Grid fix: row-deck makes cols flex; force cards to fill their column */
+    .premium-checkout-page .row.row-deck {
+        margin-left: -16px;
+        margin-right: -16px;
+    }
+
+    .premium-checkout-page .row.row-deck > [class*="col-"] {
+        padding-left: 16px;
+        padding-right: 16px;
+        display: block;
+    }
+
+    .premium-checkout-page .checkout-card,
+    .premium-checkout-page .checkout-summary-card {
+        width: 100%;
+    }
+
+    .premium-checkout-page .checkout-card,
+    .premium-checkout-page .checkout-summary-card {
+        background: #fff;
+        background-image: none;
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(17, 38, 80, .07);
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .premium-checkout-page .checkout-card-header,
+    .premium-checkout-page .checkout-summary-header {
+        padding: 18px 24px;
+        border-bottom: 1px solid #eef1f8;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .premium-checkout-page .checkout-card-header h5,
+    .premium-checkout-page .checkout-summary-header h5 {
+        margin: 0;
+        font-weight: 700;
+        color: #1b2740;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .premium-checkout-page .checkout-card-header h5 i { color: #2e5fe6; }
+
+    .premium-checkout-page .checkout-summary-header .badge-count {
+        background: linear-gradient(90deg, #2e5fe6 0%, #00b8a9 100%);
+        color: #fff;
+        font-size: 11.5px;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+
+    .premium-checkout-page .checkout-summary-items { padding: 8px 24px 4px; }
+
+    .premium-checkout-page .checkout-summary-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f3f9;
+    }
+
+    .premium-checkout-page .checkout-summary-item:last-child { border-bottom: none; }
+
+    .premium-checkout-page .checkout-summary-item img {
+        width: 48px;
+        height: 48px;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(17, 38, 80, .08);
+        flex-shrink: 0;
+    }
+
+    .premium-checkout-page .checkout-summary-item-info { flex: 1; min-width: 0; }
+
+    .premium-checkout-page .checkout-summary-item-info .name {
+        margin: 0;
+        font-size: 13px;
+        font-weight: 600;
+        color: #1b2740;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .premium-checkout-page .checkout-summary-item-info .qty { font-size: 11.5px; color: #8893a8; }
+
+    .premium-checkout-page .checkout-summary-item .price {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1b2740;
+        white-space: nowrap;
+    }
+
+    .premium-checkout-page .checkout-card .row { padding: 18px 24px 6px; }
+
+    .premium-checkout-page .form-group-checkout { margin-bottom: 16px; }
+    .premium-checkout-page .form-group-checkout label {
+        display: block;
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: .4px;
+        text-transform: uppercase;
+        color: #6b7891;
+        margin-bottom: 6px;
+    }
+
+    .premium-checkout-page .form-control {
+        border: 1px solid #e3e9f4;
+        border-radius: 10px;
+        height: 44px;
+        font-size: 13.5px;
+        background: #f8faff;
+        transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+    .premium-checkout-page .form-control:focus {
+        border-color: #2e5fe6;
+        box-shadow: 0 0 0 3px rgba(46, 95, 230, .12);
+        background: #fff;
+    }
+
+    .premium-checkout-page .checkout-summary-card { position: relative; }
+
+    .premium-checkout-page .checkout-summary-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #2e5fe6, #00b8a9);
+        z-index: 2;
+    }
+
+    .premium-checkout-page .checkout-sidebar-price-table { padding: 18px 24px 0; }
+    .premium-checkout-page .checkout-summary-card table.table-borderless { padding: 0 24px; }
+    .premium-checkout-page .checkout-summary-card .button { padding: 0 24px 22px; }
+
+    .premium-checkout-page .text-success { color: #1b2740 !important; }
+
+    .premium-checkout-page .total-price .price,
+    .premium-checkout-page .total-price .value { margin: 0; font-size: 13.5px; color: #4d5875; }
+
+    .premium-checkout-page .checkout-summary-totals { padding: 4px 24px 0; }
+
+    .premium-checkout-page .summary-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #5b6679;
+        padding: 8px 0;
+    }
+
+    .premium-checkout-page .summary-row.total {
+        border-top: 1px dashed #e3e9f4;
+        margin-top: 6px;
+        padding-top: 14px;
+        font-size: 17px;
+        font-weight: 700;
+        color: #1b2740;
+    }
+
+    .premium-checkout-page .summary-row.total span:last-child { color: #2e5fe6; }
+
+    .premium-checkout-page .summary-method-row {
+        border-top: 1px solid #f0f3f9;
+        margin-top: 6px;
+        padding-top: 14px;
+        font-weight: 600;
+        color: #1b2740;
+    }
+
+    .premium-checkout-page .summary-method-select {
+        width: auto;
+        min-width: 160px;
+        max-width: 60%;
+        height: 40px;
+    }
+
+    .premium-checkout-page .summary-wallet-block {
+        border-top: 1px solid #f0f3f9;
+        padding: 12px 0 4px;
+        margin-bottom: 16px;
+    }
+
+    .premium-checkout-page .checkout-summary-totals { padding-bottom: 16px; }
+
+    .premium-checkout-page .summary-wallet-title {
+        margin: 0 0 8px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #1b2740;
+    }
+
+    .premium-checkout-page .summary-wallet-block .form-group { margin-bottom: 0; }
+    .premium-checkout-page .summary-wallet-block label {
+        font-size: 11px;
+        color: #8893a8;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    .premium-checkout-page .btn-pay-now {
+        display: block;
+        float: none;
+        text-align: center;
+        width: 100%;
+        background: linear-gradient(90deg, #2e5fe6 0%, #00b8a9 100%);
+        color: #fff;
+        font-weight: 600;
+        letter-spacing: .4px;
+        text-transform: uppercase;
+        font-size: 13.5px;
+        padding: 14px;
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 12px 25px rgba(46, 95, 230, .25);
+        transition: transform .2s ease, box-shadow .2s ease;
+        text-decoration: none;
+    }
+
+    .premium-checkout-page .btn-pay-now:hover {
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 16px 30px rgba(0, 184, 169, .32);
+    }
+
+    @@media (max-width: 991px) {
+        .premium-checkout-page .checkout-summary-card { margin-top: 0; }
+    }
+</style>
+
+<div class="container-fluid premium-checkout-page">
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-header justify-content-between">
+    <div class="left-content">
+        <div>
+            <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1"> Product Checkout</h2>
+            <p class="mg-b-0"> @Convert.ToString(Context.Session.GetString("PartyName"))</p>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<div class="row row-sm row-deck">
+
+    <div class="col-md-12 col-lg-12 col-xl-7 col-sm-12">
+        <div class="checkout-card">
+            <div class="checkout-card-header">
+                <h5><i class="fa fa-user" aria-hidden="true"></i> Your Billing Details</h5>
+            </div>
+            <div class="row">
+                <div class="col-md-6 form-group-checkout">
+                    <label>Business Name</label>
+                    <input type="text" asp-for="BusinessName" name="BusinessName" id="BusinessName" required="" class="form-control" placeholder="Enter Business Name">
+                </div>
+                <div class="col-md-6 form-group-checkout">
+                    <label>Customer Name</label>
+                    <input type="text" required="" asp-for="CustomerName" name="CustomerName" id="CustomerName" class="form-control" placeholder="Enter Customer Name">
+                </div>
+                <div class="col-md-12 form-group-checkout">
+                    <label>Address 1</label>
+                    <input type="text" required="" asp-for="Address1" name="Address1" id="Address1" class="form-control" placeholder="Enter Address 1">
+                </div>
+                <div class="col-md-12 form-group-checkout">
+                    <label>Address 2</label>
+                    <input type="text" required="" asp-for="Address2" name="Address2" id="Address2" class="form-control" placeholder="Enter Address 2">
+                </div>
+                <div class="col-md-6 form-group-checkout">
+                    <label>State</label>
+                    <select class="form-control" asp-for="StateCode" id="statecode" onchange="GetCity()">
+                        @foreach (var item in Model.Statelist)
+                        {
+                            <option value="@item.StateCode">@item.StateName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6 form-group-checkout">
+                    <label>City</label>
+                    <select class="form-control" asp-for="CityCode" id="citycode">
+                        @foreach (var item in Model.CityList)
+                        {
+                            <option value="@item.CityCode">@item.CityName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6 form-group-checkout">
+                    <label>Pin Code</label>
+                    <input type="text" required="" asp-for="Pincode" name="Pincode" id="pincode" class="form-control" placeholder="Enter Pin Code">
+                </div>
+                <div class="col-md-6 form-group-checkout">
+                    <label>Mobile No.</label>
+                    <input type="text" required="" asp-for="MobileNo" name="MobileNo" onkeypress="return isNumberKey(event);" id="mobile" class="form-control" placeholder="Enter Mobile No.">
+                </div>
+                <div class="col-md-12 form-group-checkout">
+                    <label>Email ID</label>
+                    <input type="text" required="" asp-for="Email" name="Email" id="email" class="form-control" placeholder="Enter Email ID">
+                </div>
+            </div>
+            <br>
+
+
+        </div>
+    </div>
+
+
+    <div class="col-md-12 col-lg-12 col-xl-5 col-sm-12">
+        <div class="checkout-summary-card">
+            <div class="checkout-summary-header">
+                <h5>Order Summary</h5>
+                <span class="badge-count">@(Model.CartList != null ? Model.CartList.Count() : 0) Items</span>
+            </div>
+            <div class="checkout-summary-items">
+                @foreach (var item in Model.CartList)
+                {
+                    <div class="checkout-summary-item">
+                        <img src="@item.imagePath" onerror="this.src='https://zadmin.zoewellness.co.in/images/DefaultProduct.jpg';" alt="Product Picture">
+                        <div class="checkout-summary-item-info">
+                            <p class="name">@item.ProdName</p>
+                            <span class="qty">Qty: @item.qty</span>
+                        </div>
+                        <span class="price">Rs. @(item.Price * item.qty)</span>
+                    </div>
+                }
+            </div>
+            <div class="checkout-summary-totals">
+                <div class="summary-row"><span>Subtotal</span><span>Rs. @Model.TotalAmont</span></div>
+                <div class="summary-row total"><span>Total Payable Amount</span><span>Rs. @Model.TotalAmont</span></div>
+                <input type="hidden" id="totalamount" class="form-control" value="@Model.TotalAmont " />
+
+                <div class="summary-row summary-method-row">
+                    <span>Order Method</span>
+                    <select class="form-control summary-method-select" id="ordermethod">
+                        <option value="0">Select Order Method</option>
+                        <option value="PV">PV</option>
+                        <option value="BV">BV</option>
+                    </select>
+                </div>
+
+                <div class="summary-row" id="ordermethodselectwallet" style="display:none;">
+                    <span>BV Wallet Balance</span>
+                    <span><span id="walbal1">0</span></span>
+                </div>
+
+                <div class="summary-row" id="ordermethodselectPVwallet" style="display:none;">
+                    <span>PV Wallet Balance</span>
+                    <span><span id="PVwalbal1">0</span></span>
+                </div>
+
+                <div class="summary-wallet-block" id="trPVPurchaseBalanace" style="display:none;">
+                    <p class="summary-wallet-title">PV Wallet Purchase Balanace</p>
+                    <div class="row">
+                        <div class="col-md-5 form-group">
+                            <label>Aval. Bal.</label>
+                            <input type="text" id="PVPurchaseBal" value="0" class="form-control" readonly />
+                        </div>
+                        <div class="col-md-7 form-group">
+                            <label>Adj. Amount</label>
+                            <input type="text" id="PVPurchaseBaladjust" onkeypress="return isNumberKey(event);" value="0" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-wallet-block" id="trBVPurchaseBalanace" style="display:none;">
+                    <p class="summary-wallet-title">BV Wallet Purchase Balanace</p>
+                    <div class="row">
+                        <div class="col-md-5 form-group">
+                            <label>Aval. Bal.</label>
+                            <input type="text" id="BVPurchaseBal" value="0" class="form-control" readonly />
+                        </div>
+                        <div class="col-md-7 form-group">
+                            <label>Adj. Amount</label>
+                            <input type="text" id="BVPurchaseBaladjust" onkeypress="return isNumberKey(event);" value="0" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-wallet-block" id="promobalance" style="display:none;">
+                    <p class="summary-wallet-title">Promo Wallet</p>
+                    <div class="row">
+                        <div class="col-md-5 form-group">
+                            <label>Aval. Bal.</label>
+                            <input type="text" id="promobal" class="form-control" readonly />
+                        </div>
+                        <div class="col-md-7 form-group">
+                            <label>Adj. Amount</label>
+                            <input type="text" id="promobaladjust" onkeypress="return isNumberKey(event);" value="0" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="button">
+                <input type="hidden" id="isfirstorder" value="@Model.IsFirstOrder" />
+                <a href="javascript:void(0)" id="btn" onclick="SaveAddressdetail()" class="btn-pay-now">
+                    <i class="fa fa-rupee" aria-hidden="true"></i> Pay Payment
+                </a>
+
+                <a href="javascript:void(0)" id="hidbtn" style="display:none;" class="btn-pay-now">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Wait...
+                </a>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+</div>
