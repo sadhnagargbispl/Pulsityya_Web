@@ -127,6 +127,7 @@
         function applyOrderMethod() {
             debugger;
             let selectedValue = $("#ordermethod").val();
+            let walletVType = "@Model.WalletVType"; // VoucherType where IsWr = 1
             $("#promobaladjust").val('0');
             if (selectedValue === "BV") {
                 $("#ordermethodselectwallet").hide();
@@ -136,7 +137,7 @@
                 $("#trPVPurchaseBalanace").hide();
                 $("#trBVPurchaseBalanace").show();
                 $("#PVPurchaseBaladjust").val('0');
-                loadPurchaseBalance("Z","BVPurchaseBal");
+                loadPurchaseBalance(walletVType,"BVPurchaseBal");
             }
             else if (selectedValue === "PV") {
                 $("#ordermethodselectwallet").hide();
@@ -146,7 +147,7 @@
                 $("#trPVPurchaseBalanace").show();
                 $("#trBVPurchaseBalanace").hide();
                 $("#PVPurchaseBaladjust").val($("#totalamount").val());
-                 loadPurchaseBalance("W","PVPurchaseBal");
+                 loadPurchaseBalance(walletVType,"PVPurchaseBal");
             }
             else {
                 $("#ordermethodselectwallet").hide();

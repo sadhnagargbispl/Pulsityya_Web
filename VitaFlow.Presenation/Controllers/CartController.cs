@@ -419,29 +419,19 @@ namespace VitaFlow.Presenation.Controllers
                 var result = await i_Product.GetPartyPackageAmount(Convert.ToString(HttpContext.Session.GetString("FCode")));
 
                 var GetPartyOrderlist = await ireport.GetOrderList(HttpContext.Session.GetString("FCode"));
-                var ordermethod = await i_Product.GetorderMethodSelection(Convert.ToInt32(HttpContext.Session.GetString("UserId")));
-                if (ordermethod != null)
-                {
-                    orderreq.OrderMethod = ordermethod;
-                }
-                else
-                {
-                    orderreq.OrderMethod = "";
-                }
+                // एक ही wallet है (VoucherType where IsWr = 1) - balance और deduction दोनों उसी VType से
+                var wallet = await i_Product.GetWalletType();
+                var walletVType = (wallet.Vtype ?? "").Trim();
+                var ordermethod = wallet.OrderMethod;
+                orderreq.OrderMethod = ordermethod;
+                Walletbalance = await i_Product.GetPartyWalletBalance(HttpContext.Session.GetString("FCode"), walletVType);
+                orderreq.wallettype = walletVType;
                 if (ordermethod == "BV")
                 {
-                    Walletbalance = await i_Product.GetPartyWalletBalance(HttpContext.Session.GetString("FCode"), "Z");
-                    orderreq.wallettype = "Z";
-
                     decimal Totaladjustamount = 0;
                     Totaladjustamount = Convert.ToDecimal(HttpContext.Session.GetString("promobalance"));
                     Walletbalance = Walletbalance - Totaladjustamount;
                     orderreq.Promobalance = Totaladjustamount;
-                }
-                else
-                {
-                    Walletbalance = await i_Product.GetPartyWalletBalance(HttpContext.Session.GetString("FCode"), "W");
-                    orderreq.wallettype = "W";
                 }
                 //Walletbalance = await i_Product.GetPartyWalletBalance(HttpContext.Session.GetString("FCode"), "R");
                 //orderreq.wallettype = "R";
