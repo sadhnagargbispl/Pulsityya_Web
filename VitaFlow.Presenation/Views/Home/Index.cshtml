@@ -6,29 +6,97 @@
 }
 
 <style>
-    .vf-stat-card {
+    .vf-dashboard .vf-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+    .vf-dashboard .vf-ason {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #6b7891;
+        background: #fff;
+        border-radius: 30px;
+        padding: 7px 16px;
+        box-shadow: 0 4px 14px rgba(17, 38, 80, .06);
+    }
+
+        .vf-dashboard .vf-ason i {
+            color: #2e5fe6;
+            margin-right: 6px;
+        }
+
+    .vf-dashboard .vf-section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12.5px;
+        font-weight: 700;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+        color: #6b7891;
+        margin: 0 0 14px;
+    }
+
+        .vf-dashboard .vf-section-title::before {
+            content: "";
+            width: 4px;
+            height: 16px;
+            border-radius: 4px;
+            background: linear-gradient(180deg, #2e5fe6, #00b8a9);
+        }
+
+        .vf-dashboard .vf-section-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, #e3e9f4, rgba(227, 233, 244, 0));
+        }
+
+    .vf-dashboard .vf-section {
+        margin-bottom: 26px;
+    }
+
+    /* row-deck theme me column ko flex bana deta hai, is liye card ko poori width dena zaroori hai */
+    .vf-dashboard .vf-stat-card {
+        position: relative;
+        width: 100%;
         background: #fff;
         border: none;
-        border-radius: 14px;
+        border-radius: 16px;
         box-shadow: 0 8px 24px rgba(17, 38, 80, .07);
         padding: 22px 24px;
-        height: 100%;
+        margin-bottom: 18px;
+        overflow: hidden;
         display: flex;
         align-items: center;
         gap: 18px;
         transition: transform .2s ease, box-shadow .2s ease;
     }
 
-        .vf-stat-card:hover {
+        .vf-dashboard .vf-stat-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+
+        .vf-dashboard .vf-stat-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 16px 32px rgba(17, 38, 80, .12);
         }
 
-    .vf-stat-icon {
+    .vf-dashboard .vf-stat-icon {
         flex-shrink: 0;
-        width: 54px;
-        height: 54px;
-        border-radius: 14px;
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -36,87 +104,120 @@
         color: #fff;
     }
 
-    .vf-stat-icon.sale-today { background: linear-gradient(135deg, #2e5fe6, #00b8a9); }
-    .vf-stat-icon.sale-total { background: linear-gradient(135deg, #00b8a9, #2ec4a6); }
-    .vf-stat-icon.purchase-today { background: linear-gradient(135deg, #f0932b, #eb4d4b); }
-    .vf-stat-icon.purchase-total { background: linear-gradient(135deg, #6c5ce7, #a55eea); }
+    .vf-dashboard .vf-stat-body {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
 
-    .vf-stat-body { min-width: 0; }
-
-    .vf-stat-label {
+    .vf-dashboard .vf-stat-label {
         font-size: 12px;
         font-weight: 700;
-        letter-spacing: .4px;
+        letter-spacing: .6px;
         text-transform: uppercase;
-        color: #6b7891;
+        color: #8893a8;
         margin: 0 0 6px;
     }
 
-    .vf-stat-value {
-        font-size: 24px;
+    .vf-dashboard .vf-stat-value {
+        font-size: 27px;
         font-weight: 700;
         color: #1b2740;
-        line-height: 1.2;
+        line-height: 1.15;
         word-break: break-word;
     }
 
+    /* watermark icon - card ki khaali jagah bhar deta hai */
+    .vf-dashboard .vf-stat-ghost {
+        position: absolute;
+        right: -10px;
+        bottom: -18px;
+        font-size: 84px;
+        line-height: 1;
+        opacity: .05;
+        pointer-events: none;
+    }
+
+    .vf-dashboard .vf-sale-today .vf-stat-icon { background: linear-gradient(135deg, #2e5fe6, #5b8cff); }
+    .vf-dashboard .vf-sale-today::before { background: #2e5fe6; }
+    .vf-dashboard .vf-sale-total .vf-stat-icon { background: linear-gradient(135deg, #00a389, #00b8a9); }
+    .vf-dashboard .vf-sale-total::before { background: #00b8a9; }
+    .vf-dashboard .vf-buy-today .vf-stat-icon { background: linear-gradient(135deg, #f0932b, #f6b93b); }
+    .vf-dashboard .vf-buy-today::before { background: #f0932b; }
+    .vf-dashboard .vf-buy-total .vf-stat-icon { background: linear-gradient(135deg, #6c5ce7, #a55eea); }
+    .vf-dashboard .vf-buy-total::before { background: #6c5ce7; }
+
     @@media (max-width: 575px) {
-        .vf-stat-card { padding: 18px; gap: 14px; }
-        .vf-stat-value { font-size: 20px; }
+        .vf-dashboard .vf-stat-card { padding: 18px; gap: 14px; }
+        .vf-dashboard .vf-stat-icon { width: 46px; height: 46px; font-size: 18px; border-radius: 13px; }
+        .vf-dashboard .vf-stat-value { font-size: 22px; }
+        .vf-dashboard .vf-stat-ghost { display: none; }
     }
 </style>
 
 <div class="vf-dashboard">
-    <!-- Breadcrumb Start -->
-    <div class="breadcrumb-header justify-content-between">
-        <div class="left-content">
-            <div>
-                <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">Hi, @Convert.ToString(Context.Session.GetString("UserName"))!</h2>
-                <p class="mg-b-0"> @Convert.ToString(Context.Session.GetString("PartyName"))</p>
-            </div>
+
+    <div class="vf-head">
+        <div>
+            <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">Hi, @Convert.ToString(Context.Session.GetString("UserName"))!</h2>
+            <p class="mg-b-0"> @Convert.ToString(Context.Session.GetString("PartyName"))</p>
+        </div>
+        <div class="vf-ason">
+            <i class="fa fa-calendar" aria-hidden="true"></i> As on @DateTime.Now.ToString("dd MMM yyyy")
         </div>
     </div>
-    <!-- Breadcrumb End -->
 
-    <div class="row row-sm row-deck">
-        <div class="col-12 col-sm-6 col-xl-3 mb-3">
-            <div class="vf-stat-card">
-                <div class="vf-stat-icon sale-today"><i class="fa fa-shopping-bag" aria-hidden="true"></i></div>
-                <div class="vf-stat-body">
-                    <p class="vf-stat-label">Today Sale</p>
-                    <div class="vf-stat-value">&#8377; @vfSummary.TodaySale.ToString("N2")</div>
+    <div class="vf-section">
+        <h6 class="vf-section-title">Sale</h6>
+        <div class="row row-sm">
+            <div class="col-12 col-lg-6">
+                <div class="vf-stat-card vf-sale-today">
+                    <div class="vf-stat-icon"><i class="fa fa-shopping-bag" aria-hidden="true"></i></div>
+                    <div class="vf-stat-body">
+                        <p class="vf-stat-label">Today Sale</p>
+                        <div class="vf-stat-value">&#8377; @vfSummary.TodaySale.ToString("N2")</div>
+                    </div>
+                    <i class="fa fa-shopping-bag vf-stat-ghost" aria-hidden="true"></i>
                 </div>
             </div>
-        </div>
 
-        <div class="col-12 col-sm-6 col-xl-3 mb-3">
-            <div class="vf-stat-card">
-                <div class="vf-stat-icon sale-total"><i class="fa fa-line-chart" aria-hidden="true"></i></div>
-                <div class="vf-stat-body">
-                    <p class="vf-stat-label">Total Sale</p>
-                    <div class="vf-stat-value">&#8377; @vfSummary.TotalSale.ToString("N2")</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6 col-xl-3 mb-3">
-            <div class="vf-stat-card">
-                <div class="vf-stat-icon purchase-today"><i class="fa fa-shopping-cart" aria-hidden="true"></i></div>
-                <div class="vf-stat-body">
-                    <p class="vf-stat-label">Today Purchase</p>
-                    <div class="vf-stat-value">&#8377; @vfSummary.TodayPurchase.ToString("N2")</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6 col-xl-3 mb-3">
-            <div class="vf-stat-card">
-                <div class="vf-stat-icon purchase-total"><i class="fa fa-cubes" aria-hidden="true"></i></div>
-                <div class="vf-stat-body">
-                    <p class="vf-stat-label">Total Purchase</p>
-                    <div class="vf-stat-value">&#8377; @vfSummary.TotalPurchase.ToString("N2")</div>
+            <div class="col-12 col-lg-6">
+                <div class="vf-stat-card vf-sale-total">
+                    <div class="vf-stat-icon"><i class="fa fa-line-chart" aria-hidden="true"></i></div>
+                    <div class="vf-stat-body">
+                        <p class="vf-stat-label">Total Sale</p>
+                        <div class="vf-stat-value">&#8377; @vfSummary.TotalSale.ToString("N2")</div>
+                    </div>
+                    <i class="fa fa-line-chart vf-stat-ghost" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="vf-section">
+        <h6 class="vf-section-title">Purchase</h6>
+        <div class="row row-sm">
+            <div class="col-12 col-lg-6">
+                <div class="vf-stat-card vf-buy-today">
+                    <div class="vf-stat-icon"><i class="fa fa-shopping-cart" aria-hidden="true"></i></div>
+                    <div class="vf-stat-body">
+                        <p class="vf-stat-label">Today Purchase</p>
+                        <div class="vf-stat-value">&#8377; @vfSummary.TodayPurchase.ToString("N2")</div>
+                    </div>
+                    <i class="fa fa-shopping-cart vf-stat-ghost" aria-hidden="true"></i>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="vf-stat-card vf-buy-total">
+                    <div class="vf-stat-icon"><i class="fa fa-cubes" aria-hidden="true"></i></div>
+                    <div class="vf-stat-body">
+                        <p class="vf-stat-label">Total Purchase</p>
+                        <div class="vf-stat-value">&#8377; @vfSummary.TotalPurchase.ToString("N2")</div>
+                    </div>
+                    <i class="fa fa-cubes vf-stat-ghost" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>

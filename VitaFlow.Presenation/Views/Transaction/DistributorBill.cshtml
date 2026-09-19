@@ -1068,6 +1068,24 @@
                 IsEditGrid = false;
             });
 
+            // Save button wapas normal state me laane ke liye - har early return par
+            function ResetSaveButton() {
+                $("#SaveDistributorForm").attr("disabled", false);
+                $("#hidbtn").hide();
+                $("#SaveDistributorForm").show();
+            }
+
+            // grid me shuruaat me ek khaali placeholder row hoti hai (SNo = ""), usse chhod kar ginti
+            function GetValidProductCount() {
+                if (ProductGrid == null) { return 0; }
+                var n = 0;
+                for (var gi = 0; gi < ProductGrid.length; gi++) {
+                    var row = ProductGrid[gi];
+                    if (row && row.SNo !== "" && row.SNo !== null && row.SNo !== undefined) { n++; }
+                }
+                return n;
+            }
+
             $("#SaveDistributorForm").click(function (e) {
                 debugger;
                 $("#SaveDistributorForm").attr("disabled", true);
@@ -1085,13 +1103,26 @@
                         timeOut: 5000, // 5 seconds
                         extendedTimeOut: 1000 // 1 second longer than timeOut
                     });
-                    $("#SaveDistributorForm").attr("disabled", false);
-                    $("#hidbtn").hide();
-                    $("#SaveDistributorForm").show();
+                    ResetSaveButton();
                     return false;
                 }
 
-                if (ProductGrid.length <= 0) {
+                if ($.trim($("#IdNo").val()) == "") {
+                    toastr.warning("Please enter IdNo", 'Warning', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000,
+                        extendedTimeOut: 1000
+                    });
+                    ResetSaveButton();
+                    $("#IdNo").focus();
+                    return false;
+                }
+
+                // ProductGrid me hamesha ek khaali placeholder row hoti hai, is liye
+                // .length <= 0 kabhi true nahi hota tha - asli products ginte hain
+                if (GetValidProductCount() <= 0) {
                     toastr.warning("Please select atleast one product", 'Warning', {
                         closeButton: true,
                         progressBar: true,
@@ -1099,16 +1130,22 @@
                         timeOut: 5000, // 5 seconds
                         extendedTimeOut: 1000 // 1 second longer than timeOut
                     });
-                    $("#SaveDistributorForm").attr("disabled", false);
-                    $("#hidbtn").hide();
-                    $("#SaveDistributorForm").show();
+                    ResetSaveButton();
                     return false;
                 }
                      if (SelectedInvoiceTypeVal == "PV") {
                 var TotalAmountNetVal = parseFloat($("#TotalAmountNet").val()) || 0;
                 if (TotalAmountNetVal < 3000) {
-                    OpenDialog("dialogMessage", "For Activation, Total Amount should be minimum ₹3000.", "false");
-                    $("#SaveDistributorForm").attr("disabled", false);
+                    // pehle yahan OpenDialog() call tha jo is view me define hi nahi hai -
+                    // JS error ki wajah se Save par kuch nahi hota tha
+                    toastr.warning("For Activation, Total Amount should be minimum ₹3000.", 'Warning', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 6000,
+                        extendedTimeOut: 1500
+                    });
+                    ResetSaveButton();
                     return false;
                 }
             }
@@ -1139,6 +1176,12 @@
                         },
                         error: function (error) {
                             console.log(error);
+                            // wallet balance call fail hone par button phans jata tha
+                            toastr.error("Wallet balance check failed. Please try again.", 'Error', {
+                                closeButton: true, progressBar: true, positionClass: 'toast-top-right',
+                                timeOut: 6000, extendedTimeOut: 1500
+                            });
+                            ResetSaveButton();
                         }
                     });
                 }
@@ -1225,8 +1268,18 @@
                         },
                         error: function (error) {
                             console.log(error);
+                            // wallet balance call fail hone par button phans jata tha
+                            toastr.error("Wallet balance check failed. Please try again.", 'Error', {
+                                closeButton: true, progressBar: true, positionClass: 'toast-top-right',
+                                timeOut: 6000, extendedTimeOut: 1500
+                            });
+                            ResetSaveButton();
                         }
                     });
+                }
+                else {
+                    // koi bhi known invoice type nahi mila to button wapas enable kar do
+                    ResetSaveButton();
                 }
 
             });
@@ -3454,6 +3507,14 @@
                     //  return false;
                     console.log(xhr);
                     console.log("Error:", data);
+                    // error par bhi button wapas laana zaroori hai, warna page stuck dikhta hai
+                    $("#hidbtn").hide();
+                    $("#SaveDistributorForm").show();
+                    $("#SaveDistributorForm").attr("disabled", false);
+                    toastr.error("Bill save nahi ho paaya. Please try again.", 'Error', {
+                        closeButton: true, progressBar: true, positionClass: 'toast-top-right',
+                        timeOut: 6000, extendedTimeOut: 1500
+                    });
                 }
             });
         }
