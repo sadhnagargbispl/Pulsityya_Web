@@ -65,7 +65,9 @@ namespace VitaFlow.Presenation.Controllers
             try
             {
                 var configurations = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-                var ShoppingUrl = configurations["ShoppingUrl"];
+                // File is site ke wwwroot/WalletReqsImages me save hoti hai, isliye URL bhi isi site ka hona chahiye.
+                // Pehle ShoppingUrl lagta tha, jiski wajah se report me image 404 ho rahi thi.
+                var WalletImageBaseUrl = (configurations["FranchiseUrl"] ?? "").TrimEnd('/') + "/WalletReqsImages/";
                 string Rndomstr = DateTime.Now.ToString("yyyyMMddHHmmssfff");
                 if (req.Image != null && req.Image.Length > 0)
                 {
@@ -84,7 +86,7 @@ namespace VitaFlow.Presenation.Controllers
                     req.ReqBy = HttpContext.Session.GetString("FCode");
                     // Single wallet setup - wallet हमेशा master से ही लेते हैं
                     req.VType = ((await i_Product.GetWalletType()).Vtype ?? "").Trim();
-                    req.ScannedFileName = ShoppingUrl + ScannedFileName;
+                    req.ScannedFileName = WalletImageBaseUrl + ScannedFileName;
                     Response = await i_Transaction.SaveWalletRequest(req);
                     if (Response != null && Response == "OK")
                     {
@@ -237,12 +239,12 @@ namespace VitaFlow.Presenation.Controllers
                 return RedirectToAction("Login", "Account");
             }
         }
-        public async Task<IActionResult> GetProductNamesOnly()
+        public async Task<IActionResult> GetProductNamesOnly(string InvType)
         {
             List<string> model = new List<string>();
             try
             {
-                model = await i_Transaction.GetAutocompProductsOnly(Convert.ToString(HttpContext.Session.GetString("PartyCode")));
+                model = await i_Transaction.GetAutocompProductsOnly(Convert.ToString(HttpContext.Session.GetString("PartyCode")), InvType);
             }
             catch (Exception ex)
             {

@@ -328,15 +328,20 @@
                                  for (var i = 0; i < objResult.length; i++) {
                                      debugger;
                                      if (ReportType == "Detail") {
-                                         var dateObj = new Date(objResult[i].billDate.match(/\d+/)[0] * 1);
-                                         var myDate = (dateObj.getDate()) + "/" + (dateObj.getMonth() + 1) + "/" + dateObj.getFullYear();
+                                         var myDate = FormatReportDate(objResult[i].billDate);
+                                         // SP alag-alag naam se column de sakta hai, is liye fallback rakhe hain
+                                         var billNoVal = FirstNonEmpty(objResult[i].billNo, objResult[i].userBillNo, objResult[i].internalBillNo);
+                                         var billTypeVal = FirstNonEmpty(objResult[i].billType, objResult[i].invoiceType, objResult[i].fType);
                                          var InvoicePath = '@Url.Action("InvoicePrint", "Transaction", new { Pm = "-1" })';
-                                         var encodedparameters = objResult[i].billNo;
-                                         var EncryptedB64Url = window.btoa(encodedparameters);
-                                         InvoicePath = InvoicePath.replace("-1", EncryptedB64Url);
+                                         if (billNoVal !== "") {
+                                             InvoicePath = InvoicePath.replace("-1", window.btoa(billNoVal));
+                                         }
+                                         else {
+                                             InvoicePath = "javascript:void(0);";
+                                         }
                                          var Tax = parseInt(objResult[i].taxPer) + parseInt(objResult[i].cgst) + parseInt(objResult[i].sgst);
                                          var TaxAmt = parseInt(objResult[i].taxAmount) + parseInt(objResult[i].cgstAmount) + parseInt(objResult[i].sgstAmount);
-                                         ProductWiseGrid.push({ "BillType": objResult[i].billType, "InvoicePath": InvoicePath, "BillNo": objResult[i].billNo, "BillDate": myDate, "SNo": i + 1, "IdNo": objResult[i].idNo, "Name": objResult[i].name, "UserName": objResult[i].userName, "ProdCode": objResult[i].prodCode, "ProductName": objResult[i].productName, "Qty": objResult[i].qty, "Rate": objResult[i].rate, "DiscPer": objResult[i].discPer, "DiscAmt": objResult[i].discAmt, "TaxPer": Tax, "TaxAmt": TaxAmt, "BasicAmt": objResult[i].basicAmt, "TotalAmt": objResult[i].totalAmt });
+                                         ProductWiseGrid.push({ "BillType": billTypeVal, "InvoicePath": InvoicePath, "BillNo": billNoVal, "BillDate": myDate, "SNo": i + 1, "IdNo": objResult[i].idNo, "Name": objResult[i].name, "UserName": objResult[i].userName, "ProdCode": objResult[i].prodCode, "ProductName": objResult[i].productName, "Qty": objResult[i].qty, "Rate": objResult[i].rate, "DiscPer": objResult[i].discPer, "DiscAmt": objResult[i].discAmt, "TaxPer": Tax, "TaxAmt": TaxAmt, "BasicAmt": objResult[i].basicAmt, "TotalAmt": objResult[i].totalAmt });
                                      }
                                      else {
                                          var Tax = parseInt(objResult[i].taxPer) + parseInt(objResult[i].cgst) + parseInt(objResult[i].sgst);
@@ -451,6 +456,29 @@
     function toDate(dateStr) {
         var parts = dateStr.split("-");
         return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
+
+    // pehle .match(/\d+/) se sirf saal nikalta tha, is wajah se 1970 ki date banti thi
+    function FormatReportDate(value) {
+        if (value == null || $.trim(String(value)) === "") { return ""; }
+        var raw = String(value);
+        var d;
+        if (raw.indexOf("/Date(") === 0) {
+            d = new Date(parseInt(raw.match(/\d+/)[0], 10));
+        }
+        else {
+            d = new Date(raw);
+        }
+        if (isNaN(d.getTime())) { return raw; }
+        return d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+    }
+
+    function FirstNonEmpty() {
+        for (var i = 0; i < arguments.length; i++) {
+            var v = arguments[i];
+            if (v != null && $.trim(String(v)) !== "") { return String(v); }
+        }
+        return "";
     }
     function OpenDialog(dialogId, Message, isConfirmation) {
         $("#" + dialogId).empty();

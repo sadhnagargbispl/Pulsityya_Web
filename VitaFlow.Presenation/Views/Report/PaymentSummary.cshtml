@@ -458,9 +458,6 @@
                 { field: 'NetBanking', title: 'Net Banking', width: 80, sortable: true, hidden: netbanking, filterable: false },
                 { field: 'Credit', title: 'Credit', width: 80, sortable: true, hidden: credit, filterable: false },
                 { field: 'Wallet', title: 'Wallet', width: 80, sortable: true, hidden: wallet, filterable: false },
-                { field: 'VoucherAmt', title: 'Voucher', width: 80, sortable: true, hidden: Voucher, filterable: false },
-                { field: 'PVPurchaseWallet', title: 'PV Purchase Wallet', width: 80, sortable: true, hidden: PVPurchaseWallet, filterable: false },
-                { field: 'BVPurchaseWallet', title: 'BV Purchase Wallet', width: 80, sortable: true, hidden: BVPurchaseWallet, filterable: false },
                 { field: 'NetPayable', title: 'Net Payable', width: 80, sortable: true, hidden: false, filterable: false }
             ],
             pager: { limit: 100, sizes: [15, 20, 35, 50, 65, 80, 95, 100] }
@@ -512,8 +509,16 @@
                     </div> 
                     <div class="row">
                         <div class="col-md-12">
+                            @{
+                                // Voucher / PV Purchase Wallet / BV Purchase Wallet ab Payment Summary me nahi dikhane
+                                var vfHiddenPaymodes = new[] { "VOUCHER", "PV PURCHASE WALLET", "BV PURCHASE WALLET" };
+                            }
                             @foreach (var paymode in Model.PaymentMode)
                             {
+                                if (paymode.payMode != null && vfHiddenPaymodes.Contains(paymode.payMode.Trim().ToUpper()))
+                                {
+                                    continue;
+                                }
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" name="paymode" type="checkbox" id="@paymode.payMode" value="@paymode.payMode">
                                     <label class="form-check-label" for="@paymode.payMode">@paymode.payMode</label>

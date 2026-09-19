@@ -117,18 +117,15 @@
                                 @Html.TextBoxFor(m => m.objCustomer.DistrictName, new { name = "DistrictName", id = "DistrictName", @class = "form-control", @readonly = "readonly" })
                             </div>
                         </div>
-                        @if (IsAdministrator)
-                        {
-                            <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label">Tax Type</label>
-                                <div class="col-sm-4">
-                                    <select name="TaxType" id="TaxType" class="form-control">
-                                        <option value="CS">CGST&SGST</option>
-                                        <option value="I">IGST</option>
-                                    </select>
-                                </div>
+                        @* Bill Tax Type ab manually choose nahi hota - state ke according automatic set hota hai *@
+                        <input type="hidden" id="LoginStateCode" value="@Convert.ToString(Context.Session.GetString("StateCode"))" />
+                        <input type="hidden" name="TaxType" id="TaxType" value="CS" />
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Bill Tax Type</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="TaxTypeDisplay" class="form-control" value="CGST &amp; SGST" readonly="readonly" />
                             </div>
-                        }
+                        </div>
 
                         <hr>
                         <h3 class="mb-5"> Products Details  </h3>
@@ -190,8 +187,9 @@
                                     @Html.Hidden("BuyFreeQty", "0", new { name = "BuyFreeQty", id = "BuyFreeQty" })
                                     @Html.TextBoxFor(m => m.objProduct.FreeQty, new { name = "FreeQty", maxlength = "10", tabindex = "0", id = "FreeQty", @class = "form-control onlyDecimalValues", @readonly = "readonly" })
                                 </div>
-                                <label class="col-sm-2 col-form-label"> Disc.  </label>
-                                <div class="col-sm-4">
+                                @* Disc. (Disc% / Disc Amt.) UI se hata diya gaya hai - fields hidden hain taaki calculation chalti rahe *@
+                                <label class="col-sm-2 col-form-label" style="display:none;"> Disc.  </label>
+                                <div class="col-sm-4" style="display:none;">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             @Html.TextBoxFor(m => m.objProduct.DiscPer, new { name = "DiscPer", id = "DiscPer", @readonly = "readonly", @class = "form-control" })
@@ -286,7 +284,8 @@
                                         </div>
 
 
-                                        <div class="row mb-3">
+                                        @* FP Voucher paymode hata diya gaya hai - inputs hidden rakhe hain taaki JS/binding na toote *@
+                                        <div class="row mb-3" style="display:none;">
                                             <div class="col-sm-2">
                                                 <div class="form-check mt-2">
                                                     @* <input asp-for="objProduct.PayDetails.IsV" class="form-check-input" type="checkbox" name="objProduct.PayDetails.IsV" id="IsV" value="V"> *@
@@ -360,7 +359,8 @@
                                             <button type="button" id="Varify" disabled class="btn btn-primary">Varify</button>
                                         </div>
                                     </div> *@
-                                        <div class="row mb-3">
+                                        @* By Wallet paymode hata diya gaya hai - inputs hidden rakhe hain taaki JS/binding na toote *@
+                                        <div class="row mb-3" style="display:none;">
                                             <div class="col-sm-2">
                                                 <div class="form-check mt-2">
                                                     @Html.CheckBoxFor(m => m.objProduct.PayDetails.IsW, new { @class = "form-check-input", @name = "W", id = "W" })
@@ -460,8 +460,9 @@
                     <div class="col-sm-2">
                         @Html.TextBoxFor(m => m.objProduct.TotalTotalAmount, new { name = "TotalTotalAmount", id = "TotalTotalAmount", @class = "form-control", @readonly = "readonly" })
                     </div>
-                    <label class="col-sm-2 col-form-label"> Trade Disc.(-)  </label>
-                    <div class="col-sm-2">
+                    @* Trade Disc.(-) UI se hata diya gaya hai (value post hoti rahegi) *@
+                    <label class="col-sm-2 col-form-label" style="display:none;"> Trade Disc.(-)  </label>
+                    <div class="col-sm-2" style="display:none;">
                         @Html.TextBoxFor(m => m.objProduct.TotalDiscount, new { name = "TotalDisc", id = "TotalDisc", @class = "form-control", @readonly = "readonly" })
                     </div>
 
@@ -611,6 +612,9 @@
             fillGrid();
             changeValues();
             getAllBarcode();
+            ApplyAutoTaxType();
+            $("#Paymodediv").hide();
+            $(".Paymodedivlabel").hide();
             Frwbalance = parseFloat(@WBalance);
             $("#ProductName").focusin(function () {
                 if ($("#IdNo").val() == "") {
@@ -2081,19 +2085,42 @@
         function Disablepaymode() {
             var SelectedInvoiceType = $("#SelectedInvoiceType").val();
 
+            // Payment Method dropdown ab kisi bhi invoice type par nahi dikhana hai
+            $("#Paymodediv").hide();
+            $(".Paymodedivlabel").hide();
+
+            // Invoice Type badalte hi product list dobara load karo (Activation vs Repurchase)
+            $("#ProductName").val('');
+            $("#ProductHidden").val('');
+            getAllProductNames();
+
             if (SelectedInvoiceType == "PV") {
                  $("#PaymodePopup").attr("disabled", true);
-                 $("#Paymodediv").hide();
-                 $(".Paymodedivlabel").hide();
                  $("#paymodebtn").attr("disabled", true);
                  $("#BillCalculation").attr("disabled", true);
             }
             else {
                 $("#paymodebtn").attr("disabled", false);
                 $("#BillCalculation").attr("disabled", false);
-                $("#Paymodediv").show();
-                $(".Paymodedivlabel").show();
             }
+            ApplyAutoTaxType();
+        }
+
+        // Bill Tax Type state ke hisaab se automatic: same state => CGST & SGST, warna IGST.
+        // Server bhi isi rule par bill banata hai (objCustomer.StateCode vs login user StateCode).
+        function ApplyAutoTaxType() {
+            var loginStateCode = parseFloat($("#LoginStateCode").val());
+            var custStateCode = parseFloat($("#StateCode").val());
+            var taxType = "CS";
+
+            // dono state maloom hon aur alag hon tabhi IGST, warna default CGST & SGST
+            if (!isNaN(loginStateCode) && loginStateCode > 0 && !isNaN(custStateCode) && custStateCode > 0
+                && loginStateCode !== custStateCode) {
+                taxType = "I";
+            }
+
+            $("#TaxType").val(taxType);
+            $("#TaxTypeDisplay").val(taxType === "I" ? "IGST" : "CGST & SGST");
         }
 
        function DispalyPaymode() {
@@ -2131,10 +2158,14 @@
         }
     }
         function getAllProductNames() {
+            // Invoice Type ke hisaab se hi products aayenge:
+            // PV (Activation) => sirf PV wale products, BV (Repurchase) => baaki products
+            var invType = $("#SelectedInvoiceType").val() || "";
             $.ajax({
                 url: '/Transaction/GetProductNamesOnly',
                 dataType: 'JSON',
                 method: 'GET',
+                data: { InvType: invType },
                 success: function (data) {
                     console.log("data:", data);
                     //response(data);
@@ -2174,6 +2205,30 @@
                 }
             });
         }
+        // PV wala product = Activation ka, PV rahit product = Repurchase ka
+        function IsProductAllowedForInvoiceType(product) {
+            var invType = $("#SelectedInvoiceType").val() || "";
+            if (invType === "") { return true; }
+
+            var pv = parseFloat(product.pv) || 0;
+
+            if (invType === "PV" && pv <= 0) {
+                toastr.warning("Yeh product Repurchase ka hai, Activation invoice me add nahi kar sakte.", 'Warning', {
+                    closeButton: true, progressBar: true, positionClass: 'toast-top-right',
+                    timeOut: 6000, extendedTimeOut: 1500
+                });
+                return false;
+            }
+            if (invType === "BV" && pv > 0) {
+                toastr.warning("Yeh product Activation ka hai, Repurchase invoice me add nahi kar sakte.", 'Warning', {
+                    closeButton: true, progressBar: true, positionClass: 'toast-top-right',
+                    timeOut: 6000, extendedTimeOut: 1500
+                });
+                return false;
+            }
+            return true;
+        }
+
         function GetProductInfo(isProductSearch, data, offerProduct, offerQty) {
 
             var dataValue = data;
@@ -2250,6 +2305,12 @@
 
                             if (objResult != null && objResult.length > 0) {
                                 //fill values
+
+                                // Invoice Type ke against galat product (barcode se bhi) add na ho paye
+                                if (!IsProductAllowedForInvoiceType(objResult[0])) {
+                                    ClearProductdetailsWithoutChangingValues();
+                                    return;
+                                }
 
                                 var PFlag = true;
                                 if (objResult[0].isAvailableForBilling == "N" && objResult[0].isAvailableForOffer == "Y") {
@@ -2544,6 +2605,25 @@
                 }
 
                 // ==========================================
+                // BV (Repurchase) Invoice Type
+                // Deactive ID repurchase se active nahi honi chahiye - pehle Activation invoice zaroori hai
+                // ==========================================
+                if (SelectedInvoiceTypeVal == "BV") {
+                    if (objResult.isActive != true) {
+                        toastr.warning("This ID is not active. Repurchase allowed only for active IDs - please raise an Activation invoice first.", "Warning", {
+                            closeButton: true,
+                            progressBar: true,
+                            positionClass: "toast-top-right",
+                            timeOut: 8000,
+                            extendedTimeOut: 2000
+                        });
+
+                        $("#IdNo").val('');
+                        return;
+                    }
+                }
+
+                // ==========================================
                 // Fill Customer Information
                 // ==========================================
 
@@ -2569,6 +2649,9 @@
                 $("#MaxBV").val(objResult.maxBV);
                 $("#Doj").val(objResult.doj);
                 $("#UpgradeDate").val(objResult.upgradeDate);
+
+                // customer ka state pata chalte hi bill tax type refresh kar do
+                ApplyAutoTaxType();
 
                 // Invoice Type
                 if (objResult.isFirstBill == true) {
@@ -2978,8 +3061,6 @@
                 { field: 'DP', width: 80, title: 'DP', sortable: true, hidden: true, filterable: true },
                 { field: 'NETDP', width: 80, title: 'Net DP', sortable: true, hidden: false, filterable: true },
                 { field: 'Price', width: 80, title: 'Price', sortable: true, hidden: false, filterable: true },
-                { field: 'DiscPer', width: 80, title: 'Disc %', sortable: true, hidden: false, filterable: true },
-                { field: 'DiscAmt', width: 80, title: 'Disc Amt.', sortable: true, hidden: false, filterable: true },
                 { field: 'OriDP', width: 80, title: 'OriDP', sortable: true, hidden: true, filterable: true },
                 { field: 'TotalWeight', width: 80, title: 'Total Weight', sortable: true, hidden: false, filterable: true },
                 { field: 'Rate', width: 80, title: 'Rate', sortable: true, hidden: true, filterable: true },
@@ -3012,7 +3093,7 @@
                 { field: 'CommsnPer', width: 80, title: 'Commsn %', sortable: true, hidden: true, filterable: true },
                 { field: 'CommsnAmt', width: 80, title: 'Commsn Amt.', sortable: true, hidden: true, filterable: true },
                 { field: 'DiscPer', width: 80, title: 'Disc %', sortable: true, hidden: true, filterable: true },
-                { field: 'DiscAmt', width: 80, title: 'Disc Amt.', sortable: true, hidden: false, filterable: true },
+                { field: 'DiscAmt', width: 80, title: 'Disc Amt.', sortable: true, hidden: true, filterable: true },
                 { field: 'Amount', width: 80, title: 'Amount', sortable: true, hidden: true, filterable: true },
                 { field: 'TaxType', width: 80, title: 'Tax Type', sortable: true, hidden: false, filterable: true },
                 { field: 'TaxPer', width: 80, title: 'Tax%', sortable: true, hidden: false, filterable: true },
@@ -3021,7 +3102,8 @@
                 { field: 'IsOfferProduct', width: 80, title: 'IsOfferProduct', sortable: true, hidden: true, filterable: true },
                 { field: 'IsofferFlexible', width: 80, title: 'IsOfferFlexible', sortable: true, hidden: true, filterable: true },
                 { field: 'OfferQty', width: 80, title: 'OfferQty', sortable: true, hidden: true, filterable: true },
-                { title: '', field: 'Delete', width: 80, type: 'icon', icon: 'fa fa-times', tooltip: 'Delete', events: { 'click': Delete }, filterable: false },
+                // type:'icon' wala span render nahi ho raha tha, is liye explicit tmpl markup use kar rahe hain
+                { title: 'Action', field: 'Delete', width: 80, align: 'center', sortable: false, filterable: false, tmpl: '<span class="fa fa-times vf-grid-delete" title="Delete"></span>', events: { 'click': Delete } },
                 { field: 'IsCalc', width: 80, title: 'IsCalc', sortable: true, hidden: true, filterable: true }
             ]);
 

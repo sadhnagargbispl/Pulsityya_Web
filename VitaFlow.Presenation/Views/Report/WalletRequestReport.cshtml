@@ -18,6 +18,23 @@
     var PreviouslySelectedToPickerDate = "";
     var ReqNoToReject = "0";
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    // Purane records me URL doosre domain (expertholistic.com) ka save hua hai jabki file
+    // isi site ke wwwroot/WalletReqsImages me padi hai - isliye hamesha site-relative path banate hain.
+    function ResolveWalletImageUrl(rawUrl) {
+        if (rawUrl == null) { return ""; }
+        var url = $.trim(String(rawUrl));
+        if (url === "") { return ""; }
+
+        var marker = "/WalletReqsImages/";
+        var idx = url.toLowerCase().indexOf(marker.toLowerCase());
+        if (idx !== -1) {
+            var fileName = url.substring(idx + marker.length);
+            if (fileName === "") { return ""; }
+            return marker + fileName.replace(/\s/g, "%20");
+        }
+        return url.replace(/\s/g, "%20");
+    }
     $(document).ready(function () {
         $(".preloader").hide();
         GetAllParty();
@@ -197,7 +214,7 @@
                             if (objResult[i].isApproved == "N")
                                 Rej = "Reject";
 
-                            var productPicFileName = objResult[i].scannedFileName.replace(/\s/g, "%20");
+                            var productPicFileName = ResolveWalletImageUrl(objResult[i].scannedFileName);
 
                             WalletGrid.push({ "ApproveRemark": objResult[i].approveRemark, "IsApproved": approved, "SNo": i + 1,
                             "ReqDateStr": objResult[i].reqDateStr, "ReqBy": objResult[i].reqBy, "ReqByName": objResult[i].reqBy + ' - ' + objResult[i].reqByName,
@@ -294,7 +311,7 @@
                     { field: 'BankName', title: 'Bank Name', width: 50, sortable: true, hidden: false, filterable: true },
                     { field: 'BranchName', title: 'Branch Name', width: 50, sortable: true, hidden: true, filterable: true },
                     { field: 'Remarks', title: 'Remarks', width: 80, sortable: true, hidden: false, filterable: false },
-                    { title: 'File', width: 70, tmpl: '<img src="{ScannedFileName}" data-fullsrc="{ScannedFileName}" style="height:50px;cursor:pointer;" onclick="ShowImagePopup(this)" onerror="this.onerror=null;this.src=\'/images/no-image.png\';" />', align: 'center', filterable: false },
+                    { title: 'File', width: 70, tmpl: '<img src="{ScannedFileName}" data-fullsrc="{ScannedFileName}" style="height:50px;cursor:pointer;" onclick="ShowImagePopup(this)" onerror="WalletImageFailed(this)" />', align: 'center', filterable: false },
                    // { title: 'File', width: 70, tmpl: '<img src="{ScannedFileName}" style="height:50px;cursor:pointer;" onclick="ShowImagePopup(this.src)" onerror="this.onerror=null;this.src=\'/images/no-image.png\';" />', align: 'center', filterable: false },
                     //{ title: 'File', width: 70, tmpl: '<a target="_blank" style="text-decoration:underline;" href={ScannedFileName} rel="group" class="fbox"><img src= {ScannedFileName} style="height:50px;" /> </a>', align: 'center', filterable: false },
                     { field: 'ApproveDate', title: 'Approve Date', width: 65, sortable: true, hidden: false, filterable: false },
@@ -406,6 +423,12 @@
             $("#imagePreviewImg").attr("src", ""); // band hote hi src clear
         }
     });
+    // /images/no-image.png is site par hai hi nahi tha, is liye broken icon dikhta tha.
+    function WalletImageFailed(imgEl) {
+        imgEl.onerror = null;
+        $(imgEl).replaceWith('<span style="color:#8893a8;font-size:12px;">No File</span>');
+    }
+
             function ShowImagePopup(imgEl) {
         // onerror ke baad this.src badal jata hai, is liye data-fullsrc se asli URL uthao
         var src = $(imgEl).attr('data-fullsrc');

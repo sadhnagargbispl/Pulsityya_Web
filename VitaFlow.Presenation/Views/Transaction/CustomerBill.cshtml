@@ -95,8 +95,10 @@
         {
             var SelectedVal = $("#StateCode").val();
             $("#hiddenStateCode").val(SelectedVal);
+            ApplyAutoTaxType();
             //GetCity(SelectedVal);
         });
+        ApplyAutoTaxType();
 
         $("#MobileNo").focus();
 
@@ -1585,7 +1587,8 @@
                     { field: 'TaxPer', width: 80, title: 'Tax%', sortable: true, hidden: false, filterable: true },
                     { field: 'TaxAmt', width: 80, title: 'Tax Amt.', sortable: true, hidden: false, filterable: true },
                     { field: 'TotalAmount', width: 80, title: 'Total Amount', sortable: true, hidden: false, filterable: true },
-                     { title: '', field: 'Delete', width: 80, type: 'icon', icon: 'fa fa-times', tooltip: 'Delete', events: { 'click': Delete }, filterable: false }
+                     // type:'icon' wala span render nahi ho raha tha, is liye explicit tmpl markup use kar rahe hain
+                     { title: 'Action', field: 'Delete', width: 80, align: 'center', sortable: false, filterable: false, tmpl: '<span class="fa fa-times vf-grid-delete" title="Delete"></span>', events: { 'click': Delete } }
                 ],
                 pager: { limit: 20, sizes: [15, 20, 35, 50, 65, 80, 95, 100] }
             });
@@ -2188,6 +2191,23 @@
        function ChangeCustTaxtype() {
         $("#HiddenCustTaxType").val($("#TaxType").val());
     }
+
+    // Tax Type ab manually select nahi hota. Jo state chuna gaya hai uske hisaab se
+    // CGST & SGST ya IGST khud set ho jata hai (server isi CustTaxType par bill banata hai).
+    function ApplyAutoTaxType() {
+        var loginStateCode = parseFloat($("#LoginStateCode").val());
+        var custStateCode = parseFloat($("#StateCode").val());
+        var taxType = "CS";
+
+        // dono state maloom hon aur alag hon tabhi IGST, warna default CGST & SGST
+        if (!isNaN(loginStateCode) && loginStateCode > 0 && !isNaN(custStateCode) && custStateCode > 0
+            && loginStateCode !== custStateCode) {
+            taxType = "I";
+        }
+
+        $("#TaxType").val(taxType);
+        $("#HiddenCustTaxType").val(taxType);
+    }
 </script>
 <!-- Breadcrumb Start -->
 <div class="breadcrumb-header justify-content-between">
@@ -2257,15 +2277,13 @@
                         </label>
                         @Html.TextBoxFor(m => m.objCustomer.Remarks, new { name = "Remarks", id = "Remarks", @class = "form-control" })
                     </div>
-                    <div class="col-lg-4 form-group mb-2">
-                        <label class="control-label" for="category-name">
-                            Tax Type:
-                        </label>
-                        <select name="TaxType" id="TaxType" class="form-control" onchange="ChangeCustTaxtype()">
-                            <option value="CS">CGST&SGST</option>
-                            <option value="I">IGST</option>
-                        </select>
-                    </div>
+                    @* Bill Tax Type hide kar diya gaya hai - GST ab select kiye gaye state ke according
+                       automatic banta hai (same state = CGST & SGST, dusra state = IGST) *@
+                    <input type="hidden" id="LoginStateCode" value="@Convert.ToString(Context.Session.GetString("StateCode"))" />
+                    <select name="TaxType" id="TaxType" style="display:none;">
+                        <option value="CS">CGST&SGST</option>
+                        <option value="I">IGST</option>
+                    </select>
                 </div>
               
                 <hr />

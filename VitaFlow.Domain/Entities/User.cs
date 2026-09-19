@@ -40,6 +40,18 @@ namespace VitaFlow.Domain.Entities
 		public List<Product> TopsellingProduct { get; set; }
         public List<Product> StockProduct { get; set; }
         public List<clientProduct> TopclientProduct { get; set; }
+        public DashboardSummary dashboardSummary { get; set; }
+    }
+
+    /// <summary>
+    /// Dashboard par sirf aaj ka aur total ka Sale/Purchase dikhana hai.
+    /// </summary>
+    public class DashboardSummary
+    {
+        public decimal TodaySale { get; set; }
+        public decimal TotalSale { get; set; }
+        public decimal TodayPurchase { get; set; }
+        public decimal TotalPurchase { get; set; }
     }
     public class FranchiseLimit
     {

@@ -83,6 +83,7 @@
         GetAllParty();
         getAllBarcode();
         fillGrid();
+        ApplyAutoTaxType();
         $("#BillType").val("party");
         Invoicetype = $("input[name='WalletRadio']:checked").val();
         SearchType = $("input[name='SearchBy']:checked").val();
@@ -1119,7 +1120,8 @@
                     ProductArray.Amount = dpValue * Quantity * 100 / (100 + ProductArray.TaxPer);
 
                     ProductArray.TaxAmt = (dpValue * Quantity) - ProductArray.Amount;
-                    ProductArray.TotalWeight = ProductArray.Weight * Quantity;
+                    // Weight null/undefined aane par NaN ban jata tha, is wajah se Gross Weight blank dikhta tha
+                    ProductArray.TotalWeight = (parseFloat(ProductArray.Weight) || 0) * Quantity;
 
                     var temp = (ProductArray.TaxAmt.toFixed(2)).toString();
                     var lastNum = parseInt(temp[temp.length - 1]);
@@ -1144,7 +1146,7 @@
                     $("#TaxAmt").val((ProductArray.TaxAmt).toFixed(2));
                     $("#Amount").val((ProductArray.Amount).toFixed(2));
                     $("#TotalAmount").val((ProductArray.TotalAmt).toFixed(2));
-                    $("#TotalWeight").val((ProductArray.TotalWeight).toFixed(2));
+                    $("#TotalWeight").val((parseFloat(ProductArray.TotalWeight) || 0).toFixed(2));
                     //CalculateTotals();
                 }
 
@@ -1796,7 +1798,7 @@
                 taxValue = objResult.taxPer;
             }
 
-            TempProductArray.push({ "Weight": objResult.weight, "TotalWeight": 0,
+            TempProductArray.push({ "Weight": (parseFloat(objResult.weight) || 0), "TotalWeight": 0,
             "AvailStock": objResult.stockAvailable, "SNo": count, "ProductName": objResult.productName,
             "Barcode": objResult.barcode, "BatchNo": objResult.batchNo, "ProdCode": objResult.prodCode,
             "Qty": Qty, "TaxType": objResult.taxType, "MRP": objResult.mrp,
@@ -1947,7 +1949,7 @@
                     { field: 'BatchNo', width: 100, title: 'Batch No.', sortable: true, hidden: false, filterable: true },
                     { field: 'Barcode', width: 100, title: '@BarcodeCaption', sortable: true, hidden: true, filterable: true },
                     { field: 'BV', width: 80, title: '@BVCaption', sortable: true, hidden: false, filterable: true },
-                    { field: 'RP', width: 80, title: '@RPCaption', sortable: true, hidden: false, filterable: true },
+                    { field: 'RP', width: 80, title: '@RPCaption', sortable: true, hidden: true, filterable: true },
                     { field: 'CV', width: 80, title: '@CVCaption', sortable: true, hidden: true, filterable: true },
 
                     { field: 'PV', width: 80, title: '@PVCaption', sortable: true, hidden: true, filterable: true },
@@ -1960,13 +1962,15 @@
                     { field: 'CommsnPer', width: 80, title: 'Commsn %', sortable: true, hidden: true, filterable: true },
                     { field: 'CommsnAmt', width: 80, title: 'Commsn Amt.', sortable: true, hidden: true, filterable: true },
                     { field: 'DiscPer', width: 80, title: 'Disc %', sortable: true, hidden: true, filterable: true },
-                    { field: 'DiscAmt', width: 80, title: 'Disc Amt.', sortable: true, hidden: false, filterable: true },
+                    { field: 'DiscAmt', width: 80, title: 'Disc Amt.', sortable: true, hidden: true, filterable: true },
                     { field: 'Amount', width: 80, title: 'Amount', sortable: true, hidden: false, filterable: true },
                     { field: 'TaxType', width: 80, title: 'Tax Type', sortable: true, hidden: false, filterable: true },
                     { field: 'TaxPer', width: 80, title: 'Tax%', sortable: true, hidden: false, filterable: true },
                     { field: 'TaxAmt', width: 80, title: 'Tax Amt.', sortable: true, hidden: false, filterable: true },
                     { field: 'TotalAmount', width: 80, title: 'Total Amount', sortable: true, hidden: false, filterable: true },
-                     { title: 'Action', field: 'Delete', width: 80, type: 'icon', icon: 'fa fa-times', tooltip: 'Delete', events: { 'click': Delete }, filterable: false }
+                     // type:'icon' wala span render nahi ho raha tha (glyphicon CSS is theme me nahi hai),
+                     // is liye explicit tmpl markup use kar rahe hain - click event waisa hi kaam karta hai.
+                     { title: 'Action', field: 'Delete', width: 80, align: 'center', sortable: false, filterable: false, tmpl: '<span class="fa fa-times vf-grid-delete" title="Delete"></span>', events: { 'click': Delete } }
                 ],
                 pager: { limit: 20, sizes: [15, 20, 35, 50, 65, 80, 95, 100] }
             });
@@ -2121,7 +2125,7 @@
                 var i = 0;
                 for (i = 0; i < ProductGrid.length; i++) {
                     if (ProductGrid[i].SNo != "") {
-                        TotalWeight += parseFloat(ProductGrid[i].TotalWeight);
+                        TotalWeight += (parseFloat(ProductGrid[i].TotalWeight) || 0);
                         TotalBV += parseFloat(ProductGrid[i].BVValue);
                         TotalCV += parseFloat(ProductGrid[i].CVValue);
                         TotalPV += parseFloat(ProductGrid[i].PVValue);
@@ -2186,7 +2190,7 @@
                     $("#CashAmount").val(NetAmounPayable);
                 }
                 $("#NetPayable").val(NetAmounPayable);
-                $("#TotalWeight").val(TotalWeight);
+                $("#TotalWeight").val(TotalWeight.toFixed(2));
                 FinalAmountToPay = NetAmounPayable;
                 //NetPayableAmountFinal = NetAmounPayable;
             }
@@ -2501,6 +2505,17 @@
         changeValues();
         fillGrid();
     }
+    // Bill Tax Type state ke hisaab se automatic: same state => CGST & SGST, warna IGST.
+    // Server bhi isi rule par bill banata hai (objCustomer.StateCode vs login user StateCode).
+    function ApplyAutoTaxType() {
+        var loginStateCode = parseFloat($("#LoginStateCode").val());
+        var partyStateCode = parseFloat($("#SelectedPartyStateCode").val());
+        // dono state maloom hon aur alag hon tabhi IGST, warna default CGST & SGST
+        var isIgst = (!isNaN(loginStateCode) && loginStateCode > 0 && !isNaN(partyStateCode) && partyStateCode > 0
+            && loginStateCode !== partyStateCode);
+        $("#TaxTypeDisplay").val(isIgst ? "IGST" : "CGST & SGST");
+    }
+
     function SetSpecificCode(type, label) {
         
         if (type == "Party") {
@@ -2511,6 +2526,7 @@
                     
                     $("#PartyCode").val(FullPartyList[i].partyCode);
                     $("#SelectedPartyStateCode").val(FullPartyList[i].stateCode);
+                    ApplyAutoTaxType();
                     $("#UserPartyCode").val(FullPartyList[i].userPartyCode);
                     $("#DeliveryPlace").val(FullPartyList[i].address1);
                     $("#AvailBal").val(FullPartyList[i].creditLimit);
@@ -2567,6 +2583,7 @@
                 $("#PartyName").val(FullPartyList[i].PartyName);
                 $("#PartyCode").val(FullPartyList[i].PartyCode);
                 $("#SelectedPartyStateCode").val(FullPartyList[i].StateCode);
+                ApplyAutoTaxType();
                 $("#DeliveryPlace").val(FullPartyList[i].Address1);
                 $("#AvailBal").val(FullPartyList[i].CreditLimit);
                 //if (FullPartyList[i].GroupId == 0 || FullPartyList[i].GroupId == 1) {
@@ -2615,6 +2632,7 @@
                             $("#PartyName").val(data[0].partyName);
                             $("#PartyCode").val(data[0].partyCode);
                             $("#SelectedPartyStateCode").val(data[0].stateCode);
+                            ApplyAutoTaxType();
                             $("#DeliveryPlace").val(data[0].address1)
 
 
@@ -2793,7 +2811,9 @@
                         </label>
                         @Html.TextBoxFor(m => m.objCustomer.Remarks, new { name = "Remarks", id = "Remarks", @class = "form-control" })
                     </div>
-                    <div class="col-lg-8">
+                    @* Wallet Type UI hata diya gaya hai. Radio inputs hidden rakhe hain kyunki
+                       poori billing logic (Invoicetype = P/B) inhi par chalti hai. *@
+                    <div class="col-lg-8" style="display:none;">
                         <label class="control-label col-lg-2" for="category-name">
                             Wallet Type:
                         </label>
@@ -2809,6 +2829,14 @@
                             GST No:
                         </label>
                         @Html.TextBoxFor(m => m.objCustomer.GSTNo, new { name = "GSTNo", id = "GSTNo", @class = "form-control" })
+                    </div>
+                    @* Bill Tax Type manually choose nahi hota - @PartyCaption ke state ke according automatic aata hai *@
+                    <input type="hidden" id="LoginStateCode" value="@Convert.ToString(Context.Session.GetString("StateCode"))" />
+                    <div class="col-lg-4 form-group">
+                        <label class="control-label" for="category-name">
+                            Bill Tax Type:
+                        </label>
+                        <input type="text" id="TaxTypeDisplay" class="form-control" value="CGST &amp; SGST" readonly="readonly" />
                     </div>
                     <div class="col-lg-8" id="dvBillType">
                         <label class="control-label col-lg-2" for="category-name">
@@ -2915,7 +2943,8 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-4 form-group">
+                    @* Disc. (Disc% / Disc Amt.) UI hata diya gaya hai - fields hidden hain taaki calculation chalti rahe *@
+                    <div class="col-lg-4 form-group" style="display:none;">
                         <label class="control-label" for="category-name">
                             Disc.
                         </label>
@@ -3192,14 +3221,15 @@
                         </label>
                         @Html.TextBoxFor(m => m.objProduct.TotalBV, new { name = "TotalBV", id = "TotalBV", @class = "form-control", @readonly = "readonly" })
                     </div>
-                    <div class="col-lg-3 mt-3 mb-2 form-group">
+                    @* Total R.P. aur Total Cmmsn UI se hata diye gaye hain (values post hoti rahengi) *@
+                    <div class="col-lg-3 mt-3 mb-2 form-group" style="display:none;">
                         <label class="control-label" for="category-name">
                             Total @RPCaption
                         </label>
                         @Html.TextBoxFor(m => m.objProduct.TotalRP, new { name = "TotalRP", id = "TotalRP", @class = "form-control", @readonly = "readonly" })
                     </div>
 
-                    <div class="col-lg-3 mt-3 mb-2 form-group">
+                    <div class="col-lg-3 mt-3 mb-2 form-group" style="display:none;">
                         <label class="control-label" for="category-name">
                             Total Cmmsn
                         </label>
@@ -3222,7 +3252,8 @@
                         @Html.TextBoxFor(m => m.objProduct.TotalTotalAmount, new { name = "TotalTotalAmount", id = "TotalTotalAmount", @class = "form-control", @readonly = "readonly" })
                         @*<input type="text" id="TotalAmount" />*@
                     </div>
-                    <div class="col-lg-3 mb-2 form-group">
+                    @* Trade Disc.(-) UI se hata diya gaya hai (value post hoti rahegi) *@
+                    <div class="col-lg-3 mb-2 form-group" style="display:none;">
                         <label class="control-label" for="category-name">
                             Trade Disc.(-)
                         </label>

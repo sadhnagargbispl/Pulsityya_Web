@@ -397,9 +397,11 @@
         margin-top: 4px;
     }
 
+    /* wrap on: tang cards me button next line par chala jata hai, cut nahi hota */
     .shop-page .product-card-actions {
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
         gap: 10px;
         margin-top: 14px;
     }
@@ -423,12 +425,17 @@
             }
 
     .shop-page .btn-add-cart {
-        flex: 1;
+        /* basis 110px + min-width:0 => button shrink ho sakta hai aur zaroorat par
+           wrap hokar poori width le leta hai, isliye text kabhi cut nahi hota */
+        flex: 1 1 110px;
+        min-width: 0;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
         height: 42px;
+        padding: 0 10px;
+        white-space: nowrap;
         border: none;
         border-radius: 10px;
         background: linear-gradient(90deg, #2e5fe6 0%, #00b8a9 100%);
@@ -565,13 +572,8 @@
                 {
                     foreach (var item in Model.ProductsList)
                     {
-                        double mrpVal = 0; double priceVal = 0; double discPct = 0;
-                        double.TryParse(Convert.ToString(item.MRP), out mrpVal);
+                        double priceVal = 0;
                         double.TryParse(Convert.ToString(item.Price), out priceVal);
-                        if (mrpVal > 0 && priceVal > 0 && mrpVal > priceVal)
-                        {
-                            discPct = Math.Round((mrpVal - priceVal) / mrpVal * 100);
-                        }
 
                         double stockVal = Math.Round(Convert.ToDouble(item.StockQTY));
 
@@ -594,10 +596,6 @@
                              data-name="@(Convert.ToString(item.ProductName).ToLower())">
                             <div class="card product-card pb-2">
                                 <div class="product-card-media">
-                                    @if (discPct > 0)
-                                    {
-                                        <span class="product-badge">@discPct% OFF</span>
-                                    }
                                     @if (stockVal <= 0)
                                     {
                                         <span class="stock-badge out">Out of Stock</span>
@@ -613,7 +611,7 @@
                                     <div class="price">
                                         <span class="price-current">&#8377; @item.Price</span>
                                         <del class="price-mrp">&#8377; @item.MRP</del>
-                                        <span class="price-meta">BV : @item.BV &nbsp;|&nbsp; PV : @item.PV</span>
+                                        <span class="price-meta">BV : @item.BV</span>
                                     </div>
                                     <div class="product-card-actions">
                                         <input type="number" name="number" onkeyup='QTYChange(@item.StockQTY,@item.ProdId)' id="input_@item.ProdId" class="form-control qty-input" min="1" value="1" required="required">

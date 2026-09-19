@@ -143,10 +143,13 @@ namespace VitaFlow.Infrastructure.Repository
             {
                 using (var connection = _context.CreateLiveconnInv())
                 {
+                    // LEFT JOIN: associate/consultant orders M_LedgerMaster me nahi hote, INNER JOIN
+                    // ki wajah se wo Pending Order me aate hi nahi the aur dispatch nahi ho pate the.
+                    // Naam na mile to TrnPartyOrderMain ka apna PartyName use kar lete hain.
                     var storedProcedureName = @"SELECT 
                                                 r.OrderNo,
                                                 r.OrderBy AS PartyCode,
-                                                l.PartyName,
+                                                ISNULL(l.PartyName, ISNULL(r.PartyName, r.OrderBy)) AS PartyName,
                                                 r.OrderDate,
                                                 r.OrderAmount AS OrderAmt,
                                                 ISNULL(CAST(r.chNo AS VARCHAR), '0') AS ChNo,
@@ -157,10 +160,11 @@ namespace VitaFlow.Infrastructure.Repository
                                                 r.OrderBy,
                                                 r.OrderTo,
                                                 r.Status AS DispStatus,
-                                                r.OrderMethod
+                                                r.OrderMethod,
+                                                CASE WHEN l.PartyCode IS NULL THEN 'A' ELSE 'P' END AS OrderSource
                                                 FROM 
                                                 TrnPartyOrderMain r
-                                                INNER JOIN 
+                                                LEFT JOIN 
                                                 M_LedgerMaster l ON r.OrderBy = l.PartyCode
                                                 WHERE 
                                                 r.ActiveStatus = 'Y';";
@@ -614,7 +618,7 @@ namespace VitaFlow.Infrastructure.Repository
             }
             return KidIDs;
         }
-        public async Task<List<string>> GetAutocompProductsOnly(string FCode)
+        public async Task<List<string>> GetAutocompProductsOnly(string FCode, string InvType)
         {
             List<string> objProductNames = new List<string>();
             try
@@ -639,6 +643,20 @@ namespace VitaFlow.Infrastructure.Repository
                                 and (IsBillingAllowed ='Y' or IsAvailableforOffers ='Y')
                                 and IsCardIssue ='N'
                                 and PType != 'K'";
+
+                    // Invoice Type wise products: PV wale product Activation ke, baaki Repurchase ke
+                    if (!string.IsNullOrEmpty(InvType))
+                    {
+                        if (InvType.Trim().ToUpper() == "PV")
+                        {
+                            sql += " and ISNULL(p.PV,0) > 0";
+                        }
+                        else if (InvType.Trim().ToUpper() == "BV")
+                        {
+                            sql += " and ISNULL(p.PV,0) = 0";
+                        }
+                    }
+
                     var parameters = new { FCode = FCode };
                     objProductNames = (await connection.QueryAsync<string>(sql, parameters)).ToList();
                 }

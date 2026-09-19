@@ -439,18 +439,14 @@ namespace VitaFlow.Presenation.Controllers
             return Json(lstFCommission);
         }
 
-        public async Task<IActionResult> PayoutSummary()
+        // Payout Summary hata diya gaya hai - direct URL se bhi na khule, isliye dashboard par bhej dete hain.
+        public IActionResult PayoutSummary()
         {
             if (!string.IsNullOrEmpty(HttpContext.Session.GetString("Status")))
             {
-                M_PayoutSummary obj = new M_PayoutSummary();
-                obj.MSessids = await i_Report.GetSessids();
-                return View(obj);
+                return RedirectToAction("Index", "Home");
             }
-            else
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            return RedirectToAction("Login", "Account");
         }
 
         public async Task<IActionResult> GetMonthWiseIncome(string Sessid)

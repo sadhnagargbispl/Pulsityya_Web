@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Globalization;
 using VitaFlow.Domain.Entities;
 using VitaFlow.Domain.Interface;
 using VitaFlow.Presenation.Models;
@@ -24,42 +25,104 @@ namespace VitaFlow.Presenation.Controllers
             if (!string.IsNullOrEmpty(HttpContext.Session.GetString("Status")))
             {
                 User obj = new User();
-                obj.franchiseLimit = await iReport.GetFranchiseLimit(HttpContext.Session.GetString("FCode"), Convert.ToInt32(HttpContext.Session.GetString("UserId")));
-                obj.TopsellingProduct = await iReport.GetTopSellingProduct("Top10", HttpContext.Session.GetString("FCode"));
-                obj.StockProduct = await iReport.StockProducts(HttpContext.Session.GetString("FCode"));
-               // obj.TopclientProduct = await iReport.GetTopClientsProduct("Top10", HttpContext.Session.GetString("FCode"));
-                // Pull product images from the SAME source Productlist uses, mapped by product name (display only)
-                try
-                {
-                    var vfImgMap = new Dictionary<string, string>();
-                    if (i_Product != null)
-                    {
-                        var vfAllProducts = await i_Product.Productlist(HttpContext.Session.GetString("ParentPartyCode"));
-                        if (vfAllProducts != null)
-                        {
-                            foreach (var vfp in vfAllProducts)
-                            {
-                                var vfKey = System.Text.RegularExpressions.Regex.Replace((vfp.ProductName ?? "").ToUpper(), "[^A-Z0-9]", "");
-                                if (!string.IsNullOrEmpty(vfKey) && !string.IsNullOrWhiteSpace(vfp.ImagePath) && !vfImgMap.ContainsKey(vfKey))
-                                {
-                                    vfImgMap[vfKey] = vfp.ImagePath;
-                                }
-                            }
-                        }
-                    }
-                    ViewBag.ProductImageMap = vfImgMap;
-                }
-                catch
-                {
-                    ViewBag.ProductImageMap = new Dictionary<string, string>();
-                }
-
+                string FCode = HttpContext.Session.GetString("FCode");
+                obj.dashboardSummary = await BuildDashboardSummary(FCode);
                 return View(obj);
             }
             else
             {
                 return RedirectToAction("Login", "Account");
             }
+        }
+
+        /// <summary>
+        /// Dashboard ke 4 tiles: Today Sale / Total Sale / Today Purchase / Total Purchase.
+        /// Dono list ek hi baar "All" range me li jaati hain aur aaj ka figure yahin filter hota hai,
+        /// taaki SP ko single-day range dene par time-component ki wajah se record miss na ho.
+        /// </summary>
+        private async Task<DashboardSummary> BuildDashboardSummary(string FCode)
+        {
+            var summary = new DashboardSummary();
+            var today = DateTime.Today;
+
+            try
+            {
+                var sales = await iReport.GetSalesReport("All", "All", "", "", "", FCode, "S", "", "", "", "", "", "");
+                if (sales != null)
+                {
+                    foreach (var bill in sales)
+                    {
+                        decimal amount = ParseAmount(bill.NetAmount);
+                        if (amount == 0) { amount = ParseAmount(bill.Amount); }
+
+                        summary.TotalSale += amount;
+                        if (bill.BillDate.HasValue && bill.BillDate.Value.Date == today)
+                        {
+                            summary.TodaySale += amount;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                // isSummary "I" = invoice wise, yaani ek row per purchase bill
+                var purchases = await iReport.GetStockReceiptReport("0", "0", FCode, "0", "All", "All", FCode, "I");
+                if (purchases != null)
+                {
+                    foreach (var stn in purchases)
+                    {
+                        decimal amount = ParseAmount(stn.TotalAmt);
+
+                        summary.TotalPurchase += amount;
+                        DateTime? stnDate = ParseReportDate(stn.StrDate, stn.StockDate);
+                        if (stnDate.HasValue && stnDate.Value.Date == today)
+                        {
+                            summary.TodayPurchase += amount;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            return summary;
+        }
+
+        private static decimal ParseAmount(string value)
+        {
+            decimal parsed;
+            if (!string.IsNullOrWhiteSpace(value) &&
+                decimal.TryParse(value.Replace(",", "").Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out parsed))
+            {
+                return parsed;
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// Stock transaction SP date ko string me deta hai, isliye common formats try karte hain.
+        /// </summary>
+        private static DateTime? ParseReportDate(string dateText, DateTime fallback)
+        {
+            if (!string.IsNullOrWhiteSpace(dateText))
+            {
+                string[] formats = { "dd/MM/yyyy", "dd-MM-yyyy", "dd MMM yyyy", "dd-MMM-yyyy", "yyyy-MM-dd", "dd/MM/yyyy HH:mm:ss", "dd-MM-yyyy HH:mm:ss" };
+                DateTime parsed;
+                if (DateTime.TryParseExact(dateText.Trim(), formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsed))
+                {
+                    return parsed;
+                }
+                if (DateTime.TryParse(dateText.Trim(), CultureInfo.GetCultureInfo("en-GB"), DateTimeStyles.None, out parsed))
+                {
+                    return parsed;
+                }
+            }
+            return fallback == default(DateTime) ? (DateTime?)null : fallback;
         }
         public async Task<IActionResult> GetWalletBalance()
         {

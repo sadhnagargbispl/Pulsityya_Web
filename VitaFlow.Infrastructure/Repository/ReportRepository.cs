@@ -136,7 +136,12 @@ namespace VitaFlow.Infrastructure.Repository
                     var res = (await connection.QueryAsync<PartyOrderModel>(storedProcedureName, values, commandType: CommandType.StoredProcedure)).ToList();
                     if (res != null)
                     {
-                        obj = res;
+                        // GetPartyOrderlist detail rows ke saath join karta hai, is wajah se
+                        // ek hi order kai baar aa jata tha. Order No. par ek hi row rakhte hain.
+                        obj = res
+                            .GroupBy(r => r.OrderNo)
+                            .Select(g => g.First())
+                            .ToList();
                     }
                 }
             }

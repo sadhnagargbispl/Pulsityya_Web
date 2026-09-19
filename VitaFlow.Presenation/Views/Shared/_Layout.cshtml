@@ -156,6 +156,20 @@
         height: auto;
         object-fit: contain;
         }
+
+        /* Bill grids ka delete (x) icon - pehle blank dikh raha tha */
+        .vf-grid-delete {
+        display: inline-block;
+        font-size: 16px;
+        line-height: 1;
+        padding: 4px 6px;
+        color: #d64545;
+        cursor: pointer;
+        }
+
+        .vf-grid-delete:hover {
+        color: #a62828;
+        }
     </style>
 </head>
 <body class="main-body app sidebar-mini">
@@ -319,7 +333,7 @@
                             <li><a href="~/Report/WalletReport" class="slide-item">Wallet Report</a> </li>
                             <li><a href="~/Report/OrderReport" class="slide-item">Order History</a> </li>
                             @* <li><a href="~/Report/FranchiseeCommission" class="slide-item">Franchisee Commission</a> </li> *@
-                            <li><a href="~/Report/PayoutSummary" class="slide-item">Payout Summary</a> </li>
+                            @* Payout Summary hata diya gaya hai *@
                             @*  <li><a class="slide-item" href="#">Stock J.V. Report</a></li>
                             <li><a class="slide-item" href="#">Purchase Reports</a></li>
                             <li><a class="slide-item" href="#">Sale Register</a></li>
