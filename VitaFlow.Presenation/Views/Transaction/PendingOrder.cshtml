@@ -20,6 +20,16 @@
 <!-- Reward, Wallet, Membership Start -->
 <div class="row row-sm row-deck">
     <div class="col-md-12 col-lg-12 col-xl-12">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="control-label">Order Type</label>
+                <select id="OrderSourceFilter" class="form-control">
+                    <option value="ALL">All Orders</option>
+                    <option value="P">Party / Shoppe Order</option>
+                    <option value="A">Associate Order</option>
+                </select>
+            </div>
+        </div>
         <div class="table-responsive">
             <table id="grid"></table>
         </div>
@@ -227,6 +237,8 @@
     var LatestAmountEnteresdInPayMode = [{}];
     var IsCommissionAdd = 0, IsDiscountAdd = 1;
     var IsAnyProductDispatched = true;
+    var OrderGrid = [{}];
+    var AllOrderGrid = [];   // filter ke liye poori list yahin rakhte hain
     function Edit(e) {
         $('#ID').val(e.data.id);
         $('#Name').val(e.data.record.Name);
@@ -235,6 +247,10 @@
     }
     $(document).ready(function () {
         GetOrderList();
+        $("#OrderSourceFilter").change(function () {
+            OrderGrid = AllOrderGrid.slice();
+            fillUpperGrid();
+        });
         $("#cancelClick").click(function () {
             ResetDetails();
         });
@@ -449,13 +465,17 @@
                         // var myDate = (dateObj.getDate()) + "/" + (dateObj.getMonth() + 1) + "/" + dateObj.getFullYear();
                         // var dateObj1 = new Date(objResult[i].ChDate.match(/\d+/)[0] * 1);
                         // var myDate1 = (dateObj1.getDate()) + "/" + (dateObj1.getMonth() + 1) + "/" + dateObj1.getFullYear();
+                        var orderSource = (objResult[i].orderSource === "A") ? "A" : "P";
                         OrderGrid.push({ "SNo": (i + 1), "OrderNo": objResult[i].orderNo, "OrderMethod": objResult[i].orderMethod, 
                         "PartyCode": objResult[i].partyCode, "PartyName": objResult[i].partyName, "OrderDate": objResult[i].orderDate, 
                         "OrderAmt": objResult[i].orderAmt, "ChNo": objResult[i].chNo, "ChDate": objResult[i].chDate,
                         "ChAmt": objResult[i].chAmt, "BankName": objResult[i].bankName, "WalletAmt": objResult[i].walletAmt, 
+                        "OrderSource": orderSource,
+                        "OrderType": (orderSource === "A") ? "Associate" : "Party",
                         "Reject": "Reject", "OrderPrint": "Print" });
                         console.log(OrderGrid);
                     }
+                    AllOrderGrid = OrderGrid.slice();
                     fillUpperGrid();
                 }
             }
@@ -467,16 +487,24 @@
             if (OrderGrid[0].SNo == "" || OrderGrid[0].SNo == null || OrderGrid[0].SNo == undefined)
                 OrderGrid = OrderGrid.splice(1);
         }
+
+        // Order Type filter (All / Party / Associate)
+        var selectedSource = $("#OrderSourceFilter").val() || "ALL";
+        var gridData = (selectedSource === "ALL")
+            ? OrderGrid
+            : OrderGrid.filter(function (row) { return row.OrderSource === selectedSource; });
+
         if (grid != null) {
             grid.destroy();
             $('#grid').empty();
         }
         grid = $('#grid').grid({
             // primaryKey: 'ID',
-            dataSource: OrderGrid,
+            dataSource: gridData,
             uiLibrary: 'bootstrap4',
             columns: [
                 { field: 'OrderNo', title: 'OrderNo', sortable: true },
+                { field: 'OrderType', width: 110, title: 'Order Type', sortable: true },
                 { field: 'OrderPrint', width: 100, title: 'Print Order', sortable: true, hidden: false, filterable: false, tmpl: '<a style="text-decoration:underline;color:blue" target="_blank">{OrderPrint}</a>', events: { 'click': Printorder }, align: 'center' },
                 { field: 'OrderMethod', width: 150, title: 'OrderMethod', sortable: true },
                 { field: 'PartyCode', width: 100, title: 'PartyCode', sortable: true },

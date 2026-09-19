@@ -40,7 +40,9 @@ namespace VitaFlow.Domain.Entities
         public string OrderMethod { get; set; }
         public int TotalOrdQty { get; set; }
         public int TotalRemQty { get; set; }
-        public int TotalDispQty { get; set; } 
+        public int TotalDispQty { get; set; }
+        /// <summary>"P" = Shoppe/Party order, "A" = Associate/Consultant order.</summary>
+        public string OrderSource { get; set; }
     }
     public class PartyOrderList
     {

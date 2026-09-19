@@ -12,7 +12,11 @@ namespace VitaFlow.Domain.Interface
         Task<List<ProductModel>> GetOrderProductList(string OrderNo, string OrderBy, string StockforParty);
         Task<List<BankModel>> GetBankList();
         Task<List<KitDetail>> GetKitIdList();
-        Task<List<string>> GetAutocompProductsOnly(string FCode);
+        /// <summary>
+        /// InvType: "PV" = Activation (sirf PV wale products), "BV" = Repurchase (PV rahit products),
+        /// khali/null = koi filter nahi.
+        /// </summary>
+        Task<List<string>> GetAutocompProductsOnly(string FCode, string InvType);
         Task<List<string>> GetProductBarcodeOnly(string FCode);
         Task<CustomerDetail> GetCustInfo(string IdNo);
         Task<MemberAPIRoot> ValidateCustomerbyAPI(string IdNo, string Password);

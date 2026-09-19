@@ -47,9 +47,9 @@ namespace VitaFlow.Application.Services
         {
             return i_Transaction.GetKitIdList();
         }
-        public Task<List<string>> GetAutocompProductsOnly(string FCode)
+        public Task<List<string>> GetAutocompProductsOnly(string FCode, string InvType)
         {
-            return i_Transaction.GetAutocompProductsOnly(FCode);
+            return i_Transaction.GetAutocompProductsOnly(FCode, InvType);
         }
         public Task<List<string>> GetProductBarcodeOnly(string FCode)
         {
