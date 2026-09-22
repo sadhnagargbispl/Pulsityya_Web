@@ -55,7 +55,11 @@
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label">Invoice Type</label>
                             <div class="col-sm-6">
-                                @Html.HiddenFor(m => m.objCustomer.SelectedInvoiceType, new { id = "hiddenSelectedInvoiceType", name = "hiddenSelectedInvoiceType" })
+                                @* name override hata diya hai: "hiddenSelectedInvoiceType" naam se post hone par
+                                   ye field objCustomer.SelectedInvoiceType par bind hi nahi hoti thi, isliye
+                                   server par wo hamesha null aati thi aur pay-mode rows ka BillType khali jata tha.
+                                   HiddenFor khud sahi naam (objCustomer.SelectedInvoiceType) banata hai; id JS ke liye hai. *@
+                                @Html.HiddenFor(m => m.objCustomer.SelectedInvoiceType, new { id = "hiddenSelectedInvoiceType" })
                                 @* Codes: Activation = A, Upgrade = T, Repurchase = R.
                                    Yehi codes BillType banke DB me jaate hain, aur trigger
                                    Inv_Repurch inhi par kaam karta hai.
@@ -2212,6 +2216,10 @@
         function Disablepaymode() {
             var SelectedInvoiceType = $("#SelectedInvoiceType").val();
 
+            // Dropdown badalne par hidden ko bhi saath rakho -- warna manually type badalne par
+            // hidden purani value ke saath post hoti hai.
+            $("#hiddenSelectedInvoiceType").val(SelectedInvoiceType);
+
             // Payment Method dropdown ab kisi bhi invoice type par nahi dikhana hai
             $("#Paymodediv").hide();
             $(".Paymodedivlabel").hide();
@@ -2332,27 +2340,12 @@
                 }
             });
         }
-        // PV wala product = Activation ka, PV rahit product = Repurchase ka
+        // Pehle Invoice Type PV/BV tha aur product ka bantwara PV par hota tha:
+        // "PV wala product Activation ka, PV rahit Repurchase ka". Ab PV poore system se
+        // hata diya gaya hai aur Invoice Type A/T/R hai -- Franchise ki tarah yahan bhi
+        // product ka koi bantwara nahi hai, har product teeno me chalega.
+        // (Invoice Type ki asli checking ID ke state par hoti hai - SetInvoiceTypeByIdStatus.)
         function IsProductAllowedForInvoiceType(product) {
-            var invType = $("#SelectedInvoiceType").val() || "";
-            if (invType === "") { return true; }
-
-            var pv = parseFloat(product.pv) || 0;
-
-            if (invType === "PV" && pv <= 0) {
-                toastr.warning("Yeh product Repurchase ka hai, Activation invoice me add nahi kar sakte.", 'Warning', {
-                    closeButton: true, progressBar: true, positionClass: 'toast-top-right',
-                    timeOut: 6000, extendedTimeOut: 1500
-                });
-                return false;
-            }
-            if (invType === "BV" && pv > 0) {
-                toastr.warning("Yeh product Activation ka hai, Repurchase invoice me add nahi kar sakte.", 'Warning', {
-                    closeButton: true, progressBar: true, positionClass: 'toast-top-right',
-                    timeOut: 6000, extendedTimeOut: 1500
-                });
-                return false;
-            }
             return true;
         }
 

@@ -607,24 +607,17 @@ namespace VitaFlow.Presenation.Controllers
                             }
                             objModel.objListProduct.Add(objTemp);
                         }
-                        if (objModel.SelectedInvoiceType == "PV")
-                        {
-                            WalletBalance = Convert.ToString(await i_Product.GetPartyWalletBalance(Convert.ToString(HttpContext.Session.GetString("FCode")), "P"));
-                            if (Convert.ToDecimal(WalletBalance) < Math.Round(objModel.objProduct.TotalNetPayable))
-                            {
-                                objResponse.ResponseStatus = "FAILED";
-                                objResponse.ResponseMessage = "Insufficient Balance in your PV wallet";
-                            }
-                            else
-                            {
-                                objModel.objCustomer.UserDetails = HttpContext.Session.GetComplexData<User>("LoginUser");
-                                string myIP = HttpContext.Connection.RemoteIpAddress?.ToString();
-                                string currentDate = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-                                objModel.objProduct.UID = myIP + currentDate;
-                                objResponse = await i_Transaction.SaveDistributorBill(objModel);
-                            }
-                        }
-                        else if (objModel.SelectedInvoiceType == "BV")
+                        // Invoice Type ab A (Activation) / T (Upgrade) / R (Repurchase) hai.
+                        // Pehle yahan "PV" aur "BV" se compare hota tha -- wo ab kabhi match nahi
+                        // karta, aur DistributorBill view BillType post bhi nahi karti, isliye bill
+                        // neeche wali party/customer branch me bhi nahi jata tha: koi error diye
+                        // bina, bina save hue wapas aa jata tha.
+                        // PV billing hata di gayi hai -- har distributor bill S.V. (BV) wallet se hi
+                        // jata hai. ("BV" purane post ke liye saath rakha hai.)
+                        if (objModel.SelectedInvoiceType == "A"
+                            || objModel.SelectedInvoiceType == "T"
+                            || objModel.SelectedInvoiceType == "R"
+                            || objModel.SelectedInvoiceType == "BV")
                         {
                             WalletBalance = Convert.ToString(await i_Product.GetPartyWalletBalance(Convert.ToString(HttpContext.Session.GetString("FCode")), "B"));
                             if (Convert.ToDecimal(WalletBalance) < Math.Round(objModel.objProduct.CashAmount))
@@ -676,6 +669,14 @@ namespace VitaFlow.Presenation.Controllers
                             string currentDate = DateTime.Now.ToString("yyyyMMddHHmmssfff");
                             objModel.objProduct.UID = myIP + currentDate;
                             objResponse = await i_Transaction.SaveDistributorBill(objModel);
+                        }
+                        else
+                        {
+                            // Pehle yahan koi else nahi tha: kisi branch se match na hone par bill
+                            // chupchaap bina save hue laut jata tha. Ab kam se kam pata to chale.
+                            objResponse.ResponseStatus = "FAILED";
+                            objResponse.ResponseMessage = "Bill not saved - unknown Invoice Type '"
+                                + objModel.SelectedInvoiceType + "' / Bill Type '" + objModel.BillType + "'.";
                         }
                     }
                 }

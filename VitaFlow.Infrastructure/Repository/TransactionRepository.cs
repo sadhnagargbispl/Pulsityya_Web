@@ -644,18 +644,11 @@ namespace VitaFlow.Infrastructure.Repository
                                 and IsCardIssue ='N'
                                 and PType != 'K'";
 
-                    // Invoice Type wise products: PV wale product Activation ke, baaki Repurchase ke
-                    if (!string.IsNullOrEmpty(InvType))
-                    {
-                        if (InvType.Trim().ToUpper() == "PV")
-                        {
-                            sql += " and ISNULL(p.PV,0) > 0";
-                        }
-                        else if (InvType.Trim().ToUpper() == "BV")
-                        {
-                            sql += " and ISNULL(p.PV,0) = 0";
-                        }
-                    }
+                    // Pehle yahan Invoice Type PV/BV ke hisaab se products filter hote the
+                    // (PV wale Activation ke, PV rahit Repurchase ke). PV poore system se hata
+                    // diya gaya hai aur Invoice Type ab A/T/R hai, isliye Franchise ki tarah
+                    // product ka koi bantwara nahi -- saare products teeno type me milte hain.
+                    // InvType parameter signature me rakha hai taaki callers na toote.
 
                     var parameters = new { FCode = FCode };
                     objProductNames = (await connection.QueryAsync<string>(sql, parameters)).ToList();
