@@ -276,7 +276,7 @@
                                         { btype = @ViewBag.RepurchaseCaption; }
                                         else if (Model.BillType == "B")
                                         {
-                                            btype = "BV Invoice";
+                                            btype = "S.V. Invoice";
                                         }
                                     }
                                     @btype
@@ -491,13 +491,11 @@
                                     {
                                         if ((Model.objListProduct[0].OrderType != "T" || Model.objListProduct[0].BVValue > 0))
                                         {
-                                            if (Model.objListProduct[0].billType == "B")
+                                            @* PV invoice par ye column poora hide hai - niche wali <td> bhi isi condition par gated hai,
+                                               warna header aur cells ka count mismatch ho jata. *@
+                                            if (Model.BillType != "P")
                                             {
-                                                <th scope="col" align="center" class="addPadding">BV</th>
-                                            }
-                                            else
-                                            {
-                                                <th scope="col" align="center" class="addPadding">PV</th>
+                                                <th scope="col" align="center" class="addPadding">S.V.</th>
                                             }
                                         }
                                     }
@@ -606,15 +604,19 @@
                                         {
                                             if ((Model.objListProduct[0].OrderType != "T" || Model.objListProduct[0].BVValue > 0))
                                             {
-                                                <td class="gridalign addPadding">
-                                                    <span id="GridView1_ctl02_LblBarcode">
-                                                        @{
-                                                            var value = (Model.BillType == "P") ? obj.PVValue : obj.BVValue;
-                                                            totalBV += value;
-                                                        }
-                                                        @value
-                                                    </span>
-                                                </td>
+                                                @* Header ki tarah - PV invoice par column dikhana band. *@
+                                                if (Model.BillType != "P")
+                                                {
+                                                    <td class="gridalign addPadding">
+                                                        <span id="GridView1_ctl02_LblBarcode">
+                                                            @{
+                                                                var value = obj.BVValue;
+                                                                totalBV += value;
+                                                            }
+                                                            @value
+                                                        </span>
+                                                    </td>
+                                                }
 
                                                 @* <td class="gridalign addPadding">
                                                     <span id="GridView1_ctl02_LblBarcode">

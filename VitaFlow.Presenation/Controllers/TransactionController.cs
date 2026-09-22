@@ -630,7 +630,7 @@ namespace VitaFlow.Presenation.Controllers
                             if (Convert.ToDecimal(WalletBalance) < Math.Round(objModel.objProduct.CashAmount))
                             {
                                 objResponse.ResponseStatus = "FAILED";
-                                objResponse.ResponseMessage = "Insufficient Balance in your BV wallet";
+                                objResponse.ResponseMessage = "Insufficient Balance in your S.V. wallet";
                             }
                             else
                             {
@@ -659,7 +659,7 @@ namespace VitaFlow.Presenation.Controllers
                                 if (Convert.ToDecimal(WalletBalance) < Math.Round(objModel.objProduct.TotalNetPayable))
                                 {
                                     objResponse.ResponseStatus = "FAILED";
-                                    objResponse.ResponseMessage = "Insufficient Balance in your BV Wallet Sale Balance";
+                                    objResponse.ResponseMessage = "Insufficient Balance in your S.V. Wallet Sale Balance";
                                     return Json(objResponse);
                                 }
                             }

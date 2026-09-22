@@ -1079,16 +1079,10 @@
                             <td>@Model.bV_Slab</td>
                             <td>@Model.self_Comm_BV</td>
                         </tr>
-                        <tr>
-                            <td>PV Sale <span style="color:var(--ink3);font-size:.75rem;font-weight:500">(b)</span></td>
-                            <td>@Model.TotalPVVal</td>
-                            <td>@Model.CommOnPv</td>
-                            <td>@Model.selfIncomePv</td>
-                        </tr>
                         <tr class="total-row">
-                            <td colspan="3">TOTAL INCENTIVE BY SELF SALE (A) [a+b]</td>
+                            <td colspan="3">TOTAL INCENTIVE BY SELF SALE (A)</td>
                            @*  <td>@(Model.self_Comm_BV + (Model.selfIncomePv * Model.pvSlab))</td> *@
-                            <td>@(Model.self_Comm_BV + Model.selfIncomePv)</td>
+                            <td>@Model.self_Comm_BV</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1105,12 +1099,9 @@
                         <tr>
                             <th style="width:10%">ID No</th>
                             <th style="width:22%">Franchisee Name</th>
-                            <th style="width:12%">Total BV Product (₹)</th>
-                            <th style="width:8%">BV Slab (%)</th>
-                            <th style="width:14%">Diff. BV Comm. (B) (₹)</th>
-                            <th style="width:12%">Total PV Sale (₹)</th>
-                            <th style="width:8%">PV Slab (%)</th>
-                            <th style="width:14%">Diff. PV Comm. (C) (₹)</th>
+                            <th style="width:12%">Total S.V. Product (₹)</th>
+                            <th style="width:8%">S.V. Slab (%)</th>
+                            <th style="width:14%">Diff. S.V. Comm. (B) (₹)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1144,47 +1135,12 @@
                                         totalDiffBVComm = @totalDiffBVComm + @item.BvComm;
                                     }
                                 </td>
-                                <td>
-                                    @if (item.Pv > 0)
-                                    {
-                                        @item.Pv
-                                    }
-                                    else
-                                    {
-                                        @hypstr
-                                    }
-                                </td>
-                                <td>
-                                    @if (item.Slab > 0)
-                                    {
-                                        @item.Slab
-                                    }
-                                    else
-                                    {
-                                        @hypstr
-                                    }
-                                </td>
-                                <td>
-                                    @if (item.PvComm > 0)
-                                    {
-                                        @item.PvComm
-                                    }
-                                    else
-                                    {
-                                        @hypstr
-                                    }
-                                    @{
-                                        toralDiffPVComm = @toralDiffPVComm + @item.PvComm;
-                                    }
-                                </td>
                             </tr>
                         }
 
                         <tr class="total-row">
                             <td colspan="4">TOTAL</td>
                             <td>@totalDiffBVComm</td>
-                            <td colspan="2"></td>
-                            <td>@toralDiffPVComm</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1217,24 +1173,15 @@
 
                     </div>
                     <div class="mfc-rows">
-                        <div class="mfc-row"><span class="mfc-row-label">Total BV (Product)</span><span class="mfc-row-val">₹@item.Diff_Comm_BV</span></div>
-                        <div class="mfc-row"><span class="mfc-row-label">Diff. BV Commission (B)</span><span class="mfc-row-val blue">₹@item.BvComm</span></div>
-                        @if (item.Pv > 0)
-                        {
-                            <div class="mfc-row"><span class="mfc-row-label">Total PV Sale</span><span class="mfc-row-val">₹@item.Pv</span></div>
-                        }
-                        @if (item.PvComm > 0)
-                        {
-                            <div class="mfc-row"><span class="mfc-row-label">Diff. PV Commission (C)</span><span class="mfc-row-val green">₹@item.PvComm</span></div>
-                        }
+                        <div class="mfc-row"><span class="mfc-row-label">Total S.V. (Product)</span><span class="mfc-row-val">₹@item.Diff_Comm_BV</span></div>
+                        <div class="mfc-row"><span class="mfc-row-label">Diff. S.V. Commission (B)</span><span class="mfc-row-val blue">₹@item.BvComm</span></div>
                     </div>
                 </div>
             }
             <!-- Mobile Total -->
             <div class="mfc" style="background:var(--blue-light);border-color:rgba(29,111,232,.2)">
                 <div class="mfc-rows">
-                    <div class="mfc-row"><span class="mfc-row-label" style="color:var(--blue);font-weight:800">TOTAL — Diff. BV Commission (B)</span><span class="mfc-row-val blue">₹@totalDiffBVComm *</span></div>
-                    <div class="mfc-row"><span class="mfc-row-label" style="color:var(--green);font-weight:800">TOTAL — Diff. PV Commission (C)</span><span class="mfc-row-val green">₹@toralDiffPVComm</span></div>
+                    <div class="mfc-row"><span class="mfc-row-label" style="color:var(--blue);font-weight:800">TOTAL — Diff. S.V. Commission (B)</span><span class="mfc-row-val blue">₹@totalDiffBVComm *</span></div>
                 </div>
             </div>
         </div>
@@ -1245,19 +1192,15 @@
             <div class="total-card">
                 <h4>Total Incentive by Self Sale (A)</h4>
                 @* <div class="val">₹@Model.Self_Comm_BV</div> *@
-                <div class="val">₹@(Model.self_Comm_BV + Model.selfIncomePv)</div>
+                <div class="val">₹@Model.self_Comm_BV</div>
             </div>
             <div class="total-card blue-card">
-                <h4>Diff. BV Commission (B)</h4>
+                <h4>Diff. S.V. Commission (B)</h4>
                 <div class="val">₹@totalDiffBVComm</div>
             </div>
-            <div class="total-card green-card">
-                <h4>Diff. PV Commission (C)</h4>
-                <div class="val">₹@toralDiffPVComm</div>
-            </div>
             <div class="total-card" style="background:var(--ink);border:none">
-                <h4 style="color:rgba(255,255,255,.55)">Total Incentive (A + B + C)</h4>
-                <div class="val" style="color:white">₹@(Model.Self_Comm_BV + Model.selfIncomePv + totalDiffBVComm + toralDiffPVComm)</div>
+                <h4 style="color:rgba(255,255,255,.55)">Total Incentive (A + B)</h4>
+                <div class="val" style="color:white">₹@(Model.Self_Comm_BV + totalDiffBVComm)</div>
             </div>
         </div>
 

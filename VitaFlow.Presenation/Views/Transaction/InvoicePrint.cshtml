@@ -17,6 +17,14 @@
     int totalMRP = 0;
     decimal? totalBV = 0;
     decimal? totalAmount = 0;
+    // PV invoice par volume column poora hide hai. Header aur cell dono isi ek flag se chalte hain -
+    // pehle header objListProduct[0].billType dekhta tha aur cell Model.BillType, aur dono alag hone par
+    // header ka count cell se mismatch ho jata tha.
+    bool isPvInvoice = Model.objListProduct != null && Model.objListProduct.Count > 0
+        && (Model.BillType == "P"
+            || Model.objListProduct[0].billType == "P"
+            || ((Model.BillType == "V" || Model.objListProduct[0].billType == "V")
+                && Model.objListProduct[0].OrderType == "P"));
     DateTime checkdtforfreeprod = new DateTime(2020, 02, 26);
     decimal? TotalIgstamt = 0;
     decimal? TotalCgstamt = 0;
@@ -317,14 +325,14 @@
                                         else if (Model.BillType == "R")
                                         { btype = RepurchaseCaption; }
                                         else if (Model.BillType == "V" && Model.PartyInvoice == "B")
-                                        { btype = "BV Invoice"; }
+                                        { btype = "S.V. Invoice"; }
                                         else if (Model.BillType == "V" && Model.PartyInvoice == "P")
                                         { btype = "PV Invoice"; }
                                         else if (Model.BillType == "V" && Model.PartyInvoice == "S")
                                         { btype = "First Order Invoice"; }
                                         else if (Model.BillType == "B")
                                         {
-                                            btype = "BV Invoice";
+                                            btype = "S.V. Invoice";
                                         }
                                     }
                                     @btype
@@ -547,28 +555,9 @@
                                     <th scope="col" align="center" class="addPadding">Taxable Value</th>
                                     @if (Model.BillType != "C" && Model.objCustomer.IsRegisteredCustomer == false)
                                     {
-                                        if ((Model.objListProduct[0].OrderType != "T" || Model.objListProduct[0].BVValue > 0))
+                                        if (!isPvInvoice && (Model.objListProduct[0].OrderType != "T" || Model.objListProduct[0].BVValue > 0))
                                         {
-                                            if (Model.objListProduct[0].billType == "B")
-                                            {
-                                                <th scope="col" align="center" class="addPadding">BV</th>
-                                            }
-                                            else if (Model.objListProduct[0].billType == "P")
-                                            {
-                                                <th scope="col" align="center" class="addPadding">PV</th>
-                                            }
-                                            else if (Model.objListProduct[0].billType == "V" && Model.objListProduct[0].OrderType == "B")
-                                            {
-                                                <th scope="col" align="center" class="addPadding">BV</th>
-                                            }
-                                            else if (Model.objListProduct[0].billType == "V" && Model.objListProduct[0].OrderType == "P")
-                                            {
-                                                <th scope="col" align="center" class="addPadding">PV</th>
-                                            }
-                                            else if ((Model.objListProduct[0].OrderType != "T" || Model.objListProduct[0].BVValue > 0))
-                                            {
-                                                <th scope="col" align="center" class="addPadding">BV</th>
-                                            }
+                                            <th scope="col" align="center" class="addPadding">S.V.</th>
                                         }
                                     }
                                     <th scope="col" align="center" class="addPadding">Discount</th>
@@ -712,7 +701,7 @@
                                         </td>
                                          @if (Model.BillType != "C" && Model.objCustomer.IsRegisteredCustomer == false)
                                         {
-                                            if (Model.BillType == "V" && Model.objListProduct[0].OrderType == "B")
+                                            if (!isPvInvoice && (Model.objListProduct[0].OrderType != "T" || Model.objListProduct[0].BVValue > 0))
                                             {
                                                 <td class="gridrightalign" style="text-align :right ">
                                                     <span id="GridView1_ctl02_LblBarcode">
@@ -720,37 +709,8 @@
                                                         @{totalBV = totalBV + obj.BVValue;}
                                                     </span>
                                                 </td>
-                                                            }
-                                                            else if (Model.BillType == "P")
-                                                            {
-                                                                <td class="gridrightalign" style="text-align :right ">
-                                                                    <span id="GridView1_ctl02_LblBarcode">
-                                                                        @obj.PVValue
-                                                                        @{totalBV = totalBV + obj.PVValue;}
-                                                                    </span>
-                                                                </td>
-                                                                            }
-                                                                            else if (Model.BillType == "V" && Model.objListProduct[0].OrderType == "P")
-                                                                            {
-                                                                                <td class="gridrightalign " style="text-align :right ">
-                                                                                    <span id="GridView1_ctl02_LblBarcode">
-                                                                                        @obj.PVValue
-                                                                                        @{totalBV = totalBV + obj.PVValue;}
-                                                                                    </span>
-                                                                                </td>
-                                                                                            }
-                                                                                            else if ((Model.objListProduct[0].OrderType != "T" || Model.objListProduct[0].BVValue > 0))
-                                                                                            {
-
-                                                                                                <td class="gridrightalign" style="text-align :right ">
-                                                                                                    <span id="GridView1_ctl02_LblBarcode">
-                                                                                                        @obj.BVValue
-                                                                                                        @{totalBV = totalBV + obj.BVValue;}
-                                                                                                    </span>
-                                                                                                </td>
-                                                                                                                }
-
-                                                                                                            }
+                                            }
+                                        }
                                         <td class="gridalign addPadding">
                                             <span id="GridView1_ctl02_LblRate">
                                                 @obj.DiscAmt

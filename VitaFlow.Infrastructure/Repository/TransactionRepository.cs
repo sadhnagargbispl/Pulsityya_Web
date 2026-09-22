@@ -844,6 +844,45 @@ namespace VitaFlow.Infrastructure.Repository
                                     Ktamt = !String.IsNullOrEmpty(Convert.ToString(resbvval.BVValue)) ? decimal.Parse(Convert.ToString(resbvval.BVValue)) : 0;
                                     objCustomerDetail.MaxBV = Ktamt;
                                 }
+                                /*-------------------------------------------------------------------
+                                  Member ki abhi wali kit, aur kya uske upar aur koi kit bachi hai.
+                                  Isse UI ID daalte hi tay kar leta hai ki Upgrade allowed hai ya nahi -
+                                  Save par jaakar error dikhane ki zaroorat nahi padti.
+                                  Band JoinAmount se tay hota hai, BV column se nahi (BV me chhoti
+                                  values hoti hain jisse hamesha top kit select ho jati thi).
+                                -------------------------------------------------------------------*/
+                                objCustomerDetail.KitName = "";
+                                objCustomerDetail.CanUpgrade = false;
+                                try
+                                {
+                                    var kitQuery = "SELECT TOP 1 ISNULL(K.KitName,'') AS KitName, "
+                                        + " CASE WHEN EXISTS ( SELECT 1 FROM " + db + "..M_KitMaster U "
+                                        + "        WHERE U.TopupSeq > ISNULL(K.TopupSeq,0) "
+                                        + "          AND U.JoinAmount <> 0 AND U.ActiveStatus='Y' AND U.IsBill='N' ) "
+                                        + "      THEN 1 ELSE 0 END AS CanUpgrade "
+                                        + " FROM (SELECT TopupSeq, KitName FROM " + db + "..M_KitMaster WHERE KitID = @KitId "
+                                        + "       UNION ALL SELECT 0, '' ) K ORDER BY K.TopupSeq DESC";
+
+                                    var kitRes = await connection.QueryFirstOrDefaultAsync(kitQuery, new { KitId = objCustomerDetail.KitId });
+                                    if (kitRes != null)
+                                    {
+                                        objCustomerDetail.KitName = Convert.ToString(kitRes.KitName);
+                                        objCustomerDetail.CanUpgrade = Convert.ToInt32(kitRes.CanUpgrade) == 1;
+                                    }
+                                }
+                                catch
+                                {
+                                    // Kit info na mil paaye to UI purane tarike se chalega
+                                    // (Upgrade dikhega, aur Save par trigger rok dega).
+                                    objCustomerDetail.CanUpgrade = true;
+                                }
+
+                                /*-------------------------------------------------------------------
+                                  Invoice Type codes: Activation = A, Upgrade = T, Repurchase = R.
+                                  Format "<Display>,<Code>" - client comma par split karta hai.
+                                  Rule: Activation sirf DEACTIVE id kar sakti hai. Active id ke paas
+                                  Upgrade (agar kit hai aur upgrade allowed hai) aur Repurchase rehta hai.
+                                -------------------------------------------------------------------*/
                                 objCustomerDetail.InvoiceType = new List<string>();
                                 var configquery = "select * from M_ConfigMaster";
                                 var config = await connection.QueryFirstOrDefaultAsync(configquery);
@@ -851,26 +890,21 @@ namespace VitaFlow.Infrastructure.Repository
                                 {
                                     if (Ktamt > 0)
                                     {
-                                        if (config != null)
+                                        if (config != null && config.CanIDBeUpgraded == "Y" && objCustomerDetail.CanUpgrade)
                                         {
-                                            if (config.CanIDBeUpgraded == "Y")
-                                            {
-                                                objCustomerDetail.InvoiceType.Add("Activation Upgrade,B");
-                                            }
+                                            objCustomerDetail.InvoiceType.Add("Upgrade,T");
                                         }
-                                        objCustomerDetail.InvoiceType.Add("Repurchase Bill,R");
+                                        objCustomerDetail.InvoiceType.Add("Repurchase,R");
                                     }
                                     else
                                     {
                                         objCustomerDetail.MinBillAmt = 0;
-                                        objCustomerDetail.InvoiceType.Add("Repurchase Bill,R");
+                                        objCustomerDetail.InvoiceType.Add("Repurchase,R");
                                     }
                                 }
                                 else
                                 {
-                                    objCustomerDetail.InvoiceType.Add("Activation Purchase,B");
-                                    //if (isoldID == 1)//Added on 18Jun19
-                                    objCustomerDetail.InvoiceType.Add("General Billing,A");//18Jun19
+                                    objCustomerDetail.InvoiceType.Add("Activation,A");
                                 }
                             }
                             else
@@ -1867,7 +1901,7 @@ SELECT
                     {
                         if (objModel != null)
                         {
-                            if (objModel.SelectedInvoiceType == "BV")
+                            if (objModel.SelectedInvoiceType == "T" || objModel.SelectedInvoiceType == "R")
                             {
                                 if (objModel.objProduct.PayDetails.IsV)
                                 {
@@ -2004,7 +2038,7 @@ FROM TrnVoucher";
                                     Paymode = (await connection.QueryAsync<string>(query)).ToList();
                                 }
                             }
-                            else if (objModel.SelectedInvoiceType == "PV")
+                            else if (objModel.SelectedInvoiceType == "A")
                             {
                                 if (objModel.objProduct.CashAmount > 0)
                                 {
@@ -2150,13 +2184,21 @@ FROM TrnVoucher";
                                 //    else
                                 //        objDTBillData.BillType = objModel.BillType;
                                 //}
-                                if (objModel.SelectedInvoiceType == "BV")
+                                // Invoice Type ab seedha BillType hai: Activation = A, Upgrade = T,
+                                // Repurchase = R. Trigger Inv_Repurch inhi teen codes par kaam karta
+                                // hai (A/T par kit + activation, R par sirf RepurchIncome aur KitID = 0).
+                                // Pehle yahan hardcoded BV/PV ko B/P me badla jata tha.
+                                if (!string.IsNullOrEmpty(objModel.SelectedInvoiceType))
                                 {
-                                    objDTBillData.BillType = "B";
+                                    objDTBillData.BillType = objModel.SelectedInvoiceType;
                                 }
-                                else if (objModel.SelectedInvoiceType == "PV")
+                                else if (objModel.objCustomer != null && objModel.objCustomer.IsFirstBill)
                                 {
-                                    objDTBillData.BillType = "P";
+                                    objDTBillData.BillType = "A";   // Activation
+                                }
+                                else
+                                {
+                                    objDTBillData.BillType = "R";   // Repurchase
                                 }
                                 if (!string.IsNullOrEmpty(obj.ProductTye))
                                 {
@@ -2324,7 +2366,7 @@ FROM TrnVoucher";
                             if (TrnBillDatasAffected > 0)
                             {
 
-                                if (objModel.SelectedInvoiceType == "BV")
+                                if (objModel.SelectedInvoiceType == "T" || objModel.SelectedInvoiceType == "R")
                                 {
                                     if (objModel.objProduct.PayDetails.IsV)
                                     {
@@ -2361,7 +2403,7 @@ FROM TrnVoucher";
                                     }
                                     int i = await DeductPartyWallet(billno_, narration_, soldby_, fcode_, netpayable_, objModel.UserType, objModel.SelectedInvoiceType);
                                 }
-                                else if (objModel.SelectedInvoiceType == "PV")
+                                else if (objModel.SelectedInvoiceType == "A")
                                 {
                                     int i = await DeductPartyWallet(billno_, narration_, soldby_, fcode_, netpayable_, objModel.UserType, objModel.SelectedInvoiceType);
                                 }
@@ -2422,7 +2464,7 @@ FROM TrnVoucher";
                                     string Pvvalue = "0";
                                     string fpamt = "0";
                                     string voucheramt = "0";
-                                    if (objModel.SelectedInvoiceType == "BV")
+                                    if (objModel.SelectedInvoiceType == "T" || objModel.SelectedInvoiceType == "R")
                                     {
                                         decimal totalBV = Convert.ToDecimal(objModel.objProduct.TotalBV);
                                         decimal voucherAmount = Convert.ToDecimal(objModel.objProduct.PayDetails.AmountByVoucher);
@@ -2439,7 +2481,7 @@ FROM TrnVoucher";
                                             Bvvalue = Convert.ToString(totalBV);
                                         }
                                     }
-                                    else if (objModel.SelectedInvoiceType == "PV")
+                                    else if (objModel.SelectedInvoiceType == "A")
                                     {
                                         Pvvalue = Convert.ToString(objModel.objProduct.TotalPV);
                                     }
@@ -3058,7 +3100,12 @@ FROM TrnVoucher";
 
                                     objDTBillData.Coupon = "";
                                     objDTBillData.CouponAmount = 0;
-                                    objDTBillData.PaidBV = 0;
+                                    // BvValue har row me sirf us line ka SV hota hai, aur TrnBillMain me
+                                    // ek bill ki kai rows jaati hain - trigger ko poore bill ka total SV
+                                    // chahiye (kit band tay karne ke liye). PaidBV kahin use nahi ho raha
+                                    // tha (hamesha 0), isliye usme bill ka total SV bhej rahe hain -
+                                    // NetPayable/TotalQty ki tarah har row par same value.
+                                    objDTBillData.PaidBV = objModel.objProduct.TotalBV;
                                     objDTBillData.IRNNo = "";
                                     objDTBillData.AckNo = "";
                                     objDTBillData.AckDate = DateTime.Now;

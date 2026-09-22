@@ -56,10 +56,15 @@
                             <label class="col-sm-2 col-form-label">Invoice Type</label>
                             <div class="col-sm-6">
                                 @Html.HiddenFor(m => m.objCustomer.SelectedInvoiceType, new { id = "hiddenSelectedInvoiceType", name = "hiddenSelectedInvoiceType" })
+                                @* Codes: Activation = A, Upgrade = T, Repurchase = R.
+                                   Yehi codes BillType banke DB me jaate hain, aur trigger
+                                   Inv_Repurch inhi par kaam karta hai.
+                                   (Pehle yahan PV = Activation, BV = Repurchase tha.) *@
                                 <select asp-for="SelectedInvoiceType" id="SelectedInvoiceType" onchange="Disablepaymode()" class="form-control" tabindex="0" name="SelectedInvoiceType">
                                     <option value="">--Select Type--</option>
-                                    <option value="PV">Activation</option>
-                                    <option value="BV">Repurchase</option>
+                                    <option value="A">Activation</option>
+                                    <option value="T">Upgrade</option>
+                                    <option value="R">Repurchase</option>
                                 </select>
                             </div>
 
@@ -451,8 +456,10 @@
                 </div>
 
                 <div class="row mb-3">
-                    <label class="col-sm-2 col-form-label"> Total @PVCaption  </label>
-                    <div class="col-sm-2">
+                    @* Total PV UI se hata diya gaya hai - field hidden hai taaki CalculateTotals
+                       usme likhta rahe aur form post na toote. *@
+                    <label class="col-sm-2 col-form-label" style="display:none;"> Total @PVCaption  </label>
+                    <div class="col-sm-2" style="display:none;">
                         @Html.TextBoxFor(m => m.objProduct.TotalPV, new { name = "TotalPV", id = "TotalPV", @class = "form-control", @readonly = "readonly" })
                     </div>
 
@@ -587,6 +594,13 @@
         var SelectedInvoiceTypeFalse = false;
         var Frwbalance = 0;
         var prdselectiontype = "";
+
+        // Pehle kai jagah "SelectedInvoiceType == 'BV'" check karke tay hota tha ki row me
+        // BV values jayengi ya PV. Ab Invoice Type A/T/R (Activation/Upgrade/Repurchase) hai
+        // aur PV billing hata di gayi hai - wo check kabhi match nahi karta, jiske bina har
+        // product row BV=0 ke saath save ho jati. Har bill ab SV/BV par hi banta hai.
+        // (PV wapas laana ho to sirf yahi function badalna hoga.)
+        function IsSVBill() { return true; }
         $(document).keydown(function (event) {
             if (event.shiftKey && event.keyCode == 78) {
                 console.log("Hey! Shift+n event captured!");
@@ -816,7 +830,7 @@
                     var Flag = true;
                     var i;
                     for (i = 0; i < ProductGrid.length; i++) {
-                        if($("#SelectedInvoiceType").val()=="BV")
+                        if (IsSVBill())
                         {
                             if (ProductGrid[i].IsCalc==true) {
                                  toastr.warning("You cannot add products due to the grid calculation.", 'Warning', {
@@ -878,7 +892,7 @@
                         // "FreeQty": ProductArray.freeQty, "OfferQty": offerq, "IsOfferProduct": IsOfferProduct,
                         // "IsofferFlexible": isFlexible, "BuyFreeQty": ProductArray.BuyFreeQty,
                         // "OriDP": ProductArray.OriDP,"IsCalc":"false","IsFpv":"No","IsCoupon":"No" });
-                         if ($("#SelectedInvoiceType").val() == "BV") {
+                         if (IsSVBill()) {
                         ProductGrid.push({
                             "Weight": ProductArray.Weight, "TotalWeight": ProductArray.TotalWeight,
                             "CatName": ProductArray.CatName, "CatId": ProductArray.CatId, "AvailStock": ProductArray.AvailStock,
@@ -1133,7 +1147,7 @@
                     ResetSaveButton();
                     return false;
                 }
-                     if (SelectedInvoiceTypeVal == "PV") {
+                     if (SelectedInvoiceTypeVal == "A") {
                 var TotalAmountNetVal = parseFloat($("#TotalAmountNet").val()) || 0;
                 if (TotalAmountNetVal < 3000) {
                     // pehle yahan OpenDialog() call tha jo is view me define hi nahi hai -
@@ -1149,7 +1163,7 @@
                     return false;
                 }
             }
-                if (SelectedInvoiceTypeVal == "PV") {
+                if (SelectedInvoiceTypeVal == "A") {
                     var NetPayable = $("#NetPayable").val();
                     $.ajax({
                         url: '/Transaction/GetWalletBalance',
@@ -1185,7 +1199,7 @@
                         }
                     });
                 }
-                else if (SelectedInvoiceTypeVal == "BV") {
+                else if (SelectedInvoiceTypeVal == "T" || SelectedInvoiceTypeVal == "R") {
                     debugger;
                     var NetPayable = $("#NetPayable").val();
                     var TotAdjustamount = 0;
@@ -1250,7 +1264,7 @@
                         data: { Waltype: 'B' },
                         success: function (data) {
                             if (parseFloat(data) < parseFloat(NetPayable)) {
-                                toastr.warning("Insufficient Balance in your BV wallet", 'Warning', {
+                                toastr.warning("Insufficient Balance in your S.V. wallet", 'Warning', {
                                     closeButton: true,
                                     progressBar: true,
                                     positionClass: 'toast-top-right',
@@ -2135,6 +2149,40 @@
             console.log("cashAmountValue", TotalBVTextbox);
             $("#TotalPV").val(TotalBVTextbox.toFixed(2));
         }
+        // ID daalte hi Invoice Type ke options ID ki state ke hisaab se set karta hai:
+        //   ID active NAHI hai              -> sirf Activation(A).
+        //   ID active HAI                   -> Upgrade(T) + Repurchase(R), default Upgrade.
+        //   ID top package par pahunch gayi  -> Upgrade band, seedha Repurchase(R).
+        // Options list me dikhte rehte hain, bas galat wale choose nahi ho sakte.
+        function SetInvoiceTypeByIdStatus(IsActive, CanUpgrade, KitName) {
+            var idActive = (IsActive == true || IsActive == "True" || IsActive == "true");
+            // canUpgrade purani API build se undefined aa sakta hai - tab true maan lo
+            // taki behaviour pehle jaisa rahe.
+            var canUpg = (CanUpgrade === undefined || CanUpgrade === null)
+                         ? true
+                         : (CanUpgrade == true || CanUpgrade == "True" || CanUpgrade == "true");
+            var $sel = $("#SelectedInvoiceType");
+
+            $sel.find("option[value='A']").prop("disabled", idActive);
+            $sel.find("option[value='T']").prop("disabled", !idActive || !canUpg);
+            $sel.find("option[value='R']").prop("disabled", !idActive);
+
+            // Jo abhi select hai wo ab allowed nahi raha to hata do.
+            var cur = $sel.val();
+            if ((cur == "A" && idActive)
+                || ((cur == "T" || cur == "R") && !idActive)
+                || (cur == "T" && !canUpg)) {
+                $sel.val("");
+            }
+
+            // Kuch select nahi hai to default: deactive -> Activation,
+            // active + upgrade ho sake -> Upgrade, active + top package -> Repurchase.
+            if ($sel.val() == "" || $sel.val() == null) {
+                $sel.val(!idActive ? "A" : (canUpg ? "T" : "R"));
+            }
+            $("#hiddenSelectedInvoiceType").val($sel.val());
+        }
+
         function Disablepaymode() {
             var SelectedInvoiceType = $("#SelectedInvoiceType").val();
 
@@ -2147,7 +2195,7 @@
             $("#ProductHidden").val('');
             getAllProductNames();
 
-            if (SelectedInvoiceType == "PV") {
+            if (SelectedInvoiceType == "A") {
                  $("#PaymodePopup").attr("disabled", true);
                  $("#paymodebtn").attr("disabled", true);
                  $("#BillCalculation").attr("disabled", true);
@@ -2637,33 +2685,30 @@
                 var SelectedInvoiceTypeVal = $("#SelectedInvoiceType").val();
 
                 // ==========================================
-                // PV Invoice Type
+                // Activation (A) - sirf DEACTIVE id kar sakti hai
                 // ==========================================
-                if (SelectedInvoiceTypeVal == "PV") {
-
-                    // ID already active
+                if (SelectedInvoiceTypeVal == "A") {
                     if (objResult.isActive == true) {
-                         toastr.warning("Your ID is already active. You can proceed with the repurchase.", "Warning", {
-                        closeButton: true,
-                        progressBar: true,
-                        positionClass: "toast-top-right",
-                        timeOut: 5000,
-                        extendedTimeOut: 1000
-                    });
+                        toastr.warning("Your ID is already active. Please choose Upgrade or Repurchase.", "Warning", {
+                            closeButton: true,
+                            progressBar: true,
+                            positionClass: "toast-top-right",
+                            timeOut: 5000,
+                            extendedTimeOut: 1000
+                        });
 
-                     
                         $("#IdNo").val('');
                         return;
                     }
                 }
 
                 // ==========================================
-                // BV (Repurchase) Invoice Type
-                // Deactive ID repurchase se active nahi honi chahiye - pehle Activation invoice zaroori hai
+                // Upgrade (T) / Repurchase (R) - sirf ACTIVE id.
+                // Deactive ID repurchase se active nahi honi chahiye - pehle Activation zaroori hai.
                 // ==========================================
-                if (SelectedInvoiceTypeVal == "BV") {
+                if (SelectedInvoiceTypeVal == "T" || SelectedInvoiceTypeVal == "R") {
                     if (objResult.isActive != true) {
-                        toastr.warning("This ID is not active. Repurchase allowed only for active IDs - please raise an Activation invoice first.", "Warning", {
+                        toastr.warning("This ID is not active. Only Activation is allowed - please raise an Activation invoice first.", "Warning", {
                             closeButton: true,
                             progressBar: true,
                             positionClass: "toast-top-right",
@@ -2676,11 +2721,32 @@
                     }
                 }
 
+                // Top package par pahunch chuki ID par Upgrade nahi ho sakta - sirf Repurchase.
+                if (SelectedInvoiceTypeVal == "T" && objResult.canUpgrade === false) {
+                    toastr.warning("This ID is already on the top package"
+                        + (objResult.kitName ? " (" + objResult.kitName + ")" : "")
+                        + ". Upgrade is not possible - please use Repurchase.", "Warning", {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: "toast-top-right",
+                        timeOut: 8000,
+                        extendedTimeOut: 2000
+                    });
+
+                    $("#IdNo").val('');
+                    return;
+                }
+
                 // ==========================================
                 // Fill Customer Information
                 // ==========================================
 
                 $("#IsActive").val(objResult.isActive);
+
+                // ID ki state ke hisaab se Invoice Type ke galat options disable kar do,
+                // taki Save par jaakar error na dekhna pade.
+                SetInvoiceTypeByIdStatus(objResult.isActive, objResult.canUpgrade, objResult.kitName);
+
                 $("#FormNo").val(objResult.formNo);
                 $("#IdNo").val(objResult.idNo);
                 $("#Name").val(objResult.name);
@@ -2764,7 +2830,7 @@
         //                 }
         //                    debugger;
         //                 var SelectedInvoiceTypeVal = $("#SelectedInvoiceType").val();
-        //                 if (SelectedInvoiceTypeVal == "PV")
+        //                 if (SelectedInvoiceTypeVal == "A")
         //                 {
         //                     if (objResult.IsActive == true)
         //                     {
@@ -3010,7 +3076,7 @@
                 ProductArray.CVValue = ProductArray.CV * QtyWithoutFree;
                 ProductArray.BVValue = ProductArray.BV * QtyWithoutFree;
                 ProductArray.PVValue = ProductArray.PV * QtyWithoutFree;
-                ProductArray.TotalWeight = ProductArray.Weight * Quantity;
+                ProductArray.TotalWeight = (parseFloat(ProductArray.Weight) || 0) * Quantity;
                 ProductArray.FreeQty = FreeQ;
 
                 if (offerproduct) {
@@ -3038,7 +3104,7 @@
                 $("#TaxAmt").val((ProductArray.TaxAmt).toFixed(2));
                 $("#Amount").val((ProductArray.Amount).toFixed(2));
                 $("#TotalAmount").val((ProductArray.TotalAmt).toFixed(2));
-                $("#TotalWeight").val((ProductArray.TotalWeight).toFixed(2));
+                $("#TotalWeight").val((parseFloat(ProductArray.TotalWeight) || 0).toFixed(2));
 
             }
         }
@@ -3124,15 +3190,15 @@
             ];
 
             // Add conditional columns
-            if ($("#SelectedInvoiceType").val() === "BV") {
+            if (IsSVBill()) {
                 columns.push(
                     { field: 'BV', width: 80, title: '@BVCaption', sortable: true, hidden: false, filterable: true },
                     { field: 'BVValue', width: 80, title: '@BVCaption Value', sortable: true, hidden: false, filterable: true }
                 );
             } else {
                 columns.push(
-                    { field: 'PV', width: 80, title: '@PVCaption', sortable: true, hidden: false, filterable: true },
-                    { field: 'PVValue', width: 80, title: '@PVCaption Value', sortable: true, hidden: false, filterable: true }
+                    { field: 'PV', width: 80, title: '@PVCaption', sortable: true, hidden: true, filterable: true },
+                    { field: 'PVValue', width: 80, title: '@PVCaption Value', sortable: true, hidden: true, filterable: true }
                 );
             }
 
@@ -3355,7 +3421,7 @@
                 var i = 0;
                 for (i = 0; i < ProductGrid.length; i++) {
                     if (ProductGrid[i].SNo != "") {
-                        TotalWeight += parseFloat(ProductGrid[i].TotalWeight);
+                        TotalWeight += parseFloat(ProductGrid[i].TotalWeight) || 0;
                         TotalBV += parseFloat(ProductGrid[i].BVValue);
                         TotalCV += parseFloat(ProductGrid[i].CVValue);
                         TotalPV += parseFloat(ProductGrid[i].PVValue);
@@ -3528,7 +3594,7 @@
             }
             console.log(objResult);
             // ProductGrid.push({ "SNo": count, "Code": objResult.ProductCodeStr, });
-            TempProductArray.push({ "CatName": objResult.CatName, "CatId": objResult.CatId, "AvailStock": objResult.AvailStock, "SNo": objResult.SNo, "ProductName": objResult.ProductName, "BatchNo": objResult.BatchNo, "Barcode": objResult.Barcode, "ProdCode": objResult.Code, "Qty": objResult.Qty, "AvailStock": objResult.AvailStock, "TaxType": objResult.TaxType, "MRP": objResult.MRP, "DP": objResult.DP, "OriDP": objResult.OriDP, "RP": objResult.RP, "BV": objResult.BV, "CV": objResult.CV, "PV": objResult.PV, "CommsnPer": objResult.CommsnPer, "DiscPer": objResult.DiscPer, "TaxPer": objResult.TaxPer, "CommssnAmt": objResult.CommsnAmt, "TaxAmt": objResult.TaxAmt, "RPValue": objResult.RPValue, "CVValue": objResult.CVValue, "PVValue": objResult.PVValue, "BVValue": objResult.BVValue, "DiscAmt": objResult.DiscAmt, "Amount": objResult.Amount, "TotalAmt": objResult.TotalAmount, "Rate": objResult.Rate });
+            TempProductArray.push({ "Weight": objResult.Weight, "TotalWeight": objResult.TotalWeight, "CatName": objResult.CatName, "CatId": objResult.CatId, "AvailStock": objResult.AvailStock, "SNo": objResult.SNo, "ProductName": objResult.ProductName, "BatchNo": objResult.BatchNo, "Barcode": objResult.Barcode, "ProdCode": objResult.Code, "Qty": objResult.Qty, "AvailStock": objResult.AvailStock, "TaxType": objResult.TaxType, "MRP": objResult.MRP, "DP": objResult.DP, "OriDP": objResult.OriDP, "RP": objResult.RP, "BV": objResult.BV, "CV": objResult.CV, "PV": objResult.PV, "CommsnPer": objResult.CommsnPer, "DiscPer": objResult.DiscPer, "TaxPer": objResult.TaxPer, "CommssnAmt": objResult.CommsnAmt, "TaxAmt": objResult.TaxAmt, "RPValue": objResult.RPValue, "CVValue": objResult.CVValue, "PVValue": objResult.PVValue, "BVValue": objResult.BVValue, "DiscAmt": objResult.DiscAmt, "Amount": objResult.Amount, "TotalAmt": objResult.TotalAmount, "Rate": objResult.Rate });
             if (SearchText == "P") {
                 $("#ProductName").val(objResult.ProductName);
                 fillBarcodeList(objResult.ProductName);
