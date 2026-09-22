@@ -703,7 +703,12 @@ namespace VitaFlow.Infrastructure.Repository
         public async Task<WalletTypeMaster> GetWalletType()
         {
             WalletTypeMaster obj = null;
-            string sql = "SELECT Id, Vtype, Voucher_Discrption FROM VoucherType WHERE IsWr = 1 ORDER BY Id";
+            // PV wallets (Vtype 'P' = PV Sale, 'W' = PV Purchase) ab use nahi hote.
+            // Pehle ye FirstOrDefault PV wali row utha leta tha, isliye sidebar par
+            // "PV Wallet Sale Balance" dikhta tha. Ab PV wallets ko chhod dete hain
+            // taki SV/BV wallet select ho.
+            string sql = "SELECT Id, Vtype, Voucher_Discrption FROM VoucherType "
+                       + "WHERE IsWr = 1 AND ISNULL(Vtype,'') NOT IN ('P','W') ORDER BY Id";
             try
             {
                 using (var connection = _context.CreateLiveconnInv())
