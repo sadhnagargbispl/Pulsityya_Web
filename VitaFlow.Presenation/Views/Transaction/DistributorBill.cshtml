@@ -601,6 +601,28 @@
         // product row BV=0 ke saath save ho jati. Har bill ab SV/BV par hi banta hai.
         // (PV wapas laana ho to sirf yahi function badalna hoga.)
         function IsSVBill() { return true; }
+
+        // Batata hai ki koi product/batch sach me select hua hai ya nahi.
+        // BarcodeList sirf tab set hoti hai jab product ka exactly ek row ho (fillBarcodeList),
+        // aur kai products ka barcode DB me blank hota hai -- isliye sirf usi par bharosa
+        // nahi kar sakte. Jo bhi pehle mile wahi wapas aata hai, warna "".
+        // PartyBill / CustomerBill me ye check pehle se #Barcode par hai.
+        function IsProductSelected() {
+            var v = $("#BarcodeList").val();
+            if (v != null && v != "" && v != "0") { return v; }
+            v = $("#Barcode").val();
+            if (v != null && v != "" && v != "0") { return v; }
+            v = $("#BarcodeHidden").val();
+            if (v != null && v != "" && v != "0") { return v; }
+            v = $("#BatchcodeList").val();
+            if (v != null && v != "" && v != "0") { return v; }
+            // Barcode aur batch dono blank ho sakte hain, par product load ho chuka ho
+            // to quantity rokni nahi chahiye.
+            if (ProductArray != null && ProductArray != undefined && ProductArray.ProductName) {
+                return ProductArray.ProductName;
+            }
+            return "";
+        }
         $(document).keydown(function (event) {
             if (event.shiftKey && event.keyCode == 78) {
                 console.log("Hey! Shift+n event captured!");
@@ -714,7 +736,11 @@
             });
 
             $("#Quantity").focusout(function () {
-                var barcode = $("#BarcodeList").val();
+                // Product select hone ke baad barcode alag-alag jagah aa sakta hai:
+                // BarcodeList sirf tab auto-select hoti hai jab product ka ek hi row ho,
+                // isliye Barcode / BarcodeHidden / BatchcodeList ko bhi dekho -- warna
+                // quantity chupchaap 0 ho jaati thi aur Add par "Please Enter Quantity!" aata tha.
+                var barcode = IsProductSelected();
                 var offerType1 = $("#OfferType").val();
                 var availablestock = $("#StockAvailable").val();
                 if (barcode != "" && barcode != "0") {
@@ -784,13 +810,13 @@
                     }
                 }
                 else {
-                    // toastr.warning("Please select batchcode first.", 'Warning', {
-                    //     closeButton: true,
-                    //     progressBar: true,
-                    //     positionClass: 'toast-top-right',
-                    //     timeOut: 5000, // 5 seconds
-                    //     extendedTimeOut: 1000 // 1 second longer than timeOut
-                    // });
+                    toastr.warning("Please select product / batchcode first.", 'Warning', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000, // 5 seconds
+                        extendedTimeOut: 1000 // 1 second longer than timeOut
+                    });
                     $("#Quantity").val(0);
                 }
             });
