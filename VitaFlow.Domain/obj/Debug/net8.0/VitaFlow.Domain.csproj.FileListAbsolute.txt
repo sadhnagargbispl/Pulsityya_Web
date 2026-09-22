@@ -127,3 +127,16 @@ E:\Sadhna Garg\GithhubFranchise\Expertholistic_Shopy\VitaFlow.Domain\obj\Debug\n
 \\localhost\Sadhna\New Github\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\refint\VitaFlow.Domain.dll
 \\localhost\Sadhna\New Github\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\VitaFlow.Domain.pdb
 \\localhost\Sadhna\New Github\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\ref\VitaFlow.Domain.dll
+E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\bin\Debug\net8.0\VitaFlow.Domain.deps.json
+E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\bin\Debug\net8.0\VitaFlow.Domain.dll
+E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\bin\Debug\net8.0\VitaFlow.Domain.pdb
+E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\VitaFlow.Domain.csproj.AssemblyReference.cache
+E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\VitaFlow.Domain.GeneratedMSBuildEditorConfig.editorconfig
+E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\VitaFlow.Domain.AssemblyInfoInputs.cache
+E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\VitaFlow.Domain.AssemblyInfo.cs
+E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\VitaFlow.Domain.csproj.CoreCompileInputs.cache
+E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\VitaFlow.Domain.sourcelink.json
+E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\VitaFlow.Domain.dll
+E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\refint\VitaFlow.Domain.dll
+E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\VitaFlow.Domain.pdb
+E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\ref\VitaFlow.Domain.dll
