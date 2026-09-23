@@ -137,6 +137,8 @@
                 $("#trPVPurchaseBalanace").hide();
                 $("#trBVPurchaseBalanace").show();
                 $("#PVPurchaseBaladjust").val('0');
+                // Adj. Amount hamesha Net Payable (total) hi hota hai - user ko bharna nahi padta
+                $("#BVPurchaseBaladjust").val($.trim($("#totalamount").val()));
                 loadPurchaseBalance(walletVType,"BVPurchaseBal");
             }
             else if (selectedValue === "PV") {
@@ -338,9 +340,11 @@
                 var BVPurchaseBal=$("#BVPurchaseBal").val();
                 var promobal=$("#promobal").val();
 
-                var BVPurchaseBaladjust=$("#BVPurchaseBaladjust").val();
+                // Adj. Amount = Net Payable
+                var BVPurchaseBaladjust=parseFloat(totalAmount);
                 var promobaladjust=$("#promobaladjust").val();
-                if(validatePayment(BVPurchaseBaladjust,promobaladjust,totalAmount,BVPurchaseBal,promobaladjust)==false)
+                // 5th param promo ka available balance hai (pehle galti se adjust amount ja raha tha)
+                if(validatePayment(BVPurchaseBaladjust,promobaladjust,totalAmount,BVPurchaseBal,promobal)==false)
                 {
                     return false;
                 }
@@ -960,7 +964,7 @@
                         </div>
                         <div class="col-md-7 form-group">
                             <label>Adj. Amount</label>
-                            <input type="text" id="PVPurchaseBaladjust" onkeypress="return isNumberKey(event);" value="0" class="form-control" />
+                            <input type="text" id="PVPurchaseBaladjust" onkeypress="return isNumberKey(event);" value="0" class="form-control" readonly />
                         </div>
                     </div>
                 </div>
@@ -974,7 +978,7 @@
                         </div>
                         <div class="col-md-7 form-group">
                             <label>Adj. Amount</label>
-                            <input type="text" id="BVPurchaseBaladjust" onkeypress="return isNumberKey(event);" value="0" class="form-control" />
+                            <input type="text" id="BVPurchaseBaladjust" onkeypress="return isNumberKey(event);" value="0" class="form-control" readonly />
                         </div>
                     </div>
                 </div>
