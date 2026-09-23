@@ -244,6 +244,11 @@ namespace VitaFlow.Domain.Entities
         public decimal MinToBV { get; set; }
         public string IsAvailableForOffer { get; set; }
         public string IsAvailableForBilling { get; set; }
+        /// <summary>
+        /// J = Joining (Activation/Upgrade), R = Repurchase, B = Both.
+        /// M_ProductMaster.Imported se aata hai; J/R ke alawa kuch bhi ho to "B".
+        /// </summary>
+        public string ProductFor { get; set; }
         public decimal Weight { get; set; }
         public string isFixedQty { get; set; }
         public decimal FixedQty { get; set; }

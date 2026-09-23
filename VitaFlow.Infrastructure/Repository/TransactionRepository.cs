@@ -618,6 +618,22 @@ namespace VitaFlow.Infrastructure.Repository
             }
             return KidIDs;
         }
+        /// <summary>
+        /// Invoice Type (A/T/R) se Product For code nikaalta hai.
+        /// A aur T dono package lene wale bill hain -> "J" (Joining).
+        /// R -> "R" (Repurchase). Kuch aur/blank -> null = koi filter nahi.
+        /// </summary>
+        private static string GetProdForCode(string InvType)
+        {
+            if (string.IsNullOrEmpty(InvType))
+                return null;
+
+            string t = InvType.Trim().ToUpper();
+            if (t == "A" || t == "T") return "J";
+            if (t == "R") return "R";
+            return null;
+        }
+
         public async Task<List<string>> GetAutocompProductsOnly(string FCode, string InvType)
         {
             List<string> objProductNames = new List<string>();
@@ -644,13 +660,19 @@ namespace VitaFlow.Infrastructure.Repository
                                 and IsCardIssue ='N'
                                 and PType != 'K'";
 
-                    // Pehle yahan Invoice Type PV/BV ke hisaab se products filter hote the
-                    // (PV wale Activation ke, PV rahit Repurchase ke). PV poore system se hata
-                    // diya gaya hai aur Invoice Type ab A/T/R hai, isliye Franchise ki tarah
-                    // product ka koi bantwara nahi -- saare products teeno type me milte hain.
-                    // InvType parameter signature me rakha hai taaki callers na toote.
+                    // Product For filter (Product Master ka naya option, M_ProductMaster.Imported):
+                    //   A (Activation) / T (Upgrade) -> Joining wale products
+                    //   R (Repurchase)               -> Repurchase wale products
+                    // Purane products me Imported par 'N'/NULL pada hai -- J/R ke alawa jo bhi ho
+                    // use "Both" maana jata hai, to wo dono me aate rahenge.
+                    // Pehle yahan PV/BV ke hisaab se bantwara hota tha - PV hat gaya, ab ye flag chalta hai.
+                    string prodFor = GetProdForCode(InvType);
+                    if (prodFor != null)
+                    {
+                        sql += " and (p.Imported = @ProdFor or ISNULL(p.Imported,'') not in ('J','R'))";
+                    }
 
-                    var parameters = new { FCode = FCode };
+                    var parameters = new { FCode = FCode, ProdFor = prodFor ?? "B" };
                     objProductNames = (await connection.QueryAsync<string>(sql, parameters)).ToList();
                 }
             }
@@ -1091,7 +1113,9 @@ namespace VitaFlow.Infrastructure.Repository
                                                  product.IsAvailableforOffers AS IsAvailableForOffer,
                                                  product.IsBillingAllowed AS IsAvailableForBilling,
                                                  product.Weight,
-                                                 COALESCE(product.SJDiscount, 0) AS TotalDiscPer
+                                                 COALESCE(product.SJDiscount, 0) AS TotalDiscPer,
+                                                 -- Imported = Product For. J/R ke alawa jo bhi ho wo Both (B)
+                                                 CASE WHEN product.Imported IN ('J','R') THEN product.Imported ELSE 'B' END AS ProductFor
                                              FROM 
                                                  M_ProductMaster product
                                              JOIN 
@@ -1138,7 +1162,9 @@ namespace VitaFlow.Infrastructure.Repository
                                                   p.PurchaseRate AS Rate,
                                                   p.ProdCommssn AS CommissionPer,
                                                   p.IsAvailableforOffers AS IsAvailableForOffer,
-                                                  ISNULL(p.SJDiscount, 0) AS TotalDiscPer
+                                                  ISNULL(p.SJDiscount, 0) AS TotalDiscPer,
+                                                  -- Imported = Product For. J/R ke alawa jo bhi ho wo Both (B)
+                                                  CASE WHEN p.Imported IN ('J','R') THEN p.Imported ELSE 'B' END AS ProductFor
                                                   FROM 
                                                       M_ProductMaster p
                                                       JOIN M_BarCodeMaster b ON p.ProdId = b.ProdId
@@ -1771,6 +1797,24 @@ SELECT
             }
             return objProds;
         }
+        // InnerException chain ke sabse andar wala message (asli SqlException / RAISERROR text),
+        // SQL ka "The transaction ended in the trigger..." wala hissa hata kar.
+        private static string GetRootErrorMessage(Exception ex)
+        {
+            var root = ex;
+            while (root.InnerException != null)
+            {
+                root = root.InnerException;
+            }
+            var msg = (root.Message ?? "").Trim();
+            int cut = msg.IndexOf("The transaction ended in the trigger", StringComparison.OrdinalIgnoreCase);
+            if (cut > 0)
+            {
+                msg = msg.Substring(0, cut).Trim();
+            }
+            return string.IsNullOrEmpty(msg) ? "Something went wrong!" : msg;
+        }
+
         public async Task<ResponseDetail> SaveDistributorBill(DistributorBillModel objModel)
         {
             ResponseDetail objResponse = new ResponseDetail();
@@ -2567,7 +2611,9 @@ FROM TrnVoucher";
                         }
                         catch (Exception ex)
                         {
-                            objResponse.ResponseMessage = "Something went wrong!";
+                            // Trigger Inv_Repurch ke RAISERROR (ID active/deactive, SV kam, top package)
+                            // yahin aate hain - "Something went wrong!" ki jagah asli message dikhao.
+                            objResponse.ResponseMessage = GetRootErrorMessage(ex);
                             objResponse.ResponseStatus = "FAILED";
                         }
                     }
@@ -3743,7 +3789,7 @@ FROM TrnVoucher";
             }
             catch (Exception ex)
             {
-                objResponse.ResponseMessage = "Something went wrong!";
+                objResponse.ResponseMessage = GetRootErrorMessage(ex);
                 objResponse.ResponseStatus = "FAILED";
             }
             return objResponse;

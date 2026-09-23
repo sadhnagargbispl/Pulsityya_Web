@@ -605,28 +605,6 @@
         // product row BV=0 ke saath save ho jati. Har bill ab SV/BV par hi banta hai.
         // (PV wapas laana ho to sirf yahi function badalna hoga.)
         function IsSVBill() { return true; }
-
-        // Batata hai ki koi product/batch sach me select hua hai ya nahi.
-        // BarcodeList sirf tab set hoti hai jab product ka exactly ek row ho (fillBarcodeList),
-        // aur kai products ka barcode DB me blank hota hai -- isliye sirf usi par bharosa
-        // nahi kar sakte. Jo bhi pehle mile wahi wapas aata hai, warna "".
-        // PartyBill / CustomerBill me ye check pehle se #Barcode par hai.
-        function IsProductSelected() {
-            var v = $("#BarcodeList").val();
-            if (v != null && v != "" && v != "0") { return v; }
-            v = $("#Barcode").val();
-            if (v != null && v != "" && v != "0") { return v; }
-            v = $("#BarcodeHidden").val();
-            if (v != null && v != "" && v != "0") { return v; }
-            v = $("#BatchcodeList").val();
-            if (v != null && v != "" && v != "0") { return v; }
-            // Barcode aur batch dono blank ho sakte hain, par product load ho chuka ho
-            // to quantity rokni nahi chahiye.
-            if (ProductArray != null && ProductArray != undefined && ProductArray.ProductName) {
-                return ProductArray.ProductName;
-            }
-            return "";
-        }
         $(document).keydown(function (event) {
             if (event.shiftKey && event.keyCode == 78) {
                 console.log("Hey! Shift+n event captured!");
@@ -740,87 +718,75 @@
             });
 
             $("#Quantity").focusout(function () {
-                // Product select hone ke baad barcode alag-alag jagah aa sakta hai:
-                // BarcodeList sirf tab auto-select hoti hai jab product ka ek hi row ho,
-                // isliye Barcode / BarcodeHidden / BatchcodeList ko bhi dekho -- warna
-                // quantity chupchaap 0 ho jaati thi aur Add par "Please Enter Quantity!" aata tha.
-                var barcode = IsProductSelected();
+                // Barcode ab bill ke liye zaroori nahi hai. Pehle poora handler
+                // "if (barcode != '')" ke andar tha, isliye jis product ka barcode blank ya 0
+                // hota tha uski quantity chupchaap 0 ho jaati thi aur Add par
+                // "Please Enter Quantity!" aa jata tha. Product/batch sach me select hai ya nahi,
+                // ye Add button khud check karta hai (ProductArray + AvailStock).
                 var offerType1 = $("#OfferType").val();
                 var availablestock = $("#StockAvailable").val();
-                if (barcode != "" && barcode != "0") {
-                    $("#BuyFreeQty").val(0);
-                    var qtyCurrent = $("#Quantity").val();
-                    if (qtyCurrent != "") {
-                        qtyCurrent = parseFloat(qtyCurrent);
-                        var offer = false;
-                        var flexiible = "Y";
-                        var freeQ = 0;
-                        if (IsEditGrid == true) {
-                            var productName = $("#ProductName").val();
-                            var index = ProductGrid.findIndex(x => x.ProductName == productName);
-                            if (index != -1) {
-                                offer = ProductGrid[index].IsOfferProduct;
-                                freeQ = ProductGrid[index].OfferQty;
-                                flexiible = ProductGrid[index].IsofferFlexible;
-                            }
-                        }
-                        else {
-                            if (IsOfferProduct) {
-                                offer = IsOfferProduct;
-                                freeQ = CurrentSelectedProductDetails.offerDetail.FreeQty;
-                                flexiible = CurrentSelectedProductDetails.offerDetail.IsFlexible;
-                            }
-                        }
-                        if (offer && offerType1 != "2" && offerType1 != "3") {
-                            debugger;
-                            if (flexiible == "Y" && qtyCurrent >= parseInt(CurrentSelectedProductDetails.offerDetail.Qty)) {
-                                var Freeq = parseFloat(freeQ);
-                                var offset = parseInt(qtyCurrent / parseInt(CurrentSelectedProductDetails.offerDetail.Qty));
-                                var totalfree = offset * Freeq;
-                                //$("#FreeQty").val(totalfree);
-                                $("#BuyFreeQty").val(totalfree);
-                                var tQuantity = totalfree + qtyCurrent;
-                                $("#Quantity").val(tQuantity);
-                            }
-
-                            else if (flexiible == "N" && qtyCurrent >= parseInt(CurrentSelectedProductDetails.offerDetail.Qty)) {
-                                var Freeq = parseFloat(freeQ);
-                                $("#BuyFreeQty").val(Freeq);
-                                var tQuantity = parseInt(CurrentSelectedProductDetails.offerDetail.FreeQty) + parseInt(CurrentSelectedProductDetails.offerDetail.Qty);
-                                $("#Quantity").val(tQuantity);
-                            }
-                        }
-                        if (qtyCurrent > availablestock) {
-                            toastr.warning("Insufficient Stock!", 'Warning', {
-                                closeButton: true,
-                                progressBar: true,
-                                positionClass: 'toast-top-right',
-                                timeOut: 5000, // 5 seconds
-                                extendedTimeOut: 1000 // 1 second longer than timeOut
-                            });
-                            $("#Quantity").val(0);
-                        }
-                        else if (qtyCurrent <= 1000.999) {
-                            DoCalculation(false);
-                        }
-                        else {
-                            alert("Please enter quantity less than 1000.999!");
-                            $("#Quantity").val(0);
+                $("#BuyFreeQty").val(0);
+                var qtyCurrent = $("#Quantity").val();
+                if (qtyCurrent != "") {
+                    qtyCurrent = parseFloat(qtyCurrent);
+                    var offer = false;
+                    var flexiible = "Y";
+                    var freeQ = 0;
+                    if (IsEditGrid == true) {
+                        var productName = $("#ProductName").val();
+                        var index = ProductGrid.findIndex(x => x.ProductName == productName);
+                        if (index != -1) {
+                            offer = ProductGrid[index].IsOfferProduct;
+                            freeQ = ProductGrid[index].OfferQty;
+                            flexiible = ProductGrid[index].IsofferFlexible;
                         }
                     }
                     else {
-                        // OpenDialog("dialogMessage", "Please enter quantity!", "false");
+                        if (IsOfferProduct) {
+                            offer = IsOfferProduct;
+                            freeQ = CurrentSelectedProductDetails.offerDetail.FreeQty;
+                            flexiible = CurrentSelectedProductDetails.offerDetail.IsFlexible;
+                        }
+                    }
+                    if (offer && offerType1 != "2" && offerType1 != "3") {
+                        debugger;
+                        if (flexiible == "Y" && qtyCurrent >= parseInt(CurrentSelectedProductDetails.offerDetail.Qty)) {
+                            var Freeq = parseFloat(freeQ);
+                            var offset = parseInt(qtyCurrent / parseInt(CurrentSelectedProductDetails.offerDetail.Qty));
+                            var totalfree = offset * Freeq;
+                            //$("#FreeQty").val(totalfree);
+                            $("#BuyFreeQty").val(totalfree);
+                            var tQuantity = totalfree + qtyCurrent;
+                            $("#Quantity").val(tQuantity);
+                        }
+
+                        else if (flexiible == "N" && qtyCurrent >= parseInt(CurrentSelectedProductDetails.offerDetail.Qty)) {
+                            var Freeq = parseFloat(freeQ);
+                            $("#BuyFreeQty").val(Freeq);
+                            var tQuantity = parseInt(CurrentSelectedProductDetails.offerDetail.FreeQty) + parseInt(CurrentSelectedProductDetails.offerDetail.Qty);
+                            $("#Quantity").val(tQuantity);
+                        }
+                    }
+                    if (qtyCurrent > availablestock) {
+                        toastr.warning("Insufficient Stock!", 'Warning', {
+                            closeButton: true,
+                            progressBar: true,
+                            positionClass: 'toast-top-right',
+                            timeOut: 5000, // 5 seconds
+                            extendedTimeOut: 1000 // 1 second longer than timeOut
+                        });
+                        $("#Quantity").val(0);
+                    }
+                    else if (qtyCurrent <= 1000.999) {
+                        DoCalculation(false);
+                    }
+                    else {
+                        alert("Please enter quantity less than 1000.999!");
                         $("#Quantity").val(0);
                     }
                 }
                 else {
-                    toastr.warning("Please select product / batchcode first.", 'Warning', {
-                        closeButton: true,
-                        progressBar: true,
-                        positionClass: 'toast-top-right',
-                        timeOut: 5000, // 5 seconds
-                        extendedTimeOut: 1000 // 1 second longer than timeOut
-                    });
+                    // OpenDialog("dialogMessage", "Please enter quantity!", "false");
                     $("#Quantity").val(0);
                 }
             });
@@ -1164,6 +1130,25 @@
                     return false;
                 }
 
+                // Extra safety: ID daalte hi SetInvoiceTypeByIdStatus galat options band kar deta hai,
+                // phir bhi ID ki state aur Invoice Type mel na khaye to Save yahin rok do.
+                var IdIsActive = ($("#IsActive").val() + "").toLowerCase() == "true";
+                var IdStateMsg = "";
+                if (SelectedInvoiceTypeVal == "A" && IdIsActive) {
+                    IdStateMsg = "This ID is already active - Activation is not allowed. Choose Upgrade or Repurchase.";
+                }
+                else if ((SelectedInvoiceTypeVal == "T" || SelectedInvoiceTypeVal == "R") && !IdIsActive) {
+                    IdStateMsg = "This ID is deactive - only Activation is allowed.";
+                }
+                if (IdStateMsg != "") {
+                    toastr.warning(IdStateMsg, 'Warning', {
+                        closeButton: true, progressBar: true, positionClass: 'toast-top-right',
+                        timeOut: 8000, extendedTimeOut: 2000
+                    });
+                    ResetSaveButton();
+                    return false;
+                }
+
                 // ProductGrid me hamesha ek khaali placeholder row hoti hai, is liye
                 // .length <= 0 kabhi true nahi hota tha - asli products ginte hain
                 if (GetValidProductCount() <= 0) {
@@ -1177,32 +1162,19 @@
                     ResetSaveButton();
                     return false;
                 }
-                     if (SelectedInvoiceTypeVal == "A") {
-                var TotalAmountNetVal = parseFloat($("#TotalAmountNet").val()) || 0;
-                if (TotalAmountNetVal < 3000) {
-                    // pehle yahan OpenDialog() call tha jo is view me define hi nahi hai -
-                    // JS error ki wajah se Save par kuch nahi hota tha
-                    toastr.warning("For Activation, Total Amount should be minimum ₹3000.", 'Warning', {
-                        closeButton: true,
-                        progressBar: true,
-                        positionClass: 'toast-top-right',
-                        timeOut: 6000,
-                        extendedTimeOut: 1500
-                    });
-                    ResetSaveButton();
-                    return false;
-                }
-            }
+                // Activation par rupees ki koi minimum condition nahi hai - SV kaafi hai ya nahi,
+                // ye trigger Inv_Repurch package band (JoinAmount) se tay karta hai.
                 if (SelectedInvoiceTypeVal == "A") {
                     var NetPayable = $("#NetPayable").val();
                     $.ajax({
                         url: '/Transaction/GetWalletBalance',
                         dataType: 'JSON',
                         method: 'GET',
-                        data: { Waltype: 'P' },
+                        // PV wallet hat gaya hai - Activation bhi server par S.V. (B) wallet se hi kat-ta hai
+                        data: { Waltype: 'B' },
                         success: function (data) {
                             if (parseFloat(data) < parseFloat(NetPayable)) {
-                                toastr.warning("Insufficient Balance in your PV wallet", 'Warning', {
+                                toastr.warning("Insufficient Balance in your S.V. wallet", 'Warning', {
                                     closeButton: true,
                                     progressBar: true,
                                     positionClass: 'toast-top-right',
@@ -2197,6 +2169,12 @@
             $sel.find("option[value='T']").prop("disabled", !idActive || !canUpg);
             $sel.find("option[value='R']").prop("disabled", !idActive);
 
+            // Top package par Upgrade option khud bataye ki kyun band hai
+            $sel.find("option[value='T']").text(
+                (idActive && !canUpg)
+                    ? "Top package" + (KitName ? " (" + KitName + ")" : "") + " - only Repurchase"
+                    : "Upgrade");
+
             // Jo abhi select hai wo ab allowed nahi raha to hata do.
             var cur = $sel.val();
             if ((cur == "A" && idActive)
@@ -2211,6 +2189,9 @@
                 $sel.val(!idActive ? "A" : (canUpg ? "T" : "R"));
             }
             $("#hiddenSelectedInvoiceType").val($sel.val());
+
+            // Type apne aap set hua hai, to product list bhi usi ke hisaab se refresh karo.
+            getAllProductNames();
         }
 
         function Disablepaymode() {
@@ -2224,7 +2205,8 @@
             $("#Paymodediv").hide();
             $(".Paymodedivlabel").hide();
 
-            // Invoice Type badalte hi product list dobara load karo (Activation vs Repurchase)
+            // Invoice Type badalte hi product list dobara load karo -- Product For ke hisaab se
+            // (A/T = Joining wale, R = Repurchase wale, Both dono me).
             $("#ProductName").val('');
             $("#ProductHidden").val('');
             getAllProductNames();
@@ -2293,8 +2275,8 @@
         }
     }
         function getAllProductNames() {
-            // Invoice Type ke hisaab se hi products aayenge:
-            // PV (Activation) => sirf PV wale products, BV (Repurchase) => baaki products
+            // Invoice Type ke hisaab se hi products aayenge (Product Master ka "Product For"):
+            //   A / T => Joining wale, R => Repurchase wale, Both dono me.
             var invType = $("#SelectedInvoiceType").val() || "";
             $.ajax({
                 url: '/Transaction/GetProductNamesOnly',
@@ -2340,13 +2322,33 @@
                 }
             });
         }
-        // Pehle Invoice Type PV/BV tha aur product ka bantwara PV par hota tha:
-        // "PV wala product Activation ka, PV rahit Repurchase ka". Ab PV poore system se
-        // hata diya gaya hai aur Invoice Type A/T/R hai -- Franchise ki tarah yahan bhi
-        // product ka koi bantwara nahi hai, har product teeno me chalega.
-        // (Invoice Type ki asli checking ID ke state par hoti hai - SetInvoiceTypeByIdStatus.)
+        // Invoice Type -> Product For code (Product Master ka naya option).
+        //   A (Activation) aur T (Upgrade) -> "J" (Joining wale products)
+        //   R (Repurchase)                 -> "R" (Repurchase wale products)
+        // "Both" wale products dono me aate hain. Invoice Type select na ho to koi filter nahi.
+        // (Pehle ye bantwara PV par hota tha - PV hat gaya, ab ye flag chalta hai.)
+        function GetProdForCode() {
+            var invType = $("#SelectedInvoiceType").val() || "";
+            if (invType == "A" || invType == "T") { return "J"; }
+            if (invType == "R") { return "R"; }
+            return "";
+        }
+
         function IsProductAllowedForInvoiceType(product) {
-            return true;
+            var want = GetProdForCode();
+            if (want == "") { return true; }
+
+            var pf = (product && product.productFor) ? String(product.productFor).toUpperCase() : "B";
+            if (pf == "B" || pf == want) { return true; }
+
+            var msg = (want == "J")
+                ? "Yeh Repurchase ka product hai - Activation/Upgrade bill me add nahi kar sakte."
+                : "Yeh Joining ka product hai - Repurchase bill me add nahi kar sakte.";
+            toastr.warning(msg, 'Warning', {
+                closeButton: true, progressBar: true, positionClass: 'toast-top-right',
+                timeOut: 6000, extendedTimeOut: 1500
+            });
+            return false;
         }
 
         function GetProductInfo(isProductSearch, data, offerProduct, offerQty) {
@@ -2701,60 +2703,11 @@
                     return;
                 }
                 debugger;
-                var SelectedInvoiceTypeVal = $("#SelectedInvoiceType").val();
 
-                // ==========================================
-                // Activation (A) - sirf DEACTIVE id kar sakti hai
-                // ==========================================
-                if (SelectedInvoiceTypeVal == "A") {
-                    if (objResult.isActive == true) {
-                        toastr.warning("Your ID is already active. Please choose Upgrade or Repurchase.", "Warning", {
-                            closeButton: true,
-                            progressBar: true,
-                            positionClass: "toast-top-right",
-                            timeOut: 5000,
-                            extendedTimeOut: 1000
-                        });
-
-                        $("#IdNo").val('');
-                        return;
-                    }
-                }
-
-                // ==========================================
-                // Upgrade (T) / Repurchase (R) - sirf ACTIVE id.
-                // Deactive ID repurchase se active nahi honi chahiye - pehle Activation zaroori hai.
-                // ==========================================
-                if (SelectedInvoiceTypeVal == "T" || SelectedInvoiceTypeVal == "R") {
-                    if (objResult.isActive != true) {
-                        toastr.warning("This ID is not active. Only Activation is allowed - please raise an Activation invoice first.", "Warning", {
-                            closeButton: true,
-                            progressBar: true,
-                            positionClass: "toast-top-right",
-                            timeOut: 8000,
-                            extendedTimeOut: 2000
-                        });
-
-                        $("#IdNo").val('');
-                        return;
-                    }
-                }
-
-                // Top package par pahunch chuki ID par Upgrade nahi ho sakta - sirf Repurchase.
-                if (SelectedInvoiceTypeVal == "T" && objResult.canUpgrade === false) {
-                    toastr.warning("This ID is already on the top package"
-                        + (objResult.kitName ? " (" + objResult.kitName + ")" : "")
-                        + ". Upgrade is not possible - please use Repurchase.", "Warning", {
-                        closeButton: true,
-                        progressBar: true,
-                        positionClass: "toast-top-right",
-                        timeOut: 8000,
-                        extendedTimeOut: 2000
-                    });
-
-                    $("#IdNo").val('');
-                    return;
-                }
+                // Pehle yahan pehle se chuna Invoice Type ID ki state se mel na khaye to
+                // warning dekar ID hi clear kar di jaati thi. Ab SetInvoiceTypeByIdStatus (neeche)
+                // galat options disable karke sahi type apne aap chun leta hai:
+                //   deactive -> A,  active -> T,  active + top package -> R.
 
                 // ==========================================
                 // Fill Customer Information

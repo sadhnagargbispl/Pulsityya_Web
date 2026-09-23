@@ -833,41 +833,29 @@
         $("#Quantity").focusout(function () {
             debugger;
             console.log("in function");
-            //var barcode = $("#BarcodeList").val();
-            var barcode = $("#Barcode").val();
-            if (barcode != "" && barcode != "0") {
-                var qtyCurrent = $("#Quantity").val();
-                if (qtyCurrent != "") {
-                    qtyCurrent = parseFloat(qtyCurrent);
-                    if (qtyCurrent <= 1000.999) {
-                        DoCalculation();
-                    }
-                    else {
-                        
-                         toastr.error("Please enter quantity less than 1000.999!", 'Error', {
+            // Barcode ab bill ke liye zaroori nahi hai. Pehle poora handler
+            // "if (barcode != '')" ke andar tha, isliye jis product ka barcode blank ya 0
+            // hota tha uski quantity chupchaap 0 ho jaati thi aur bill ban hi nahi pata tha.
+            var qtyCurrent = $("#Quantity").val();
+            if (qtyCurrent != "") {
+                qtyCurrent = parseFloat(qtyCurrent);
+                if (qtyCurrent <= 1000.999) {
+                    DoCalculation();
+                }
+                else {
+
+                    toastr.error("Please enter quantity less than 1000.999!", 'Error', {
                         closeButton: true,
                         progressBar: true,
                         positionClass: 'toast-top-right',
                         timeOut: 8000, // 8 seconds
                         extendedTimeOut: 2000 // 2 second longer than timeOut
-                     });
-                        $("#Quantity").val(0);
-                    }
-                }
-                else {
-                    // OpenDialog("dialogMessage", "Please enter quantity!", "false");
+                    });
                     $("#Quantity").val(0);
                 }
             }
             else {
-               
-                toastr.error("Please select barcode first.", 'Error', {
-                        closeButton: true,
-                        progressBar: true,
-                        positionClass: 'toast-top-right',
-                        timeOut: 8000, // 8 seconds
-                        extendedTimeOut: 2000 // 2 second longer than timeOut
-                     });
+                // OpenDialog("dialogMessage", "Please enter quantity!", "false");
                 $("#Quantity").val(0);
             }
 

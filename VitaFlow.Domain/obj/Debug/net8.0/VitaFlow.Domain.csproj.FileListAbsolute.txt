@@ -140,3 +140,6 @@ E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\V
 E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\refint\VitaFlow.Domain.dll
 E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\VitaFlow.Domain.pdb
 E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Domain\obj\Debug\net8.0\ref\VitaFlow.Domain.dll
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\VitaFlow.Domain.deps.json
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\VitaFlow.Domain.dll
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\VitaFlow.Domain.pdb

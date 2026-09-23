@@ -3103,3 +3103,12 @@ E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Presenation\obj\Debug\net
 E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Presenation\obj\Debug\net8.0\VitaFlow.Presenation.pdb
 E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Presenation\obj\Debug\net8.0\VitaFlow.Presenation.genruntimeconfig.cache
 E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Presenation\obj\Debug\net8.0\ref\VitaFlow.Presenation.dll
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\appsettings.Development.json
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\appsettings.json
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\VitaFlow.Presenation.staticwebassets.runtime.json
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\VitaFlow.Presenation.staticwebassets.endpoints.json
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\VitaFlow.Presenation.exe
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\VitaFlow.Presenation.deps.json
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\VitaFlow.Presenation.runtimeconfig.json
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\VitaFlow.Presenation.dll
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\VitaFlow.Presenation.pdb

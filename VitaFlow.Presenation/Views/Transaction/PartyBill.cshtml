@@ -981,54 +981,42 @@
 
         $("#Quantity").focusout(function () {
 
-            // var barcode = $("#BarcodeList").val();
-            var barcode = $("#Barcode").val();
-            if (barcode != "") {
-                var qtyCurrent = $("#Quantity").val();
-                var availablestock = $("#StockAvailable").val();
+            // Barcode ab bill ke liye zaroori nahi hai. Pehle poora handler
+            // "if (barcode != '')" ke andar tha, isliye jis product ka barcode blank ya 0
+            // hota tha uski quantity chupchaap 0 ho jaati thi aur bill ban hi nahi pata tha.
+            var qtyCurrent = $("#Quantity").val();
+            var availablestock = $("#StockAvailable").val();
 
-                if (qtyCurrent != "") {
-                    qtyCurrent = parseFloat(qtyCurrent);
-                    if (qtyCurrent > availablestock) {
-                        
-                         toastr.error("Insufficient Stock!", 'Error', {
+            if (qtyCurrent != "") {
+                qtyCurrent = parseFloat(qtyCurrent);
+                if (qtyCurrent > availablestock) {
+
+                    toastr.error("Insufficient Stock!", 'Error', {
                         closeButton: true,
                         progressBar: true,
                         positionClass: 'toast-top-right',
                         timeOut: 8000, // 8 seconds
                         extendedTimeOut: 2000 // 2 second longer than timeOut
-                     });
-                        $("#Quantity").val(0);
-                    }
-                    else if (qtyCurrent <= 1000.999) {
-                        DoCalculation();
-                    }
-                    else {
-                        
-                         toastr.error("Please enter quantity less than 1000.999!", 'Error', {
-                        closeButton: true,
-                        progressBar: true,
-                        positionClass: 'toast-top-right',
-                        timeOut: 8000, // 8 seconds
-                        extendedTimeOut: 2000 // 2 second longer than timeOut
-                     });
-                        $("#Quantity").val(0);
-                    }
+                    });
+                    $("#Quantity").val(0);
+                }
+                else if (qtyCurrent <= 1000.999) {
+                    DoCalculation();
                 }
                 else {
-                    // OpenDialog("dialogMessage", "Please enter quantity!", "false");
+
+                    toastr.error("Please enter quantity less than 1000.999!", 'Error', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 8000, // 8 seconds
+                        extendedTimeOut: 2000 // 2 second longer than timeOut
+                    });
                     $("#Quantity").val(0);
                 }
             }
             else {
-               
-                 toastr.error("Please select barcode first.", 'Error', {
-                        closeButton: true,
-                        progressBar: true,
-                        positionClass: 'toast-top-right',
-                        timeOut: 8000, // 8 seconds
-                        extendedTimeOut: 2000 // 2 second longer than timeOut
-                     });
+                // OpenDialog("dialogMessage", "Please enter quantity!", "false");
                 $("#Quantity").val(0);
             }
         });

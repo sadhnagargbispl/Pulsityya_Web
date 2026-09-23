@@ -195,3 +195,7 @@ E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Infrastructure\obj\Debug\
 E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Infrastructure\obj\Debug\net8.0\VitaFlow.Infrastructure.pdb
 E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Infrastructure\obj\Debug\net8.0\VitaFlow.Infrastructure.genruntimeconfig.cache
 E:\Sadhna Garg\GithhubFranchise\Pulsityya_Web\VitaFlow.Infrastructure\obj\Debug\net8.0\ref\VitaFlow.Infrastructure.dll
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\VitaFlow.Infrastructure.deps.json
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\VitaFlow.Infrastructure.runtimeconfig.json
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\VitaFlow.Infrastructure.dll
+C:\Users\Claude1\AppData\Local\Temp\claude\--localhost-Sadhna-New-Github-Pulsityya-Web\e74da937-5536-4adc-9f31-1c9e3539986b\scratchpad\buildout\VitaFlow.Infrastructure.pdb

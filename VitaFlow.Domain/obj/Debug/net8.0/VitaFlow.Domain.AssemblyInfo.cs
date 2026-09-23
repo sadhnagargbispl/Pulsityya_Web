@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VitaFlow.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+09498096f6ad2158506020f59fbd31645a5d07cc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+17e5dd4fc1f6dfab4295b5debc2340246024ed43")]
 [assembly: System.Reflection.AssemblyProductAttribute("VitaFlow.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VitaFlow.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
