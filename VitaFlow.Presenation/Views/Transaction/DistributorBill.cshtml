@@ -931,15 +931,20 @@
                         debugger;
                         if (ProductGrid[i].IsOfferProduct == false || ProductGrid[i].IsofferFlexible == "Y") {
 
-                            var Qty = (parseFloat(ProductGrid[i].Qty) + parseFloat(ProductArray.Qty)).toFixed(2);
+                            var Qty = ((parseFloat(ProductGrid[i].Qty) || 0) + (parseFloat(ProductArray.Qty) || 0)).toFixed(2);
 
-                            var FreeQty = (parseFloat(ProductGrid[i].freeQty) + parseFloat(ProductArray.freeQty)).toFixed(2);
+                            // Grid row aur ProductArray dono me key "FreeQty" (bada F) hai. Pehle yahan
+                            // "freeQty" padha jata tha -> undefined -> NaN, aur "NaN <= stock" hamesha
+                            // false hota hai, isliye same product dobara add karne par stock hote hue
+                            // bhi "Adjust Quantity" aa jata tha.
+                            var FreeQty = ((parseFloat(ProductGrid[i].FreeQty) || 0) + (parseFloat(ProductArray.FreeQty) || 0)).toFixed(2);
 
                             if ((parseFloat(Qty) + parseFloat(FreeQty)) <= parseFloat(ProductArray.AvailStock)) {
 
                                 ProductGrid[i].Qty = Qty;
-                                ProductGrid[i].freeQty = FreeQty;
-                                ProductGrid[i].BuyFreeQty = ProductGrid[i].BuyFreeQty + ProductArray.BuyFreeQty;
+                                ProductGrid[i].FreeQty = FreeQty;
+                                ProductGrid[i].BuyFreeQty = (parseFloat(ProductGrid[i].BuyFreeQty) || 0) + (parseFloat(ProductArray.BuyFreeQty) || 0);
+                                ProductGrid[i].TotalWeight = (parseFloat(ProductGrid[i].TotalWeight) || 0) + (parseFloat(ProductArray.TotalWeight) || 0);
                                 var TaxAmt = (parseFloat(ProductGrid[i].TaxAmt) + parseFloat(ProductArray.TaxAmt)).toFixed(2);
                                 ProductGrid[i].TaxAmt = TaxAmt;
                                 var TaxPer = (parseFloat(ProductGrid[i].TaxPer)).toFixed(2);
@@ -950,8 +955,7 @@
                                 ProductGrid[i].TotalAmount = TotalAmount;
                                 var Amount = (parseFloat(ProductGrid[i].Amount) + parseFloat(ProductArray.Amount)).toFixed(2);
                                 ProductGrid[i].Amount = Amount;
-                                var Rate = (parseFloat(ProductGrid[i].Rate) + parseFloat(ProductArray.Rate)).toFixed(2);
-                                ProductGrid[i].Rate = Rate;
+                                // Rate ek unit ka rate hai - quantity badhne par jodna nahi (pehle double ho jata tha)
                                 var CommsnAmt = (parseFloat(ProductGrid[i].CommsnAmt) + parseFloat(ProductArray.CommssnAmt)).toFixed(2);
                                 ProductGrid[i].CommsnAmt = CommsnAmt;
                                 var RPValue = (parseFloat(ProductGrid[i].RPValue) + parseFloat(ProductArray.RPValue)).toFixed(2);
