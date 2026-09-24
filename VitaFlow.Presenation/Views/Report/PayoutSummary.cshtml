@@ -25,7 +25,7 @@
             tableString += "<th>BillNo </th>";
             tableString += "<th>BillDate</th>";
             tableString += "<th>BillType</th>";
-            tableString += "<th>S.V. Value</th>";
+            tableString += "<th>S.P. Value</th>";
             tableString += "<th>Commission Slab(%)</th>";
             tableString += "<th>Commission Value</th>";
 
@@ -117,11 +117,11 @@
                                          { field: 'SNo', title: 'SNo', width: 100, sortable: true, hidden: false, filterable: true, align: 'center' },
                                           { field: 'Statement', title: 'Statement', width: 130, sortable: true, hidden: false, filterable: true, tmpl: '<a target="_blank" style="text-decoration:underline;color:blue" href={Statement}>Open</a>', align: 'center' },
                                          { field: 'Code', title: 'Franchisee Code', width: 80, sortable: true, hidden: false, filterable: true },
-                                         { field: 'self_Comm_BV', title: 'Self Comm - S.V.', width: 80, sortable: true, hidden: false, filterable: true },
-                                         { field: 'diff_Comm_BV', title: 'Diff. Comm-S.V.', width: 80, sortable: true, hidden: false, filterable: true,
+                                         { field: 'self_Comm_BV', title: 'Self Comm - S.P.', width: 80, sortable: true, hidden: false, filterable: true },
+                                         { field: 'diff_Comm_BV', title: 'Diff. Comm-S.P.', width: 80, sortable: true, hidden: false, filterable: true,
                                          renderer: function (value, record) {
                                           return `<a href="javascript:void(0)" onclick="openModal(${record.SNo})">${value}</a>`;}},
-                                         { field: 'bV_Slab', title: 'S.V. Slab', width: 80, sortable: true, hidden: false, filterable: true },
+                                         { field: 'bV_Slab', title: 'S.P. Slab', width: 80, sortable: true, hidden: false, filterable: true },
                                          { field: 'selfIncomePv', title: 'SelfIncome Pv', width: 80, sortable: true, hidden: true, filterable: true },
                                          { field: 'diff_Comm_Pv', title: 'Diff. Comm-Pv', width: 100, sortable: true, hidden: true, filterable: true,
                                            renderer: function (value, record) {
@@ -186,7 +186,7 @@
                         <tr>
                             <th>Party Code</th>
                             <th>MLevel</th>
-                            <th>Diff. Comm-S.V.</th>
+                            <th>Diff. Comm-S.P.</th>
                              <th>Self Slab</th>
                              <th>Down Slab</th>
                             <th>Comm.</th>
@@ -340,7 +340,7 @@
     <div class="modal-dialog modal-lg  modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Diff Comm S.V. Details</h5>
+                <h5 class="modal-title">Diff Comm S.P. Details</h5>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">

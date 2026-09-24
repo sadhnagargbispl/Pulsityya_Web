@@ -276,7 +276,7 @@
                                         { btype = @ViewBag.RepurchaseCaption; }
                                         else if (Model.BillType == "B")
                                         {
-                                            btype = "S.V. Invoice";
+                                            btype = "S.P. Invoice";
                                         }
                                     }
                                     @btype
@@ -495,7 +495,7 @@
                                                warna header aur cells ka count mismatch ho jata. *@
                                             if (Model.BillType != "P")
                                             {
-                                                <th scope="col" align="center" class="addPadding">S.V.</th>
+                                                <th scope="col" align="center" class="addPadding">S.P.</th>
                                             }
                                         }
                                     }

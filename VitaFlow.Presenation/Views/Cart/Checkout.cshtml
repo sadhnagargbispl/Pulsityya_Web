@@ -450,7 +450,7 @@
 
         if (mainWallet > mainBalance) {
             
-            toastr.error("S.V. wallet purchase amount exceeds available main balance.", 'Error', {
+            toastr.error("S.P. wallet purchase amount exceeds available main balance.", 'Error', {
                     closeButton: true,
                     progressBar: true,
                     positionClass: 'toast-top-right',
@@ -490,7 +490,7 @@
 
         // otherwise invalid
         
-        toastr.error("S.V. wallet purchase wallet is required when promo wallet does not cover full bill.", 'Error', {
+        toastr.error("S.P. wallet purchase wallet is required when promo wallet does not cover full bill.", 'Error', {
                     closeButton: true,
                     progressBar: true,
                     positionClass: 'toast-top-right',
@@ -946,7 +946,7 @@
                 <input type="hidden" id="ordermethod" value="@Model.OrderMethod" />
 
                 <div class="summary-row" id="ordermethodselectwallet" style="display:none;">
-                    <span>S.V. Wallet Balance</span>
+                    <span>S.P. Wallet Balance</span>
                     <span><span id="walbal1">0</span></span>
                 </div>
 

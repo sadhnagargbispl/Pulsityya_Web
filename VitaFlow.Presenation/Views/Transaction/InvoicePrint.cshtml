@@ -325,14 +325,14 @@
                                         else if (Model.BillType == "R")
                                         { btype = RepurchaseCaption; }
                                         else if (Model.BillType == "V" && Model.PartyInvoice == "B")
-                                        { btype = "S.V. Invoice"; }
+                                        { btype = "S.P. Invoice"; }
                                         else if (Model.BillType == "V" && Model.PartyInvoice == "P")
                                         { btype = "PV Invoice"; }
                                         else if (Model.BillType == "V" && Model.PartyInvoice == "S")
                                         { btype = "First Order Invoice"; }
                                         else if (Model.BillType == "B")
                                         {
-                                            btype = "S.V. Invoice";
+                                            btype = "S.P. Invoice";
                                         }
                                     }
                                     @btype
@@ -557,7 +557,7 @@
                                     {
                                         if (!isPvInvoice && (Model.objListProduct[0].OrderType != "T" || Model.objListProduct[0].BVValue > 0))
                                         {
-                                            <th scope="col" align="center" class="addPadding">S.V.</th>
+                                            <th scope="col" align="center" class="addPadding">S.P.</th>
                                         }
                                     }
                                     <th scope="col" align="center" class="addPadding">Discount</th>

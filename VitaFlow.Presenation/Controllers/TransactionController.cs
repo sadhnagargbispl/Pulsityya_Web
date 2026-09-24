@@ -612,7 +612,7 @@ namespace VitaFlow.Presenation.Controllers
                         // karta, aur DistributorBill view BillType post bhi nahi karti, isliye bill
                         // neeche wali party/customer branch me bhi nahi jata tha: koi error diye
                         // bina, bina save hue wapas aa jata tha.
-                        // PV billing hata di gayi hai -- har distributor bill S.V. (BV) wallet se hi
+                        // PV billing hata di gayi hai -- har distributor bill S.P. (BV) wallet se hi
                         // jata hai. ("BV" purane post ke liye saath rakha hai.)
                         if (objModel.SelectedInvoiceType == "A"
                             || objModel.SelectedInvoiceType == "T"
@@ -623,7 +623,7 @@ namespace VitaFlow.Presenation.Controllers
                             if (Convert.ToDecimal(WalletBalance) < Math.Round(objModel.objProduct.CashAmount))
                             {
                                 objResponse.ResponseStatus = "FAILED";
-                                objResponse.ResponseMessage = "Insufficient Balance in your S.V. wallet";
+                                objResponse.ResponseMessage = "Insufficient Balance in your S.P. wallet";
                             }
                             else
                             {
@@ -652,7 +652,7 @@ namespace VitaFlow.Presenation.Controllers
                                 if (Convert.ToDecimal(WalletBalance) < Math.Round(objModel.objProduct.TotalNetPayable))
                                 {
                                     objResponse.ResponseStatus = "FAILED";
-                                    objResponse.ResponseMessage = "Insufficient Balance in your S.V. Wallet Sale Balance";
+                                    objResponse.ResponseMessage = "Insufficient Balance in your S.P. Wallet Sale Balance";
                                     return Json(objResponse);
                                 }
                             }

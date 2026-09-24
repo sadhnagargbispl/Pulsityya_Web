@@ -1174,11 +1174,11 @@
                         url: '/Transaction/GetWalletBalance',
                         dataType: 'JSON',
                         method: 'GET',
-                        // PV wallet hat gaya hai - Activation bhi server par S.V. (B) wallet se hi kat-ta hai
+                        // PV wallet hat gaya hai - Activation bhi server par S.P. (B) wallet se hi kat-ta hai
                         data: { Waltype: 'B' },
                         success: function (data) {
                             if (parseFloat(data) < parseFloat(NetPayable)) {
-                                toastr.warning("Insufficient Balance in your S.V. wallet", 'Warning', {
+                                toastr.warning("Insufficient Balance in your S.P. wallet", 'Warning', {
                                     closeButton: true,
                                     progressBar: true,
                                     positionClass: 'toast-top-right',
@@ -1270,7 +1270,7 @@
                         data: { Waltype: 'B' },
                         success: function (data) {
                             if (parseFloat(data) < parseFloat(NetPayable)) {
-                                toastr.warning("Insufficient Balance in your S.V. wallet", 'Warning', {
+                                toastr.warning("Insufficient Balance in your S.P. wallet", 'Warning', {
                                     closeButton: true,
                                     progressBar: true,
                                     positionClass: 'toast-top-right',

@@ -84,7 +84,7 @@
             tableString += "<th>BillNo </th>";
             tableString += "<th>BillDate</th>";
             tableString += "<th>BillType</th>";
-            tableString += "<th>S.V. Value</th>";
+            tableString += "<th>S.P. Value</th>";
             tableString += "<th>Commission Slab(%)</th>";
             tableString += "<th>Commission Value</th>";
 
@@ -214,9 +214,9 @@
                                          { field: 'BillNo', title: 'BillNo', width: 80, sortable: true, hidden: false, filterable: true },
                                          { field: 'BillDate', title: 'BillDate', width: 80, sortable: true, hidden: false, filterable: true },
                                          { field: 'BillType', title: 'BillType', width: 80, sortable: true, hidden: false, filterable: true },
-                                         { field: 'BVCommission', title: 'S.V. Value', width: 100, sortable: true, hidden: false, filterable: true },
-                                         { field: 'CommissionSlab', title: 'S.V. Commission Slab(%)', width: 100, sortable: true, hidden: false, filterable: true },
-                                         { field: 'Commission', title: 'S.V. Commission Value', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'BVCommission', title: 'S.P. Value', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'CommissionSlab', title: 'S.P. Commission Slab(%)', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'Commission', title: 'S.P. Commission Value', width: 100, sortable: true, hidden: false, filterable: true },
                                          { field: 'PVCommission', title: 'PV Commission', width: 100, sortable: true, hidden: true, filterable: true },
                                          { field: 'PVSlab', title: 'PV Slab', width: 100, sortable: true, hidden: true, filterable: true },
                                          { field: 'PVCommissionVal', title: 'PV Commission Value', width: 100, sortable: true, hidden: true, filterable: true },
@@ -346,7 +346,7 @@
                             <label>Bill Type</label>
                             <select id="Billtype" class="form-control">
                                 <option value="All">All</option>
-                                <option value="B">S.V. Bill</option>
+                                <option value="B">S.P. Bill</option>
                             </select>
                         </div>
                     </div>
