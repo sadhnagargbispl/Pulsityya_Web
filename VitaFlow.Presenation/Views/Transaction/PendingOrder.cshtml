@@ -5,6 +5,140 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    .premium-order-page .card {
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(17, 38, 80, .07);
+        overflow: hidden;
+        background: #fff;
+        margin-bottom: 24px;
+    }
+    .premium-order-page .card-header {
+        background: linear-gradient(90deg, #2e5fe6 0%, #00b8a9 100%) !important;
+        border-bottom: none;
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .premium-order-page .card-title {
+        color: #fff;
+        font-weight: 700;
+        letter-spacing: .4px;
+        text-transform: uppercase;
+        font-size: 16px;
+        margin: 0;
+    }
+    .premium-order-page .card-title i { margin-right: 8px; opacity: .95; }
+    .premium-order-page .card-subtitle {
+        color: rgba(255, 255, 255, .85);
+        font-size: 12.5px;
+        margin: 2px 0 0;
+    }
+    .premium-order-page .card-body { padding: 20px 24px !important; }
+    .premium-order-page .filter-box { display: flex; align-items: center; gap: 10px; }
+    .premium-order-page .filter-box label {
+        color: #fff;
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: .4px;
+        text-transform: uppercase;
+        margin: 0;
+        white-space: nowrap;
+    }
+    .premium-order-page .filter-box select {
+        min-width: 220px;
+        border: none;
+        border-radius: 8px;
+        height: 38px;
+        font-size: 14px;
+    }
+    .premium-order-page .form-control {
+        border: 1px solid #e2e8f5;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+    .premium-order-page .form-control[readonly] { background: #f5f7fc; }
+    .premium-order-page .table-responsive { border-radius: 10px; }
+    .premium-order-page .table thead th {
+        background: #f3f6fd;
+        color: #44506a;
+        font-size: 11.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+    .premium-order-page .table tbody tr { cursor: pointer; }
+    .premium-order-page .table tbody tr:hover td { background: #f7faff; }
+    .premium-order-page .hint {
+        color: #6b7891;
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
+    .premium-order-page .summary-box {
+        background: #f7f9fe;
+        border: 1px solid #e2e8f5;
+        border-radius: 12px;
+        padding: 16px;
+        height: 100%;
+    }
+    .premium-order-page .summary-box label {
+        display: block;
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: .4px;
+        text-transform: uppercase;
+        color: #6b7891;
+        margin-bottom: 6px;
+    }
+    .premium-order-page .summary-box .form-control {
+        background: #fff;
+        font-weight: 600;
+        color: #1c2a48;
+        text-align: right;
+    }
+    .premium-order-page .summary-box.net {
+        background: linear-gradient(90deg, rgba(46, 95, 230, .08) 0%, rgba(0, 184, 169, .08) 100%);
+        border-color: #bfd0f7;
+    }
+    .premium-order-page .summary-box.net #NetPayable { font-size: 16px; color: #2e5fe6; }
+    .premium-order-page .action-bar {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        border-top: 1px solid #eef1f8;
+        padding-top: 18px;
+        margin-top: 20px;
+    }
+    .premium-order-page .action-bar .btn {
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 9px 28px;
+        min-width: 120px;
+    }
+    .premium-order-page .action-bar .btn-success {
+        background: linear-gradient(90deg, #2e5fe6 0%, #00b8a9 100%);
+        border: none;
+        box-shadow: 0 8px 18px rgba(46, 95, 230, .22);
+    }
+    .premium-order-page .action-bar .btn-cancel {
+        background: #fff;
+        border: 1px solid #d5dcec;
+        color: #44506a;
+    }
+    @@media (max-width: 575px) {
+        .premium-order-page .filter-box { width: 100%; }
+        .premium-order-page .filter-box select { min-width: 0; flex: 1; }
+        .premium-order-page .action-bar .btn { flex: 1; }
+    }
+</style>
+
+<div class="premium-order-page">
+
 <!-- Breadcrumb Start -->
 <div class="breadcrumb-header justify-content-between">
     <div class="left-content">
@@ -17,24 +151,42 @@
     </div>
 </div>
 <!-- Breadcrumb End -->
-<!-- Reward, Wallet, Membership Start -->
-<div class="row row-sm row-deck">
-    <div class="col-md-12 col-lg-12 col-xl-12">
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label class="control-label">Order Type</label>
-                <select id="OrderSourceFilter" class="form-control">
-                    <option value="ALL">All Orders</option>
-                    <option value="P">Party / Shoppe Order</option>
-                    <option value="A">Associate Order</option>
-                </select>
+<div class="row row-sm">
+    <!-- Pending order list -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h4 class="card-title"><i class="fa fa-clock-o"></i>Pending Orders</h4>
+                    <p class="card-subtitle">Select an order to view its products and dispatch</p>
+                </div>
+                <div class="filter-box">
+                    <label for="OrderSourceFilter">Order Type</label>
+                    <select id="OrderSourceFilter" class="form-control">
+                        <option value="ALL">All Orders</option>
+                        <option value="P">Party / Shoppe Order</option>
+                        <option value="A">Associate Order</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="grid"></table>
+                </div>
             </div>
         </div>
-        <div class="table-responsive">
-            <table id="grid"></table>
-        </div>
     </div>
-    <div class="col-md-12 col-lg-12 col-xl-12 mt-5">
+
+    <!-- Dispatch details -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h4 class="card-title"><i class="fa fa-truck"></i>Order Dispatch</h4>
+                    <p class="card-subtitle">Adjust dispatch quantity and save the bill</p>
+                </div>
+            </div>
+            <div class="card-body">
         <form id="partyOrderDispatchForm" method="post" name="partyOrderDispatchForm" onsubmit="false" data-parsley-validate class="validateForm form-horizontal form-label-left">
             <div class="table-responsive">
                 @Html.Hidden("IsAdd", "", new { name = "isAdd", id = "isAdd" })
@@ -48,29 +200,29 @@
                 <table id="gridLower"></table>
             </div>
 
-
-            <div class="col-md-12 col-lg-12 col-xl-12 mt-5">
+            <div class="mt-4">
                 <div class="row">
-                    <div class="col-lg-4">
-                        <label class="control-label">Total Amount</label>
-                        @Html.TextBoxFor(m => m.objProduct.TotalTotalAmount, new { name = "TotalTotalAmount", id = "TotalTotalAmount", @class = "form-control", @readonly = "readonly" })
+                    <div class="col-md-4 mb-3">
+                        <div class="summary-box">
+                            <label>Total Amount</label>
+                            @Html.TextBoxFor(m => m.objProduct.TotalTotalAmount, new { name = "TotalTotalAmount", id = "TotalTotalAmount", @class = "form-control", @readonly = "readonly" })
+                        </div>
                     </div>
-                    <div class="col-lg-3">
-                        <label class="control-label">
-                            Total Tax Amt.
-                        </label>
-                        @Html.TextBoxFor(m => m.objProduct.TotalTaxAmount, new { name = "TotalTax", id = "TotalTax", @class = "form-control", @readonly = "readonly" })
+                    <div class="col-md-4 mb-3">
+                        <div class="summary-box">
+                            <label>Total Tax Amt.</label>
+                            @Html.TextBoxFor(m => m.objProduct.TotalTaxAmount, new { name = "TotalTax", id = "TotalTax", @class = "form-control", @readonly = "readonly" })
+                        </div>
                     </div>
-                    <div class="col-lg-5">
-                        <label class="control-label">
-                            Net Payable
-                        </label>
-                        <div class="col-lg-12">
+                    <div class="col-md-4 mb-3">
+                        <div class="summary-box net">
                             <div class="row">
-                                <div class="col-lg-3">
+                                <div class="col-4 pr-1">
+                                    <label>Round Off</label>
                                     @Html.TextBoxFor(m => m.objProduct.Roundoff, new { name = "RoundOff", id = "RoundOff", @class = "form-control", @readonly = "readonly" })
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-8 pl-1">
+                                    <label>Net Payable</label>
                                     @Html.TextBoxFor(m => m.objProduct.TotalNetPayable, new { name = "NetPayable", id = "NetPayable", @class = "form-control", @readonly = "readonly" })
                                 </div>
                             </div>
@@ -89,18 +241,16 @@
 
                 @Html.HiddenFor(m => m.objProduct.TotalQty, new { name = "TotalQty", id = "TotalQty" })
             </div>
-            <div class="col-lg-12 col-md-offset-3 mb-4 mt-4">
-                <div class="row">
-                    <div class="col-lg-3">
-                        <button type="submit" id="SavePendingOrderForm" class="btn btn-success" tabindex="0">Save</button>
-                    </div>
-                    <div class="col-lg-4">
-                        <button class="btn btn-primary" type="button" tabindex="0" id="cancelClick">Cancel</button>
-                    </div>
-                </div>
+            <div class="action-bar">
+                <button class="btn btn-cancel" type="button" tabindex="0" id="cancelClick">Cancel</button>
+                <button type="submit" id="SavePendingOrderForm" class="btn btn-success" tabindex="0"><i class="fa fa-check mr-1"></i> Save</button>
             </div>
         </form>
+            </div>
+        </div>
     </div>
+
+</div>
 
 </div>
 
