@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Presenation\\VitaFlow.Presenation.csproj": {}
+    "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\VitaFlow.Presenation.csproj": {}
   },
   "projects": {
-    "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Application\\VitaFlow.Application.csproj": {
+    "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Application\\VitaFlow.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Application\\VitaFlow.Application.csproj",
+        "projectUniqueName": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Application\\VitaFlow.Application.csproj",
         "projectName": "VitaFlow.Application",
-        "projectPath": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Application\\VitaFlow.Application.csproj",
-        "packagesPath": "C:\\Users\\Claude1\\.nuget\\packages\\",
-        "outputPath": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Application\\obj\\",
+        "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Application\\VitaFlow.Application.csproj",
+        "packagesPath": "C:\\Users\\Dell\\.nuget\\packages\\",
+        "outputPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Claude1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Dell\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -31,13 +31,14 @@
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj": {
-                "projectPath": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj"
+              "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj": {
+                "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj"
               },
-              "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj": {
-                "projectPath": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj"
+              "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj": {
+                "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj"
               }
             }
           }
@@ -52,10 +53,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "imports": [
             "net461",
@@ -68,43 +70,29 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.25, 8.0.25]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.25, 8.0.25]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.25, 8.0.25]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj": {
+    "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj",
+        "projectUniqueName": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj",
         "projectName": "VitaFlow.Domain",
-        "projectPath": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj",
-        "packagesPath": "C:\\Users\\Claude1\\.nuget\\packages\\",
-        "outputPath": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Domain\\obj\\",
+        "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj",
+        "packagesPath": "C:\\Users\\Dell\\.nuget\\packages\\",
+        "outputPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Claude1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Dell\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -118,6 +106,7 @@
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {}
           }
@@ -132,10 +121,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.AspNetCore.Http.Features": {
@@ -154,43 +144,29 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.25, 8.0.25]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.25, 8.0.25]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.25, 8.0.25]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj": {
+    "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj",
+        "projectUniqueName": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj",
         "projectName": "VitaFlow.Infrastructure",
-        "projectPath": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\Claude1\\.nuget\\packages\\",
-        "outputPath": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Infrastructure\\obj\\",
+        "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\Dell\\.nuget\\packages\\",
+        "outputPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Claude1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Dell\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -204,10 +180,11 @@
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj": {
-                "projectPath": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj"
+              "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj": {
+                "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj"
               }
             }
           }
@@ -222,10 +199,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "Dapper": {
@@ -268,43 +246,29 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.25, 8.0.25]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.25, 8.0.25]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.25, 8.0.25]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Presenation\\VitaFlow.Presenation.csproj": {
+    "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\VitaFlow.Presenation.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Presenation\\VitaFlow.Presenation.csproj",
+        "projectUniqueName": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\VitaFlow.Presenation.csproj",
         "projectName": "VitaFlow.Presenation",
-        "projectPath": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Presenation\\VitaFlow.Presenation.csproj",
-        "packagesPath": "C:\\Users\\Claude1\\.nuget\\packages\\",
-        "outputPath": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Presenation\\obj\\",
+        "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\VitaFlow.Presenation.csproj",
+        "packagesPath": "C:\\Users\\Dell\\.nuget\\packages\\",
+        "outputPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Claude1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Dell\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -318,10 +282,11 @@
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Application\\VitaFlow.Application.csproj": {
-                "projectPath": "\\\\localhost\\Sadhna\\New Github\\Pulsityya_Web\\VitaFlow.Application\\VitaFlow.Application.csproj"
+              "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Application\\VitaFlow.Application.csproj": {
+                "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Application\\VitaFlow.Application.csproj"
               }
             }
           }
@@ -336,10 +301,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
@@ -370,24 +336,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.25, 8.0.25]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[8.0.25, 8.0.25]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.25, 8.0.25]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.25, 8.0.25]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -396,7 +344,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

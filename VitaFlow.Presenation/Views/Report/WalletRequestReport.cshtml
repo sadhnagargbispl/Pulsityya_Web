@@ -136,7 +136,7 @@
             tableString += "<th>Approve Date</th>";
             tableString += "<td>Status</td>";
             tableString += "<th>Approve Remark</th>";
-            tableString += "<th>Wallet Types</th>";
+            // tableString += "<th>Wallet Types</th>";
             tableString += "</tr></thead><tbody>";
             for (var i = 0; i < WalletGrid.length; i++) {
                 tableString += "<tr>";
@@ -152,7 +152,7 @@
                 tableString += "<td>" + WalletGrid[i].ApproveDate + "</td>";
                 tableString += "<td>" + WalletGrid[i].IsApproved + "</td>";
                 tableString += "<td>" + WalletGrid[i].ApproveRemark + "</td>";
-                tableString += "<td>" + WalletGrid[i].WalletTypes + "</td>";
+                // tableString += "<td>" + WalletGrid[i].WalletTypes + "</td>";
                 tableString += "</tr>";
             }
 
@@ -319,7 +319,7 @@
                     { field: 'ApproveRemark', title: 'Approve Remark', width: 90, hidden: false, filterable: true },
                     // { field: 'VType', title: 'Wallet Type', width: 90, hidden: false, filterable: true },
                     { field: 'Reject', width: 100, title: 'Reject', sortable: true, hidden: true, filterable: false, tmpl: '<a style="text-decoration:underline;color:blue">{Reject}</a>', events: { 'click': RejectWalletReq }, align: 'center' },
-                      { field: 'WalletTypes', title: 'Wallet Type', width: 101, sortable: true, hidden: false, filterable: true },
+                      // { field: 'WalletTypes', title: 'Wallet Type', width: 101, sortable: true, hidden: false, filterable: true },
 
                 ],
 
