@@ -39,6 +39,8 @@ wwwroot\WalletReqsImages\2026070214584754423352024033555Prod_10151_0.jpg
 wwwroot\WalletReqsImages\2026070312365034323352024033555Prod_10151_0.jpg
 wwwroot\WalletReqsImages\20260703185906848imresizer-41U-CWp5PkL._SY300_SX300_QL70_FMwebp_.jpg
 wwwroot\WalletReqsImages\202607031907201933cbd9498-f5c5-47c9-9b4e-9507efd91dc0-3.jpg
+wwwroot\WalletReqsImages\20260918114519143ratecoin.png
+wwwroot\WalletReqsImages\20260924130209392Logo (1).png
 wwwroot\WalletReqsImages\DefaultProduct.jpg
 wwwroot\Walletuploads\DefaultProduct.jpg
 wwwroot\assets\Captcha\jquery-captcha.js
