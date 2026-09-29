@@ -2438,12 +2438,12 @@ FROM TrnVoucher";
                                         narration_ = UserBillNo + " against Coupon adjust " + objModel.objProduct.PayDetails.AmountbyCoupon;
                                         int cp = await CreditPartyWallet(billno_, narration_, "", soldby_, objModel.objProduct.PayDetails.AmountbyCoupon, "R");
                                     }
-                                    int i = await DeductPartyWallet(billno_, narration_, soldby_, fcode_, netpayable_, objModel.UserType, objModel.SelectedInvoiceType);
+                                    //int i = await DeductPartyWallet(billno_, narration_, soldby_, fcode_, netpayable_, objModel.UserType, objModel.SelectedInvoiceType);
                                 }
-                                else if (objModel.SelectedInvoiceType == "A")
-                                {
-                                    int i = await DeductPartyWallet(billno_, narration_, soldby_, fcode_, netpayable_, objModel.UserType, objModel.SelectedInvoiceType);
-                                }
+                                //else if (objModel.SelectedInvoiceType == "A")
+                                //{
+                                //    int i = await DeductPartyWallet(billno_, narration_, soldby_, fcode_, netpayable_, objModel.UserType, objModel.SelectedInvoiceType);
+                                //}
 
                                 try
                                 {
@@ -2703,11 +2703,11 @@ FROM TrnVoucher";
                                             FSessId = FsessId ?? 0,
                                             SBillNo = maxSbillNo
                                         });
-                                        string query = ";INSERT INTO TrnVoucher(VoucherNo,VoucherDate,DrTo,Crto,Amount,Narration,Refno,VType,BType,AccDocType,SessID,FSessID) " +
-                                                 " Select ISNULL(Max(VoucherNo),0)+1, Cast(Convert(varchar,Getdate(),106) as Datetime),'" + objModel.objCustomer.PartyCode + "','" + objModel.objCustomer.UserDetails.PartyCode + "','" + objModel.objProduct.PayDetails.AmountByVoucher + "','Wallet deducted against bill " + UserBillNo + ".','" + billPrefix + "/" + objModel.objCustomer.UserDetails.PartyCode + "/" + maxSbillNo + "','X','O','Party Bill.','" + SessId + "','" + FsessId + "' FROM TrnVoucher";
+                                        //string query = ";INSERT INTO TrnVoucher(VoucherNo,VoucherDate,DrTo,Crto,Amount,Narration,Refno,VType,BType,AccDocType,SessID,FSessID) " +
+                                        //         " Select ISNULL(Max(VoucherNo),0)+1, Cast(Convert(varchar,Getdate(),106) as Datetime),'" + objModel.objCustomer.PartyCode + "','" + objModel.objCustomer.UserDetails.PartyCode + "','" + objModel.objProduct.PayDetails.AmountByVoucher + "','Wallet deducted against bill " + UserBillNo + ".','" + billPrefix + "/" + objModel.objCustomer.UserDetails.PartyCode + "/" + maxSbillNo + "','X','O','Party Bill.','" + SessId + "','" + FsessId + "' FROM TrnVoucher";
 
 
-                                        int result = connection.Execute(query);
+                                        //int result = connection.Execute(query);
                                     }
 
                                     if (objModel.objProduct.PayDetails.IsBPW)
@@ -2744,11 +2744,11 @@ FROM TrnVoucher";
                                             FSessId = FsessId ?? 0,
                                             SBillNo = maxSbillNo
                                         });
-                                        string query = ";INSERT INTO TrnVoucher(VoucherNo,VoucherDate,DrTo,Crto,Amount,Narration,Refno,VType,BType,AccDocType,SessID,FSessID) " +
-                                                 " Select ISNULL(Max(VoucherNo),0)+1, Cast(Convert(varchar,Getdate(),106) as Datetime),'" + objModel.objCustomer.PartyCode + "','" + objModel.objCustomer.UserDetails.PartyCode + "','" + objModel.objProduct.PayDetails.AmountByBPW + "','Wallet deducted against bill " + UserBillNo + ".','" + billPrefix + "/" + objModel.objCustomer.UserDetails.PartyCode + "/" + maxSbillNo + "','Z','O','Party Bill.','" + SessId + "','" + FsessId + "' FROM TrnVoucher";
+                                        //string query = ";INSERT INTO TrnVoucher(VoucherNo,VoucherDate,DrTo,Crto,Amount,Narration,Refno,VType,BType,AccDocType,SessID,FSessID) " +
+                                        //         " Select ISNULL(Max(VoucherNo),0)+1, Cast(Convert(varchar,Getdate(),106) as Datetime),'" + objModel.objCustomer.PartyCode + "','" + objModel.objCustomer.UserDetails.PartyCode + "','" + objModel.objProduct.PayDetails.AmountByBPW + "','Wallet deducted against bill " + UserBillNo + ".','" + billPrefix + "/" + objModel.objCustomer.UserDetails.PartyCode + "/" + maxSbillNo + "','Z','O','Party Bill.','" + SessId + "','" + FsessId + "' FROM TrnVoucher";
 
 
-                                        int result = connection.Execute(query);
+                                        //int result = connection.Execute(query);
                                     }
 
                                     if (objModel.objProduct.PayDetails.IsPPW)
@@ -2785,11 +2785,11 @@ FROM TrnVoucher";
                                             FSessId = FsessId ?? 0,
                                             SBillNo = maxSbillNo
                                         });
-                                        string query = ";INSERT INTO TrnVoucher(VoucherNo,VoucherDate,DrTo,Crto,Amount,Narration,Refno,VType,BType,AccDocType,SessID,FSessID) " +
-                                                 " Select ISNULL(Max(VoucherNo),0)+1, Cast(Convert(varchar,Getdate(),106) as Datetime),'" + objModel.objCustomer.PartyCode + "','" + objModel.objCustomer.UserDetails.PartyCode + "','" + objModel.objProduct.PayDetails.AmountByPPW + "','Wallet deducted against bill " + UserBillNo + ".','" + billPrefix + "/" + objModel.objCustomer.UserDetails.PartyCode + "/" + maxSbillNo + "','W','O','Party Bill.','" + SessId + "','" + FsessId + "' FROM TrnVoucher";
+                                        //string query = ";INSERT INTO TrnVoucher(VoucherNo,VoucherDate,DrTo,Crto,Amount,Narration,Refno,VType,BType,AccDocType,SessID,FSessID) " +
+                                        //         " Select ISNULL(Max(VoucherNo),0)+1, Cast(Convert(varchar,Getdate(),106) as Datetime),'" + objModel.objCustomer.PartyCode + "','" + objModel.objCustomer.UserDetails.PartyCode + "','" + objModel.objProduct.PayDetails.AmountByPPW + "','Wallet deducted against bill " + UserBillNo + ".','" + billPrefix + "/" + objModel.objCustomer.UserDetails.PartyCode + "/" + maxSbillNo + "','W','O','Party Bill.','" + SessId + "','" + FsessId + "' FROM TrnVoucher";
 
 
-                                        int result = connection.Execute(query);
+                                        //int result = connection.Execute(query);
                                     }
 
                                     if (objModel.objProduct.PayDetails.IsW)
@@ -3219,7 +3219,7 @@ FROM TrnVoucher";
                                         netpayable_ = netpayable_- objModel.objProduct.PayDetails.AmountByVoucher;
                                     }
 
-                                    CreditPartyWallet(billno_, "Wallet Credited against " + UserBillNo + ".", SoldByCode, fcode_, netpayable_, objModel.PartyInvoice);
+                                   // CreditPartyWallet(billno_, "Wallet Credited against " + UserBillNo + ".", SoldByCode, fcode_, netpayable_, objModel.PartyInvoice);
 
                                     var resultPayMode = connection.Query<M_PayModeMaster>(
                                             "SELECT Prefix, PayMode FROM M_PayModeMaster").ToList();
@@ -3731,7 +3731,7 @@ FROM TrnVoucher";
 
                                 connection.Execute(insertCustomerSql, objCustomerDetail);
 
-                                await DeductPartyWallet(billno_, narration_, soldby_, "", netpayable_, "shoppe");
+                                //await DeductPartyWallet(billno_, narration_, soldby_, "", netpayable_, "shoppe");
 
                                 string sqlPayModeMaster = "SELECT * FROM M_PayModeMaster";
                                 var resultPayMode = connection.Query<M_PayModeMaster>(sqlPayModeMaster).ToList();
