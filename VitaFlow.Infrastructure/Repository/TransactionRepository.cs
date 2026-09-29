@@ -167,16 +167,21 @@ namespace VitaFlow.Infrastructure.Repository
                                                 LEFT JOIN 
                                                 M_LedgerMaster l ON r.OrderBy = l.PartyCode
                                                 WHERE 
-                                                r.ActiveStatus = 'Y';";
-                    objPartyOrderModel = (await connection.QueryAsync<PartyOrderModel>(storedProcedureName, commandType: CommandType.Text)).ToList();
+                                                r.ActiveStatus = 'Y'
+                                                AND (@OrderBy = 'ALL' OR r.OrderBy = @OrderBy)
+                                                AND (@OrderTo = 'ALL' OR r.OrderTo = @OrderTo)
+                                                AND (@Status = 'A' OR r.Status = @Status);";
+                    // Filter SQL me hi lagta hai: pehle C# '==' se hota tha jo case aur trailing
+                    // space (char column) par match fail kar deta tha, aur list khaali aati thi.
+                    var filters = new
+                    {
+                        OrderBy = string.IsNullOrWhiteSpace(OrderBy) ? "ALL" : OrderBy.Trim().ToUpper() == "ALL" ? "ALL" : OrderBy.Trim(),
+                        OrderTo = string.IsNullOrWhiteSpace(OrderTo) ? "ALL" : OrderTo.Trim().ToUpper() == "ALL" ? "ALL" : OrderTo.Trim(),
+                        Status = string.IsNullOrWhiteSpace(Status) ? "A" : Status.Trim().ToUpper()
+                    };
+                    objPartyOrderModel = (await connection.QueryAsync<PartyOrderModel>(storedProcedureName, filters, commandType: CommandType.Text)).ToList();
 
                 }
-                if (OrderBy.ToUpper() != "ALL")
-                    objPartyOrderModel = objPartyOrderModel.Where(m => m.OrderBy == OrderBy).ToList();
-                if (OrderTo.ToUpper() != "ALL")
-                    objPartyOrderModel = objPartyOrderModel.Where(m => m.OrderTo == OrderTo).ToList();
-                if (Status.ToUpper() != "A")
-                    objPartyOrderModel = objPartyOrderModel.Where(m => m.DispStatus == Status).ToList();
             }
             catch (Exception ex)
             {

@@ -52,6 +52,7 @@ namespace VitaFlow.Domain.Entities
         public decimal TotalSale { get; set; }
         public decimal TodayPurchase { get; set; }
         public decimal TotalPurchase { get; set; }
+        public decimal StockValue { get; set; }
     }
     public class FranchiseLimit
     {

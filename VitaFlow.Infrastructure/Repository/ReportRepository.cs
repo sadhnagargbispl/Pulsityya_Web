@@ -519,6 +519,16 @@ namespace VitaFlow.Infrastructure.Repository
                         objStockModel = (await connection.QueryAsync<StockReportModel>(storedProcedureName, values, commandType: CommandType.StoredProcedure)).ToList();
                     }
 
+                    // SP stock out "StockOut" column me deta hai, page "OutStock" padhta hai -
+                    // isliye OutStock khaali reh jaata tha aur Stock Out me value nahi aati thi.
+                    foreach (var row in objStockModel)
+                    {
+                        if (row.OutStock == null || (row.OutStock == 0 && row.StockOut != 0))
+                        {
+                            row.OutStock = row.StockOut;
+                        }
+                    }
+
                 }
             }
             catch (Exception ex)
@@ -773,6 +783,29 @@ namespace VitaFlow.Infrastructure.Repository
 
             }
             return objReport;
+        }
+
+        /// <summary>
+        /// Dashboard ka Stock Value - V#WRDashboardSummary view ka StockVal column.
+        /// </summary>
+        public async Task<decimal> GetDashboardStockValue()
+        {
+            decimal stockValue = 0;
+            try
+            {
+                using (var connection = _context.CreateLiveconnInv())
+                {
+                    var sql = @"Select ColmValue FROM( SELECT ColumnName, ColmValue FROM V#WRDashboardSummary
+                                UNPIVOT(ColmValue FOR ColumnName IN(StockVal)) unpvt) a,
+                                DashboardSummaryColumn b WHERE a.ColumnName = b.FldName ORDER BY b.AID";
+                    stockValue = (await connection.QueryAsync<decimal?>(sql, commandType: CommandType.Text)).FirstOrDefault() ?? 0;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return stockValue;
         }
 
         public async Task<List<StockReportModel>> GetStockReceiptReport(string CategoryCode, string ProductCode, string PartyCode, string StateCode, string FromDate, string ToDate, string LoginPartyCode, string isSummary)

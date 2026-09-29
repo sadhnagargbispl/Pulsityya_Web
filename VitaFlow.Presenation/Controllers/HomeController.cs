@@ -90,6 +90,14 @@ namespace VitaFlow.Presenation.Controllers
             {
             }
 
+            try
+            {
+                summary.StockValue = await iReport.GetDashboardStockValue();
+            }
+            catch
+            {
+            }
+
             return summary;
         }
 

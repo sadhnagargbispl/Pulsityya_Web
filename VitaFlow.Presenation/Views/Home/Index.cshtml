@@ -145,6 +145,8 @@
     .vf-dashboard .vf-buy-today::before { background: #f0932b; }
     .vf-dashboard .vf-buy-total .vf-stat-icon { background: linear-gradient(135deg, #6c5ce7, #a55eea); }
     .vf-dashboard .vf-buy-total::before { background: #6c5ce7; }
+    .vf-dashboard .vf-stock-value .vf-stat-icon { background: linear-gradient(135deg, #e84393, #fd79a8); }
+    .vf-dashboard .vf-stock-value::before { background: #e84393; }
 
     @@media (max-width: 575px) {
         .vf-dashboard .vf-stat-card { padding: 18px; gap: 14px; }
@@ -215,6 +217,22 @@
                         <div class="vf-stat-value">&#8377; @vfSummary.TotalPurchase.ToString("N2")</div>
                     </div>
                     <i class="fa fa-cubes vf-stat-ghost" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="vf-section">
+        <h6 class="vf-section-title">Stock</h6>
+        <div class="row row-sm">
+            <div class="col-12 col-lg-6">
+                <div class="vf-stat-card vf-stock-value">
+                    <div class="vf-stat-icon"><i class="fa fa-archive" aria-hidden="true"></i></div>
+                    <div class="vf-stat-body">
+                        <p class="vf-stat-label">Stock Value</p>
+                        <div class="vf-stat-value">&#8377; @vfSummary.StockValue.ToString("N2")</div>
+                    </div>
+                    <i class="fa fa-archive vf-stat-ghost" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
