@@ -1,4 +1,4 @@
-﻿@model VitaFlow.Domain.Entities.StockReportModel
+@model VitaFlow.Domain.Entities.StockReportModel
 
 @{
     ViewData["Title"] = "StockReport";
@@ -312,6 +312,7 @@
             //var tableToExcel = new TableToExcel();
             // tableToExcel.render("grid");
             var UserTypeStr = "StockReport";
+            var showInOut = true; // Stock In / Out sab users ke liye
 
             console.log("in export gridExport", StockGrid);
             var tableString = "<thead><tr>";
@@ -324,7 +325,7 @@
                 tableString += "<th>Code</th>";
                 tableString += "<th>Product Name</th>";
                 tableString += "<th>BarCode</th>";
-                if ('@LoginuserType' === "shoppe") {
+                if (showInOut) {
                     tableString += "<th>Stock In</th>";
                     tableString += "<th>Stock Out</th>";
                 }
@@ -348,7 +349,7 @@
                     tableString += "<td class=formatText>" + StockGrid[i].ProductCode.toString() + "</td>";
                     tableString += "<td>" + StockGrid[i].ProductName + "</td>";
                     tableString += "<td>" + StockGrid[i].Barcode + "</td>";
-                    if ('@LoginuserType' === "shoppe") {
+                    if (showInOut) {
                         tableString += "<td>" + StockGrid[i].StockIn + "</td>";
                         tableString += "<td>" + StockGrid[i].StockOut + "</td>";
                     }
@@ -370,7 +371,7 @@
                 tableString += "<td class=formatText> </td>";
                 tableString += "<td>Totals</td>";
                 tableString += "<td></td>";
-                if ('@LoginuserType' === "shoppe") {
+                if (showInOut) {
                     tableString += "<td>" + TotalStockIn + "</td>";
                     tableString += "<td>" + TotalStockout + "</td>";
                 }
@@ -393,7 +394,7 @@
                 tableString += "<th>Batch No.</th>";
                 tableString += "<th>BarCode</th>";
 
-                if ('@LoginuserType' === "shoppe") {
+                if (showInOut) {
                     tableString += "<th>Stock In</th>";
                     tableString += "<th>Stock Out</th>";
                 }
@@ -418,7 +419,7 @@
                     tableString += "<td>" + StockGrid[i].ProductName + "</td>";
                     tableString += "<td>" + StockGrid[i].BatchNo + "</td>";
                     tableString += "<td>" + StockGrid[i].Barcode + "</td>";
-                    if ('@LoginuserType' === "shoppe") {
+                    if (showInOut) {
                         tableString += "<td>" + StockGrid[i].StockIn + "</td>";
                         tableString += "<td>" + StockGrid[i].StockOut + "</td>";
                     }
@@ -440,7 +441,7 @@
                 tableString += "<td> </td>"; tableString += "<td> </td>";
                 tableString += "<td> </td>";
                 tableString += "<td>Totals</td>";
-                if ('@LoginuserType' === "shoppe") {
+                if (showInOut) {
                     tableString += "<td>" + TotalStockIn + "</td>";
                     tableString += "<td>" + TotalStockout + "</td>";
                 }
@@ -677,10 +678,8 @@
 
         }
 
-        var dispayInOut = true;
-        if ('@LoginuserType' === "shoppe") {
-            var dispayInOut = false;
-        }
+        // Stock In / Stock Out sab users ko dikhana hai
+        var dispayInOut = false;
 
         console.log("IsBatch", IsBatch);
         if (IsBatch == false) {
@@ -715,20 +714,7 @@
                     }
                 },
                 dataBound: function (e, records, totalRecords) {
-
-
-                    if ('@LoginuserType' === "shoppe") {
-                        $("#totalstockIn").html(TotalStockIn);
-                        $("#totalstockOut").html(TotalStockout);
-                    }
-                    $("#totalstockBalance").html(TotalStockbalance);
-                    $("#totalstockRCPValue").html(NetTotal);
-                    $("#totalbv").html(TotatalBV);
-                    $("#totalpv").html(TotalPV.toFixed(2));
-                    $("#totalmrp").html(TotalValueMRP);
-                    $("#totalPURate").html(TotalPurate);
-                    $("#totalMP").html(TotalMRP);
-
+                    ShowStockTotals();
                 }
             });
 
@@ -768,17 +754,7 @@
                     }
                 },
                 dataBound: function (e, records, totalRecords) {
-                    if ('@LoginuserType' === "shoppe") {
-                        $("#totalstockIn").html(TotalStockIn);
-                        $("#totalstockOut").html(TotalStockout);
-                    }
-                    $("#totalstockBalance").html(TotalStockbalance);
-                    $("#totalstockRCPValue").html(NetTotal);
-                    $("#totalbv").html(TotatalBV);
-                    $("#totalpv").html(TotalPV.toFixed(2));
-                    $("#totalmrp").html(TotalValueMRP);
-                    $("#totalPURate").html(TotalPurate);
-                    $("#totalMP").html(TotalMRP);
+                    ShowStockTotals();
                 }
             });
 
@@ -786,6 +762,18 @@
         }
 
         $(".loader").hide();
+    }
+
+    // Footer me sirf Stock In, Stock Out aur DP Value ka total
+    function ShowStockTotals() {
+        $("#totalstockIn").html(TotalStockIn);
+        $("#totalstockOut").html(TotalStockout);
+        $("#totalstockDPValue").html(NetTotal.toFixed(2));
+    }
+
+    function ToNumber(value) {
+        var n = parseFloat(value);
+        return isNaN(n) ? 0 : n;
     }
 
     function GetStockDetails(CategoryCode, ProductCode, PartyCode, IsBatchWise, StockType) {
@@ -855,10 +843,10 @@
                             "OpeningStock": objResult[i].openingStock,"PV": objResult[i].pv, "BV": objResult[i].bv  });
                         }
                         debugger;
-                        TotalStockIn += parseFloat(objResult[i].inStock);
-                        TotalStockout += parseFloat(objResult[i].outStock);
+                        TotalStockIn += ToNumber(objResult[i].inStock);
+                        TotalStockout += ToNumber(objResult[i].outStock);
                         TotalStockbalance += parseFloat(objResult[i].qty);
-                        NetTotal += parseFloat(objResult[i].dpStockValue);
+                        NetTotal += ToNumber(objResult[i].dpStockValue);
                         TotatalBV += parseFloat(objResult[i].bv);
                         TotalPV += parseFloat(objResult[i].pv);
                         TotalValueMRP += parseFloat(objResult[i].mrpsTockValue);
@@ -970,13 +958,8 @@
             <div class="card-footer">
                 <ul class="list-group list-group-horizontal fa-pull-right">
                     <li class="list-group-item">Total Stock In : <span id="totalstockIn">0</span></li>
-                    <li class="list-group-item">Total Stock out :  <span id="totalstockOut">0</span></li>
-                    <li class="list-group-item">Total PU.Rate :  <span id="totalPURate">0</span></li>
-                    <li class="list-group-item">Total MRP :  <span id="totalMP">0</span></li>
-                    <li class="list-group-item">Total S.P.  :  <span id="totalbv">0</span></li>
-                    <li class="list-group-item" style="display:none;">Total PV  :  <span id="totalpv">0</span></li>
-                    <li class="list-group-item">Total Stock Balance : <span id="totalstockBalance">0</span></li>
-                    <li class="list-group-item">Total RCP Value : <span id="totalstockRCPValue">0</span></li>
+                    <li class="list-group-item">Total Stock Out :  <span id="totalstockOut">0</span></li>
+                    <li class="list-group-item">Total DP Value : <span id="totalstockDPValue">0</span></li>
                 </ul>
             </div>
         </div>
