@@ -529,6 +529,17 @@ namespace VitaFlow.Infrastructure.Repository
                         }
                     }
 
+                    // Current stock SP sale ka stock out nahi ginta (Out 0 aur balance = In aata hai),
+                    // jabki Date Wise Stock ka "StockDetail" SP sahi In/Out/Closing deta hai.
+                    // Isliye shuru se aaj tak ka StockDetail le kar product-wise In/Out/Balance yahan bharte hain.
+                    if (!string.IsNullOrWhiteSpace(PartyCode) && PartyCode != "0" && PartyCode.ToUpper() != "ALL")
+                    {
+                        var movement = (await connection.QueryAsync<StockReportModel>("StockDetail",
+                            new { PartyCode = PartyCode, FromDate = new DateTime(2000, 1, 1), ToDate = DateTime.Now },
+                            commandType: CommandType.StoredProcedure)).ToList();
+                        ApplyStockMovement(objStockModel, movement);
+                    }
+
                 }
             }
             catch (Exception ex)
@@ -536,6 +547,54 @@ namespace VitaFlow.Infrastructure.Repository
 
             }
             return objStockModel;
+        }
+
+        /// <summary>
+        /// StockDetail (date-wise) ke product-wise In/Out/Closing ko current stock rows par lagata hai.
+        /// Batch-wise me ek product ke kai batch ho sakte hain aur out batch-wise nahi milta,
+        /// isliye sirf un products par lagta hai jinki report me ek hi row hai.
+        /// </summary>
+        private static void ApplyStockMovement(List<StockReportModel> rows, List<StockReportModel> movement)
+        {
+            if (rows == null || movement == null || movement.Count == 0) { return; }
+
+            var byProduct = movement
+                .Where(m => !string.IsNullOrWhiteSpace(m.ProductCode))
+                .GroupBy(m => m.ProductCode.Trim())
+                .ToDictionary(g => g.Key, g => new
+                {
+                    In = g.Sum(m => m.OpStock + m.InStock),
+                    Out = g.Sum(m => m.StockOut),
+                    Cls = g.Sum(m => m.ClsStock)
+                });
+
+            var rowCount = rows
+                .Where(r => !string.IsNullOrWhiteSpace(r.ProductCode))
+                .GroupBy(r => r.ProductCode.Trim())
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            foreach (var row in rows)
+            {
+                if (string.IsNullOrWhiteSpace(row.ProductCode)) { continue; }
+                string code = row.ProductCode.Trim();
+                if (!byProduct.ContainsKey(code) || rowCount[code] != 1) { continue; }
+
+                var m = byProduct[code];
+                row.InStock = m.In;
+                row.StockOut = m.Out;
+                row.OutStock = m.Out;
+                row.Qty = m.Cls.ToString("0.00", CultureInfo.InvariantCulture);
+
+                decimal dp, mrp;
+                if (decimal.TryParse(row.RateOrDP, NumberStyles.Any, CultureInfo.InvariantCulture, out dp))
+                {
+                    row.DPStockValue = (m.Cls * dp).ToString("0.00", CultureInfo.InvariantCulture);
+                }
+                if (decimal.TryParse(row.MRP, NumberStyles.Any, CultureInfo.InvariantCulture, out mrp))
+                {
+                    row.MRPSTockValue = (m.Cls * mrp).ToString("0.00", CultureInfo.InvariantCulture);
+                }
+            }
         }
 
         public async Task<List<StockReportModel>> GetDateWiseStockReport(string CategoryCode, string ProductCode, string PartyCode, string FromDate, string ToDate)
