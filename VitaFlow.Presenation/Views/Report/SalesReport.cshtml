@@ -276,7 +276,7 @@
                                     "Name": objResult[i].custName, "Amount": parseInt(objResult[i].amount), "TaxAmount": parseInt(TaxAmount),
                                     "IGSTAmount": parseInt(objResult[i].igstAmount), "CGSTAmount": parseInt(objResult[i].cgstAmount),
                                     "SGSTAmount": parseInt(objResult[i].sgstAmount), "NetAmount": parseInt(objResult[i].netAmount),
-                                    "InvoiceType": objResult[i].billType, "InvType": objResult[i].invoiceType, "PV": objResult[i].pvValue });
+                                    "InvoiceType": objResult[i].billType, "InvType": InvoiceTypeName(objResult[i].billType, objResult[i].invoiceType), "PV": objResult[i].pvValue });
                                 }
                             }
                             fillGrid();

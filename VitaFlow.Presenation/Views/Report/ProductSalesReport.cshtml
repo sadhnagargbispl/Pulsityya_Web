@@ -331,7 +331,7 @@
                                          var myDate = FormatReportDate(objResult[i].billDate);
                                          // SP alag-alag naam se column de sakta hai, is liye fallback rakhe hain
                                          var billNoVal = FirstNonEmpty(objResult[i].billNo, objResult[i].userBillNo, objResult[i].internalBillNo);
-                                         var billTypeVal = FirstNonEmpty(objResult[i].billType, objResult[i].invoiceType, objResult[i].fType);
+                                         var billTypeVal = InvoiceTypeName(objResult[i].billType, objResult[i].invoiceType, objResult[i].fType);
                                          var InvoicePath = '@Url.Action("InvoicePrint", "Transaction", new { Pm = "-1" })';
                                          if (billNoVal !== "") {
                                              InvoicePath = InvoicePath.replace("-1", window.btoa(billNoVal));
