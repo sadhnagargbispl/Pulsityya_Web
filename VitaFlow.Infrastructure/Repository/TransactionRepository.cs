@@ -151,6 +151,7 @@ namespace VitaFlow.Infrastructure.Repository
                                                 r.OrderBy AS PartyCode,
                                                 ISNULL(l.PartyName, ISNULL(r.PartyName, r.OrderBy)) AS PartyName,
                                                 r.OrderDate,
+replace(convert(varchar,r.OrderDate,106),' ','-') as 	OrderDateStr,
                                                 r.OrderAmount AS OrderAmt,
                                                 ISNULL(CAST(r.chNo AS VARCHAR), '0') AS ChNo,
                                                 ISNULL(r.ChDate, GETDATE()) AS ChDate,

@@ -92,7 +92,7 @@ namespace VitaFlow.Presenation.Controllers
 
             try
             {
-                summary.StockValue = await iReport.GetDashboardStockValue();
+                summary.StockValue = await iReport.GetDashboardStockValue(FCode);
             }
             catch
             {

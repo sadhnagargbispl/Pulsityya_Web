@@ -847,26 +847,39 @@ namespace VitaFlow.Infrastructure.Repository
         /// <summary>
         /// Dashboard ka Stock Value - V#WRDashboardSummary view ka StockVal column.
         /// </summary>
-        public async Task<decimal> GetDashboardStockValue()
+        public async Task<decimal> GetDashboardStockValue(string PartyCode)
         {
-            decimal stockValue = 0;
             try
             {
                 using (var connection = _context.CreateLiveconnInv())
                 {
-                    var sql = @"Select ColmValue FROM( SELECT ColumnName, ColmValue FROM V#WRDashboardSummary
-                                UNPIVOT(ColmValue FOR ColumnName IN(StockVal)) unpvt) a,
-                                DashboardSummaryColumn b WHERE a.ColumnName = b.FldName ORDER BY b.AID";
-                    stockValue = (await connection.QueryAsync<decimal?>(sql, commandType: CommandType.Text)).FirstOrDefault() ?? 0;
+                    var sql = @"
+                SELECT 
+                    CAST(
+                        ISNULL(SUM(
+                            ISNULL(a.Qty, 0) * ISNULL(b.DP, 0)
+                        ), 0) 
+                    AS NUMERIC(18,2)) AS StockValue
+                FROM IM_CurrentStock a
+                INNER JOIN M_ProductMaster b 
+                    ON a.ProdID = b.ProdID
+                WHERE a.FCode = @PartyCode;";
+
+                    var stockValue = await connection.QueryFirstOrDefaultAsync<decimal>(
+                        sql,
+                        new { PartyCode },
+                        commandType: CommandType.Text
+                    );
+
+                    return stockValue;
                 }
             }
             catch (Exception ex)
             {
-
+                // Log exception here
+                return 0;
             }
-            return stockValue;
         }
-
         public async Task<List<StockReportModel>> GetStockReceiptReport(string CategoryCode, string ProductCode, string PartyCode, string StateCode, string FromDate, string ToDate, string LoginPartyCode, string isSummary)
         {
             List<StockReportModel> objStockModel = new List<StockReportModel>();
