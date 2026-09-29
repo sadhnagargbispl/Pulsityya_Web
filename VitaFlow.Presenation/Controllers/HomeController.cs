@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Globalization;
@@ -26,7 +26,15 @@ namespace VitaFlow.Presenation.Controllers
             {
                 User obj = new User();
                 string FCode = HttpContext.Session.GetString("FCode");
-                obj.dashboardSummary = await BuildDashboardSummary(FCode);
+                string PartyCode = HttpContext.Session.GetString("PartyCode");
+                try
+                {
+                    obj.dashboardSummary = await iReport.GetDashboardSummary(PartyCode, FCode);
+                }
+                catch
+                {
+                    obj.dashboardSummary = new DashboardSummary();
+                }
                 return View(obj);
             }
             else
@@ -35,103 +43,6 @@ namespace VitaFlow.Presenation.Controllers
             }
         }
 
-        /// <summary>
-        /// Dashboard ke 4 tiles: Today Sale / Total Sale / Today Purchase / Total Purchase.
-        /// Dono list ek hi baar "All" range me li jaati hain aur aaj ka figure yahin filter hota hai,
-        /// taaki SP ko single-day range dene par time-component ki wajah se record miss na ho.
-        /// </summary>
-        private async Task<DashboardSummary> BuildDashboardSummary(string FCode)
-        {
-            var summary = new DashboardSummary();
-            var today = DateTime.Today;
-
-            try
-            {
-                var sales = await iReport.GetSalesReport("All", "All", "", "", "", FCode, "S", "", "", "", "", "", "");
-                if (sales != null)
-                {
-                    foreach (var bill in sales)
-                    {
-                        decimal amount = ParseAmount(bill.NetAmount);
-                        if (amount == 0) { amount = ParseAmount(bill.Amount); }
-
-                        summary.TotalSale += amount;
-                        if (bill.BillDate.HasValue && bill.BillDate.Value.Date == today)
-                        {
-                            summary.TodaySale += amount;
-                        }
-                    }
-                }
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                // isSummary "I" = invoice wise, yaani ek row per purchase bill
-                var purchases = await iReport.GetStockReceiptReport("0", "0", FCode, "0", "All", "All", FCode, "I");
-                if (purchases != null)
-                {
-                    foreach (var stn in purchases)
-                    {
-                        decimal amount = ParseAmount(stn.TotalAmt);
-
-                        summary.TotalPurchase += amount;
-                        DateTime? stnDate = ParseReportDate(stn.StrDate, stn.StockDate);
-                        if (stnDate.HasValue && stnDate.Value.Date == today)
-                        {
-                            summary.TodayPurchase += amount;
-                        }
-                    }
-                }
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                summary.StockValue = await iReport.GetDashboardStockValue(FCode);
-            }
-            catch
-            {
-            }
-
-            return summary;
-        }
-
-        private static decimal ParseAmount(string value)
-        {
-            decimal parsed;
-            if (!string.IsNullOrWhiteSpace(value) &&
-                decimal.TryParse(value.Replace(",", "").Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out parsed))
-            {
-                return parsed;
-            }
-            return 0;
-        }
-
-        /// <summary>
-        /// Stock transaction SP date ko string me deta hai, isliye common formats try karte hain.
-        /// </summary>
-        private static DateTime? ParseReportDate(string dateText, DateTime fallback)
-        {
-            if (!string.IsNullOrWhiteSpace(dateText))
-            {
-                string[] formats = { "dd/MM/yyyy", "dd-MM-yyyy", "dd MMM yyyy", "dd-MMM-yyyy", "yyyy-MM-dd", "dd/MM/yyyy HH:mm:ss", "dd-MM-yyyy HH:mm:ss" };
-                DateTime parsed;
-                if (DateTime.TryParseExact(dateText.Trim(), formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsed))
-                {
-                    return parsed;
-                }
-                if (DateTime.TryParse(dateText.Trim(), CultureInfo.GetCultureInfo("en-GB"), DateTimeStyles.None, out parsed))
-                {
-                    return parsed;
-                }
-            }
-            return fallback == default(DateTime) ? (DateTime?)null : fallback;
-        }
         public async Task<IActionResult> GetWalletBalance()
         {
             string WalletBalance = "0";

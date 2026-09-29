@@ -39,5 +39,6 @@ namespace VitaFlow.Domain.Interface
         Task<List<MPerformanceInc>> GetPerformanceInc(string Partycode,string Action,int SessID);
         Task<M_IncentiveStatement> GetIncentiveStatement(string Partycode, string StatementPeriod);
         Task<decimal> GetDashboardStockValue(string Partycode);
+        Task<DashboardSummary> GetDashboardSummary(string PartyCode, string FCode);
     }
 }

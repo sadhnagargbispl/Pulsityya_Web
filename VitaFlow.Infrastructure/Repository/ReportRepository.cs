@@ -880,6 +880,83 @@ namespace VitaFlow.Infrastructure.Repository
                 return 0;
             }
         }
+        /// <summary>
+        /// Dashboard: Sale / Purchase (aaj + total) aur Stock, Product Master ke Imported column se
+        /// Activation (J) / Repurchase (R) me bata hua. Sale = TrnBillData jahan SoldBy yeh party hai,
+        /// Purchase = TrnBillData jahan FCode (buyer) yeh party hai. Amount = NetAmount (tax ke bina) + TaxAmount.
+        /// Stock = Im_CurrentStock Qty x DP.
+        /// </summary>
+        public async Task<DashboardSummary> GetDashboardSummary(string PartyCode, string FCode)
+        {
+            var summary = new DashboardSummary();
+            var codes = new { PartyCode = PartyCode ?? "", FCode = string.IsNullOrWhiteSpace(FCode) ? (PartyCode ?? "") : FCode };
+
+            using (var connection = _context.CreateLiveconnInv())
+            {
+                string billSql = @"
+                    SELECT ISNULL(p.Imported, '') AS ProductFor,
+                           CAST(SUM(CASE WHEN CAST(t.BillDate AS DATE) = CAST(GETDATE() AS DATE)
+                                         THEN ISNULL(t.NetAmount, 0) + ISNULL(t.TaxAmount, 0) ELSE 0 END) AS NUMERIC(18,2)) AS TodayAmt,
+                           CAST(SUM(ISNULL(t.NetAmount, 0) + ISNULL(t.TaxAmount, 0)) AS NUMERIC(18,2)) AS TotalAmt
+                    FROM TrnBillData t
+                    LEFT JOIN M_ProductMaster p ON p.ProdId = t.ProductId
+                    WHERE t.ActiveStatus = 'Y' AND {0} IN (@PartyCode, @FCode)
+                    GROUP BY ISNULL(p.Imported, '');";
+
+                try
+                {
+                    var sales = await connection.QueryAsync<DashboardAmountRow>(string.Format(billSql, "t.SoldBy"), codes);
+                    foreach (var r in sales)
+                    {
+                        summary.TodaySale.Add(r.ProductFor, r.TodayAmt);
+                        summary.TotalSale.Add(r.ProductFor, r.TotalAmt);
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+
+                try
+                {
+                    var purchases = await connection.QueryAsync<DashboardAmountRow>(string.Format(billSql, "t.FCode"), codes);
+                    foreach (var r in purchases)
+                    {
+                        summary.TodayPurchase.Add(r.ProductFor, r.TodayAmt);
+                        summary.TotalPurchase.Add(r.ProductFor, r.TotalAmt);
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+
+                try
+                {
+                    var stock = await connection.QueryAsync<DashboardAmountRow>(@"
+                        SELECT ISNULL(b.Imported, '') AS ProductFor,
+                               CAST(SUM(ISNULL(a.Qty, 0) * ISNULL(b.DP, 0)) AS NUMERIC(18,2)) AS TotalAmt
+                        FROM Im_CurrentStock a
+                        INNER JOIN M_ProductMaster b ON a.ProdId = b.ProdId
+                        WHERE a.FCode IN (@PartyCode, @FCode)
+                        GROUP BY ISNULL(b.Imported, '');", codes);
+                    foreach (var r in stock)
+                    {
+                        summary.Stock.Add(r.ProductFor, r.TotalAmt);
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return summary;
+        }
+
+        private class DashboardAmountRow
+        {
+            public string ProductFor { get; set; }
+            public decimal TodayAmt { get; set; }
+            public decimal TotalAmt { get; set; }
+        }
+
         public async Task<List<StockReportModel>> GetStockReceiptReport(string CategoryCode, string ProductCode, string PartyCode, string StateCode, string FromDate, string ToDate, string LoginPartyCode, string isSummary)
         {
             List<StockReportModel> objStockModel = new List<StockReportModel>();

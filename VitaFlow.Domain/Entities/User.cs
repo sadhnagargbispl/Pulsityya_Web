@@ -44,15 +44,34 @@ namespace VitaFlow.Domain.Entities
     }
 
     /// <summary>
-    /// Dashboard par sirf aaj ka aur total ka Sale/Purchase dikhana hai.
+    /// Dashboard: Sale / Purchase (aaj aur total) aur Stock, har ek Activation/Repurchase me bata hua.
     /// </summary>
     public class DashboardSummary
     {
-        public decimal TodaySale { get; set; }
-        public decimal TotalSale { get; set; }
-        public decimal TodayPurchase { get; set; }
-        public decimal TotalPurchase { get; set; }
-        public decimal StockValue { get; set; }
+        public DashboardSplit TodaySale { get; set; } = new DashboardSplit();
+        public DashboardSplit TotalSale { get; set; } = new DashboardSplit();
+        public DashboardSplit TodayPurchase { get; set; } = new DashboardSplit();
+        public DashboardSplit TotalPurchase { get; set; } = new DashboardSplit();
+        public DashboardSplit Stock { get; set; } = new DashboardSplit();
+    }
+
+    /// <summary>
+    /// Product Master ke Imported column se: J = Activation, R = Repurchase, baaki (Both) = Other.
+    /// </summary>
+    public class DashboardSplit
+    {
+        public decimal Activation { get; set; }
+        public decimal Repurchase { get; set; }
+        public decimal Other { get; set; }
+        public decimal Total { get { return Activation + Repurchase + Other; } }
+
+        public void Add(string productFor, decimal amount)
+        {
+            string code = (productFor ?? "").Trim().ToUpper();
+            if (code == "J") { Activation += amount; }
+            else if (code == "R") { Repurchase += amount; }
+            else { Other += amount; }
+        }
     }
     public class FranchiseLimit
     {

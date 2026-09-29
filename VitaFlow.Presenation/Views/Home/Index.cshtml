@@ -148,6 +148,43 @@
     .vf-dashboard .vf-stock-value .vf-stat-icon { background: linear-gradient(135deg, #e84393, #fd79a8); }
     .vf-dashboard .vf-stock-value::before { background: #e84393; }
 
+    /* Activation / Repurchase breakdown */
+    .vf-dashboard .vf-split {
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px dashed #e3e9f4;
+    }
+
+    .vf-dashboard .vf-split-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 13.5px;
+        color: #6b7891;
+        padding: 3px 0;
+    }
+
+        .vf-dashboard .vf-split-row b {
+            color: #1b2740;
+            font-weight: 600;
+        }
+
+    .vf-dashboard .vf-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 8px;
+        vertical-align: middle;
+    }
+
+    .vf-dashboard .vf-dot-act { background: #2e5fe6; }
+    .vf-dashboard .vf-dot-rep { background: #00b8a9; }
+    .vf-dashboard .vf-dot-oth { background: #a0a9ba; }
+
+    /* breakdown ke saath icon upar rahe */
+    .vf-dashboard .vf-stat-card { align-items: flex-start; }
+
     @@media (max-width: 575px) {
         .vf-dashboard .vf-stat-card { padding: 18px; gap: 14px; }
         .vf-dashboard .vf-stat-icon { width: 46px; height: 46px; font-size: 18px; border-radius: 13px; }
@@ -168,73 +205,52 @@
         </div>
     </div>
 
-    <div class="vf-section">
-        <h6 class="vf-section-title">Sale</h6>
-        <div class="row row-sm">
+    @{
+        // Ek card: upar total, neeche Activation / Repurchase (aur Other agar koi "Both" product ho)
+        void SplitCard(string css, string icon, string label, VitaFlow.Domain.Entities.DashboardSplit s)
+        {
+            s = s ?? new VitaFlow.Domain.Entities.DashboardSplit();
             <div class="col-12 col-lg-6">
-                <div class="vf-stat-card vf-sale-today">
-                    <div class="vf-stat-icon"><i class="fa fa-shopping-bag" aria-hidden="true"></i></div>
+                <div class="vf-stat-card @css">
+                    <div class="vf-stat-icon"><i class="fa @icon" aria-hidden="true"></i></div>
                     <div class="vf-stat-body">
-                        <p class="vf-stat-label">Today Sale</p>
-                        <div class="vf-stat-value">&#8377; @vfSummary.TodaySale.ToString("N2")</div>
+                        <p class="vf-stat-label">@label</p>
+                        <div class="vf-stat-value">&#8377; @s.Total.ToString("N2")</div>
+                        <div class="vf-split">
+                            <div class="vf-split-row"><span><i class="vf-dot vf-dot-act"></i>Activation</span><b>&#8377; @s.Activation.ToString("N2")</b></div>
+                            <div class="vf-split-row"><span><i class="vf-dot vf-dot-rep"></i>Repurchase</span><b>&#8377; @s.Repurchase.ToString("N2")</b></div>
+                            @if (s.Other != 0)
+                            {
+                                <div class="vf-split-row"><span><i class="vf-dot vf-dot-oth"></i>Other</span><b>&#8377; @s.Other.ToString("N2")</b></div>
+                            }
+                        </div>
                     </div>
-                    <i class="fa fa-shopping-bag vf-stat-ghost" aria-hidden="true"></i>
+                    <i class="fa @icon vf-stat-ghost" aria-hidden="true"></i>
                 </div>
             </div>
+        }
+    }
 
-            <div class="col-12 col-lg-6">
-                <div class="vf-stat-card vf-sale-total">
-                    <div class="vf-stat-icon"><i class="fa fa-line-chart" aria-hidden="true"></i></div>
-                    <div class="vf-stat-body">
-                        <p class="vf-stat-label">Total Sale</p>
-                        <div class="vf-stat-value">&#8377; @vfSummary.TotalSale.ToString("N2")</div>
-                    </div>
-                    <i class="fa fa-line-chart vf-stat-ghost" aria-hidden="true"></i>
-                </div>
-            </div>
+    <div class="vf-section">
+        <h6 class="vf-section-title">Sale Report</h6>
+        <div class="row row-sm">
+            @{ SplitCard("vf-sale-today", "fa-shopping-bag", "Today", vfSummary.TodaySale); }
+            @{ SplitCard("vf-sale-total", "fa-line-chart", "Total", vfSummary.TotalSale); }
         </div>
     </div>
 
     <div class="vf-section">
-        <h6 class="vf-section-title">Purchase</h6>
+        <h6 class="vf-section-title">Purchase Report</h6>
         <div class="row row-sm">
-            <div class="col-12 col-lg-6">
-                <div class="vf-stat-card vf-buy-today">
-                    <div class="vf-stat-icon"><i class="fa fa-shopping-cart" aria-hidden="true"></i></div>
-                    <div class="vf-stat-body">
-                        <p class="vf-stat-label">Today Purchase</p>
-                        <div class="vf-stat-value">&#8377; @vfSummary.TodayPurchase.ToString("N2")</div>
-                    </div>
-                    <i class="fa fa-shopping-cart vf-stat-ghost" aria-hidden="true"></i>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-6">
-                <div class="vf-stat-card vf-buy-total">
-                    <div class="vf-stat-icon"><i class="fa fa-cubes" aria-hidden="true"></i></div>
-                    <div class="vf-stat-body">
-                        <p class="vf-stat-label">Total Purchase</p>
-                        <div class="vf-stat-value">&#8377; @vfSummary.TotalPurchase.ToString("N2")</div>
-                    </div>
-                    <i class="fa fa-cubes vf-stat-ghost" aria-hidden="true"></i>
-                </div>
-            </div>
+            @{ SplitCard("vf-buy-today", "fa-shopping-cart", "Today", vfSummary.TodayPurchase); }
+            @{ SplitCard("vf-buy-total", "fa-cubes", "Total", vfSummary.TotalPurchase); }
         </div>
     </div>
 
     <div class="vf-section">
-        <h6 class="vf-section-title">Stock</h6>
+        <h6 class="vf-section-title">Stock Report</h6>
         <div class="row row-sm">
-            <div class="col-12 col-lg-6">
-                <div class="vf-stat-card vf-stock-value">
-                    <div class="vf-stat-icon"><i class="fa fa-archive" aria-hidden="true"></i></div>
-                    <div class="vf-stat-body">
-                        <p class="vf-stat-label">Stock Value</p>
-                        <div class="vf-stat-value">&#8377; @vfSummary.StockValue.ToString("N2")</div>
-                    </div>
-                    <i class="fa fa-archive vf-stat-ghost" aria-hidden="true"></i>
-                </div>
-            </div>
+            @{ SplitCard("vf-stock-value", "fa-archive", "Stock Available", vfSummary.Stock); }
         </div>
     </div>
 
