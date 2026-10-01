@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "h/TdHQJbFAA=",
+  "dgSpecHash": "8TLwpIdBeRw=",
   "success": true,
-  "projectFilePath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Application\\VitaFlow.Application.csproj",
+  "projectFilePath": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Application\\VitaFlow.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Dell\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",

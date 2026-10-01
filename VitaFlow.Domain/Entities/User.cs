@@ -31,13 +31,13 @@ namespace VitaFlow.Domain.Entities
         public string StateName { get; set; }
         public string ISApprove { get; set; }
         public string Address1 { get; set; }
-        public string PinCode { get; set; } 
-        public string MobileNo { get; set; }    
-        public string E_MailAdd  { get; set; }
+        public string PinCode { get; set; }
+        public string MobileNo { get; set; }
+        public string E_MailAdd { get; set; }
         public decimal WalletBalance { get; set; }
-        public string GroupPrefix { get; set; } 
+        public string GroupPrefix { get; set; }
         public FranchiseLimit franchiseLimit { get; set; }
-		public List<Product> TopsellingProduct { get; set; }
+        public List<Product> TopsellingProduct { get; set; }
         public List<Product> StockProduct { get; set; }
         public List<clientProduct> TopclientProduct { get; set; }
         public DashboardSummary dashboardSummary { get; set; }
@@ -81,5 +81,5 @@ namespace VitaFlow.Domain.Entities
         public decimal BVBalance { get; set; }
 
     }
-  
+
 }

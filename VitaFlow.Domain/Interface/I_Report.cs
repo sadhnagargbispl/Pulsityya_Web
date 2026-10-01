@@ -34,9 +34,9 @@ namespace VitaFlow.Domain.Interface
         Task<List<PartyOrderModel>> GetOrderList(string OrderBy, string OrderTo, string Status);
         Task<List<ProductModel>> GetOrderProduct(string OrderNo, string OrderBy);
         Task<List<FranchiseeCommission>> GetFranchiseeBVCommission(string FromDate, string ToDate, string code, string Billtype);
-        Task<List<MonthWiseIncome>> GetMonthWiseIncome(string Sessid ,string PartyCode);
+        Task<List<MonthWiseIncome>> GetMonthWiseIncome(string Sessid, string PartyCode);
         Task<List<MSessids>> GetSessids();
-        Task<List<MPerformanceInc>> GetPerformanceInc(string Partycode,string Action,int SessID);
+        Task<List<MPerformanceInc>> GetPerformanceInc(string Partycode, string Action, int SessID);
         Task<M_IncentiveStatement> GetIncentiveStatement(string Partycode, string StatementPeriod);
         Task<decimal> GetDashboardStockValue(string Partycode);
         Task<DashboardSummary> GetDashboardSummary(string PartyCode, string FCode);

@@ -137,8 +137,6 @@
                 $("#trPVPurchaseBalanace").hide();
                 $("#trBVPurchaseBalanace").show();
                 $("#PVPurchaseBaladjust").val('0');
-                // Adj. Amount hamesha Net Payable (total) hi hota hai - user ko bharna nahi padta
-                $("#BVPurchaseBaladjust").val($.trim($("#totalamount").val()));
                 loadPurchaseBalance(walletVType,"BVPurchaseBal");
             }
             else if (selectedValue === "PV") {
@@ -280,59 +278,59 @@
             var totalAmount = parseFloat($("#totalamount").val()); // total amount from page
             ordermethod = $("#ordermethod").val();
 
-            // if(ordermethod=="PV")
-            // {
-            //     var PVPurchaseBal=$("#PVPurchaseBal").val();
-            //     if(PVPurchaseBal==0)
-            //     {
-            //        toastr.error("Insufficient balance in PV wallet purchase", 'Error', {
-            //         closeButton: true,
-            //         progressBar: true,
-            //         positionClass: 'toast-top-right',
-            //         timeOut: 5000, // 5 seconds
-            //         extendedTimeOut: 1000 // 1 second longer than timeOut
-            //        });
-            //      return false;
-            //     }
-            //     if(parseFloat(PVPurchaseBal)<parseFloat(totalAmount))
-            //     {
-            //         toastr.error("PV wallet purchase should be greater than or equal total amount", 'Error', {
-            //         closeButton: true,
-            //         progressBar: true,
-            //         positionClass: 'toast-top-right',
-            //         timeOut: 5000, // 5 seconds
-            //         extendedTimeOut: 1000 // 1 second longer than timeOut
-            //        });
-            //        return false;
-            //     }
+            if(ordermethod=="PV")
+            {
+                var PVPurchaseBal=$("#PVPurchaseBal").val();
+                // if(PVPurchaseBal==0)
+                // {
+                //    toastr.error("Insufficient balance in PV wallet purchase", 'Error', {
+                //     closeButton: true,
+                //     progressBar: true,
+                //     positionClass: 'toast-top-right',
+                //     timeOut: 5000, // 5 seconds
+                //     extendedTimeOut: 1000 // 1 second longer than timeOut
+                //    });
+                //  return false;
+                // }
+                // if(parseFloat(PVPurchaseBal)<parseFloat(totalAmount))
+                // {
+                //     toastr.error("PV wallet purchase should be greater than or equal total amount", 'Error', {
+                //     closeButton: true,
+                //     progressBar: true,
+                //     positionClass: 'toast-top-right',
+                //     timeOut: 5000, // 5 seconds
+                //     extendedTimeOut: 1000 // 1 second longer than timeOut
+                //    });
+                //    return false;
+                // }
 
-            //     var PVPurchaseBaladjust=$("#PVPurchaseBaladjust").val();
-            //     if(parseFloat(PVPurchaseBaladjust)<=0)
-            //     {
-            //         toastr.error("Please enter adjust amount", 'Error', {
-            //         closeButton: true,
-            //         progressBar: true,
-            //         positionClass: 'toast-top-right',
-            //         timeOut: 5000, // 5 seconds
-            //         extendedTimeOut: 1000 // 1 second longer than timeOut
-            //        });
-            //        $("#PVPurchaseBaladjust").focus();
-            //        return false;
-            //     }
+                // var PVPurchaseBaladjust=$("#PVPurchaseBaladjust").val();
+                // if(parseFloat(PVPurchaseBaladjust)<=0)
+                // {
+                //     toastr.error("Please enter adjust amount", 'Error', {
+                //     closeButton: true,
+                //     progressBar: true,
+                //     positionClass: 'toast-top-right',
+                //     timeOut: 5000, // 5 seconds
+                //     extendedTimeOut: 1000 // 1 second longer than timeOut
+                //    });
+                //    $("#PVPurchaseBaladjust").focus();
+                //    return false;
+                // }
 
-            //     if(parseFloat(PVPurchaseBaladjust)!=parseFloat(totalAmount))
-            //     {
-            //         toastr.error("Total wallet amount must equal bill amount", 'Error', {
-            //         closeButton: true,
-            //         progressBar: true,
-            //         positionClass: 'toast-top-right',
-            //         timeOut: 5000, // 5 seconds
-            //         extendedTimeOut: 1000 // 1 second longer than timeOut
-            //        });
-            //        $("#PVPurchaseBaladjust").focus();
-            //        return false;
-            //     }
-            // }
+                // if(parseFloat(PVPurchaseBaladjust)!=parseFloat(totalAmount))
+                // {
+                //     toastr.error("Total wallet amount must equal bill amount", 'Error', {
+                //     closeButton: true,
+                //     progressBar: true,
+                //     positionClass: 'toast-top-right',
+                //     timeOut: 5000, // 5 seconds
+                //     extendedTimeOut: 1000 // 1 second longer than timeOut
+                //    });
+                //    $("#PVPurchaseBaladjust").focus();
+                //    return false;
+                // }
+            }
 
             if(ordermethod=="BV")
             {
@@ -340,11 +338,9 @@
                 var BVPurchaseBal=$("#BVPurchaseBal").val();
                 var promobal=$("#promobal").val();
 
-                // Adj. Amount = Net Payable
-                var BVPurchaseBaladjust=parseFloat(totalAmount);
+                var BVPurchaseBaladjust=$("#BVPurchaseBaladjust").val();
                 var promobaladjust=$("#promobaladjust").val();
-                // 5th param promo ka available balance hai (pehle galti se adjust amount ja raha tha)
-                if(validatePayment(BVPurchaseBaladjust,promobaladjust,totalAmount,BVPurchaseBal,promobal)==false)
+                if(validatePayment(BVPurchaseBaladjust,promobaladjust,totalAmount,BVPurchaseBal,promobaladjust)==false)
                 {
                     return false;
                 }
@@ -450,7 +446,7 @@
 
         if (mainWallet > mainBalance) {
             
-            toastr.error("S.P. wallet purchase amount exceeds available main balance.", 'Error', {
+            toastr.error("BV wallet purchase amount exceeds available main balance.", 'Error', {
                     closeButton: true,
                     progressBar: true,
                     positionClass: 'toast-top-right',
@@ -490,7 +486,7 @@
 
         // otherwise invalid
         
-        toastr.error("S.P. wallet purchase wallet is required when promo wallet does not cover full bill.", 'Error', {
+        toastr.error("BV wallet purchase wallet is required when promo wallet does not cover full bill.", 'Error', {
                     closeButton: true,
                     progressBar: true,
                     positionClass: 'toast-top-right',
@@ -946,7 +942,7 @@
                 <input type="hidden" id="ordermethod" value="@Model.OrderMethod" />
 
                 <div class="summary-row" id="ordermethodselectwallet" style="display:none;">
-                    <span>S.P. Wallet Balance</span>
+                    <span>BV Wallet Balance</span>
                     <span><span id="walbal1">0</span></span>
                 </div>
 
@@ -964,7 +960,7 @@
                         </div>
                         <div class="col-md-7 form-group">
                             <label>Adj. Amount</label>
-                            <input type="text" id="PVPurchaseBaladjust" onkeypress="return isNumberKey(event);" value="0" class="form-control" readonly />
+                            <input type="text" id="PVPurchaseBaladjust" onkeypress="return isNumberKey(event);" value="0" class="form-control" />
                         </div>
                     </div>
                 </div>
@@ -978,7 +974,7 @@
                         </div>
                         <div class="col-md-7 form-group">
                             <label>Adj. Amount</label>
-                            <input type="text" id="BVPurchaseBaladjust" onkeypress="return isNumberKey(event);" value="0" class="form-control" readonly />
+                            <input type="text" id="BVPurchaseBaladjust" onkeypress="return isNumberKey(event);" value="0" class="form-control" />
                         </div>
                     </div>
                 </div>

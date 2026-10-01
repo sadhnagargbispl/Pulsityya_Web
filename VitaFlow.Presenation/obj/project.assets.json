@@ -11751,11 +11751,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\VitaFlow.Presenation.csproj",
+      "projectUniqueName": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Presenation\\VitaFlow.Presenation.csproj",
       "projectName": "VitaFlow.Presenation",
-      "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\VitaFlow.Presenation.csproj",
+      "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Presenation\\VitaFlow.Presenation.csproj",
       "packagesPath": "C:\\Users\\Dell\\.nuget\\packages\\",
-      "outputPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\obj\\",
+      "outputPath": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Presenation\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -11778,8 +11778,8 @@
           "framework": "net8.0",
           "targetAlias": "net8.0",
           "projectReferences": {
-            "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Application\\VitaFlow.Application.csproj": {
-              "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Application\\VitaFlow.Application.csproj"
+            "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Application\\VitaFlow.Application.csproj": {
+              "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Application\\VitaFlow.Application.csproj"
             }
           }
         }

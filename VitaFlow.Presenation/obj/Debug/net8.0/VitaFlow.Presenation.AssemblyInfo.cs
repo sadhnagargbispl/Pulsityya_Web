@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VitaFlow.Presenation")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+52e0d4f1b3ac393675b6b07d25d9c000376ee600")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("VitaFlow.Presenation")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VitaFlow.Presenation")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

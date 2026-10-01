@@ -1240,7 +1240,7 @@ namespace VitaFlow.Infrastructure.Repository
                     {
                         @Partycode = Partycode,
                         @Action = Action,
-                        @SessID=SessID
+                        @SessID = SessID
                     };
                     result = (await connection.QueryAsync<MPerformanceInc>(storedProcedureName,
                         values, commandType: CommandType.StoredProcedure)).ToList();
@@ -1278,7 +1278,7 @@ namespace VitaFlow.Infrastructure.Repository
                         "sp_GetTotalPVBVValBySessID",
                         parameters,
                         commandType: CommandType.StoredProcedure
-                    ); 
+                    );
 
 
                     var storedProcedureName = "GEtMonthWiseIncome";

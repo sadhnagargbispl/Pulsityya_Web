@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Globalization;

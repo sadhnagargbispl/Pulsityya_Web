@@ -151,7 +151,6 @@ namespace VitaFlow.Infrastructure.Repository
                                                 r.OrderBy AS PartyCode,
                                                 ISNULL(l.PartyName, ISNULL(r.PartyName, r.OrderBy)) AS PartyName,
                                                 r.OrderDate,
-replace(convert(varchar,r.OrderDate,106),' ','-') as 	OrderDateStr,
                                                 r.OrderAmount AS OrderAmt,
                                                 ISNULL(CAST(r.chNo AS VARCHAR), '0') AS ChNo,
                                                 ISNULL(r.ChDate, GETDATE()) AS ChDate,
@@ -168,21 +167,16 @@ replace(convert(varchar,r.OrderDate,106),' ','-') as 	OrderDateStr,
                                                 LEFT JOIN 
                                                 M_LedgerMaster l ON r.OrderBy = l.PartyCode
                                                 WHERE 
-                                                r.ActiveStatus = 'Y'
-                                                AND (@OrderBy = 'ALL' OR r.OrderBy = @OrderBy)
-                                                AND (@OrderTo = 'ALL' OR r.OrderTo = @OrderTo)
-                                                AND (@Status = 'A' OR r.Status = @Status);";
-                    // Filter SQL me hi lagta hai: pehle C# '==' se hota tha jo case aur trailing
-                    // space (char column) par match fail kar deta tha, aur list khaali aati thi.
-                    var filters = new
-                    {
-                        OrderBy = string.IsNullOrWhiteSpace(OrderBy) ? "ALL" : OrderBy.Trim().ToUpper() == "ALL" ? "ALL" : OrderBy.Trim(),
-                        OrderTo = string.IsNullOrWhiteSpace(OrderTo) ? "ALL" : OrderTo.Trim().ToUpper() == "ALL" ? "ALL" : OrderTo.Trim(),
-                        Status = string.IsNullOrWhiteSpace(Status) ? "A" : Status.Trim().ToUpper()
-                    };
-                    objPartyOrderModel = (await connection.QueryAsync<PartyOrderModel>(storedProcedureName, filters, commandType: CommandType.Text)).ToList();
+                                                r.ActiveStatus = 'Y';";
+                    objPartyOrderModel = (await connection.QueryAsync<PartyOrderModel>(storedProcedureName, commandType: CommandType.Text)).ToList();
 
                 }
+                if (OrderBy.ToUpper() != "ALL")
+                    objPartyOrderModel = objPartyOrderModel.Where(m => m.OrderBy == OrderBy).ToList();
+                if (OrderTo.ToUpper() != "ALL")
+                    objPartyOrderModel = objPartyOrderModel.Where(m => m.OrderTo == OrderTo).ToList();
+                if (Status.ToUpper() != "A")
+                    objPartyOrderModel = objPartyOrderModel.Where(m => m.DispStatus == Status).ToList();
             }
             catch (Exception ex)
             {
@@ -624,22 +618,6 @@ replace(convert(varchar,r.OrderDate,106),' ','-') as 	OrderDateStr,
             }
             return KidIDs;
         }
-        /// <summary>
-        /// Invoice Type (A/T/R) se Product For code nikaalta hai.
-        /// A aur T dono package lene wale bill hain -> "J" (Joining).
-        /// R -> "R" (Repurchase). Kuch aur/blank -> null = koi filter nahi.
-        /// </summary>
-        private static string GetProdForCode(string InvType)
-        {
-            if (string.IsNullOrEmpty(InvType))
-                return null;
-
-            string t = InvType.Trim().ToUpper();
-            if (t == "A" || t == "T") return "J";
-            if (t == "R") return "R";
-            return null;
-        }
-
         public async Task<List<string>> GetAutocompProductsOnly(string FCode, string InvType)
         {
             List<string> objProductNames = new List<string>();
@@ -666,19 +644,20 @@ replace(convert(varchar,r.OrderDate,106),' ','-') as 	OrderDateStr,
                                 and IsCardIssue ='N'
                                 and PType != 'K'";
 
-                    // Product For filter (Product Master ka naya option, M_ProductMaster.Imported):
-                    //   A (Activation) / T (Upgrade) -> Joining wale products
-                    //   R (Repurchase)               -> Repurchase wale products
-                    // Purane products me Imported par 'N'/NULL pada hai -- J/R ke alawa jo bhi ho
-                    // use "Both" maana jata hai, to wo dono me aate rahenge.
-                    // Pehle yahan PV/BV ke hisaab se bantwara hota tha - PV hat gaya, ab ye flag chalta hai.
-                    string prodFor = GetProdForCode(InvType);
-                    if (prodFor != null)
+                    // Invoice Type wise products: PV wale product Activation ke, baaki Repurchase ke
+                    if (!string.IsNullOrEmpty(InvType))
                     {
-                        sql += " and (p.Imported = @ProdFor or ISNULL(p.Imported,'') not in ('J','R'))";
+                        if (InvType.Trim().ToUpper() == "PV")
+                        {
+                            sql += " and ISNULL(p.PV,0) > 0";
+                        }
+                        else if (InvType.Trim().ToUpper() == "BV")
+                        {
+                            sql += " and ISNULL(p.PV,0) = 0";
+                        }
                     }
 
-                    var parameters = new { FCode = FCode, ProdFor = prodFor ?? "B" };
+                    var parameters = new { FCode = FCode };
                     objProductNames = (await connection.QueryAsync<string>(sql, parameters)).ToList();
                 }
             }
@@ -865,45 +844,6 @@ replace(convert(varchar,r.OrderDate,106),' ','-') as 	OrderDateStr,
                                     Ktamt = !String.IsNullOrEmpty(Convert.ToString(resbvval.BVValue)) ? decimal.Parse(Convert.ToString(resbvval.BVValue)) : 0;
                                     objCustomerDetail.MaxBV = Ktamt;
                                 }
-                                /*-------------------------------------------------------------------
-                                  Member ki abhi wali kit, aur kya uske upar aur koi kit bachi hai.
-                                  Isse UI ID daalte hi tay kar leta hai ki Upgrade allowed hai ya nahi -
-                                  Save par jaakar error dikhane ki zaroorat nahi padti.
-                                  Band JoinAmount se tay hota hai, BV column se nahi (BV me chhoti
-                                  values hoti hain jisse hamesha top kit select ho jati thi).
-                                -------------------------------------------------------------------*/
-                                objCustomerDetail.KitName = "";
-                                objCustomerDetail.CanUpgrade = false;
-                                try
-                                {
-                                    var kitQuery = "SELECT TOP 1 ISNULL(K.KitName,'') AS KitName, "
-                                        + " CASE WHEN EXISTS ( SELECT 1 FROM " + db + "..M_KitMaster U "
-                                        + "        WHERE U.TopupSeq > ISNULL(K.TopupSeq,0) "
-                                        + "          AND U.JoinAmount <> 0 AND U.ActiveStatus='Y' AND U.IsBill='N' ) "
-                                        + "      THEN 1 ELSE 0 END AS CanUpgrade "
-                                        + " FROM (SELECT TopupSeq, KitName FROM " + db + "..M_KitMaster WHERE KitID = @KitId "
-                                        + "       UNION ALL SELECT 0, '' ) K ORDER BY K.TopupSeq DESC";
-
-                                    var kitRes = await connection.QueryFirstOrDefaultAsync(kitQuery, new { KitId = objCustomerDetail.KitId });
-                                    if (kitRes != null)
-                                    {
-                                        objCustomerDetail.KitName = Convert.ToString(kitRes.KitName);
-                                        objCustomerDetail.CanUpgrade = Convert.ToInt32(kitRes.CanUpgrade) == 1;
-                                    }
-                                }
-                                catch
-                                {
-                                    // Kit info na mil paaye to UI purane tarike se chalega
-                                    // (Upgrade dikhega, aur Save par trigger rok dega).
-                                    objCustomerDetail.CanUpgrade = true;
-                                }
-
-                                /*-------------------------------------------------------------------
-                                  Invoice Type codes: Activation = A, Upgrade = T, Repurchase = R.
-                                  Format "<Display>,<Code>" - client comma par split karta hai.
-                                  Rule: Activation sirf DEACTIVE id kar sakti hai. Active id ke paas
-                                  Upgrade (agar kit hai aur upgrade allowed hai) aur Repurchase rehta hai.
-                                -------------------------------------------------------------------*/
                                 objCustomerDetail.InvoiceType = new List<string>();
                                 var configquery = "select * from M_ConfigMaster";
                                 var config = await connection.QueryFirstOrDefaultAsync(configquery);
@@ -911,21 +851,26 @@ replace(convert(varchar,r.OrderDate,106),' ','-') as 	OrderDateStr,
                                 {
                                     if (Ktamt > 0)
                                     {
-                                        if (config != null && config.CanIDBeUpgraded == "Y" && objCustomerDetail.CanUpgrade)
+                                        if (config != null)
                                         {
-                                            objCustomerDetail.InvoiceType.Add("Upgrade,T");
+                                            if (config.CanIDBeUpgraded == "Y")
+                                            {
+                                                objCustomerDetail.InvoiceType.Add("Activation Upgrade,B");
+                                            }
                                         }
-                                        objCustomerDetail.InvoiceType.Add("Repurchase,R");
+                                        objCustomerDetail.InvoiceType.Add("Repurchase Bill,R");
                                     }
                                     else
                                     {
                                         objCustomerDetail.MinBillAmt = 0;
-                                        objCustomerDetail.InvoiceType.Add("Repurchase,R");
+                                        objCustomerDetail.InvoiceType.Add("Repurchase Bill,R");
                                     }
                                 }
                                 else
                                 {
-                                    objCustomerDetail.InvoiceType.Add("Activation,A");
+                                    objCustomerDetail.InvoiceType.Add("Activation Purchase,B");
+                                    //if (isoldID == 1)//Added on 18Jun19
+                                    objCustomerDetail.InvoiceType.Add("General Billing,A");//18Jun19
                                 }
                             }
                             else
@@ -1119,9 +1064,7 @@ replace(convert(varchar,r.OrderDate,106),' ','-') as 	OrderDateStr,
                                                  product.IsAvailableforOffers AS IsAvailableForOffer,
                                                  product.IsBillingAllowed AS IsAvailableForBilling,
                                                  product.Weight,
-                                                 COALESCE(product.SJDiscount, 0) AS TotalDiscPer,
-                                                 -- Imported = Product For. J/R ke alawa jo bhi ho wo Both (B)
-                                                 CASE WHEN product.Imported IN ('J','R') THEN product.Imported ELSE 'B' END AS ProductFor
+                                                 COALESCE(product.SJDiscount, 0) AS TotalDiscPer
                                              FROM 
                                                  M_ProductMaster product
                                              JOIN 
@@ -1168,9 +1111,7 @@ replace(convert(varchar,r.OrderDate,106),' ','-') as 	OrderDateStr,
                                                   p.PurchaseRate AS Rate,
                                                   p.ProdCommssn AS CommissionPer,
                                                   p.IsAvailableforOffers AS IsAvailableForOffer,
-                                                  ISNULL(p.SJDiscount, 0) AS TotalDiscPer,
-                                                  -- Imported = Product For. J/R ke alawa jo bhi ho wo Both (B)
-                                                  CASE WHEN p.Imported IN ('J','R') THEN p.Imported ELSE 'B' END AS ProductFor
+                                                  ISNULL(p.SJDiscount, 0) AS TotalDiscPer
                                                   FROM 
                                                       M_ProductMaster p
                                                       JOIN M_BarCodeMaster b ON p.ProdId = b.ProdId
@@ -1803,24 +1744,6 @@ SELECT
             }
             return objProds;
         }
-        // InnerException chain ke sabse andar wala message (asli SqlException / RAISERROR text),
-        // SQL ka "The transaction ended in the trigger..." wala hissa hata kar.
-        private static string GetRootErrorMessage(Exception ex)
-        {
-            var root = ex;
-            while (root.InnerException != null)
-            {
-                root = root.InnerException;
-            }
-            var msg = (root.Message ?? "").Trim();
-            int cut = msg.IndexOf("The transaction ended in the trigger", StringComparison.OrdinalIgnoreCase);
-            if (cut > 0)
-            {
-                msg = msg.Substring(0, cut).Trim();
-            }
-            return string.IsNullOrEmpty(msg) ? "Something went wrong!" : msg;
-        }
-
         public async Task<ResponseDetail> SaveDistributorBill(DistributorBillModel objModel)
         {
             ResponseDetail objResponse = new ResponseDetail();
@@ -1944,7 +1867,7 @@ SELECT
                     {
                         if (objModel != null)
                         {
-                            if (objModel.SelectedInvoiceType == "T" || objModel.SelectedInvoiceType == "R")
+                            if (objModel.SelectedInvoiceType == "BV")
                             {
                                 if (objModel.objProduct.PayDetails.IsV)
                                 {
@@ -1980,48 +1903,48 @@ SELECT
                                         ////insert entry into couponsalesdetails for wallet
                                         IsWalletEntry = true;
 
-                                        string walletsql = @"
-INSERT INTO TrnVoucher
-(
-    VoucherNo,
-    VoucherDate,
-    DrTo,
-    Crto,
-    Amount,
-    Narration,
-    Refno,
-    VType,
-    BType,
-    AccDocType,
-    SessID,
-    FSessID
-)
-SELECT 
-    ISNULL(MAX(VoucherNo),0)+1,
-    CAST(CONVERT(VARCHAR,GETDATE(),106) AS DATETIME),
-    '',
-    @PartyCode,
-    @Amount,
-    @Narration,
-    @RefNo,
-    'Z',
-    'O',
-    'Party Bill.',
-    @SessId,
-    @FSessId
-FROM TrnVoucher";
+//                                        string walletsql = @"
+//INSERT INTO TrnVoucher
+//(
+//    VoucherNo,
+//    VoucherDate,
+//    DrTo,
+//    Crto,
+//    Amount,
+//    Narration,
+//    Refno,
+//    VType,
+//    BType,
+//    AccDocType,
+//    SessID,
+//    FSessID
+//)
+//SELECT 
+//    ISNULL(MAX(VoucherNo),0)+1,
+//    CAST(CONVERT(VARCHAR,GETDATE(),106) AS DATETIME),
+//    '',
+//    @PartyCode,
+//    @Amount,
+//    @Narration,
+//    @RefNo,
+//    'Z',
+//    'O',
+//    'Party Bill.',
+//    @SessId,
+//    @FSessId
+//FROM TrnVoucher";
 
-                                        var parameters = new
-                                        {
-                                            PartyCode = objModel.objCustomer.UserDetails.PartyCode,
-                                            Amount = objModel.objProduct.PayDetails.AmountByWallet,
-                                            Narration = $"Wallet credit against bill {UserBillNo}.",
-                                            RefNo = billPrefix + "/" + objModel.objCustomer.UserDetails.PartyCode + "/" + maxSbillNo,
-                                            SessId = SessId,
-                                            FSessId = FsessId
-                                        };
+//                                        var parameters = new
+//                                        {
+//                                            PartyCode = objModel.objCustomer.UserDetails.PartyCode,
+//                                            Amount = objModel.objProduct.PayDetails.AmountByWallet,
+//                                            Narration = $"Wallet credit against bill {UserBillNo}.",
+//                                            RefNo = billPrefix + "/" + objModel.objCustomer.UserDetails.PartyCode + "/" + maxSbillNo,
+//                                            SessId = SessId,
+//                                            FSessId = FsessId
+//                                        };
 
-                                        int j= await connection.ExecuteAsync(walletsql, parameters);
+//                                        int j= await connection.ExecuteAsync(walletsql, parameters);
 
                                     }
 
@@ -2081,7 +2004,7 @@ FROM TrnVoucher";
                                     Paymode = (await connection.QueryAsync<string>(query)).ToList();
                                 }
                             }
-                            else if (objModel.SelectedInvoiceType == "A")
+                            else if (objModel.SelectedInvoiceType == "PV")
                             {
                                 if (objModel.objProduct.CashAmount > 0)
                                 {
@@ -2227,21 +2150,13 @@ FROM TrnVoucher";
                                 //    else
                                 //        objDTBillData.BillType = objModel.BillType;
                                 //}
-                                // Invoice Type ab seedha BillType hai: Activation = A, Upgrade = T,
-                                // Repurchase = R. Trigger Inv_Repurch inhi teen codes par kaam karta
-                                // hai (A/T par kit + activation, R par sirf RepurchIncome aur KitID = 0).
-                                // Pehle yahan hardcoded BV/PV ko B/P me badla jata tha.
-                                if (!string.IsNullOrEmpty(objModel.SelectedInvoiceType))
+                                if (objModel.SelectedInvoiceType == "BV")
                                 {
-                                    objDTBillData.BillType = objModel.SelectedInvoiceType;
+                                    objDTBillData.BillType = "B";
                                 }
-                                else if (objModel.objCustomer != null && objModel.objCustomer.IsFirstBill)
+                                else if (objModel.SelectedInvoiceType == "PV")
                                 {
-                                    objDTBillData.BillType = "A";   // Activation
-                                }
-                                else
-                                {
-                                    objDTBillData.BillType = "R";   // Repurchase
+                                    objDTBillData.BillType = "P";
                                 }
                                 if (!string.IsNullOrEmpty(obj.ProductTye))
                                 {
@@ -2409,7 +2324,7 @@ FROM TrnVoucher";
                             if (TrnBillDatasAffected > 0)
                             {
 
-                                if (objModel.SelectedInvoiceType == "T" || objModel.SelectedInvoiceType == "R")
+                                if (objModel.SelectedInvoiceType == "BV")
                                 {
                                     if (objModel.objProduct.PayDetails.IsV)
                                     {
@@ -2435,21 +2350,21 @@ FROM TrnVoucher";
                                         //var fpsql = @"update FPVoucher set Isuse=1,BillNo='" + billno_ + "' where Code='" + objModel.objProduct.PayDetails.FpVoucher + "' and IdNo='" + objModel.objCustomer.IdNo + "'";
                                         //var fpaff = await connection.ExecuteAsync(fpsql); 
                                         narration_ = UserBillNo + " against F.P. Voucher adjust " + (objModel.objProduct.PayDetails.AmountByVoucher);
-                                        int fp = await CreditPartyWallet(billno_, narration_, "", soldby_, (objModel.objProduct.PayDetails.AmountByVoucher), "X"); 
+                                        //int fp = await CreditPartyWallet(billno_, narration_, "", soldby_, (objModel.objProduct.PayDetails.AmountByVoucher), "X"); 
                                     }
                                     if (objModel.objProduct.PayDetails.IsCU)
                                     {
                                         var csql = @"update Coupon set Isuse=1,BillNo='" + billno_ + "' where Code='" + objModel.objProduct.PayDetails.Coupon + "' and IdNo='" + objModel.objCustomer.IdNo + "'";
                                         var caff = await connection.ExecuteAsync(csql);
                                         narration_ = UserBillNo + " against Coupon adjust " + objModel.objProduct.PayDetails.AmountbyCoupon;
-                                        int cp = await CreditPartyWallet(billno_, narration_, "", soldby_, objModel.objProduct.PayDetails.AmountbyCoupon, "R");
+                                        //int cp = await CreditPartyWallet(billno_, narration_, "", soldby_, objModel.objProduct.PayDetails.AmountbyCoupon, "R");
                                     }
                                     //int i = await DeductPartyWallet(billno_, narration_, soldby_, fcode_, netpayable_, objModel.UserType, objModel.SelectedInvoiceType);
                                 }
-                                //else if (objModel.SelectedInvoiceType == "A")
-                                //{
-                                //    int i = await DeductPartyWallet(billno_, narration_, soldby_, fcode_, netpayable_, objModel.UserType, objModel.SelectedInvoiceType);
-                                //}
+                                else if (objModel.SelectedInvoiceType == "PV")
+                                {
+                                   // int i = await DeductPartyWallet(billno_, narration_, soldby_, fcode_, netpayable_, objModel.UserType, objModel.SelectedInvoiceType);
+                                }
 
                                 try
                                 {
@@ -2507,7 +2422,7 @@ FROM TrnVoucher";
                                     string Pvvalue = "0";
                                     string fpamt = "0";
                                     string voucheramt = "0";
-                                    if (objModel.SelectedInvoiceType == "T" || objModel.SelectedInvoiceType == "R")
+                                    if (objModel.SelectedInvoiceType == "BV")
                                     {
                                         decimal totalBV = Convert.ToDecimal(objModel.objProduct.TotalBV);
                                         decimal voucherAmount = Convert.ToDecimal(objModel.objProduct.PayDetails.AmountByVoucher);
@@ -2524,7 +2439,7 @@ FROM TrnVoucher";
                                             Bvvalue = Convert.ToString(totalBV);
                                         }
                                     }
-                                    else if (objModel.SelectedInvoiceType == "A")
+                                    else if (objModel.SelectedInvoiceType == "PV")
                                     {
                                         Pvvalue = Convert.ToString(objModel.objProduct.TotalPV);
                                     }
@@ -2617,9 +2532,7 @@ FROM TrnVoucher";
                         }
                         catch (Exception ex)
                         {
-                            // Trigger Inv_Repurch ke RAISERROR (ID active/deactive, SV kam, top package)
-                            // yahin aate hain - "Something went wrong!" ki jagah asli message dikhao.
-                            objResponse.ResponseMessage = GetRootErrorMessage(ex);
+                            objResponse.ResponseMessage = "Something went wrong!";
                             objResponse.ResponseStatus = "FAILED";
                         }
                     }
@@ -3145,12 +3058,7 @@ FROM TrnVoucher";
 
                                     objDTBillData.Coupon = "";
                                     objDTBillData.CouponAmount = 0;
-                                    // BvValue har row me sirf us line ka SV hota hai, aur TrnBillMain me
-                                    // ek bill ki kai rows jaati hain - trigger ko poore bill ka total SV
-                                    // chahiye (kit band tay karne ke liye). PaidBV kahin use nahi ho raha
-                                    // tha (hamesha 0), isliye usme bill ka total SV bhej rahe hain -
-                                    // NetPayable/TotalQty ki tarah har row par same value.
-                                    objDTBillData.PaidBV = objModel.objProduct.TotalBV;
+                                    objDTBillData.PaidBV = 0;
                                     objDTBillData.IRNNo = "";
                                     objDTBillData.AckNo = "";
                                     objDTBillData.AckDate = DateTime.Now;
@@ -3225,7 +3133,7 @@ FROM TrnVoucher";
                                         netpayable_ = netpayable_- objModel.objProduct.PayDetails.AmountByVoucher;
                                     }
 
-                                   // CreditPartyWallet(billno_, "Wallet Credited against " + UserBillNo + ".", SoldByCode, fcode_, netpayable_, objModel.PartyInvoice);
+                                    //CreditPartyWallet(billno_, "Wallet Credited against " + UserBillNo + ".", SoldByCode, fcode_, netpayable_, objModel.PartyInvoice);
 
                                     var resultPayMode = connection.Query<M_PayModeMaster>(
                                             "SELECT Prefix, PayMode FROM M_PayModeMaster").ToList();
@@ -3366,36 +3274,36 @@ FROM TrnVoucher";
                                     PayPrefix.Add(value);
                                     objDTListPayMode.Add(new TrnPayModeDetail { BillAmt = objModel.objProduct.TotalNetPayable, SoldBy = objModel.objCustomer.UserDetails.PartyCode, BillDate = BillDate.Date, BillType = "G", BillNo = billPrefix + "/" + objModel.objCustomer.UserDetails.PartyCode + "/" + maxSbillNo, PayPrefix = value, Amount = objModel.objProduct.PayDetails.AmountByVoucher, CardNo = "", AcNo = "", IFSCode = "", BankCode = 0, DUserId = 0, DRecTimeStamp = null, ChqDDDate = null, ChqDDNo = "", Narration = "", BankName = "", ActiveStatus = "Y", RecTimeStamp = DateTime.Now, UserId = objModel.objCustomer.UserDetails.UserId, Version = version, UserName = objModel.objCustomer.UserDetails.UserName, FSessId = FsessId ?? 0, SBillNo = maxSbillNo });
                                 }
-                                if (objModel.objProduct.PayDetails.IsW)
-                                {
-                                    if (WalletBalance >= objModel.objProduct.PayDetails.AmountByWallet)
-                                    {
-                                        var query = "INSERT INTO TrnVoucher(VoucherNo,VoucherDate,DrTo,Crto,Amount,Narration,Refno,AcType,VType,SessID,WSEssID) " +
-                                                       "Select CASE WHEN Max(VoucherNo) is NULL THEN 1 ELSE Max(VoucherNo)+1 END ,Cast(Convert(varchar,Getdate(),106) as Datetime),'" + objModel.objCustomer.FormNo + "','0','" + objModel.objProduct.PayDetails.AmountByWallet + "','Product purchased Against " + UserBillNo + ".','" + billPrefix + "/" + objModel.objCustomer.UserDetails.PartyCode + "/" + maxSbillNo + "','R','D','" + SessId + "','" + SessId + "' FROM TrnVoucher";
-                                        var wallaffect = await connection.ExecuteAsync(query);
-                                        if (wallaffect > 0)
-                                        {
-                                            EnumPayModes.PayModes enumVar = EnumPayModes.PayModes.Wallet;
-                                            string value = EnumPayModes.GetEnumDescription(enumVar);
-                                            PayPrefix.Add(value);
-                                            objDTListPayMode.Add(new TrnPayModeDetail { BillAmt = objModel.objProduct.TotalNetPayable, SoldBy = objModel.objCustomer.UserDetails.PartyCode, BillDate = BillDate.Date, BillType = "G", BillNo = billPrefix + "/" + objModel.objCustomer.UserDetails.PartyCode + "/" + maxSbillNo, PayPrefix = value, Amount = objModel.objProduct.PayDetails.AmountByWallet, BankCode = 0, BankName = "", AcNo = "", IFSCode = "", Narration = "", DUserId = 0, DRecTimeStamp = null, ChqDDNo = "", ChqDDDate = null, CardNo = objModel.objCustomer.CardNo, ActiveStatus = "Y", RecTimeStamp = DateTime.Now, UserId = objModel.objCustomer.UserDetails.UserId, Version = version, UserName = objModel.objCustomer.UserDetails.UserName, FSessId = FsessId ?? 0, SBillNo = maxSbillNo });
-                                            ////insert entry into couponsalesdetails for wallet
-                                            IsWalletEntry = true;
-                                        }
-                                        else
-                                        {
-                                            objResponse.ResponseStatus = "FAILED";
-                                            objResponse.ResponseMessage = "Something went wrong";
-                                            return objResponse;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        objResponse.ResponseStatus = "FAILED";
-                                        objResponse.ResponseMessage = "Sorry!Insufficient Wallet Balance.";
-                                        return objResponse;
-                                    }
-                                }
+                                //if (objModel.objProduct.PayDetails.IsW)
+                                //{
+                                //    if (WalletBalance >= objModel.objProduct.PayDetails.AmountByWallet)
+                                //    {
+                                //        var query = "INSERT INTO TrnVoucher(VoucherNo,VoucherDate,DrTo,Crto,Amount,Narration,Refno,AcType,VType,SessID,WSEssID) " +
+                                //                       "Select CASE WHEN Max(VoucherNo) is NULL THEN 1 ELSE Max(VoucherNo)+1 END ,Cast(Convert(varchar,Getdate(),106) as Datetime),'" + objModel.objCustomer.FormNo + "','0','" + objModel.objProduct.PayDetails.AmountByWallet + "','Product purchased Against " + UserBillNo + ".','" + billPrefix + "/" + objModel.objCustomer.UserDetails.PartyCode + "/" + maxSbillNo + "','R','D','" + SessId + "','" + SessId + "' FROM TrnVoucher";
+                                //        var wallaffect = await connection.ExecuteAsync(query);
+                                //        if (wallaffect > 0)
+                                //        {
+                                //            EnumPayModes.PayModes enumVar = EnumPayModes.PayModes.Wallet;
+                                //            string value = EnumPayModes.GetEnumDescription(enumVar);
+                                //            PayPrefix.Add(value);
+                                //            objDTListPayMode.Add(new TrnPayModeDetail { BillAmt = objModel.objProduct.TotalNetPayable, SoldBy = objModel.objCustomer.UserDetails.PartyCode, BillDate = BillDate.Date, BillType = "G", BillNo = billPrefix + "/" + objModel.objCustomer.UserDetails.PartyCode + "/" + maxSbillNo, PayPrefix = value, Amount = objModel.objProduct.PayDetails.AmountByWallet, BankCode = 0, BankName = "", AcNo = "", IFSCode = "", Narration = "", DUserId = 0, DRecTimeStamp = null, ChqDDNo = "", ChqDDDate = null, CardNo = objModel.objCustomer.CardNo, ActiveStatus = "Y", RecTimeStamp = DateTime.Now, UserId = objModel.objCustomer.UserDetails.UserId, Version = version, UserName = objModel.objCustomer.UserDetails.UserName, FSessId = FsessId ?? 0, SBillNo = maxSbillNo });
+                                //            ////insert entry into couponsalesdetails for wallet
+                                //            IsWalletEntry = true;
+                                //        }
+                                //        else
+                                //        {
+                                //            objResponse.ResponseStatus = "FAILED";
+                                //            objResponse.ResponseMessage = "Something went wrong";
+                                //            return objResponse;
+                                //        }
+                                //    }
+                                //    else
+                                //    {
+                                //        objResponse.ResponseStatus = "FAILED";
+                                //        objResponse.ResponseMessage = "Sorry!Insufficient Wallet Balance.";
+                                //        return objResponse;
+                                //    }
+                                //}
                                 if (objModel.objProduct.PayDetails.IsP)
                                 {
                                     EnumPayModes.PayModes enumVar = EnumPayModes.PayModes.Paytm;
@@ -3795,7 +3703,7 @@ FROM TrnVoucher";
             }
             catch (Exception ex)
             {
-                objResponse.ResponseMessage = GetRootErrorMessage(ex);
+                objResponse.ResponseMessage = "Something went wrong!";
                 objResponse.ResponseStatus = "FAILED";
             }
             return objResponse;

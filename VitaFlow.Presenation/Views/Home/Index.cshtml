@@ -137,16 +137,45 @@
         pointer-events: none;
     }
 
-    .vf-dashboard .vf-sale-today .vf-stat-icon { background: linear-gradient(135deg, #2e5fe6, #5b8cff); }
-    .vf-dashboard .vf-sale-today::before { background: #2e5fe6; }
-    .vf-dashboard .vf-sale-total .vf-stat-icon { background: linear-gradient(135deg, #00a389, #00b8a9); }
-    .vf-dashboard .vf-sale-total::before { background: #00b8a9; }
-    .vf-dashboard .vf-buy-today .vf-stat-icon { background: linear-gradient(135deg, #f0932b, #f6b93b); }
-    .vf-dashboard .vf-buy-today::before { background: #f0932b; }
-    .vf-dashboard .vf-buy-total .vf-stat-icon { background: linear-gradient(135deg, #6c5ce7, #a55eea); }
-    .vf-dashboard .vf-buy-total::before { background: #6c5ce7; }
-    .vf-dashboard .vf-stock-value .vf-stat-icon { background: linear-gradient(135deg, #e84393, #fd79a8); }
-    .vf-dashboard .vf-stock-value::before { background: #e84393; }
+    .vf-dashboard .vf-sale-today .vf-stat-icon {
+        background: linear-gradient(135deg, #2e5fe6, #5b8cff);
+    }
+
+    .vf-dashboard .vf-sale-today::before {
+        background: #2e5fe6;
+    }
+
+    .vf-dashboard .vf-sale-total .vf-stat-icon {
+        background: linear-gradient(135deg, #00a389, #00b8a9);
+    }
+
+    .vf-dashboard .vf-sale-total::before {
+        background: #00b8a9;
+    }
+
+    .vf-dashboard .vf-buy-today .vf-stat-icon {
+        background: linear-gradient(135deg, #f0932b, #f6b93b);
+    }
+
+    .vf-dashboard .vf-buy-today::before {
+        background: #f0932b;
+    }
+
+    .vf-dashboard .vf-buy-total .vf-stat-icon {
+        background: linear-gradient(135deg, #6c5ce7, #a55eea);
+    }
+
+    .vf-dashboard .vf-buy-total::before {
+        background: #6c5ce7;
+    }
+
+    .vf-dashboard .vf-stock-value .vf-stat-icon {
+        background: linear-gradient(135deg, #e84393, #fd79a8);
+    }
+
+    .vf-dashboard .vf-stock-value::before {
+        background: #e84393;
+    }
 
     /* Activation / Repurchase breakdown */
     .vf-dashboard .vf-split {
@@ -178,18 +207,43 @@
         vertical-align: middle;
     }
 
-    .vf-dashboard .vf-dot-act { background: #2e5fe6; }
-    .vf-dashboard .vf-dot-rep { background: #00b8a9; }
-    .vf-dashboard .vf-dot-oth { background: #a0a9ba; }
+    .vf-dashboard .vf-dot-act {
+        background: #2e5fe6;
+    }
+
+    .vf-dashboard .vf-dot-rep {
+        background: #00b8a9;
+    }
+
+    .vf-dashboard .vf-dot-oth {
+        background: #a0a9ba;
+    }
 
     /* breakdown ke saath icon upar rahe */
-    .vf-dashboard .vf-stat-card { align-items: flex-start; }
+    .vf-dashboard .vf-stat-card {
+        align-items: flex-start;
+    }
 
     @@media (max-width: 575px) {
-        .vf-dashboard .vf-stat-card { padding: 18px; gap: 14px; }
-        .vf-dashboard .vf-stat-icon { width: 46px; height: 46px; font-size: 18px; border-radius: 13px; }
-        .vf-dashboard .vf-stat-value { font-size: 22px; }
-        .vf-dashboard .vf-stat-ghost { display: none; }
+        .vf-dashboard .vf-stat-card {
+            padding: 18px;
+            gap: 14px;
+        }
+
+        .vf-dashboard .vf-stat-icon {
+            width: 46px;
+            height: 46px;
+            font-size: 18px;
+            border-radius: 13px;
+        }
+
+        .vf-dashboard .vf-stat-value {
+            font-size: 22px;
+        }
+
+        .vf-dashboard .vf-stat-ghost {
+            display: none;
+        }
     }
 </style>
 
@@ -234,23 +288,33 @@
     <div class="vf-section">
         <h6 class="vf-section-title">Sale Report</h6>
         <div class="row row-sm">
-            @{ SplitCard("vf-sale-today", "fa-shopping-bag", "Today", vfSummary.TodaySale); }
-            @{ SplitCard("vf-sale-total", "fa-line-chart", "Total", vfSummary.TotalSale); }
+            @{
+                SplitCard("vf-sale-today", "fa-shopping-bag", "Today", vfSummary.TodaySale);
+            }
+            @{
+                SplitCard("vf-sale-total", "fa-line-chart", "Total", vfSummary.TotalSale);
+            }
         </div>
     </div>
 
     <div class="vf-section">
         <h6 class="vf-section-title">Purchase Report</h6>
         <div class="row row-sm">
-            @{ SplitCard("vf-buy-today", "fa-shopping-cart", "Today", vfSummary.TodayPurchase); }
-            @{ SplitCard("vf-buy-total", "fa-cubes", "Total", vfSummary.TotalPurchase); }
+            @{
+                SplitCard("vf-buy-today", "fa-shopping-cart", "Today", vfSummary.TodayPurchase);
+            }
+            @{
+                SplitCard("vf-buy-total", "fa-cubes", "Total", vfSummary.TotalPurchase);
+            }
         </div>
     </div>
 
     <div class="vf-section">
         <h6 class="vf-section-title">Stock Report</h6>
         <div class="row row-sm">
-            @{ SplitCard("vf-stock-value", "fa-archive", "Stock Available", vfSummary.Stock); }
+            @{
+                SplitCard("vf-stock-value", "fa-archive", "Stock Available", vfSummary.Stock);
+            }
         </div>
     </div>
 

@@ -3554,11 +3554,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Application\\VitaFlow.Application.csproj",
+      "projectUniqueName": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Application\\VitaFlow.Application.csproj",
       "projectName": "VitaFlow.Application",
-      "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Application\\VitaFlow.Application.csproj",
+      "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Application\\VitaFlow.Application.csproj",
       "packagesPath": "C:\\Users\\Dell\\.nuget\\packages\\",
-      "outputPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Application\\obj\\",
+      "outputPath": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Application\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -3581,11 +3581,11 @@
           "framework": "net8.0",
           "targetAlias": "net8.0",
           "projectReferences": {
-            "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj": {
-              "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Domain\\VitaFlow.Domain.csproj"
+            "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Domain\\VitaFlow.Domain.csproj": {
+              "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Domain\\VitaFlow.Domain.csproj"
             },
-            "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj": {
-              "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj"
+            "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj": {
+              "projectPath": "E:\\Sadhna Garg\\GithhubFranchise\\Expertholistic_Shopy\\VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj"
             }
           }
         }

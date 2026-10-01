@@ -84,9 +84,12 @@
             tableString += "<th>BillNo </th>";
             tableString += "<th>BillDate</th>";
             tableString += "<th>BillType</th>";
-            tableString += "<th>S.P. Value</th>";
+            tableString += "<th>BV Value</th>";
             tableString += "<th>Commission Slab(%)</th>";
             tableString += "<th>Commission Value</th>";
+             tableString += "<th>PV Value</th>";
+            tableString += "<th>PV Slab</th>";
+            tableString += "<th>PVCommission Value</th>";
 
             tableString += "</tr></thead><tbody>";
             for (var i = 0; i < BillWiseGrid.length; i++) {
@@ -101,6 +104,9 @@
                 tableString += "<td>" + BillWiseGrid[i].BVCommission + "</td>";
                 tableString += "<td>" + BillWiseGrid[i].CommissionSlab + "</td>";
                 tableString += "<td>" + BillWiseGrid[i].Commission + "</td>";
+                  tableString += "<td>" + BillWiseGrid[i].PVCommission + "</td>";
+                  tableString += "<td>" + BillWiseGrid[i].PVSlab + "</td>";
+                  tableString += "<td>" + BillWiseGrid[i].PVCommissionVal + "</td>";
                 tableString += "</tr>";
             }
 
@@ -188,7 +194,7 @@
                                         "CommissionSlab": data[i].commissionSlab,
                                         "BillNo": data[i].billNo,
                                         "BillDate": data[i].billDate,
-                                        "BillType": InvoiceTypeName(data[i].billType),
+                                        "BillType": data[i].billType,
                                         "PVCommission": data[i].pvCommission,
                                         "PVCommissionVal": data[i].pvCommissionVal,
                                         "PVSlab": data[i].pvSlab
@@ -214,12 +220,12 @@
                                          { field: 'BillNo', title: 'BillNo', width: 80, sortable: true, hidden: false, filterable: true },
                                          { field: 'BillDate', title: 'BillDate', width: 80, sortable: true, hidden: false, filterable: true },
                                          { field: 'BillType', title: 'BillType', width: 80, sortable: true, hidden: false, filterable: true },
-                                         { field: 'BVCommission', title: 'S.P. Value', width: 100, sortable: true, hidden: false, filterable: true },
-                                         { field: 'CommissionSlab', title: 'S.P. Commission Slab(%)', width: 100, sortable: true, hidden: false, filterable: true },
-                                         { field: 'Commission', title: 'S.P. Commission Value', width: 100, sortable: true, hidden: false, filterable: true },
-                                         { field: 'PVCommission', title: 'PV Commission', width: 100, sortable: true, hidden: true, filterable: true },
-                                         { field: 'PVSlab', title: 'PV Slab', width: 100, sortable: true, hidden: true, filterable: true },
-                                         { field: 'PVCommissionVal', title: 'PV Commission Value', width: 100, sortable: true, hidden: true, filterable: true },
+                                         { field: 'BVCommission', title: 'BV Value', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'CommissionSlab', title: 'BV Commission Slab(%)', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'Commission', title: 'BV Commission Value', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'PVCommission', title: 'PV Commission', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'PVSlab', title: 'PV Slab', width: 100, sortable: true, hidden: false, filterable: true },
+                                         { field: 'PVCommissionVal', title: 'PV Commission Value', width: 100, sortable: true, hidden: false, filterable: true },
                                          { field: 'BranchName', title: 'Branch Name', width: 150, sortable: true, hidden: true, filterable: true },
                                     ],
                                     pager: { limit: 20, sizes: [15, 20, 35, 50, 65, 80, 95, 100] }
@@ -346,7 +352,8 @@
                             <label>Bill Type</label>
                             <select id="Billtype" class="form-control">
                                 <option value="All">All</option>
-                                <option value="B">S.P. Bill</option>
+                                <option value="B">BV Bill</option>
+                                <option value="P">PV Bill</option>
                             </select>
                         </div>
                     </div>

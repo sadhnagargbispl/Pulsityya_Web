@@ -89,13 +89,6 @@ namespace VitaFlow.Domain.Entities
         public decimal KitAmount { get; set; }
         public decimal MinBillAmt { get; set; }
         public List<string> InvoiceType { get; set; }
-        /// <summary>Member ki abhi wali kit ka naam (jaise BASIC / BUSINESS).</summary>
-        public string KitName { get; set; }
-        /// <summary>
-        /// Kya is ID par aur upgrade ho sakta hai? Top package (BUSINESS) par pahunch
-        /// jaane ke baad false aata hai - tab UI Upgrade band karke Repurchase chun leta hai.
-        /// </summary>
-        public bool CanUpgrade { get; set; }
         public string SelectedInvoiceType { get; set; }
         public User UserDetails { get; set; }
         public decimal FormNo { get; set; }
@@ -244,11 +237,6 @@ namespace VitaFlow.Domain.Entities
         public decimal MinToBV { get; set; }
         public string IsAvailableForOffer { get; set; }
         public string IsAvailableForBilling { get; set; }
-        /// <summary>
-        /// J = Joining (Activation/Upgrade), R = Repurchase, B = Both.
-        /// M_ProductMaster.Imported se aata hai; J/R ke alawa kuch bhi ho to "B".
-        /// </summary>
-        public string ProductFor { get; set; }
         public decimal Weight { get; set; }
         public string isFixedQty { get; set; }
         public decimal FixedQty { get; set; }

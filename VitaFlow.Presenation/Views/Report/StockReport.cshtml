@@ -1,4 +1,4 @@
-@model VitaFlow.Domain.Entities.StockReportModel
+﻿@model VitaFlow.Domain.Entities.StockReportModel
 
 @{
     ViewData["Title"] = "StockReport";
@@ -312,7 +312,6 @@
             //var tableToExcel = new TableToExcel();
             // tableToExcel.render("grid");
             var UserTypeStr = "StockReport";
-            var showInOut = true; // Stock In / Out sab users ke liye
 
             console.log("in export gridExport", StockGrid);
             var tableString = "<thead><tr>";
@@ -325,7 +324,7 @@
                 tableString += "<th>Code</th>";
                 tableString += "<th>Product Name</th>";
                 tableString += "<th>BarCode</th>";
-                if (showInOut) {
+                if ('@LoginuserType' === "shoppe") {
                     tableString += "<th>Stock In</th>";
                     tableString += "<th>Stock Out</th>";
                 }
@@ -333,7 +332,8 @@
                
                 tableString += "<th>Rate/DP</th>";
                 tableString += "<th>MRP</th>";
-                tableString += "<th>S.P.</th>";
+                tableString += "<th>BV</th>";
+                tableString += "<th>PV</th>";
                 tableString += "<th>(DP)StockValue</th>";
                 tableString += "<th>(MRP)StockValue</th>";
                 tableString += "</tr></thead><tbody>";
@@ -349,7 +349,7 @@
                     tableString += "<td class=formatText>" + StockGrid[i].ProductCode.toString() + "</td>";
                     tableString += "<td>" + StockGrid[i].ProductName + "</td>";
                     tableString += "<td>" + StockGrid[i].Barcode + "</td>";
-                    if (showInOut) {
+                    if ('@LoginuserType' === "shoppe") {
                         tableString += "<td>" + StockGrid[i].StockIn + "</td>";
                         tableString += "<td>" + StockGrid[i].StockOut + "</td>";
                     }
@@ -358,6 +358,7 @@
                     tableString += "<td>" + StockGrid[i].RateOrDP + "</td>";
                     tableString += "<td>" + StockGrid[i].MRP + "</td>";
                     tableString += "<td>" + StockGrid[i].BV + "</td>";
+                    tableString += "<td>" + StockGrid[i].PV + "</td>";
                     tableString += "<td>" + StockGrid[i].DPStockValue + "</td>";
                     tableString += "<td>" + StockGrid[i].MRPSTockValue + "</td>";
                     tableString += "</tr>";
@@ -371,7 +372,7 @@
                 tableString += "<td class=formatText> </td>";
                 tableString += "<td>Totals</td>";
                 tableString += "<td></td>";
-                if (showInOut) {
+                if ('@LoginuserType' === "shoppe") {
                     tableString += "<td>" + TotalStockIn + "</td>";
                     tableString += "<td>" + TotalStockout + "</td>";
                 }
@@ -380,6 +381,7 @@
                 tableString += "<td>" + TotalDP + "</td>";
                 tableString += "<td>" + TotalMRP + "</td>";
                 tableString += "<td>" + TotatalBV + "</td>";
+                tableString += "<td>" + TotalPV + "</td>";
                 tableString += "<td>" + NetTotal + "</td>";
                 tableString += "<td>" + TotalValueMRP + "</td>";
                 tableString += "</tr>";
@@ -394,7 +396,7 @@
                 tableString += "<th>Batch No.</th>";
                 tableString += "<th>BarCode</th>";
 
-                if (showInOut) {
+                if ('@LoginuserType' === "shoppe") {
                     tableString += "<th>Stock In</th>";
                     tableString += "<th>Stock Out</th>";
                 }
@@ -402,7 +404,8 @@
                 
                 tableString += "<th>Rate/DP</th>";
                 tableString += "<th>MRP</th>";
-                tableString += "<th>S.P.</th>";
+                tableString += "<th>BV</th>";
+                tableString += "<th>PV</th>";
                 tableString += "<th>(DP)StockValue</th>";
                 tableString += "<th>(MRP)StockValue</th>";
                 tableString += "</tr></thead><tbody>";
@@ -419,7 +422,7 @@
                     tableString += "<td>" + StockGrid[i].ProductName + "</td>";
                     tableString += "<td>" + StockGrid[i].BatchNo + "</td>";
                     tableString += "<td>" + StockGrid[i].Barcode + "</td>";
-                    if (showInOut) {
+                    if ('@LoginuserType' === "shoppe") {
                         tableString += "<td>" + StockGrid[i].StockIn + "</td>";
                         tableString += "<td>" + StockGrid[i].StockOut + "</td>";
                     }
@@ -428,6 +431,7 @@
                     tableString += "<td>" + StockGrid[i].RateOrDP + "</td>";
                     tableString += "<td>" + StockGrid[i].MRP + "</td>";
                     tableString += "<td>" + StockGrid[i].BV + "</td>";
+                    tableString += "<td>" + StockGrid[i].PV + "</td>";
                     tableString += "<td>" + StockGrid[i].DPStockValue + "</td>";
                     tableString += "<td>" + StockGrid[i].MRPSTockValue + "</td>";
                     tableString += "</tr>";
@@ -441,7 +445,7 @@
                 tableString += "<td> </td>"; tableString += "<td> </td>";
                 tableString += "<td> </td>";
                 tableString += "<td>Totals</td>";
-                if (showInOut) {
+                if ('@LoginuserType' === "shoppe") {
                     tableString += "<td>" + TotalStockIn + "</td>";
                     tableString += "<td>" + TotalStockout + "</td>";
                 }
@@ -450,6 +454,7 @@
                 tableString += "<td>" + TotalDP + "</td>";
                 tableString += "<td>" + TotalMRP + "</td>";
                 tableString += "<td>" + TotatalBV + "</td>";
+                tableString += "<td>" + TotalPV + "</td>";
                 tableString += "<td>" + NetTotal + "</td>";
                 tableString += "<td>" + TotalValueMRP + "</td>";
                 tableString += "</tr>";
@@ -678,8 +683,10 @@
 
         }
 
-        // Stock In / Stock Out sab users ko dikhana hai
-        var dispayInOut = false;
+        var dispayInOut = true;
+        if ('@LoginuserType' === "shoppe") {
+            var dispayInOut = false;
+        }
 
         console.log("IsBatch", IsBatch);
         if (IsBatch == false) {
@@ -701,8 +708,8 @@
                     { field: 'Qty', width: 80, title: 'Stock Balance', sortable: true, hidden: false, filterable: true },
                     { field: 'RateOrDP', width: 80, title: 'DP', sortable: true, hidden: false, filterable: true },
                     { field: 'MRP', title: 'MRP', width: 80, sortable: true, hidden: false, filterable: true },
-                    { field: 'BV', title: 'S.P.', width: 80, sortable: true, hidden: false, filterable: true },
-                    { field: 'PV', title: 'PV', width: 80, sortable: true, hidden: true, filterable: true },
+                    { field: 'BV', title: 'BV', width: 80, sortable: true, hidden: false, filterable: true },
+                    { field: 'PV', title: 'PV', width: 80, sortable: true, hidden: false, filterable: true },
                     //{ field: 'StockValue', title: 'Stock Value',sortable: true, hidden: false, filterable: true },
                     { field: 'DPStockValue', width: 80, title: '(DP)Stock Value', sortable: true, hidden: false, filterable: true },
                     { field: 'MRPSTockValue', width: 80, title: '(MRP)Stock Value', sortable: true, hidden: false, filterable: true },
@@ -714,7 +721,20 @@
                     }
                 },
                 dataBound: function (e, records, totalRecords) {
-                    ShowStockTotals();
+
+
+                    if ('@LoginuserType' === "shoppe") {
+                        $("#totalstockIn").html(TotalStockIn);
+                        $("#totalstockOut").html(TotalStockout);
+                    }
+                    $("#totalstockBalance").html(TotalStockbalance);
+                    $("#totalstockRCPValue").html(NetTotal);
+                    $("#totalbv").html(TotatalBV);
+                    $("#totalpv").html(TotalPV.toFixed(2));
+                    $("#totalmrp").html(TotalValueMRP);
+                    $("#totalPURate").html(TotalPurate);
+                    $("#totalMP").html(TotalMRP);
+
                 }
             });
 
@@ -741,8 +761,8 @@
                     { field: 'Qty', width: 80, title: 'Stock Balance', sortable: true, hidden: false, filterable: true },
                     { field: 'RateOrDP', width: 80, title: 'DP', sortable: true, hidden: false, filterable: true },
                     { field: 'MRP', width: 80, title: 'MRP', sortable: true, hidden: false, filterable: true },
-                    { field: 'BV', title: 'S.P.', width: 80, sortable: true, hidden: false, filterable: true },
-                    { field: 'PV', title: 'PV', width: 80, sortable: true, hidden: true, filterable: true },
+                    { field: 'BV', title: 'BV', width: 80, sortable: true, hidden: false, filterable: true },
+                    { field: 'PV', title: 'PV', width: 80, sortable: true, hidden: false, filterable: true },
                     //{ field: 'StockValue', title: 'Stock Value', sortable: true, hidden: false, filterable: true },
                     { field: 'DPStockValue', width: 80, title: '(DP)Stock Value', sortable: true, hidden: false, filterable: true },
                     { field: 'MRPSTockValue', width: 80, title: '(MRP)STock Value', sortable: true, hidden: false, filterable: true },
@@ -754,7 +774,17 @@
                     }
                 },
                 dataBound: function (e, records, totalRecords) {
-                    ShowStockTotals();
+                    if ('@LoginuserType' === "shoppe") {
+                        $("#totalstockIn").html(TotalStockIn);
+                        $("#totalstockOut").html(TotalStockout);
+                    }
+                    $("#totalstockBalance").html(TotalStockbalance);
+                    $("#totalstockRCPValue").html(NetTotal);
+                    $("#totalbv").html(TotatalBV);
+                    $("#totalpv").html(TotalPV.toFixed(2));
+                    $("#totalmrp").html(TotalValueMRP);
+                    $("#totalPURate").html(TotalPurate);
+                    $("#totalMP").html(TotalMRP);
                 }
             });
 
@@ -762,18 +792,6 @@
         }
 
         $(".loader").hide();
-    }
-
-    // Footer me sirf Stock In, Stock Out aur DP Value ka total
-    function ShowStockTotals() {
-        $("#totalstockIn").html(TotalStockIn);
-        $("#totalstockOut").html(TotalStockout);
-        $("#totalstockDPValue").html(NetTotal.toFixed(2));
-    }
-
-    function ToNumber(value) {
-        var n = parseFloat(value);
-        return isNaN(n) ? 0 : n;
     }
 
     function GetStockDetails(CategoryCode, ProductCode, PartyCode, IsBatchWise, StockType) {
@@ -843,10 +861,10 @@
                             "OpeningStock": objResult[i].openingStock,"PV": objResult[i].pv, "BV": objResult[i].bv  });
                         }
                         debugger;
-                        TotalStockIn += ToNumber(objResult[i].inStock);
-                        TotalStockout += ToNumber(objResult[i].outStock);
+                        TotalStockIn += parseFloat(objResult[i].inStock);
+                        TotalStockout += parseFloat(objResult[i].outStock);
                         TotalStockbalance += parseFloat(objResult[i].qty);
-                        NetTotal += ToNumber(objResult[i].dpStockValue);
+                        NetTotal += parseFloat(objResult[i].dpStockValue);
                         TotatalBV += parseFloat(objResult[i].bv);
                         TotalPV += parseFloat(objResult[i].pv);
                         TotalValueMRP += parseFloat(objResult[i].mrpsTockValue);
@@ -958,8 +976,13 @@
             <div class="card-footer">
                 <ul class="list-group list-group-horizontal fa-pull-right">
                     <li class="list-group-item">Total Stock In : <span id="totalstockIn">0</span></li>
-                    <li class="list-group-item">Total Stock Out :  <span id="totalstockOut">0</span></li>
-                    <li class="list-group-item">Total DP Value : <span id="totalstockDPValue">0</span></li>
+                    <li class="list-group-item">Total Stock out :  <span id="totalstockOut">0</span></li>
+                    <li class="list-group-item">Total PU.Rate :  <span id="totalPURate">0</span></li>
+                    <li class="list-group-item">Total MRP :  <span id="totalMP">0</span></li>
+                    <li class="list-group-item">Total BV  :  <span id="totalbv">0</span></li>
+                    <li class="list-group-item">Total PV  :  <span id="totalpv">0</span></li>
+                    <li class="list-group-item">Total Stock Balance : <span id="totalstockBalance">0</span></li>
+                    <li class="list-group-item">Total RCP Value : <span id="totalstockRCPValue">0</span></li>
                 </ul>
             </div>
         </div>
