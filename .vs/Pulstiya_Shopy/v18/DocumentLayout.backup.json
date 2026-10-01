@@ -3,24 +3,32 @@
   "WorkspaceRootPath": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|e:\\sadhna garg\\githhubfranchise\\pulsityya_web\\vitaflow.presenation\\controllers\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|solutionrelative:vitaflow.presenation\\controllers\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{114A9262-F705-4470-B937-2255C84C0A9A}|VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj|e:\\sadhna garg\\githhubfranchise\\pulsityya_web\\vitaflow.infrastructure\\repository\\transactionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{114A9262-F705-4470-B937-2255C84C0A9A}|VitaFlow.Infrastructure\\VitaFlow.Infrastructure.csproj|solutionrelative:vitaflow.infrastructure\\repository\\transactionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|e:\\sadhna garg\\githhubfranchise\\pulsityya_web\\vitaflow.presenation\\views\\transaction\\partybill.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|solutionrelative:vitaflow.presenation\\views\\transaction\\partybill.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|e:\\sadhna garg\\githhubfranchise\\pulsityya_web\\vitaflow.presenation\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|solutionrelative:vitaflow.presenation\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|e:\\sadhna garg\\githhubfranchise\\pulsityya_web\\vitaflow.presenation\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|solutionrelative:vitaflow.presenation\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|e:\\sadhna garg\\githhubfranchise\\pulsityya_web\\vitaflow.presenation\\controllers\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|solutionrelative:vitaflow.presenation\\controllers\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|e:\\sadhna garg\\githhubfranchise\\pulsityya_web\\vitaflow.presenation\\views\\transaction\\distributorbill.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|solutionrelative:vitaflow.presenation\\views\\transaction\\distributorbill.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|e:\\sadhna garg\\githhubfranchise\\pulsityya_web\\vitaflow.presenation\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|solutionrelative:vitaflow.presenation\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|e:\\sadhna garg\\githhubfranchise\\pulsityya_web\\vitaflow.presenation\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|solutionrelative:vitaflow.presenation\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|e:\\sadhna garg\\githhubfranchise\\pulsityya_web\\vitaflow.presenation\\views\\transaction\\partybill.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{76A70346-593F-452A-B398-A2F4D7A9C872}|VitaFlow.Presenation\\VitaFlow.Presenation.csproj|solutionrelative:vitaflow.presenation\\views\\transaction\\partybill.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,24 +38,50 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
+              "Title": "DistributorBill.cshtml",
+              "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\Views\\Transaction\\DistributorBill.cshtml",
+              "RelativeDocumentMoniker": "VitaFlow.Presenation\\Views\\Transaction\\DistributorBill.cshtml",
+              "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\Views\\Transaction\\DistributorBill.cshtml",
+              "RelativeToolTip": "VitaFlow.Presenation\\Views\\Transaction\\DistributorBill.cshtml",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-10-01T10:27:55.703Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ProductController.cs",
+              "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\Controllers\\ProductController.cs",
+              "RelativeDocumentMoniker": "VitaFlow.Presenation\\Controllers\\ProductController.cs",
+              "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\Controllers\\ProductController.cs",
+              "RelativeToolTip": "VitaFlow.Presenation\\Controllers\\ProductController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-29T11:06:55.554Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "Login.cshtml",
               "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\Views\\Account\\Login.cshtml",
               "RelativeDocumentMoniker": "VitaFlow.Presenation\\Views\\Account\\Login.cshtml",
               "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\Views\\Account\\Login.cshtml",
               "RelativeToolTip": "VitaFlow.Presenation\\Views\\Account\\Login.cshtml",
-              "ViewState": "AgIAALEAAAAAAAAAAAAAAMgAAAArAAAAAAAAAA==",
+              "ViewState": "AgIAAKsAAAAAAAAAAAAAAMIAAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-09-29T06:17:52.075Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "VitaFlow.Presenation\\Views\\Shared\\_Layout.cshtml",
@@ -60,7 +94,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 6,
               "Title": "PartyBill.cshtml",
               "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\Views\\Transaction\\PartyBill.cshtml",
               "RelativeDocumentMoniker": "VitaFlow.Presenation\\Views\\Transaction\\PartyBill.cshtml",
@@ -73,26 +107,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "TransactionRepository.cs",
               "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Infrastructure\\Repository\\TransactionRepository.cs",
               "RelativeDocumentMoniker": "VitaFlow.Infrastructure\\Repository\\TransactionRepository.cs",
               "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Infrastructure\\Repository\\TransactionRepository.cs",
               "RelativeToolTip": "VitaFlow.Infrastructure\\Repository\\TransactionRepository.cs",
-              "ViewState": "AgIAAHwMAAAAAAAAAAAgwJ8MAABHAAAAAAAAAA==",
+              "ViewState": "AgIAAFcHAAAAAAAAAAAnwHoHAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-29T05:47:20.22Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "TransactionController.cs",
               "DocumentMoniker": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\Controllers\\TransactionController.cs",
               "RelativeDocumentMoniker": "VitaFlow.Presenation\\Controllers\\TransactionController.cs",
               "ToolTip": "E:\\Sadhna Garg\\GithhubFranchise\\Pulsityya_Web\\VitaFlow.Presenation\\Controllers\\TransactionController.cs",
               "RelativeToolTip": "VitaFlow.Presenation\\Controllers\\TransactionController.cs",
-              "ViewState": "AgIAAG4CAAAAAAAAAAAnwJYCAABGAAAAAAAAAA==",
+              "ViewState": "AgIAAGsCAAAAAAAAAAAgwI4CAABZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-29T05:46:57.733Z",
               "EditorCaption": ""

@@ -620,42 +620,42 @@ namespace VitaFlow.Presenation.Controllers
                             || objModel.SelectedInvoiceType == "BV")
                         {
                             WalletBalance = Convert.ToString(await i_Product.GetPartyWalletBalance(Convert.ToString(HttpContext.Session.GetString("FCode")), "B"));
-                            if (Convert.ToDecimal(WalletBalance) < Math.Round(objModel.objProduct.CashAmount))
-                            {
-                                objResponse.ResponseStatus = "FAILED";
-                                objResponse.ResponseMessage = "Insufficient Balance in your S.P. wallet";
-                            }
-                            else
-                            {
-                                objModel.objCustomer.UserDetails = HttpContext.Session.GetComplexData<User>("LoginUser");
-                                string myIP = HttpContext.Connection.RemoteIpAddress?.ToString();
-                                string currentDate = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-                                objModel.objProduct.UID = myIP + currentDate;
-                                objResponse = await i_Transaction.SaveDistributorBill(objModel);
-                            }
+                            //if (Convert.ToDecimal(WalletBalance) < Math.Round(objModel.objProduct.CashAmount))
+                            //{
+                            //    objResponse.ResponseStatus = "FAILED";
+                            //    objResponse.ResponseMessage = "Insufficient Balance in your S.P. wallet";
+                            //}
+                            //else
+                            //{
+                            objModel.objCustomer.UserDetails = HttpContext.Session.GetComplexData<User>("LoginUser");
+                            string myIP = HttpContext.Connection.RemoteIpAddress?.ToString();
+                            string currentDate = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+                            objModel.objProduct.UID = myIP + currentDate;
+                            objResponse = await i_Transaction.SaveDistributorBill(objModel);
+                            //}
                         }
                         else if (objModel.BillType == "party")
                         {
-                            if (objModel.PartyInvoice == "P")
-                            {
-                                WalletBalance = Convert.ToString(await i_Product.GetPartyWalletBalance(Convert.ToString(HttpContext.Session.GetString("FCode")), "P"));
-                                if (Convert.ToDecimal(WalletBalance) < Math.Round(objModel.objProduct.TotalNetPayable))
-                                {
-                                    objResponse.ResponseStatus = "FAILED";
-                                    objResponse.ResponseMessage = "Insufficient Balance in your PV Wallet Sale Balance";
-                                    return Json(objResponse);
-                                }
-                            }
-                            if (objModel.PartyInvoice == "B")
-                            {
-                                WalletBalance = Convert.ToString(await i_Product.GetPartyWalletBalance(Convert.ToString(HttpContext.Session.GetString("FCode")), "B"));
-                                if (Convert.ToDecimal(WalletBalance) < Math.Round(objModel.objProduct.TotalNetPayable))
-                                {
-                                    objResponse.ResponseStatus = "FAILED";
-                                    objResponse.ResponseMessage = "Insufficient Balance in your S.P. Wallet Sale Balance";
-                                    return Json(objResponse);
-                                }
-                            }
+                            //if (objModel.PartyInvoice == "P")
+                            //{
+                            //    WalletBalance = Convert.ToString(await i_Product.GetPartyWalletBalance(Convert.ToString(HttpContext.Session.GetString("FCode")), "P"));
+                            //    if (Convert.ToDecimal(WalletBalance) < Math.Round(objModel.objProduct.TotalNetPayable))
+                            //    {
+                            //        objResponse.ResponseStatus = "FAILED";
+                            //        objResponse.ResponseMessage = "Insufficient Balance in your PV Wallet Sale Balance";
+                            //        return Json(objResponse);
+                            //    }
+                            //}
+                            //if (objModel.PartyInvoice == "B")
+                            //{
+                            //    WalletBalance = Convert.ToString(await i_Product.GetPartyWalletBalance(Convert.ToString(HttpContext.Session.GetString("FCode")), "B"));
+                            //    if (Convert.ToDecimal(WalletBalance) < Math.Round(objModel.objProduct.TotalNetPayable))
+                            //    {
+                            //        objResponse.ResponseStatus = "FAILED";
+                            //        objResponse.ResponseMessage = "Insufficient Balance in your S.P. Wallet Sale Balance";
+                            //        return Json(objResponse);
+                            //    }
+                            //}
                             objModel.objCustomer.UserDetails = HttpContext.Session.GetComplexData<User>("LoginUser");
                             string myIP = HttpContext.Connection.RemoteIpAddress?.ToString();
                             string currentDate = DateTime.Now.ToString("yyyyMMddHHmmssfff");
