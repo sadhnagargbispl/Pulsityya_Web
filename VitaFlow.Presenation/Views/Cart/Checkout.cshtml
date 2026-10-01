@@ -280,59 +280,59 @@
             var totalAmount = parseFloat($("#totalamount").val()); // total amount from page
             ordermethod = $("#ordermethod").val();
 
-            if(ordermethod=="PV")
-            {
-                var PVPurchaseBal=$("#PVPurchaseBal").val();
-                if(PVPurchaseBal==0)
-                {
-                   toastr.error("Insufficient balance in PV wallet purchase", 'Error', {
-                    closeButton: true,
-                    progressBar: true,
-                    positionClass: 'toast-top-right',
-                    timeOut: 5000, // 5 seconds
-                    extendedTimeOut: 1000 // 1 second longer than timeOut
-                   });
-                 return false;
-                }
-                if(parseFloat(PVPurchaseBal)<parseFloat(totalAmount))
-                {
-                    toastr.error("PV wallet purchase should be greater than or equal total amount", 'Error', {
-                    closeButton: true,
-                    progressBar: true,
-                    positionClass: 'toast-top-right',
-                    timeOut: 5000, // 5 seconds
-                    extendedTimeOut: 1000 // 1 second longer than timeOut
-                   });
-                   return false;
-                }
+            // if(ordermethod=="PV")
+            // {
+            //     var PVPurchaseBal=$("#PVPurchaseBal").val();
+            //     if(PVPurchaseBal==0)
+            //     {
+            //        toastr.error("Insufficient balance in PV wallet purchase", 'Error', {
+            //         closeButton: true,
+            //         progressBar: true,
+            //         positionClass: 'toast-top-right',
+            //         timeOut: 5000, // 5 seconds
+            //         extendedTimeOut: 1000 // 1 second longer than timeOut
+            //        });
+            //      return false;
+            //     }
+            //     if(parseFloat(PVPurchaseBal)<parseFloat(totalAmount))
+            //     {
+            //         toastr.error("PV wallet purchase should be greater than or equal total amount", 'Error', {
+            //         closeButton: true,
+            //         progressBar: true,
+            //         positionClass: 'toast-top-right',
+            //         timeOut: 5000, // 5 seconds
+            //         extendedTimeOut: 1000 // 1 second longer than timeOut
+            //        });
+            //        return false;
+            //     }
 
-                var PVPurchaseBaladjust=$("#PVPurchaseBaladjust").val();
-                if(parseFloat(PVPurchaseBaladjust)<=0)
-                {
-                    toastr.error("Please enter adjust amount", 'Error', {
-                    closeButton: true,
-                    progressBar: true,
-                    positionClass: 'toast-top-right',
-                    timeOut: 5000, // 5 seconds
-                    extendedTimeOut: 1000 // 1 second longer than timeOut
-                   });
-                   $("#PVPurchaseBaladjust").focus();
-                   return false;
-                }
+            //     var PVPurchaseBaladjust=$("#PVPurchaseBaladjust").val();
+            //     if(parseFloat(PVPurchaseBaladjust)<=0)
+            //     {
+            //         toastr.error("Please enter adjust amount", 'Error', {
+            //         closeButton: true,
+            //         progressBar: true,
+            //         positionClass: 'toast-top-right',
+            //         timeOut: 5000, // 5 seconds
+            //         extendedTimeOut: 1000 // 1 second longer than timeOut
+            //        });
+            //        $("#PVPurchaseBaladjust").focus();
+            //        return false;
+            //     }
 
-                if(parseFloat(PVPurchaseBaladjust)!=parseFloat(totalAmount))
-                {
-                    toastr.error("Total wallet amount must equal bill amount", 'Error', {
-                    closeButton: true,
-                    progressBar: true,
-                    positionClass: 'toast-top-right',
-                    timeOut: 5000, // 5 seconds
-                    extendedTimeOut: 1000 // 1 second longer than timeOut
-                   });
-                   $("#PVPurchaseBaladjust").focus();
-                   return false;
-                }
-            }
+            //     if(parseFloat(PVPurchaseBaladjust)!=parseFloat(totalAmount))
+            //     {
+            //         toastr.error("Total wallet amount must equal bill amount", 'Error', {
+            //         closeButton: true,
+            //         progressBar: true,
+            //         positionClass: 'toast-top-right',
+            //         timeOut: 5000, // 5 seconds
+            //         extendedTimeOut: 1000 // 1 second longer than timeOut
+            //        });
+            //        $("#PVPurchaseBaladjust").focus();
+            //        return false;
+            //     }
+            // }
 
             if(ordermethod=="BV")
             {
