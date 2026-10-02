@@ -435,7 +435,7 @@ namespace VitaFlow.Presenation.Controllers
                 }
                 //Walletbalance = await i_Product.GetPartyWalletBalance(HttpContext.Session.GetString("FCode"), "R");
                 //orderreq.wallettype = "R";
-                if (Walletbalance > 0)
+                // Wallet balance ka check hata diya - order bina wallet balance ke bhi place hota hai.
                 {
                     //--------------------------------------------------------------
                     M_CartDetails req = new M_CartDetails();
@@ -651,17 +651,8 @@ namespace VitaFlow.Presenation.Controllers
                     orderreq.GroupId = Convert.ToInt32(HttpContext.Session.GetString("GroupId"));
 
                     HttpContext.Session.SetString("OrderNo", orderreq.OrderNo);
-                    if (Walletbalance >= orderreq.NetAmount)
-                    {
-                        //save order detail---------------------------------------------
-                        objResponse = await i_Product.SavePartyOrderDetails(orderreq);
-                    }
-                    else
-                    {
-                        objResponse.ResponseStatus = "FAILED";
-                        objResponse.ResponseMessage = "Sorry!Insufficient Wallet Balance.";
-                        objResponse.StatusCode = 101;
-                    }
+                    //save order detail---------------------------------------------
+                    objResponse = await i_Product.SavePartyOrderDetails(orderreq);
                     //if (result.PackageAmount > (orderreq.NetAmount + orderreq.Promobalance) && GetPartyOrderlist.Count == 0)
                     //{
                     //    objResponse.ResponseStatus = "FAILED";
@@ -672,12 +663,6 @@ namespace VitaFlow.Presenation.Controllers
                     //{
 
                     //}
-                }
-                else
-                {
-                    objResponse.ResponseStatus = "FAILED";
-                    objResponse.ResponseMessage = "Sorry!Insufficient Wallet Balance.";
-                    objResponse.StatusCode = 101;
                 }
                 HttpContext.Session.SetComplexData("OrderResponse", objResponse);
                 return RedirectToAction("Thankyouorder", "Cart");

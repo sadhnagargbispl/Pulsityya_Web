@@ -340,10 +340,11 @@
 
                 var BVPurchaseBaladjust=$("#BVPurchaseBaladjust").val();
                 var promobaladjust=$("#promobaladjust").val();
-                if(validatePayment(BVPurchaseBaladjust,promobaladjust,totalAmount,BVPurchaseBal,promobaladjust)==false)
-                {
-                    return false;
-                }
+                // Wallet balance ka check hata diya - wallet nahi hai, order bina balance ke bhi jaata hai
+                // if(validatePayment(BVPurchaseBaladjust,promobaladjust,totalAmount,BVPurchaseBal,promobaladjust)==false)
+                // {
+                //     return false;
+                // }
 
                 
             }

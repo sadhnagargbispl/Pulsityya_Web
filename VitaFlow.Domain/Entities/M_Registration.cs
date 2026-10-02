@@ -27,7 +27,8 @@ namespace VitaFlow.Domain.Entities
                    ErrorMessage = "Entered mobile format is not valid.")]
         [StringLength(10, ErrorMessage = "MobileNo length can't be more than 10.")]
         public string? MobileNo { get; set; }
-        public string GST { get; set; }
+        // GST optional hai
+        public string? GST { get; set; }
         [Required (ErrorMessage = "Password Required!")]
         public string? Password { get; set; }
         [Required(ErrorMessage = "City Required!")]

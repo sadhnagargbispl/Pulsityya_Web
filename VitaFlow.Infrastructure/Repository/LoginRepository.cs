@@ -342,21 +342,24 @@ namespace VitaFlow.Infrastructure.Repository
             {
                 try
                 {
-                    if (Groupid == 1 || Groupid == 2)
-                    {
-                        var sql = "select PartyCode,PartyName from M_LedgerMaster where GroupId<@GroupId and ISApprove='Y'";
-                        obj = (await connection.QueryAsync<PartyModel>(sql, new { Groupid })).ToList();
-                    }
-                    else if (Groupid == 3)
-                    {
-                        var sql = "select PartyCode,PartyName from M_LedgerMaster where ( GroupId<@GroupId and StateCode=@stateCode and ISApprove='Y' ) or GroupId=0";
-                        obj = (await connection.QueryAsync<PartyModel>(sql, new { Groupid, stateCode })).ToList();
-                    }
-                    else if (Groupid == 4)
-                    {
-                        var sql = "select PartyCode,PartyName from M_LedgerMaster where ( GroupId<@GroupId and StateCode=@stateCode and CityName=@District and ISApprove='Y') or  GroupId=0 ";
-                        obj = (await connection.QueryAsync<PartyModel>(sql, new { Groupid, stateCode, District })).ToList();
-                    }
+                    // Parent party = M_GroupMaster me PGroupId ki poori upar wali chain ke groups ki parties + WR (GroupId 0).
+                    // Jaise EH Smart Shop (4) -> PGroupId 3 -> 2 -> 1, to group 3, 2, 1 ki parties + WR.
+                    // PGroupId < GroupId wali shart chain ko rokti hai (EB Regional Hub ka PGroupId khud 1 hai)
+                    // aur same/lower level parent waise bhi registration me reject hota hai.
+                    var sql = @";with chain as (
+                                    select g.PGroupId as GId from M_GroupMaster g
+                                    where g.GroupId = @Groupid and g.PGroupId > 0 and g.PGroupId < g.GroupId
+                                    union all
+                                    select g.PGroupId from M_GroupMaster g
+                                    inner join chain c on g.GroupId = c.GId
+                                    where g.PGroupId > 0 and g.PGroupId < g.GroupId
+                                )
+                                select l.PartyCode, l.PartyName
+                                from M_LedgerMaster l
+                                where (l.ISApprove = 'Y' and l.GroupId in (select GId from chain))
+                                   or l.GroupId = 0
+                                order by case when l.GroupId = 0 then 1 else 0 end, l.GroupId desc, l.PartyName";
+                    obj = (await connection.QueryAsync<PartyModel>(sql, new { Groupid })).ToList();
                 }
                 catch (Exception ex)
                 {
